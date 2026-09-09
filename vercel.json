@@ -1,6 +1,10 @@
 {
   "cleanUrls": false,
   "trailingSlash": true,
+  "rewrites": [
+    {"source": "/calculators/:slug", "destination": "/calculators/:slug/index.html"},
+    {"source": "/calculators/:slug/", "destination": "/calculators/:slug/index.html"}
+  ],
   "headers": [
     {
       "source": "/(.*)",

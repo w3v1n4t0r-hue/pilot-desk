@@ -29,6 +29,8 @@
     [weight,arm].forEach(i=>i.addEventListener('input',calcWB));remove.addEventListener('click',()=>{r.remove();calcWB()});
     r.append(name,weight,arm,moment,remove);rows.appendChild(r);calcWB();
   }
-  add('Basic Empty Weight',1600,85);add('Front seats',360,80.5);add('Fuel',240,95);
+  function activeProfile(){try{const all=JSON.parse(localStorage.getItem('pd-aircraft')||'[]'),id=localStorage.getItem('pd-aircraft-active');return all.find(x=>x.id===id)||null}catch{return null}}
+  function loadProfile(){const p=activeProfile();if(!p)return false;rows.innerHTML='';let count=0;if(p.emptyWeight!==''&&p.emptyArm!==''&&Number.isFinite(Number(p.emptyWeight))&&Number.isFinite(Number(p.emptyArm))){add('Basic Empty Weight',Number(p.emptyWeight),Number(p.emptyArm));count++}String(p.wbStations||'').split(/\r?\n/).forEach(line=>{const parts=line.split(',').map(x=>x.trim());if(parts.length<3)return;const w=Number(parts[1]),a=Number(parts[2]);if(parts[0]&&Number.isFinite(w)&&Number.isFinite(a)){add(parts[0],w,a);count++}});if(count){const note=document.createElement('div');note.className='notice';note.textContent=`Loaded ${p.name||'active aircraft'} profile. Verify every station and arm against current approved aircraft data.`;rows.parentElement?.insertBefore(note,rows);return true}return false}
+  if(!loadProfile()){add('Basic Empty Weight',1600,85);add('Front seats',360,80.5);add('Fuel',240,95);}
   document.getElementById('addStation')?.addEventListener('click',()=>add());
 })();

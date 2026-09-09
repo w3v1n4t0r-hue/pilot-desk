@@ -47,10 +47,18 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 // PilotDesk product features are kept separate from calculator math and ad code.
 (()=>{
-  if(document.querySelector('script[data-pd-features]'))return;
-  const s=document.createElement('script');
-  s.src='/assets/features.js';
-  s.defer=true;
-  s.dataset.pdFeatures='1';
-  document.head.appendChild(s);
+  if(!document.querySelector('script[data-pd-features]')){
+    const s=document.createElement('script');
+    s.src='/assets/features.js';
+    s.defer=true;
+    s.dataset.pdFeatures='1';
+    document.head.appendChild(s);
+  }
+  if(!document.querySelector('script[data-pd-analytics]')){
+    const a=document.createElement('script');
+    a.src='/assets/analytics.js';
+    a.defer=true;
+    a.dataset.pdAnalytics='1';
+    document.head.appendChild(a);
+  }
 })();

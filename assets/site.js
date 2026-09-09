@@ -1,0 +1,64 @@
+const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const num=(id)=>{const e=document.getElementById(id);if(!e||String(e.value).trim()==='')return NaN;return Number(e.value)};
+const fmt=(v,d=1)=>Number.isFinite(v)?v.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const norm=(x)=>((x%360)+360)%360;const set=(i,v)=>{const e=document.getElementById('out'+i);if(e)e.textContent=v};
+function setWarning(msg){const w=document.getElementById('safetyWarning');if(w){w.textContent=msg||'';w.classList.toggle('show',Boolean(msg));}}
+function calculate(){const key=document.body.dataset.calc;if(!key)return;if(window.PilotDeskSafety&&!window.PilotDeskSafety.validate(key))return;try{F[key]();setWarning('')}catch(e){console.error(e);document.querySelectorAll('[id^="out"]').forEach(x=>x.textContent='—');setWarning('Unable to calculate. Recheck the inputs.')}}
+const F={
+crosswind(){let a=((num('windDir')-num('runway')+540)%360)-180,r=a*Math.PI/180,c=num('windSpeed')*Math.sin(r),h=num('windSpeed')*Math.cos(r);set(0,`${fmt(Math.abs(c))} kt ${Math.abs(c)<0.05?'':c>0?'from right':'from left'}`.trim());set(1,`${fmt(Math.abs(h))} kt ${h>=0?'headwind':'tailwind'}`);set(2,`${fmt(Math.abs(a),0)}°`)},
+windTriangle(){let c=num('course'),tas=num('tas'),wd=num('windDir'),ws=num('windSpeed'),rel=(wd-c)*Math.PI/180,ratio=ws*Math.sin(rel)/tas;if(Math.abs(ratio)>1){setWarning('Crosswind component exceeds TAS; no steady wind-triangle solution exists.');return}let wca=Math.asin(ratio),hdg=norm(c+wca*180/Math.PI),gs=tas*Math.cos(wca)-ws*Math.cos(rel);if(gs<=0){setWarning('Computed groundspeed is zero or negative. The entered wind is too strong for this course/TAS combination.');return}set(0,`${fmt(hdg)}°`);set(1,`${fmt(gs)} kt`);set(2,`${wca>=0?'+':''}${fmt(wca*180/Math.PI)}°`)},
+tsd(){let d=num('distance'),s=num('speed'),t=num('time');set(0,`${fmt(d/s,2)} hr`);set(1,`${fmt(s*t,1)} NM`);set(2,`${fmt(d/t,1)} kt`)},
+fuelRequired(){let f=num('fuel'),b=num('burn'),t=num('time'),r=num('reserve')/60,trip=b*t,req=trip+b*r,margin=f-req;set(0,`${fmt(req)} gal`);set(1,`${fmt(trip)} gal`);set(2,`${margin>=0?'+':''}${fmt(margin)} gal`)},
+endurance(){let f=num('fuel'),b=num('burn'),g=num('gs'),r=num('reserve')/60,m=f/b,u=Math.max(0,m-r);set(0,`${fmt(u,2)} hr`);set(1,`${fmt(m,2)} hr`);set(2,`${fmt(u*g,0)} NM`)},
+tod(){let a=num('altitude'),g=num('gradient'),gs=num('gs'),d=a/g;set(0,`${fmt(d,1)} NM`);set(1,`${fmt(g*gs/60,0)} fpm`);set(2,`${fmt(d/gs*60,1)} min`)},
+threeDegree(){let gs=num('gs'),exact=gs*6076.11549/60*Math.tan(3*Math.PI/180);set(0,`${fmt(exact,0)} fpm`);set(1,`${fmt(gs/60,2)} NM/min`);set(2,`${fmt(gs*5,0)} fpm`)},
+holdDistance(){let gs=num('gs'),sec=num('seconds'),nm=gs/3600*sec;set(0,`${fmt(nm,2)} NM`);set(1,`${fmt(gs/60,2)} NM/min`);set(2,`${fmt(nm*6076.11549,0)} ft`)},
+pressureAltitude(){let e=num('elev'),a=num('altimeter'),corr=(29.92-a)*1000;set(0,`${fmt(e+corr,0)} ft`);set(1,`${corr>=0?'+':''}${fmt(corr,0)} ft`);set(2,`${fmt(e,0)} ft`)},
+densityAltitude(){let pa=num('pa'),o=num('oat');const T0=288.15,L=0.0065,g=9.80665,R=287.05287,rho0=1.225;let h=pa*0.3048,theta=1-L*h/T0,p=101325*Math.pow(theta,g/(R*L)),rho=p/(R*(o+273.15)),exp=g/(R*L)-1,daM=(T0/L)*(1-Math.pow(rho/rho0,1/exp)),da=daM/0.3048,isa=15-1.9812*(pa/1000),dev=o-isa;set(0,`${fmt(da,0)} ft`);set(1,`${fmt(isa,1)} °C`);set(2,`${dev>=0?'+':''}${fmt(dev,1)} °C`)},
+isaTemp(){let a=num('alt'),t=15-1.9812*(a/1000);set(0,`${fmt(t,1)} °C`);set(1,`${fmt(a,0)} ft`);set(2,`${fmt(15-t,1)} °C`)},
+cloudBase(){let sp=num('temp')-num('dew'),ft=Math.max(0,sp/2.444444*1000);set(0,`${fmt(ft,0)} ft AGL`);set(1,`${fmt(sp,1)} °C`);set(2,'Convective estimate')},
+speedSound(){let K=num('temp')+273.15,a=Math.sqrt(1.4*287.05287*K)/0.514444;set(0,`${fmt(a,1)} kt`);set(1,`${fmt(a*.8,1)} kt`);set(2,`${fmt(a*.514444,1)} m/s`)},
+mach(){let K=num('temp')+273.15,a=Math.sqrt(1.4*287.05287*K)/0.514444,m=num('tas')/a;set(0,fmt(m,3));set(1,`${fmt(a,1)} kt`);set(2,`${fmt(num('tas'),1)} kt`)},
+tasApprox(){let c=num('cas'),a=num('alt'),t=c*(1+.02*(a/1000));set(0,`${fmt(t,1)} kt`);set(1,`+${fmt(t-c,1)} kt`);set(2,`${fmt(c,1)} kt`)},
+climbGradient(){let g=num('gradient'),gs=num('gs'),f=g*gs/60;set(0,`${fmt(f,0)} fpm`);set(1,`${fmt(g/60.76115,2)}%`);set(2,`${fmt(gs/60,2)} NM/min`)},
+fpmGradient(){let f=num('fpm'),gs=num('gs'),g=f/(gs/60),ang=Math.atan(g/6076.11549)*180/Math.PI;set(0,`${fmt(g,0)} ft/NM`);set(1,`${fmt(g/60.76115,2)}%`);set(2,`${fmt(ang,2)}°`)},
+gradientAngle(){let a=num('angle')*Math.PI/180,g=6076.11549*Math.tan(a),g2=num('gradient'),a2=Math.atan(g2/6076.11549)*180/Math.PI;set(0,`${fmt(g,0)} ft/NM`);set(1,`${fmt(a2,2)}°`);set(2,`${fmt(g2/60.76115,2)}%`)},
+glide(){let ft=num('alt')*num('ratio'),nm=ft/6076.11549;set(0,`${fmt(nm,1)} NM`);set(1,`${fmt(ft,0)} ft`);set(2,`${fmt(nm*1.150779,1)} mi`)},
+vaWeight(){let va=num('va'),mw=num('maxWeight'),w=num('weight'),r=w/mw,o=va*Math.sqrt(r);set(0,`${fmt(o,1)} kt`);set(1,`${fmt(r*100,1)}%`);set(2,`${fmt(o-va,1)} kt`)},
+stallBank(){let vs=num('vs'),b=num('bank')*Math.PI/180,lf=1/Math.cos(b),o=vs*Math.sqrt(lf);set(0,`${fmt(o,1)} kt`);set(1,`${fmt(lf,2)} G`);set(2,`+${fmt(((o/vs)-1)*100,1)}%`)},
+hydro(){let p=num('psi'),v=9*Math.sqrt(p);set(0,`${fmt(v,1)} kt`);set(1,`${fmt(p,1)} psi`);set(2,'Initial dynamic hydroplaning estimate')},
+wingLoading(){let w=num('weight'),a=num('area'),x=w/a;set(0,`${fmt(x,2)} lb/ft²`);set(1,`${fmt(w,0)} lb`);set(2,`${fmt(a,1)} ft²`)},
+powerLoading(){let w=num('weight'),hp=num('hp');set(0,`${fmt(w/hp,2)} lb/hp`);set(1,`${fmt(hp/(w/1000),1)} hp/1000 lb`);set(2,`${fmt(hp,0)} hp`)},
+obstacleGradient(){let h=num('obstacle')+num('margin'),d=num('distance'),g=h/d,a=Math.atan(g/6076.11549)*180/Math.PI;set(0,`${fmt(g,0)} ft/NM`);set(1,`${fmt(g/60.76115,2)}%`);set(2,`${fmt(a,2)}°`)},
+pivotal(){let gs=num('gs'),h=gs*gs/11.3;set(0,`${fmt(h,0)} ft AGL`);set(1,`${fmt(gs,0)} kt`);set(2,'GS² ÷ 11.3')},
+stdRate(){let t=num('tas'),omega=3*Math.PI/180,v=t*0.514444,b=Math.atan(omega*v/9.80665)*180/Math.PI,rule=t*.15;set(0,`${fmt(b,1)}°`);set(1,`${fmt(rule,1)}°`);set(2,'3°/sec')},
+loadFactor(){let b=num('bank')*Math.PI/180,lf=1/Math.cos(b);set(0,`${fmt(lf,2)} G`);set(1,`${fmt(Math.sqrt(lf),2)}×`);set(2,`${fmt((lf-1)*100,0)}% above 1G`)},
+turnRadius(){let v=num('tas'),b=num('bank')*Math.PI/180,r=v*v/(11.26*Math.tan(b)),rate=1091*Math.tan(b)/v;set(0,`${fmt(r/6076.11549,2)} NM`);set(1,`${fmt(2*r/6076.11549,2)} NM`);set(2,`${fmt(rate,2)}°/sec`)},
+rateTurn(){let v=num('tas'),b=num('bank')*Math.PI/180,rate=1091*Math.tan(b)/v,r=v*v/(11.26*Math.tan(b));set(0,`${fmt(rate,2)}°/sec`);set(1,`${fmt(360/rate,0)} sec`);set(2,`${fmt(r/6076.11549,2)} NM`)},
+reciprocal(){let h=norm(num('heading')),r=norm(h+180),out=x=>String(Math.round(x)||360).padStart(3,'0');set(0,`${out(r)}°`);set(1,`${out(h)}°`);set(2,'180°')},
+trueMag(){let d=norm(num('direction')),v=num('variation'),m=norm(d-v),t=norm(d+v),vtxt=`${Math.abs(v).toFixed(1)}° ${v>=0?'E':'W'}`;set(0,`${fmt(m,1)}°`);set(1,`${fmt(t,1)}°`);set(2,vtxt)},
+arcDistance(){let r=num('radius'),d=num('degrees'),arc=2*Math.PI*r*(d/360);set(0,`${fmt(arc,2)} NM`);set(1,`${fmt(2*Math.PI*r,2)} NM`);set(2,`${fmt(d/360*100,1)}%`)},
+greatCircle(){let la1=num('lat1')*Math.PI/180,lo1=num('lon1')*Math.PI/180,la2=num('lat2')*Math.PI/180,lo2=num('lon2')*Math.PI/180,dla=la2-la1,dlo=lo2-lo1,h=Math.sin(dla/2)**2+Math.cos(la1)*Math.cos(la2)*Math.sin(dlo/2)**2,c=2*Math.atan2(Math.sqrt(h),Math.sqrt(Math.max(0,1-h))),nm=3440.065*c,y=Math.sin(dlo)*Math.cos(la2),x=Math.cos(la1)*Math.sin(la2)-Math.sin(la1)*Math.cos(la2)*Math.cos(dlo),br=norm(Math.atan2(y,x)*180/Math.PI);set(0,`${fmt(nm,1)} NM`);set(1,`${fmt(br,1)}°`);set(2,`${fmt(nm*1.150779,1)} mi`)},
+dms(){let d=Math.abs(num('deg')),m=Math.abs(num('min')),s=Math.abs(num('sec')),sg=num('sign')<0?-1:1,dec=sg*(d+m/60+s/3600);set(0,`${fmt(dec,6)}°`);set(1,`${fmt(Math.abs(dec),6)}°`);set(2,`${d}° ${m}' ${fmt(s,2)}\"`)},
+nmMinute(){let g=num('gs'),n=g/60;set(0,`${fmt(n,2)} NM/min`);set(1,`${fmt(3600/g,1)} sec/NM`);set(2,`${fmt(n*6076.11549,0)} ft/min`)},
+momentCg(){let w=num('weight'),a=num('arm'),tm=num('totalMoment'),tw=num('totalWeight');set(0,`${fmt(w*a,0)} lb-in`);set(1,`${fmt(tm/tw,2)} in`);set(2,fmt(w*a/1000,2))},
+percentMac(){let cg=num('cg'),l=num('lemac'),m=num('mac'),aft=cg-l;set(0,`${fmt(aft/m*100,1)}% MAC`);set(1,`${fmt(aft,2)} in`);set(2,`${fmt(m,2)} in`)},
+ballast(){let w=num('weight'),cg=num('cg'),t=num('target'),arm=num('ballastArm'),b=w*(t-cg)/(arm-t),nw=w+b;set(0,`${b>=0?'+':''}${fmt(b,1)} lb`);set(1,`${fmt(nw,1)} lb`);set(2,b>=0?'Add weight at entered arm':'Remove weight at entered arm / add weight opposite')},
+fuelWeight(){let g=num('gallons'),p=num('ppg'),lb=g*p;set(0,`${fmt(lb,1)} lb`);set(1,`${fmt(lb*.45359237,1)} kg`);set(2,`${fmt(g*3.785411784,1)} L`)},
+speedConv(){let k=num('knots');set(0,`${fmt(k*1.150779,2)} mph`);set(1,`${fmt(k*1.852,2)} km/h`);set(2,`${fmt(k*.514444,2)} m/s`)},
+distanceConv(){let n=num('nm');set(0,`${fmt(n*1.150779,2)} mi`);set(1,`${fmt(n*1.852,2)} km`);set(2,`${fmt(n*6076.11549,0)} ft`)},
+tempConv(){let c=num('c');set(0,`${fmt(c*9/5+32,1)} °F`);set(1,`${fmt(c+273.15,2)} K`);set(2,`${fmt(c,1)} °C`)},
+weightConv(){let l=num('lb');set(0,`${fmt(l*.45359237,2)} kg`);set(1,`${fmt(l*16,1)} oz`);set(2,`${fmt(l,1)} lb`)},
+volumeConv(){let g=num('gal');set(0,`${fmt(g*3.785411784,2)} L`);set(1,`${fmt(g*4,2)} qt`);set(2,`${fmt(g*.832674,2)} imp gal`)},
+pressureConv(){let i=num('inhg'),h=i*33.8638866667;set(0,`${fmt(h,1)} hPa`);set(1,`${fmt(h/10,2)} kPa`);set(2,`${fmt(i,2)} inHg`)},
+verticalConv(){let f=num('fpm');set(0,`${fmt(f/60,2)} ft/s`);set(1,`${fmt(f*.00508,2)} m/s`);set(2,`${fmt(f,0)} fpm`)},
+};
+function resultText(){const title=document.querySelector('h1')?.textContent?.trim()||'PilotDesk result';const rows=[...document.querySelectorAll('.result')].map(r=>`${r.querySelector('small')?.textContent?.trim()}: ${r.querySelector('strong')?.textContent?.trim()}`).filter(x=>!x.endsWith(': —'));return `${title}\n${rows.join('\n')}\nPilotDesk — verify with approved sources before flight.`}
+async function copyResults(){const text=resultText();try{await navigator.clipboard.writeText(text);toast('Results copied')}catch{toast('Copy failed')}}
+async function shareResults(){const data={title:document.title,text:resultText(),url:location.href};try{if(navigator.share)await navigator.share(data);else await copyResults()}catch(e){if(e?.name!=='AbortError')toast('Share failed')}}
+function toast(msg){let t=document.getElementById('pdToast');if(!t){t=document.createElement('div');t.id='pdToast';t.className='toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');clearTimeout(window.__pdToast);window.__pdToast=setTimeout(()=>t.classList.remove('show'),1800)}
+function setupCalcActions(){if(!document.body.dataset.calc)return;const box=document.querySelector('.calc-box');if(!box||document.querySelector('.calc-actions'))return;const d=document.createElement('div');d.className='calc-actions';d.innerHTML='<button type="button" data-copy>Copy results</button><button type="button" data-share>Share</button>';box.appendChild(d);d.querySelector('[data-copy]').addEventListener('click',copyResults);d.querySelector('[data-share]').addEventListener('click',shareResults)}
+function recordRecent(){const path=location.pathname;if(!path.startsWith('/calculators/'))return;const title=document.querySelector('h1')?.textContent?.trim();if(!title)return;let a=[];try{a=JSON.parse(localStorage.getItem('pd-recent')||'[]')}catch{};a=[{title,path},...a.filter(x=>x.path!==path)].slice(0,6);localStorage.setItem('pd-recent',JSON.stringify(a))}
+function renderRecent(){const el=document.getElementById('recentTools');if(!el)return;let a=[];try{a=JSON.parse(localStorage.getItem('pd-recent')||'[]')}catch{};if(!a.length){el.closest('.recent-section')?.classList.add('hidden');return}el.innerHTML=a.map(x=>`<a class="recent-chip" href="${x.path}">${x.title}</a>`).join('')}
+function registerSW(){if('serviceWorker' in navigator && location.protocol==='https:')navigator.serviceWorker.register('/sw.js').catch(()=>{})}
+document.addEventListener('DOMContentLoaded',()=>{$$('[data-calc-input]').forEach(e=>{e.setAttribute('inputmode','decimal');e.addEventListener('input',calculate)});$('[data-calculate]')?.addEventListener('click',calculate);calculate();setupCalcActions();recordRecent();renderRecent();const q=$('#toolSearch');if(q)q.addEventListener('input',()=>{let s=q.value.toLowerCase().trim(),visible=0;$$('.tool-card').forEach(c=>{let hide=s&&!c.innerText.toLowerCase().includes(s);c.classList.toggle('hidden',hide);if(!hide)visible++});const n=$('#searchCount');if(n)n.textContent=s?`${visible} tool${visible===1?'':'s'} found`:''});registerSW()});

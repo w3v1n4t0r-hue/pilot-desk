@@ -1,1 +1,0 @@
-PilotDesk deployment staging initialized by ChatGPT. Full static site source remains in the provided launch bundle.

@@ -7,7 +7,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.querySelectorAll('.ad-slot').forEach(box=>{
       const key=box.dataset.adSlot;
       const slot=c.slots?.[key];
-      if(!slot){box.closest('.ad-wrap')?.remove();return;}
+      if(!slot){
+        box.closest('.ad-wrap')?.remove();
+        return;
+      }
       const ins=document.createElement('ins');
       ins.className='adsbygoogle';
       ins.style.display='block';
@@ -22,9 +25,16 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   const src=`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(pub)}`;
   let script=[...document.scripts].find(s=>s.src===src);
+
+  const afterLoad=()=>{
+    renderSlots();
+    // Auto Ads use the publisher script plus the Auto Ads setting in AdSense.
+    // No manual slot IDs are required for Auto Ads placement.
+  };
+
   if(script){
-    if(window.adsbygoogle) renderSlots();
-    else script.addEventListener('load',renderSlots,{once:true});
+    if(window.adsbygoogle) afterLoad();
+    else script.addEventListener('load',afterLoad,{once:true});
     return;
   }
 
@@ -32,6 +42,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   script.async=true;
   script.crossOrigin='anonymous';
   script.src=src;
-  script.addEventListener('load',renderSlots,{once:true});
+  script.addEventListener('load',afterLoad,{once:true});
   document.head.appendChild(script);
 });

@@ -35,13 +35,22 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(script){
     if(window.adsbygoogle) afterLoad();
     else script.addEventListener('load',afterLoad,{once:true});
-    return;
+  }else{
+    script=document.createElement('script');
+    script.async=true;
+    script.crossOrigin='anonymous';
+    script.src=src;
+    script.addEventListener('load',afterLoad,{once:true});
+    document.head.appendChild(script);
   }
-
-  script=document.createElement('script');
-  script.async=true;
-  script.crossOrigin='anonymous';
-  script.src=src;
-  script.addEventListener('load',afterLoad,{once:true});
-  document.head.appendChild(script);
 });
+
+// PilotDesk product features are kept separate from calculator math and ad code.
+(()=>{
+  if(document.querySelector('script[data-pd-features]'))return;
+  const s=document.createElement('script');
+  s.src='/assets/features.js';
+  s.defer=true;
+  s.dataset.pdFeatures='1';
+  document.head.appendChild(s);
+})();

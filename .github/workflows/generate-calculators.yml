@@ -15,6 +15,8 @@ jobs:
         run: node scripts/generate-calculator-pages.mjs
       - name: Apply static branding and aviation FAQ content
         run: node scripts/postprocess-site.mjs
+      - name: Generate canonical sitemap
+        run: node scripts/generate-sitemap.mjs
       - name: Commit generated and postprocessed pages
         run: |
           git config user.name "PilotDesk Automation"

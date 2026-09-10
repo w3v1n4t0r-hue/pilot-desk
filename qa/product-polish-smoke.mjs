@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+const failures=[];const ok=(c,m)=>{if(!c)failures.push(m)};const read=p=>fs.readFileSync(p,'utf8');
+for(const p of ['assets/pilotdesk-plus.js','scripts/postprocess-site.mjs','scripts/postprocess-brand-final.mjs','scripts/postprocess-extras.mjs','history.html','changelog.html'])ok(fs.existsSync(p),`Missing ${p}`);
+const plus=read('assets/pilotdesk-plus.js');ok(plus.includes('pd-scenarios:'),'Saved scenarios missing');ok(plus.includes('pd-calculation-history'),'Calculation history integration missing');ok(plus.includes('Ctrl')||plus.includes('ctrlKey'),'Command palette keyboard shortcut missing');ok(plus.includes('Saved scenarios are not approved flight records'),'Scenario safety language missing');
+const brand=read('scripts/postprocess-site.mjs');ok(brand.includes('PilotDesk airplane logo'),'Static airplane brand replacement missing');ok(brand.includes('data-pd-faq'),'Calculator FAQ generation missing');ok(brand.includes('PilotDesk is not FAA approved'),'FAA-approval disclaimer missing');
+const finalBrand=read('scripts/postprocess-brand-final.mjs');ok(finalBrand.includes('data-pd-wireframe'),'First-paint brand lock missing');
+const extras=read('scripts/postprocess-extras.mjs');ok(extras.includes('pdFavoritesStable'),'Stable favorites panel missing');ok(extras.includes('pdHistoryStable'),'Stable history panel missing');ok(extras.includes('pd404Search'),'404 search recovery missing');ok(extras.includes('changelog.html'),'Changelog sitemap addition missing');
+const manifest=JSON.parse(read('site.webmanifest'));ok(Array.isArray(manifest.shortcuts)&&manifest.shortcuts.length===4,'Expected four PWA shortcuts');
+const sw=read('sw.js');ok(sw.includes("pilotdesk-v12"),'Service worker cache version not updated');ok(sw.includes('/assets/pilotdesk-plus.js'),'New product layer missing from offline cache');ok(sw.includes("startsWith('/api/')"),'API requests must stay out of static cache');
+const ads=read('assets/ads.js');ok(ads.includes('/assets/pilotdesk-plus.js'),'Product layer is not loaded');
+const history=read('history.html');ok(history.includes('noindex,follow'),'Local history must remain noindex');ok(history.includes('not a flight record'),'History safety language missing');
+const changelog=read('changelog.html');ok(changelog.includes('not FAA approved'),'Changelog safety language missing');
+if(failures.length){console.error(`Product polish smoke failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}console.log('PilotDesk product polish smoke passed.');

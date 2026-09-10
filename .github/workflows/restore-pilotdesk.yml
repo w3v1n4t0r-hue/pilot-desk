@@ -1,0 +1,27 @@
+name: Restore PilotDesk complete build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.pilotdesk/site-bundle.b64'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore complete site
+        run: |
+          base64 -d .pilotdesk/site-bundle.b64 | tar -xzf -
+          rm -rf .pilotdesk
+          rm -f .github/workflows/restore-pilotdesk.yml
+          git config user.name "PilotDesk Automation"
+          git config user.email "w3v1n4t0r@gmail.com"
+          git add -A
+          git commit -m "Restore complete PilotDesk build and fix weather PWA and logo" || exit 0
+          git push

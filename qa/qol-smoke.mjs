@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(p,'utf8');const failures=[];const ok=(x,m)=>{if(!x)failures.push(m)};
 for(const p of ['assets/runtime-qol.js','assets/calculator-ux.js','assets/theme.js','assets/seo.js','assets/offline-weather.js','sw.js','vercel.json','api/weather.js'])ok(fs.existsSync(p),`Missing ${p}`);
+for(const p of ['flight-training.html','index.html','sitemap.xml'])ok(fs.existsSync(p),`Missing ${p}`);
 const ux=read('assets/calculator-ux.js');for(const s of ['Copy result','Copy link','Reset','Print','Report result','history.replaceState','localStorage'])ok(ux.includes(s),`Calculator UX missing ${s}`);
+const home=read('index.html'),training=read('flight-training.html'),sitemap=read('sitemap.xml');ok(home.includes('HTTPS connection'),'Homepage HTTPS trust cue missing');ok(home.includes('/flight-training.html'),'Homepage flight-training link missing');ok(training.includes('For instructors and clubs'),'Flight-training instructor section missing');ok(training.includes('/checklist-trainer.html'),'Flight-training checklist link missing');ok(sitemap.includes('/flight-training.html'),'Flight-training page missing from sitemap');
 const theme=read('assets/theme.js');for(const s of ['system','light','dark','night-red','prefers-reduced-motion'])ok(theme.includes(s),`Theme missing ${s}`);
 const seo=read('assets/seo.js');for(const s of ['application/ld+json','BreadcrumbList','twitter:card','WebApplication'])ok(seo.includes(s),`SEO missing ${s}`);
 const ads=read('assets/ads.js');ok(ads.includes('runtime-qol.js'),'QoL runtime is not globally loaded');ok(ads.includes('wrap.hidden=true'),'Blank ad placeholders are not suppressed early');

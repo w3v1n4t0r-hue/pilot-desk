@@ -1,0 +1,17 @@
+# PilotDesk
+
+PilotDesk provides free browser-based aviation calculators, pilot math references, airport weather tools, flight-planning tools, aircraft profiles, and training aids.
+
+## Primary pages
+- https://www.pilot-desk.com/ — aviation calculators
+- https://www.pilot-desk.com/planner.html — pilot flight planner
+- https://www.pilot-desk.com/weather.html — aviation weather, METAR and TAF
+- https://www.pilot-desk.com/metar-decoder.html — METAR decoder
+- https://www.pilot-desk.com/airport.html — airport search and FAA procedure links
+- https://www.pilot-desk.com/guides.html — aviation guides
+- https://www.pilot-desk.com/guides/pilot-math-formulas.html — pilot math formula reference
+- https://www.pilot-desk.com/guides/aviation-math-glossary.html — aviation math glossary
+- https://www.pilot-desk.com/sources.html — sources and methods
+
+## Notes
+PilotDesk is a supplemental planning and training aid. Operational decisions should be verified against current approved aircraft data, official weather, regulations, procedures, NOTAMs, and other applicable authoritative sources.

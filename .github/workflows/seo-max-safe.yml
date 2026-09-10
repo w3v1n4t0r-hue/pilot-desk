@@ -60,7 +60,7 @@ jobs:
         run: |
           git config user.name "PilotDesk Automation"
           git config user.email "w3v1n4t0r@gmail.com"
-          git add assets/seo.js scripts/generate-calculator-pages.mjs scripts/generate-sitemap.mjs qa/seo-hardening.mjs .github/workflows/qa.yml .github/workflows/generate-calculators.yml calculators guides guides.html poh-chart-studio.html sitemap.xml llms.txt
+          git add assets/seo.js scripts/generate-calculator-pages.mjs scripts/generate-sitemap.mjs qa/seo-hardening.mjs calculators guides guides.html poh-chart-studio.html sitemap.xml llms.txt
           if git diff --cached --quiet; then
             echo "SEO hardening files already current."
           else

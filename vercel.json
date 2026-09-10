@@ -1,6 +1,12 @@
 {
   "cleanUrls": false,
   "trailingSlash": true,
+  "git": {
+    "deploymentEnabled": {
+      "*": false,
+      "main": true
+    }
+  },
   "rewrites": [
     {"source":"/calculators/weight-balance-builder","destination":"/weight-balance.html"},
     {"source":"/calculators/weight-balance-builder/","destination":"/weight-balance.html"},

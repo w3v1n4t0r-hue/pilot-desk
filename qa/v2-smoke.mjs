@@ -17,7 +17,7 @@ assert(cfg.includes('autoAds:true'),'AdSense Auto Ads support missing');
 assert(!ads.includes("load('/assets/brand.js'"),'Runtime brand swap should not be loaded');
 assert(ads.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'),'AdSense loader support missing');
 assert(ads.includes("if(!slot&&wrap)wrap.hidden=true"),'Empty manual ad placeholders should be hidden');
-assert(sw.includes("CACHE='pilotdesk-v13'"),'Service worker cache version not updated');
+const swVersion=Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0);assert(swVersion>=13,'Service worker cache version not updated');
 assert(sw.includes("url.pathname.startsWith('/api/')"),'Service worker must bypass live APIs');
 assert(src.includes('FAA-H-8083-25C')&&src.includes('FAA-H-8083-28B'),'Current FAA handbook references missing');
 assert(src.includes('6.01')&&src.includes('6.68'),'Fuel standard-weight reference values missing');

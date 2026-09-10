@@ -14,5 +14,11 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {"name":"Crosswind Component","short_name":"Crosswind","url":"/calculators/crosswind/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Density Altitude","short_name":"Density Alt","url":"/calculators/density-altitude/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Airport Weather","short_name":"Weather","url":"/weather.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Weight & Balance","short_name":"W&B","url":"/calculators/weight-balance-builder/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }

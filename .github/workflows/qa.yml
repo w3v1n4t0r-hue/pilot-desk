@@ -34,3 +34,5 @@ jobs:
         run: node qa/site-integrity.mjs
       - name: Check public copy tone
         run: node qa/copy-tone.mjs
+      - name: Check Google audit regressions
+        run: node qa/google-audit.mjs

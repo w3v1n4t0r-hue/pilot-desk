@@ -2,9 +2,12 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const nodes=new Map();
+const head={appendChild(){}};
 const document={
   addEventListener(){},querySelector(){return null},querySelectorAll(){return []},
-  getElementById(id){return nodes.get(id)||null},body:{dataset:{}},
+  getElementById(id){return nodes.get(id)||null},
+  createElement(tag){return{tagName:String(tag).toUpperCase(),rel:'',href:'',src:'',defer:false,classList:{add(){},remove(){},toggle(){}}}},
+  head,body:{dataset:{}},
 };
 const context={document,window:{},navigator:{},location:{protocol:'http:',pathname:'/'},localStorage:{getItem(){return null},setItem(){}},console,setTimeout,clearTimeout};
 vm.createContext(context);

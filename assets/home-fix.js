@@ -1,18 +1,10 @@
 (()=>{
   function apply(){
     if(location.pathname!=='/'&&location.pathname!=='/index.html')return;
-    const sections=[...document.querySelectorAll('.category')];
-    const wb=sections.find(s=>s.querySelector('h2')?.textContent.trim()==='Weight & Balance');
-    if(!wb)return;
-    const grid=wb.querySelector('.grid');
-    if(!grid||grid.querySelector('a[href="/calculators/weight-balance-builder/"]'))return;
-    const a=document.createElement('a');
-    a.className='tool-card';
-    a.href='/calculators/weight-balance-builder/';
-    a.innerHTML='<b>Weight & Balance Builder</b><p>Build a loading table and calculate total weight, moment and CG.</p>';
-    grid.prepend(a);
-    const count=wb.querySelector('.category-head span');
-    if(count)count.textContent='5 tools';
+    const sections=[...document.querySelectorAll('.category')];const wb=sections.find(s=>s.querySelector('h2')?.textContent.trim()==='Weight & Balance');
+    if(wb){const grid=wb.querySelector('.grid');if(grid&&!grid.querySelector('a[href="/calculators/weight-balance-builder/"]')){const a=document.createElement('a');a.className='tool-card';a.href='/calculators/weight-balance-builder/';a.innerHTML='<b>Weight & Balance Builder</b><p>Build a loading table and calculate total weight, moment and CG.</p>';grid.prepend(a);const count=wb.querySelector('.category-head span');if(count)count.textContent='5 tools'}}
+    const main=document.querySelector('main.shell');if(main&&!document.getElementById('pdGuidesHome')){const s=document.createElement('section');s.id='pdGuidesHome';s.className='category';s.innerHTML='<div class="category-head"><h2>Pilot Math Guides</h2><span>Learn the why</span></div><div class="grid"><a class="tool-card" href="/guides/crosswind-component.html"><b>Crosswind Component</b><p>Understand the wind-component math and gusts.</p></a><a class="tool-card" href="/guides/density-altitude.html"><b>Density Altitude</b><p>Why hot, high and low-pressure conditions matter.</p></a><a class="tool-card" href="/guides/weight-and-balance.html"><b>Weight & Balance</b><p>Weight, arm, moment and CG in plain English.</p></a></div><p style="margin-top:14px"><a class="recent-chip" href="/guides.html">See all PilotDesk guides →</a></p>';const footerAd=[...main.querySelectorAll('.ad-wrap')].pop();if(footerAd)main.insertBefore(s,footerAd);else main.appendChild(s)}
+    const nav=document.querySelector('.topbar nav');if(nav&&!nav.querySelector('a[href="/guides.html"]')){const a=document.createElement('a');a.href='/guides.html';a.textContent='Guides';nav.appendChild(a)}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
 })();

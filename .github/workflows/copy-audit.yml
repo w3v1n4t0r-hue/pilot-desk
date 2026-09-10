@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Apply plain-language copy pass
+        run: node scripts/clean-copy.mjs
       - name: Regenerate calculator pages
         run: |
           node scripts/generate-calculator-pages.mjs
@@ -31,14 +33,14 @@ jobs:
           node qa/formula-tests.mjs
           node qa/site-integrity.mjs
           node qa/copy-tone.mjs
-      - name: Commit regenerated calculator pages
+      - name: Commit cleanup
         run: |
           git config user.name "PilotDesk Automation"
           git config user.email "w3v1n4t0r@gmail.com"
-          git add calculators
+          git add -A
           if git diff --cached --quiet; then
-            echo "Calculator pages already current."
+            echo "Cleanup already current."
           else
-            git commit -m "Refresh calculator copy"
+            git commit -m "Clean up public copy and QA"
             git push
           fi

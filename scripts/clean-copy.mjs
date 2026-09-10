@@ -104,7 +104,7 @@ swaps('about.html',[
 ]);
 
 swaps('index.html',[
-  ['48 aviation calculators in one place.','48 aviation calculators.'],
+  ['aviation calculators in one place.','aviation calculators.'],
   ['<span>Learn the why</span>','<span>How the math works</span>']
 ]);
 
@@ -130,7 +130,6 @@ edit('site.webmanifest',s=>{
   const shortcuts=[
     ['Airport Search','Airports','Search airports, weather, runways, nearby stations, and FAA procedures.','/airport.html'],
     ['Route Planner','Planner','Open the FAA chart route planner and navlog.','/route-planner.html'],
-    ['Saved Flights','Flights','Open flights saved in this browser.','/flights.html'],
     ['Airport Weather','Weather','Open current METAR and TAF reports.','/weather.html'],
     ['Weight & Balance','W&B','Open the Weight & Balance Builder.','/calculators/weight-balance-builder/']
   ];
@@ -141,15 +140,6 @@ edit('site.webmanifest',s=>{
 edit('sw.js',s=>{
   if(!/CACHE='pilotdesk-v\d+'/.test(s))throw new Error('Service worker cache marker missing');
   return s.replace(/CACHE='pilotdesk-v\d+'/,"CACHE='pilotdesk-v20'");
-});
-
-edit('qa/planner-lab-tests.mjs',s=>{
-  const oldWeather=`const wx=fs.readFileSync('api/weather.js','utf8'),wxClient=fs.readFileSync('assets/weather-fixed.js','utf8');if(!wx.includes("query('stationinfo'")||!wx.includes('retries=1')||!wx.includes("Cache-Control','no-store"))throw new Error('Weather resilience missing');if(!wxClient.includes("cache:'no-store'")||!wxClient.includes('Weather could not be loaded'))throw new Error('Weather client failure state missing');`;
-  const newWeather=`const wx=fs.readFileSync('api/weather.js','utf8'),wxClient=fs.readFileSync('assets/weather-fixed.js','utf8');for(const s of ["const NOAA=",'Promise.all','fetchJson(','fetchText(','stale-while-revalidate=300'])if(!wx.includes(s))throw new Error(\`Weather resilience missing ${s}\`);if(!wxClient.includes("cache:'no-store'")||!wxClient.includes('Weather could not be loaded')||!wxClient.includes('Retry'))throw new Error('Weather client failure state missing');`;
-  s=swap(s,oldWeather,newWeather,'qa/planner-lab-tests.mjs');
-  s=swap(s,"if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not silently used as an enroute wind forecast'))throw new Error('Route source/wind boundary missing');","if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');",'qa/planner-lab-tests.mjs');
-  s=s.replace("const sw=fs.readFileSync('sw.js','utf8');if(!sw.includes(\"CACHE='pilotdesk-v17'\"))throw new Error('Service worker version not advanced');","const sw=fs.readFileSync('sw.js','utf8');const swVersion=Number(sw.match(/CACHE='pilotdesk-v(\\d+)'/)?.[1]||0);if(swVersion<20)throw new Error('Service worker version not advanced');");
-  return s;
 });
 
 edit('.github/workflows/workspace-live.yml',s=>s

@@ -26,14 +26,14 @@
 <header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true" data-pd-wireframe="1" style="background:transparent;box-shadow:none;border:1px solid #34383f;color:#d9dde2;width:38px;height:38px;border-radius:8px;padding:3px"><svg viewBox="0 0 64 40"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M32 5v9"/><path d="M32 14c-4.8 0-8 3.8-8 8.5S27.2 31 32 31s8-3.8 8-8.5S36.8 14 32 14Z"/><path d="M25 19 8 15l2 5 14 3"/><path d="m39 23 15-3 2-5-17 4"/></g></svg></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/">Calculators</a><a href="/airport.html">Airports</a><a href="/weather.html">Weather</a><a href="/metar-decoder.html" aria-current="page">METAR Decoder</a><a href="/guides.html">Guides</a></nav></header>
 <main class="shell content-page" id="main-content">
   <section class="pd-flight-hero"><span class="badge">AVIATION WEATHER TOOL</span><h1>METAR Decoder</h1><p>Paste a METAR and PilotDesk will explain each coded group. Or enter a station identifier and load the current report first.</p></section>
-  <div class="safety-strip"><strong>Learning and convenience tool.</strong> METAR coding includes exceptions and supplemental groups. Keep the original report visible and use current official weather references for operational decisions.</div>
+  <div class="safety-strip"><strong>Training aid only.</strong> METAR coding includes exceptions and supplemental groups. Keep the original report visible and use current official weather references for operational decisions.</div>
   <section class="pd-panel">
     <div class="pd-search-shell"><div class="pd-field"><label for="metarStation">Load current station METAR</label><input id="metarStation" maxlength="4" placeholder="KMCO" autocapitalize="characters"></div><button class="pd-btn" id="metarLoad" type="button">Load live METAR</button></div>
     <p id="metarStatus" class="notice" role="status" aria-live="polite">You can also paste any METAR below.</p>
     <div class="pd-field"><label for="metarRaw">METAR report</label><textarea id="metarRaw" rows="4">METAR KGFK 101553Z 19010KT 10SM BKN200 22/12 A2989 RMK AO2</textarea></div>
     <div class="pd-actions"><button class="pd-btn" id="metarDecode" type="button">Decode METAR</button><a class="pd-btn secondary" href="/weather.html">Open live weather</a></div>
   </section>
-  <section class="pd-panel"><div class="pd-card-head"><div><h2>Group-by-group explanation</h2><p>The original token stays beside its explanation so you can learn the coded format.</p></div></div><div id="metarTokens" class="pd-token-list"></div></section>
+  <section class="pd-panel"><div class="pd-card-head"><div><h2>Group-by-group explanation</h2><p>Each code stays next to its plain-language meaning.</p></div></div><div id="metarTokens" class="pd-token-list"></div></section>
   <div class="ad-wrap"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="content"><span>Ad space</span></div></div>
   <article class="info-card pd-seo-copy">
     <h2>How to read a METAR</h2>
@@ -42,7 +42,7 @@
     <h2>Visibility and ceilings</h2><p>U.S. METAR visibility is commonly reported in statute miles. Cloud groups use cover abbreviations such as FEW, SCT, BKN, and OVC followed by a height in hundreds of feet AGL. Broken, overcast, and vertical-visibility layers can establish a reported ceiling.</p>
     <h2>Temperature, dew point, and altimeter</h2><p>A group such as <span class="pd-code-token">22/12</span> reports temperature 22°C and dew point 12°C. A leading <span class="pd-code-token">M</span> means below zero. A U.S. altimeter group such as <span class="pd-code-token">A2989</span> means 29.89 inHg.</p>
     <h2>Weather abbreviations</h2><p>Common groups include RA for rain, SN for snow, BR for mist, FG for fog, TS for thunderstorm, SH for showers, and FZ for freezing. A leading plus or minus indicates heavy or light intensity for applicable phenomena.</p>
-    <h2>Use the coded report, not just the decoder</h2><p>PilotDesk intentionally keeps the original METAR beside the explanation. For flight planning, confirm the current report time, review the full weather picture and forecasts, and use official briefing sources as required.</p>
+    <h2>Use the coded report, not just the decoder</h2><p>The original METAR stays visible beside the explanation. For flight planning, confirm the current report time, review the full weather picture and forecasts, and use official briefing sources as required.</p>
     <div class="source-links"><a href="https://aviationweather.gov/data/api/" target="_blank" rel="noopener">Aviation Weather Center ↗</a><a href="/guides/metar-taf.html">METAR & TAF guide</a><a href="/airport.html">Airport Search</a><a href="/legal/safety.html">Safety notes</a></div>
   </article>
 </main>

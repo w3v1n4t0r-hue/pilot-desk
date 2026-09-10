@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url),nav=require('../assets/navlog-core.js');
+const near=(a,b,t,m)=>{if(!Number.isFinite(a)||Math.abs(a-b)>t)throw new Error(`${m}: ${a} vs ${b}`)};
+let g=nav.distanceCourse({lat:47.95,lon:-97.18},{lat:47.95,lon:-97.18});near(g.distance,0,.001,'zero distance');
+let w=nav.windTriangle(180,120,270,20);if(!w||!(w.gs>0))throw new Error('wind triangle failed');
+let n=nav.build([{id:'A',lat:47,lon:-97},{id:'B',lat:48,lon:-97}],{tas:120,burn:10,windFrom:270,windSpeed:0,variation:0});near(n.totalDistance,60.04,.2,'one degree latitude');near(n.totalHours,n.totalDistance/120,.001,'ETE');near(n.totalFuel,n.totalHours*10,.001,'fuel');
+const required=['planner.html','route-planner.html','poh-chart-studio.html','checklist-trainer.html','assets/navlog-core.js','assets/route-planner.js','assets/poh-chart-studio.js','assets/checklist-trainer.js','api/navdata.js'];for(const p of required)if(!fs.existsSync(p))throw new Error(`Missing ${p}`);
+const ct=fs.readFileSync('assets/checklist-trainer.js','utf8');if(!ct.includes('speechSynthesis')||!ct.includes("state.mode==='flow'"))throw new Error('Checklist voice/flow behavior missing');
+const pcs=fs.readFileSync('assets/poh-chart-studio.js','utf8');if(!pcs.includes('deterministic interpolation')||!pcs.includes('xCal')||!pcs.includes('yCal'))throw new Error('POH chart deterministic calibration missing');
+const rp=fs.readFileSync('route-planner.html','utf8');if(!rp.includes('Surface METAR wind')||!rp.includes('not silently used as an enroute wind forecast'))throw new Error('METAR/enroute wind distinction missing');
+const sw=fs.readFileSync('sw.js','utf8');for(const x of ['/planner.html','/route-planner.html','/poh-chart-studio.html','/checklist-trainer.html','/assets/navlog-core.js'])if(!sw.includes(x))throw new Error(`Offline core missing ${x}`);
+console.log('PilotDesk planner lab tests passed.');

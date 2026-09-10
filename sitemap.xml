@@ -4,6 +4,10 @@
 <url><loc>https://www.pilot-desk.com/about.html</loc></url>
 <url><loc>https://www.pilot-desk.com/weather.html</loc></url>
 <url><loc>https://www.pilot-desk.com/aircraft.html</loc></url>
+<url><loc>https://www.pilot-desk.com/planner.html</loc></url>
+<url><loc>https://www.pilot-desk.com/route-planner.html</loc></url>
+<url><loc>https://www.pilot-desk.com/poh-chart-studio.html</loc></url>
+<url><loc>https://www.pilot-desk.com/checklist-trainer.html</loc></url>
 <url><loc>https://www.pilot-desk.com/guides.html</loc></url>
 <url><loc>https://www.pilot-desk.com/sources.html</loc></url>
 <url><loc>https://www.pilot-desk.com/legal/privacy.html</loc></url>
@@ -71,5 +75,5 @@
 <url><loc>https://www.pilot-desk.com/calculators/wind-triangle/</loc></url>
 <url><loc>https://www.pilot-desk.com/calculators/wing-loading/</loc></url>
 <url><loc>https://www.pilot-desk.com/calculators/weight-balance-builder/</loc></url>
-  <url><loc>https://www.pilot-desk.com/changelog.html</loc></url>
+<url><loc>https://www.pilot-desk.com/changelog.html</loc></url>
 </urlset>

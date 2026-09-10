@@ -26,5 +26,7 @@ jobs:
         run: node qa/product-polish-smoke.mjs
       - name: Run PilotDesk v2 master checks
         run: node qa/v2-smoke.mjs
+      - name: Run planner lab checks
+        run: node qa/planner-lab-tests.mjs
       - name: Run calculator formula regression tests
         run: node qa/formula-tests.mjs

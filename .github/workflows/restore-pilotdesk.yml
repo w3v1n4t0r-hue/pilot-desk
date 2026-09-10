@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.pilotdesk/site-bundle.b64'
+      - '.github/workflows/restore-pilotdesk.yml'
   workflow_dispatch:
 
 permissions:

@@ -3,57 +3,63 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Aircraft Profiles | PilotDesk</title>
-  <meta name="description" content="Save aircraft-specific planning values locally for faster PilotDesk calculations and weight-and-balance setup.">
+  <title>My Hangar & Aircraft Profiles | PilotDesk</title>
+  <meta name="description" content="Save aircraft-specific cruise, fuel, performance, weight-and-balance, home-airport, and source values locally so PilotDesk can reuse them across saved flights and planning tools.">
   <meta name="robots" content="index,follow">
   <meta name="theme-color" content="#08090b">
   <meta name="color-scheme" content="dark light">
   <link rel="canonical" href="https://www.pilot-desk.com/aircraft.html">
   <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/hub.css">
   <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
   <link rel="manifest" href="/site.webmanifest">
   <script defer src="/assets/site.js"></script>
-  <script defer src="/assets/aircraft-v2.js"></script>
+  <script defer src="/assets/product-nav.js"></script>
+  <script defer src="/assets/aircraft-v2.js?v=3.0"></script>
   <script defer src="/assets/ad-config.js"></script>
   <script defer src="/assets/ads.js"></script>
   <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2325772529624834"></script>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
-<header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true" data-pd-wireframe="1" style="background:transparent;box-shadow:none;border:1px solid #34383f;color:#d9dde2;width:38px;height:38px;border-radius:8px;padding:3px"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5v9"/><path d="M32 14c-4.8 0-8 3.8-8 8.5S27.2 31 32 31s8-3.8 8-8.5S36.8 14 32 14Z"/><path d="M25 19 8 15l2 5 14 3"/><path d="m39 23 15-3 2-5-17 4"/><path d="M28 18.5h8"/><path d="M29 18.5v3.5m6-3.5V22"/><circle cx="18" cy="30" r="3.5"/><circle cx="46" cy="30" r="3.5"/><path d="M21.5 27 25 24m21.5 3L39 24"/></g></svg></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/">Calculators</a><a href="/weather.html">Weather</a><a href="/aircraft.html">Aircraft</a><a href="/guides.html">Guides</a><a href="/about.html">About</a></nav></header>
+<header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true" data-pd-wireframe="1" style="background:transparent;box-shadow:none;border:1px solid #34383f;color:#d9dde2;width:38px;height:38px;border-radius:8px;padding:3px"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5v9"/><path d="M32 14c-4.8 0-8 3.8-8 8.5S27.2 31 32 31s8-3.8 8-8.5S36.8 14 32 14Z"/><path d="M25 19 8 15l2 5 14 3"/><path d="m39 23 15-3 2-5-17 4"/><path d="M28 18.5h8"/><path d="M29 18.5v3.5m6-3.5V22"/><circle cx="18" cy="30" r="3.5"/><circle cx="46" cy="30" r="3.5"/><path d="M21.5 27 25 24m21.5 3L39 24"/></g></svg></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/">Calculators</a><a href="/airport.html">Airports</a><a href="/planner.html">Planner</a><a href="/flights.html">Flights</a><a href="/weather.html">Weather</a><a href="/aircraft.html" aria-current="page">Hangar</a></nav></header>
 <main class="shell content-page" id="main-content">
-  <div class="badge">PERSONAL SETUP</div>
-  <h1>Aircraft Profiles</h1>
-  <p>Save aircraft-specific values you repeatedly enter. Profiles remain in this browser and can prefill compatible calculators. Keep the source/revision field current so you know where the numbers came from.</p>
-  <div class="safety-strip"><strong>Use current approved aircraft data.</strong> A saved profile is a convenience copy only. PilotDesk does not verify POH/AFM limitations, current equipment, maintenance changes, weight-and-balance revisions, or airworthiness.</div>
+  <div class="badge">PERSONAL AIRCRAFT WORKSPACE</div>
+  <h1>My Hangar</h1>
+  <p>Save the aircraft values you repeatedly use. Pick one aircraft as active and PilotDesk can carry its cruise TAS and fuel burn into saved flights and planning tools without making you type the same numbers every time.</p>
+  <div class="safety-strip"><strong>Use current approved aircraft data.</strong> A Hangar profile is a convenience copy only. PilotDesk does not verify POH/AFM limitations, current equipment, maintenance changes, weight-and-balance revisions, or airworthiness.</div>
 
   <section class="pd-panel">
-    <div class="pd-card-head"><div><h2 id="aircraftFormTitle">Add an aircraft</h2><p>Leave anything you do not use blank. No generic limit is substituted for missing aircraft data.</p></div><span class="badge" id="aircraftEditState">NEW</span></div>
+    <div class="pd-card-head"><div><h2 id="aircraftFormTitle">Add an aircraft</h2><p>Leave anything you do not use blank. Keep the source/revision note current so you know where the numbers came from.</p></div><span class="badge" id="aircraftEditState">NEW</span></div>
     <form id="aircraftForm" novalidate>
       <div class="pd-form-grid">
         <div class="pd-field"><label for="acName">Name or tail number</label><input id="acName" name="name" maxlength="80" placeholder="N123AB / PA-44" required></div>
         <div class="pd-field"><label for="acType">Aircraft type / model</label><input id="acType" name="type" maxlength="80" placeholder="PA-44-180"></div>
-        <div class="pd-field" style="grid-column:1/-1"><label for="acSource">Source / revision note</label><input id="acSource" name="sourceNote" maxlength="160" placeholder="POH Rev. __ / current W&B sheet dated __"></div>
-
+        <div class="pd-field"><label for="acHome">Home airport</label><input id="acHome" name="homeAirport" maxlength="4" autocapitalize="characters" placeholder="KGFK"></div>
+        <div class="pd-field"><label for="acCruiseTas">Typical planning cruise TAS (kt)</label><input id="acCruiseTas" name="cruiseTas" type="number" min="1" max="1000" step="any" inputmode="decimal"></div>
         <div class="pd-field"><label for="acFuelBurn">Typical fuel burn (GPH)</label><input id="acFuelBurn" name="fuelBurn" type="number" min="0" max="10000" step="any" inputmode="decimal"></div>
+        <div class="pd-field"><label for="acUsableFuel">Usable fuel (US gal)</label><input id="acUsableFuel" name="usableFuel" type="number" min="0" max="10000" step="any" inputmode="decimal"></div>
+        <div class="pd-field"><label for="acReserve">Default planning reserve (minutes)</label><input id="acReserve" name="reserveMinutes" type="number" min="0" max="600" step="1" inputmode="numeric"></div>
         <div class="pd-field"><label for="acFuelDensity">Fuel density (lb/US gal)</label><input id="acFuelDensity" name="fuelPpg" type="number" min="0.1" max="20" step="0.01" inputmode="decimal" placeholder="Use approved/actual value"></div>
+        <div class="pd-field" style="grid-column:1/-1"><label for="acSource">Source / revision note</label><input id="acSource" name="sourceNote" maxlength="160" placeholder="POH Rev. __ / current W&B sheet dated __"></div>
         <div class="pd-field"><label for="acMaxWeight">Reference/max weight used for Va adjustment (lb)</label><input id="acMaxWeight" name="maxWeight" type="number" min="1" max="2000000" step="any" inputmode="decimal"></div>
         <div class="pd-field"><label for="acVa">Reference Va (kt)</label><input id="acVa" name="va" type="number" min="1" max="1000" step="any" inputmode="decimal"></div>
         <div class="pd-field"><label for="acTire">Tire pressure (psi)</label><input id="acTire" name="tirePsi" type="number" min="1" max="500" step="any" inputmode="decimal"></div>
         <div class="pd-field"><label for="acMaxLanding">Max landing weight (lb), if applicable</label><input id="acMaxLanding" name="maxLandingWeight" type="number" min="1" max="2000000" step="any" inputmode="decimal"></div>
-
         <div class="pd-field"><label for="acEmptyWeight">Current basic empty weight (lb)</label><input id="acEmptyWeight" name="emptyWeight" type="number" min="0" max="2000000" step="any" inputmode="decimal"></div>
         <div class="pd-field"><label for="acEmptyArm">Current empty-weight arm (in)</label><input id="acEmptyArm" name="emptyArm" type="number" min="-10000" max="10000" step="any" inputmode="decimal"></div>
         <div class="pd-field" style="grid-column:1/-1"><label for="acStations">Weight &amp; balance stations — one per line: Name, default weight, arm</label><textarea id="acStations" name="wbStations" placeholder="Front seats, 0, 80.5&#10;Rear seats, 0, 118.1&#10;Fuel, 0, 95.0&#10;Baggage, 0, 142.8"></textarea><small>Default weight may be 0. The W&amp;B Builder lets departure and landing weights differ.</small></div>
         <div class="pd-field" style="grid-column:1/-1"><label for="acEnvelope">Optional CG envelope boundary — one per line: CG inches, weight pounds</label><textarea id="acEnvelope" name="wbEnvelope" placeholder="Enter points from the applicable approved envelope in order around its perimeter"></textarea><small>This is user-entered reference data. Do not copy an envelope from another serial number, configuration, category, or loading condition unless it is actually applicable.</small></div>
+        <div class="pd-field" style="grid-column:1/-1"><label for="acNotes">Aircraft notes</label><textarea id="acNotes" name="notes" maxlength="1600" placeholder="Common planning notes, configuration reminders, source references…"></textarea></div>
       </div>
       <div id="aircraftFormWarning" class="safety-warning" role="alert" aria-live="polite"></div>
       <div class="pd-actions"><button class="pd-btn" type="submit">Save aircraft</button><button class="pd-btn secondary" id="aircraftCancelEdit" type="button">Clear</button></div>
     </form>
   </section>
 
-  <section class="pd-panel"><div class="pd-card-head"><div><h2>Saved aircraft</h2><p id="aircraftCount">Stored only on this device.</p></div><a class="pd-btn secondary" href="/calculators/weight-balance-builder/">Open W&amp;B</a></div><div id="aircraftList" class="pd-list"></div></section>
-  <p>Clearing browser/site data removes local profiles. Use Export Profiles if you want a backup. Imported values should be checked against current approved aircraft data before use.</p>
+  <section class="pd-panel"><div class="pd-card-head"><div><h2>Saved aircraft</h2><p id="aircraftCount">Stored only on this device.</p></div><div class="pd-actions"><a class="pd-btn secondary" href="/flights.html">Saved Flights</a><a class="pd-btn secondary" href="/calculators/weight-balance-builder/">Open W&amp;B</a><button class="pd-btn secondary" type="button" id="aircraftExport">Export Hangar</button><label class="pd-btn secondary" for="aircraftImport" style="cursor:pointer">Import Hangar</label><input id="aircraftImport" type="file" accept="application/json,.json" hidden></div></div><div id="aircraftList" class="pd-list"></div></section>
+  <p>Clearing browser/site data removes local profiles. Export Hangar creates a JSON backup you can keep or move to another device. Imported values should be checked against current approved aircraft data before use.</p>
 </main>
-<footer><div><b>PilotDesk</b><p>Aviation calculators for planning and training.</p></div><div class="footer-links"><a href="/">Calculators</a><a href="/weather.html">Weather</a><a href="/legal/privacy.html">Privacy</a><a href="/sources.html">Sources</a></div><p class="fine">Planning aid only. Verify operational numbers with current approved sources.</p></footer>
-</body></html>
+<footer><div><b>PilotDesk</b><p>Aviation planning and training tools.</p></div><div class="footer-links"><a href="/airport.html">Airports</a><a href="/flights.html">Saved Flights</a><a href="/weather.html">Weather</a><a href="/legal/privacy.html">Privacy</a><a href="/sources.html">Sources</a></div><p class="fine">Planning aid only. Verify operational numbers with current approved sources.</p></footer>
+</body>
+</html>

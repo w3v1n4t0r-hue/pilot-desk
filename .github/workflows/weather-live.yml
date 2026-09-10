@@ -1,0 +1,45 @@
+name: PilotDesk Weather Live
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'api/weather.js'
+      - 'assets/weather-fixed.js'
+      - 'weather.html'
+      - '.github/workflows/weather-live.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-weather:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Verify deployed weather endpoint
+        shell: bash
+        run: |
+          node <<'NODE'
+          const url='https://www.pilot-desk.com/api/weather?station=KGFK';
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+          let last='';
+          for(let i=0;i<30;i++){
+            try{
+              const r=await fetch(url,{headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});
+              const text=await r.text();
+              const version=r.headers.get('x-pilotdesk-weather')||'';
+              last=`HTTP ${r.status} version=${version} body=${text.slice(0,500)}`;
+              console.log(`attempt ${i+1}: ${last}`);
+              if(version==='3.0'&&r.ok){
+                const j=JSON.parse(text);
+                if(!j.metar?.rawOb)throw new Error('deployed endpoint returned no METAR rawOb');
+                if(!/KGFK/.test(j.metar.rawOb)&&j.resolvedStation!=='KGFK')throw new Error('deployed endpoint did not return KGFK data');
+                console.log('PRODUCTION WEATHER PASS');
+                console.log(j.metar.rawOb);
+                if(j.taf?.rawTAF)console.log(j.taf.rawTAF);
+                process.exit(0);
+              }
+            }catch(e){last=String(e?.stack||e);console.error(last)}
+            await sleep(3000);
+          }
+          throw new Error('Production weather verification failed: '+last);
+          NODE

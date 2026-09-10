@@ -1,0 +1,9 @@
+{
+  "name": "pilotdesk",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PilotDesk aviation calculators and pilot tools",
+  "dependencies": {
+    "@vercel/analytics": "2.0.1"
+  }
+}

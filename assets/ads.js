@@ -8,9 +8,9 @@ function ensureAds(){if(!/^ca-pub-\d+$/.test(pub))return;const existing=[...docu
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureAds,{once:true});else ensureAds();
 const path=location.pathname;
 const load=(src,key)=>{if(document.querySelector(`script[data-${key}]`)||[...document.scripts].some(s=>{try{return new URL(s.src,location.href).pathname===src}catch{return false}}))return;const s=document.createElement('script');s.src=src;s.async=false;s.setAttribute(`data-${key}`,'1');document.head.appendChild(s)};
-load('/assets/theme.js','pd-theme');load('/assets/analytics.js','pd-analytics');load('/assets/seo.js','pd-seo');load('/assets/product-polish.js','pd-polish');load('/assets/runtime-qol.js','pd-qol');
+load('/assets/global-nav.js','pd-global-nav');load('/assets/theme.js','pd-theme');load('/assets/analytics.js','pd-analytics');load('/assets/seo.js','pd-seo');load('/assets/product-polish.js','pd-polish');load('/assets/runtime-qol.js','pd-qol');
 if(path.startsWith('/calculators/')&&!path.includes('weight-balance-builder'))load('/assets/features.js','pd-features');
 if(path.startsWith('/calculators/')&&!path.includes('weight-balance-builder')){load('/assets/share-enhance.js','pd-share');load('/assets/calculator-ux.js','pd-calc-ux')}
 load('/assets/pilotdesk-plus.js','pd-plus');load('/assets/update.js','pd-update');load('/assets/errors.js','pd-errors');
-if(path==='/aircraft.html')load('/assets/aircraft-transfer.js','pd-aircraft-transfer');if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline');if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export');
+if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js','pd-aircraft-transfer');load('/assets/aircraft-training.js','pd-aircraft-training')}if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline');if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export');
 })();

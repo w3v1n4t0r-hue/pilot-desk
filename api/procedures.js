@@ -1,33 +1,15 @@
 'use strict';
-const FAA_SEARCH='https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/dtpp/search/results/';
-const UA='PilotDesk/2.1 (+https://www.pilot-desk.com)';
-function clean(v){return String(v||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4)}
-function decode(s){return String(s||'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#039;|&#39;/g,"'").replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>')}
-function text(s){return decode(String(s||'').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim())}
-function abs(href){try{return new URL(decode(href),'https://www.faa.gov').href}catch{return null}}
-function parse(html,icao,faaIdent){
-  const eff=html.match(/Procedure effective date:\s*([^<\n]+?)\s*\((\d{4})\)/i),cycle=eff?.[2]||null,effective=eff?.[1]?.trim()||null;
-  const out=[],seen=new Set();
-  for(const row of html.match(/<tr[\s\S]*?<\/tr>/gi)||[]){
-    const link=row.match(/<a[^>]+href=["']([^"']+\.pdf(?:\?[^"']*)?)["'][^>]*>([\s\S]*?)<\/a>/i);if(!link)continue;
-    const url=abs(link[1]),name=text(link[2]),rowText=text(row);if(!url||!name||seen.has(url))continue;
-    let type='OTHER';const m=rowText.match(/\b(APD|IAP|DP|STAR|ODP|MIN|LAH|HOT)\b/i);if(m)type=m[1].toUpperCase();
-    if(type==='IAP'&&/AIRPORT DIAGRAM/i.test(name))type='APD';
-    out.push({type,name,pdfUrl:url});seen.add(url);
-  }
-  return{station:icao,faaIdent,cycle,effective,procedures:out};
-}
-module.exports=async function handler(req,res){
-  res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('X-Robots-Tag','noindex');
-  if(req.method!=='GET'){res.setHeader('Allow','GET');res.setHeader('Cache-Control','no-store');return res.status(405).json({error:'Method not allowed'})}
-  const station=clean(req.query?.ident);if(!/^[A-Z0-9]{3,4}$/.test(station)){res.setHeader('Cache-Control','no-store');return res.status(400).json({error:'Enter a valid U.S. airport identifier.'})}
-  const faaIdent=station.length===4?station.slice(-3):station,url=`${FAA_SEARCH}?ident=${encodeURIComponent(faaIdent)}`;
-  const c=new AbortController(),timer=setTimeout(()=>c.abort(),12000);
-  try{
-    const r=await fetch(url,{headers:{Accept:'text/html,application/xhtml+xml','User-Agent':UA},signal:c.signal});const html=await r.text();
-    if(!r.ok){res.setHeader('Cache-Control','no-store');return res.status(502).json({error:`FAA procedure search returned ${r.status}.`,station,sourceUrl:url})}
-    const data=parse(html,station,faaIdent);res.setHeader('Cache-Control','public, s-maxage=14400, stale-while-revalidate=3600');
-    return res.status(200).json({...data,fetchedAt:new Date().toISOString(),source:'Federal Aviation Administration d-TPP',sourceUrl:url,notice:'Verify the current FAA procedure effective date and the chart itself before operational use.'});
-  }catch(e){res.setHeader('Cache-Control','no-store');return res.status(502).json({error:e?.name==='AbortError'?'FAA procedure lookup timed out.':'FAA procedure lookup failed.',station,sourceUrl:url})}
-  finally{clearTimeout(timer)}
-};
+const SEARCH_HOME='https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/dtpp/search/';
+const UA='PilotDesk/2.2 (+https://www.pilot-desk.com)';
+let cache={url:'',xml:'',expires:0};
+const clean=v=>String(v||'').trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4);
+const decode=s=>String(s||'').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#039;|&#39;/g,"'").replace(/&nbsp;/g,' ').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+function fallbackCycle(){const day=86400000,anchor=Date.UTC(2026,0,22,9),n=Math.max(0,Math.floor((Date.now()-anchor)/(28*day))),year=26+Math.floor(n/13),seq=n%13+1;return `${String(year).padStart(2,'0')}${String(seq).padStart(2,'0')}`}
+async function textFetch(url,{timeout=14000,retries=1,accept='text/html,application/xhtml+xml,application/xml,text/xml;q=.9,*/*;q=.8'}={}){let last;for(let i=0;i<=retries;i++){const c=new AbortController(),timer=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(url,{headers:{Accept:accept,'User-Agent':UA},signal:c.signal});const t=await r.text();if(r.ok)return t;last=new Error(`Source returned ${r.status}`);if(!(r.status===429||r.status>=500))throw last}catch(e){last=e;if(i<retries)await new Promise(r=>setTimeout(r,250*(i+1)))}finally{clearTimeout(timer)}}throw last||new Error('Source request failed')}
+async function discover(){try{const html=await textFetch(SEARCH_HOME,{timeout:9000,retries:0});const m=html.match(/https:\/\/aeronav\.faa\.gov\/d-tpp\/(\d{4})\/xml_data\/d-tpp_Metafile\.xml/i)||html.match(/href=["']([^"']*\/d-tpp\/(\d{4})\/xml_data\/d-tpp_Metafile\.xml)["']/i);if(m){const url=m[0].startsWith('http')?m[0]:(m[1]?.startsWith('http')?m[1]:new URL(m[1],SEARCH_HOME).href),cycle=(m[1]&&/^\d{4}$/.test(m[1]))?m[1]:m[2];return{url,cycle}}}catch{}const cycle=fallbackCycle();return{cycle,url:`https://aeronav.faa.gov/d-tpp/${cycle}/xml_data/d-tpp_Metafile.xml`}}
+async function metafile(){const d=await discover();if(cache.url===d.url&&cache.xml&&Date.now()<cache.expires)return{...d,xml:cache.xml};const xml=await textFetch(d.url,{timeout:18000,retries:1,accept:'application/xml,text/xml;q=.9,*/*;q=.8'});if(!/<digital_tpp\b/i.test(xml))throw new Error('FAA d-TPP metafile was not recognized.');cache={url:d.url,xml,expires:Date.now()+20*60*1000};return{...d,xml}}
+function attr(tag,name){const m=String(tag||'').match(new RegExp(`\\b${name}=["']([^"']*)["']`,'i'));return m?decode(m[1]).trim():''}
+function tag(block,name){const m=String(block||'').match(new RegExp(`<${name}\\b[^>]*>([\\s\\S]*?)<\\/${name}>`,'i'));return m?decode(m[1]).replace(/\s+/g,' ').trim():''}
+function airportBlock(xml,station){const faa=station.length===4?station.slice(-3):station;let idx=xml.indexOf(`icao_ident="${station}"`);if(idx<0)idx=xml.indexOf(`icao_ident='${station}'`);if(idx<0)idx=xml.indexOf(`apt_ident="${faa}"`);if(idx<0)idx=xml.indexOf(`apt_ident='${faa}'`);if(idx<0)return null;const start=xml.lastIndexOf('<airport_name',idx),close=xml.indexOf('</airport_name>',idx);if(start<0||close<0)return null;const end=close+'</airport_name>'.length,block=xml.slice(start,end),open=block.slice(0,block.indexOf('>')+1),cityStart=xml.lastIndexOf('<city_name',start),cityOpen=cityStart>=0?xml.slice(cityStart,xml.indexOf('>',cityStart)+1):'',stateStart=xml.lastIndexOf('<state_code',start),stateOpen=stateStart>=0?xml.slice(stateStart,xml.indexOf('>',stateStart)+1):'';return{block,airportName:attr(open,'ID'),aptIdent:attr(open,'apt_ident'),icaoIdent:attr(open,'icao_ident'),military:attr(open,'military'),city:attr(cityOpen,'ID'),volume:attr(cityOpen,'volume'),state:attr(stateOpen,'ID')}}
+function parseRecords(info,cycle){const out=[],rx=/<record\b[^>]*>([\s\S]*?)<\/record>/gi;let m;while((m=rx.exec(info.block))){const b=m[1],type=tag(b,'chart_code')||'OTHER',name=tag(b,'chart_name')||'Untitled procedure',pdfName=tag(b,'pdf_name'),action=tag(b,'useraction').toUpperCase();if(!pdfName||action==='D'||/^(?:DELETED_JOB|DEL_APT_SERVED)\.PDF$/i.test(pdfName))continue;if(!/^[A-Z0-9_.-]+\.PDF$/i.test(pdfName))continue;out.push({type,name,pdfName,chartSeq:Number(tag(b,'chartseq'))||0,amendment:tag(b,'amdtnum')||null,amendmentDate:tag(b,'amdtdate')||null,procedureId:tag(b,'procuid')||null,pdfUrl:`https://aeronav.faa.gov/d-tpp/${cycle}/${encodeURIComponent(pdfName)}`,viewUrl:`/api/procedure-pdf?cycle=${encodeURIComponent(cycle)}&file=${encodeURIComponent(pdfName)}`})}return out.sort((a,b)=>a.chartSeq-b.chartSeq||a.name.localeCompare(b.name))}
+module.exports=async function handler(req,res){res.setHeader('Content-Type','application/json; charset=utf-8');res.setHeader('X-Robots-Tag','noindex');if(req.method!=='GET'){res.setHeader('Allow','GET');res.setHeader('Cache-Control','no-store');return res.status(405).json({error:'Method not allowed'})}const station=clean(req.query?.ident);if(!/^[A-Z0-9]{3,4}$/.test(station)){res.setHeader('Cache-Control','no-store');return res.status(400).json({error:'Enter a valid U.S. airport identifier.'})}try{const {xml,url,cycle:hint}=await metafile(),root=xml.match(/<digital_tpp\b[^>]*>/i)?.[0]||'',cycle=attr(root,'cycle')||hint||fallbackCycle(),from=attr(root,'from_edate'),to=attr(root,'to_edate'),info=airportBlock(xml,station);if(!info){res.setHeader('Cache-Control','public, s-maxage=900, stale-while-revalidate=900');return res.status(404).json({error:`No FAA d-TPP airport record was found for ${station}.`,station,cycle,sourceUrl:url})}const procedures=parseRecords(info,cycle);res.setHeader('Cache-Control','public, s-maxage=14400, stale-while-revalidate=3600');return res.status(200).json({station:info.icaoIdent||station,faaIdent:info.aptIdent,airportName:info.airportName,city:info.city,state:info.state,volume:info.volume,cycle,effective:from&&to?`${from} — ${to}`:(from||to||null),procedures,fetchedAt:new Date().toISOString(),source:'Federal Aviation Administration d-TPP Metafile XML',sourceUrl:url,notice:'Verify the current FAA chart, effective dates, NOTAMs, and applicability before operational use.'})}catch(e){res.setHeader('Cache-Control','no-store');return res.status(502).json({error:e?.name==='AbortError'?'FAA procedure lookup timed out.':(e?.message||'FAA procedure lookup failed.'),station,sourceUrl:SEARCH_HOME})}}

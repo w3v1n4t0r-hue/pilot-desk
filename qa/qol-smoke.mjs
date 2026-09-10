@@ -1,0 +1,9 @@
+import fs from 'node:fs';
+const read=p=>fs.readFileSync(p,'utf8');const failures=[];const ok=(x,m)=>{if(!x)failures.push(m)};
+for(const p of ['assets/runtime-qol.js','assets/calculator-ux.js','assets/theme.js','assets/seo.js','assets/offline-weather.js','sw.js','vercel.json'])ok(fs.existsSync(p),`Missing ${p}`);
+const ux=read('assets/calculator-ux.js');for(const s of ['Copy result','Copy link','Reset','Print','Report result','history.replaceState','localStorage'])ok(ux.includes(s),`Calculator UX missing ${s}`);
+const theme=read('assets/theme.js');for(const s of ['system','light','dark','night-red','prefers-reduced-motion'])ok(theme.includes(s),`Theme missing ${s}`);
+const seo=read('assets/seo.js');for(const s of ['application/ld+json','BreadcrumbList','twitter:card','WebApplication'])ok(seo.includes(s),`SEO missing ${s}`);
+const ads=read('assets/ads.js');ok(ads.includes('runtime-qol.js'),'QoL runtime is not globally loaded');ok(ads.includes('wrap.hidden=true'),'Blank ad placeholders are not suppressed early');
+const sw=read('sw.js');ok(sw.includes("startsWith('/api/')"),'Service worker must leave live APIs network-only');ok(sw.includes('runtime-qol.js'),'Runtime QoL not precached');const v=JSON.stringify(JSON.parse(read('vercel.json')));for(const s of ['X-Content-Type-Options','Referrer-Policy','Permissions-Policy','Cache-Control','no-store'])ok(v.includes(s),`Vercel policy missing ${s}`);
+if(failures.length){console.error(`QoL smoke failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}console.log('PilotDesk QoL smoke passed.');

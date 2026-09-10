@@ -1,6 +1,4 @@
 (()=>{
   if(location.pathname!=='/weather.html')return;
-  const init=()=>{const form=document.getElementById('weatherForm');if(!form)return;let pill=document.getElementById('pdOfflinePill');if(!pill){pill=document.createElement('div');pill.id='pdOfflinePill';pill.className='notice';pill.setAttribute('role','status');form.insertAdjacentElement('beforebegin',pill)}
-  const update=()=>{const off=!navigator.onLine;pill.hidden=!off;pill.textContent=off?'Offline Mode — live METAR/TAF is unavailable. Core PilotDesk calculators still work offline; enter weather values manually in the relevant calculators.':''};update();addEventListener('online',update);addEventListener('offline',update)};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  const init=()=>{const form=document.getElementById('weatherForm');if(!form)return;let pill=document.getElementById('pdOfflinePill');if(!pill){pill=document.createElement('div');pill.id='pdOfflinePill';pill.className='notice';pill.setAttribute('role','status');form.insertAdjacentElement('beforebegin',pill)}const update=()=>{const off=!navigator.onLine;pill.hidden=!off;pill.textContent=off?'Offline Mode — live METAR/TAF is unavailable. Core PilotDesk math tools remain available offline; enter altimeter, temperature, wind and other values manually in the relevant calculator.':''};update();addEventListener('online',update);addEventListener('offline',update)};document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
 })();

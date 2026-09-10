@@ -1,29 +1,25 @@
 (()=>{
   const qs=(s,r=document)=>r.querySelector(s),qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   if(!location.pathname.startsWith('/calculators/'))return;
-  const inputs=qsa('[data-calc-input]'),calc=qs('[data-calculate]'),box=qs('.calc-box');
+  const inputs=qsa('[data-calc-input]'),calc=qs('[data-calculate]'),box=qs('.calc-box'),results=qs('.results');
   if(!inputs.length||!calc||!box)return;
-  const storageKey='pd-calc-inputs:'+location.pathname;
+  const storageKey='pd-calc-inputs:'+location.pathname,defaults=Object.fromEntries(inputs.map(i=>[i.id,i.defaultValue]));
   const warn=document.createElement('div');warn.className='safety-warning';warn.id='pdAdvisory';warn.setAttribute('aria-live','polite');
-  const actions=document.createElement('div');actions.className='calc-actions';actions.innerHTML='<button type="button" data-pd-copy>Copy link</button><button type="button" data-pd-reset>Reset</button>';
+  const actions=document.createElement('div');actions.className='calc-actions';actions.innerHTML='<button type="button" data-pd-copy-result>Copy result</button><button type="button" data-pd-copy-link>Copy link</button><button type="button" data-pd-share>Share</button><button type="button" data-pd-reset>Reset</button><button type="button" data-pd-print>Print</button><a href="/feedback.html?type=calculation" data-pd-report>Report result</a>';
   const notice=box.querySelector('.notice');(notice||box.lastElementChild)?.insertAdjacentElement('beforebegin',warn);(notice||box.lastElementChild)?.insertAdjacentElement('beforebegin',actions);
-  const defaults=Object.fromEntries(inputs.map(i=>[i.id,i.defaultValue]));
-  const readSaved=()=>{try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}};
-  const fromUrl=new URLSearchParams(location.search),saved=readSaved();
+  const toast=msg=>window.toast?.(msg);
+  const saved=(()=>{try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}})();const fromUrl=new URLSearchParams(location.search);
   inputs.forEach(i=>{const u=fromUrl.get(i.id);if(u!==null&&u.trim()!==''&&Number.isFinite(Number(u)))i.value=u;else if(saved[i.id]!==undefined&&saved[i.id]!==''&&Number.isFinite(Number(saved[i.id])))i.value=saved[i.id]});
-  function advisory(){
-    const key=document.body.dataset.calc||'';const msgs=[];
-    const alt=qs('#altimeter');if(alt&&Number.isFinite(Number(alt.value))&&(Number(alt.value)<28||Number(alt.value)>31))msgs.push('Altimeter setting is outside the common 28.00–31.00 inHg sanity-check range. Verify the source before using the result.');
-    if((key==='crosswind'||key==='windTriangle')){const w=qs('#windSpeed');if(w&&Number(w.value)>99)msgs.push('Wind speed exceeds 99 kt. The calculator can still evaluate it, but verify the entry and source data.');}
-    if(key==='fuelWeight'){const p=qs('#ppg');if(p&&Number.isFinite(Number(p.value))){const n=Number(p.value);if(Math.abs(n-6)<.06)msgs.push('Fuel density is approximately 6.0 lb/gal, commonly used as an AvGas planning value. Verify actual fuel data.');else if(Math.abs(n-6.7)<.06)msgs.push('Fuel density is approximately 6.7 lb/gal, commonly used as a Jet-A planning value. Verify actual fuel data.');else msgs.push('Custom fuel density entered. Verify the pounds-per-gallon value for the actual fuel and temperature.');}}
-    warn.textContent=msgs.join(' ');warn.classList.toggle('show',msgs.length>0);
-  }
-  function sync(){
-    const p=new URLSearchParams();const values={};inputs.forEach(i=>{if(i.value!==''){p.set(i.id,i.value);values[i.id]=i.value}});history.replaceState(null,'',location.pathname+(p.toString()?'?'+p:''));try{localStorage.setItem(storageKey,JSON.stringify(values))}catch{}advisory();
-  }
-  calc.addEventListener('click',()=>setTimeout(sync,0));inputs.forEach(i=>i.addEventListener('change',sync));
-  box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input')){e.preventDefault();calc.click()}});
-  actions.querySelector('[data-pd-copy]').addEventListener('click',async()=>{sync();try{await navigator.clipboard.writeText(location.href);window.toast?.('Calculation link copied')}catch{window.toast?.('Copy failed')}});
-  actions.querySelector('[data-pd-reset]').addEventListener('click',()=>{inputs.forEach(i=>i.value=defaults[i.id]??'');try{localStorage.removeItem(storageKey)}catch{}history.replaceState(null,'',location.pathname);warn.classList.remove('show');calc.click();window.toast?.('Calculator reset')});
+  function advisory(){const key=document.body.dataset.calc||'',msgs=[];const alt=qs('#altimeter');if(alt&&Number.isFinite(Number(alt.value))&&(Number(alt.value)<28||Number(alt.value)>31))msgs.push('Altimeter setting is outside the common 28.00–31.00 inHg sanity-check range. Verify the source.');if(key==='crosswind'||key==='windTriangle'){const w=qs('#windSpeed');if(w&&Number(w.value)>99)msgs.push('Wind speed exceeds 99 kt. Verify the entry and source data.')}if(key==='fuelWeight'){const p=qs('#ppg');if(p&&Number.isFinite(Number(p.value))){const n=Number(p.value);if(Math.abs(n-6)<.06)msgs.push('About 6.0 lb/gal: a common AvGas planning value. Verify actual fuel data.');else if(Math.abs(n-6.7)<.06)msgs.push('About 6.7 lb/gal: a common Jet-A planning value. Verify actual fuel data.');else msgs.push('Custom fuel density entered. Verify the value for the actual fuel and temperature.')}}warn.textContent=msgs.join(' ');warn.classList.toggle('show',msgs.length>0)}
+  function sync(){const p=new URLSearchParams(),values={};inputs.forEach(i=>{if(i.value!==''){p.set(i.id,i.value);values[i.id]=i.value}});history.replaceState(null,'',location.pathname+(p.toString()?'?'+p:''));try{localStorage.setItem(storageKey,JSON.stringify(values))}catch{}advisory()}
+  function resultText(){const title=qs('.calc-hero h1')?.textContent?.trim()||'PilotDesk calculation';const outs=qsa('.result').map(r=>{const k=r.querySelector('small')?.textContent?.trim(),v=r.querySelector('strong')?.textContent?.trim();return k&&v&&v!=='—'?`${k}: ${v}`:null}).filter(Boolean);return [title,...outs,location.href].join('\n')}
+  function track(name){try{window.va?.('event',{name,data:{calculator:document.body.dataset.calc||location.pathname}})}catch{}}
+  calc.addEventListener('click',()=>{setTimeout(()=>{sync();track('Calculator Used');if(results&&matchMedia('(max-width:760px)').matches)results.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})},0)});
+  inputs.forEach(i=>i.addEventListener('change',sync));box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input')){e.preventDefault();calc.click()}});
+  actions.querySelector('[data-pd-copy-result]').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(resultText());toast('Result copied');track('Result Copied')}catch{toast('Copy failed')}});
+  actions.querySelector('[data-pd-copy-link]').addEventListener('click',async()=>{sync();try{await navigator.clipboard.writeText(location.href);toast('Calculation link copied');track('Calculation Link Copied')}catch{toast('Copy failed')}});
+  actions.querySelector('[data-pd-share]').addEventListener('click',async()=>{sync();const title=qs('h1')?.textContent?.trim()||'PilotDesk';try{if(navigator.share)await navigator.share({title,text:resultText(),url:location.href});else{await navigator.clipboard.writeText(location.href);toast('Link copied')}}catch(e){if(e?.name!=='AbortError')toast('Share failed')}});
+  actions.querySelector('[data-pd-reset]').addEventListener('click',()=>{inputs.forEach(i=>i.value=defaults[i.id]??'');try{localStorage.removeItem(storageKey)}catch{}history.replaceState(null,'',location.pathname);warn.classList.remove('show');calc.click();toast('Calculator reset')});
+  actions.querySelector('[data-pd-print]').addEventListener('click',()=>window.print());const report=actions.querySelector('[data-pd-report]');if(report){const u=new URL(report.href,location.origin);u.searchParams.set('page',location.pathname);report.href=u.pathname+u.search}
   advisory();if([...fromUrl.keys()].length)calc.click();
 })();

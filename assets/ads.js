@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.head.appendChild(s);
   };
   load('/assets/brand.js','pd-brand');
+  load('/assets/home-fix.js','pd-home');
   load('/assets/features.js','pd-features');
   load('/assets/analytics.js','pd-analytics');
 })();

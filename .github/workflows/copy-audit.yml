@@ -32,6 +32,7 @@ jobs:
         run: |
           node scripts/generate-calculator-pages.mjs
           node scripts/postprocess-site.mjs
+          node scripts/clean-copy-extra.mjs
       - name: Check JavaScript syntax
         run: |
           find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check

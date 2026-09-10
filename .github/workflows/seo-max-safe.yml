@@ -1,0 +1,57 @@
+name: PilotDesk Maximum Safe SEO Pass
+
+on:
+  push:
+    branches: [seo-max-safe]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seo-max-safe
+          fetch-depth: 0
+      - name: Apply maximum safe SEO pass
+        run: python scripts/apply-seo-max-safe.py
+      - name: Regenerate calculator pages
+        run: node scripts/generate-calculator-pages.mjs
+      - name: Apply static postprocessing
+        run: node scripts/postprocess-site.mjs
+      - name: Generate canonical sitemap
+        run: node scripts/generate-sitemap.mjs
+      - name: Check JavaScript syntax
+        run: find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+      - name: Run full QA
+        run: |
+          node qa/smoke.mjs
+          node qa/qol-smoke.mjs
+          node qa/product-polish-smoke.mjs
+          node qa/v2-smoke.mjs
+          node qa/planner-lab-tests.mjs
+          node qa/formula-tests.mjs
+          node qa/site-integrity.mjs
+          node qa/copy-tone.mjs
+          node qa/google-audit.mjs
+          node qa/seo-hardening.mjs
+      - name: Check SEO output
+        run: |
+          grep -q 'offers' calculators/crosswind/index.html
+          grep -q 'Pilot math formula reference' calculators/crosswind/index.html
+          grep -q 'data-pd-guide-breadcrumbs' guides/pilot-math-formulas.html
+          grep -q 'Aviation Math Glossary' guides/aviation-math-glossary.html
+          ! grep -q 'weight-balance.html</loc>' sitemap.xml
+      - name: Commit tested SEO changes
+        run: |
+          git config user.name "PilotDesk Automation"
+          git config user.email "w3v1n4t0r@gmail.com"
+          git add assets/seo.js scripts/generate-calculator-pages.mjs scripts/generate-sitemap.mjs qa/seo-hardening.mjs .github/workflows/qa.yml .github/workflows/generate-calculators.yml calculators guides guides.html poh-chart-studio.html sitemap.xml llms.txt
+          if git diff --cached --quiet; then
+            echo "SEO hardening files already current."
+          else
+            git commit -m "Maximize safe SEO coverage and crawl signals"
+            git push origin HEAD:seo-max-safe
+          fi

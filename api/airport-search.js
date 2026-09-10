@@ -1,7 +1,8 @@
 'use strict';
 
+const {gunzipSync}=require('node:zlib');
 const STATIONS='https://aviationweather.gov/data/cache/stations.cache.json.gz';
-const UA='PilotDesk/3.1 (+https://www.pilot-desk.com)';
+const UA='PilotDesk/3.2 (+https://www.pilot-desk.com)';
 let memory={at:0,rows:null};
 
 function clean(v){return String(v||'').trim().replace(/\s+/g,' ').slice(0,80)}
@@ -25,13 +26,18 @@ function rowsFrom(j){
   const base=Array.isArray(j)?j:Array.isArray(j?.features)?j.features:Array.isArray(j?.stations)?j.stations:Array.isArray(j?.data)?j.data:Object.values(j||{});
   return base.map(rowFrom).filter(Boolean);
 }
+async function responseJsonMaybeGzip(r){
+  const buf=Buffer.from(await r.arrayBuffer());
+  const raw=buf.length>2&&buf[0]===0x1f&&buf[1]===0x8b?gunzipSync(buf):buf;
+  return JSON.parse(raw.toString('utf8'));
+}
 async function load(){
   if(memory.rows&&Date.now()-memory.at<12*3600e3)return memory.rows;
   const c=new AbortController(),t=setTimeout(()=>c.abort(),8000);
   try{
-    const r=await fetch(STATIONS,{headers:{Accept:'application/json','User-Agent':UA},signal:c.signal,cache:'no-store'});
+    const r=await fetch(STATIONS,{headers:{Accept:'application/json,application/gzip;q=.9,*/*;q=.5','User-Agent':UA},signal:c.signal,cache:'no-store'});
     if(!r.ok)throw new Error(`Station index returned ${r.status}`);
-    const rows=rowsFrom(await r.json());
+    const rows=rowsFrom(await responseJsonMaybeGzip(r));
     if(!rows.length)throw new Error('Station index was empty');
     memory={at:Date.now(),rows};
     return rows;
@@ -53,6 +59,7 @@ function score(q,r){
 module.exports=async function handler(req,res){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   res.setHeader('X-Robots-Tag','noindex');
+  res.setHeader('X-PilotDesk-Airport-Search','3.2');
   if(req.method!=='GET'){res.setHeader('Allow','GET');res.setHeader('Cache-Control','no-store');return res.status(405).json({error:'Method not allowed'})}
   const q=clean(req.query?.q);
   if(q.length<2){res.setHeader('Cache-Control','no-store');return res.status(400).json({error:'Enter at least two characters.'})}

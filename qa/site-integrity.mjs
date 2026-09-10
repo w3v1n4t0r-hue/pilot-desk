@@ -21,6 +21,10 @@ function localExists(url){
 
 for(const file of htmlFiles){
   const raw=fs.readFileSync(file,'utf8');
+  const first1024=Buffer.from(raw,'utf8').subarray(0,1024).toString('utf8');
+  if(!/<meta\s+[^>]*charset\s*=\s*["']?utf-8["']?[^>]*>/i.test(first1024)){
+    failures.push(`${file}: missing UTF-8 charset declaration within first 1024 bytes`);
+  }
   const ids=[...raw.matchAll(/\bid=["']([^"']+)["']/g)].map(m=>m[1]);
   const seen=new Set();for(const id of ids){if(seen.has(id))failures.push(`${file}: duplicate id ${id}`);seen.add(id)}
   for(const m of raw.matchAll(/\b(?:href|src)=["']([^"']+)["']/g)){
@@ -32,4 +36,4 @@ for(const s of manifest.shortcuts||[])if(!localExists(s.url))failures.push(`site
 const sitemap=fs.readFileSync('sitemap.xml','utf8');
 for(const m of sitemap.matchAll(/<loc>https:\/\/www\.pilot-desk\.com([^<]*)<\/loc>/g))if(!localExists(m[1]||'/'))failures.push(`sitemap.xml: missing target ${m[1]||'/'}`);
 if(failures.length){console.error(`Site integrity failed with ${failures.length} issue(s):`);for(const x of failures.slice(0,100))console.error(' - '+x);process.exit(1)}
-console.log(`Site integrity passed: ${htmlFiles.length} HTML pages, local links/assets, duplicate IDs, manifest shortcuts, and sitemap targets checked.`);
+console.log(`Site integrity passed: ${htmlFiles.length} HTML pages, UTF-8 declarations, local links/assets, duplicate IDs, manifest shortcuts, and sitemap targets checked.`);

@@ -1,0 +1,28 @@
+import fs from 'node:fs';
+const read=p=>fs.readFileSync(p,'utf8');
+const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
+const wb=read('weight-balance.html'),wbjs=read('assets/weight-balance.js'),ads=read('assets/ads.js'),cfg=read('assets/ad-config.js'),ac=read('aircraft.html'),acjs=read('assets/aircraft-v2.js'),sw=read('sw.js'),src=read('sources.html'),manifest=read('site.webmanifest'),vercel=read('vercel.json'),gen=read('.github/workflows/generate-calculators.yml');
+assert(wb.includes('wbDepW')&&wb.includes('wbLdgW'),'W&B must show departure and landing totals');
+assert(wb.includes('wbEnvelope')&&wb.includes('wbChart'),'W&B must include optional entered envelope and chart');
+assert(wb.includes('/assets/wb-v2.css'),'W&B stylesheet missing');
+assert(wb.includes('https://www.pilot-desk.com/calculators/weight-balance-builder/'),'W&B canonical must use www');
+assert(!wb.includes('<span class="brandmark">PD</span>'),'Legacy PD logo must not flash on W&B');
+assert(!wbjs.includes("1600,85")&&!wbjs.includes("360,80.5"),'W&B must not seed fake aircraft loading values');
+assert(wbjs.includes('pointInPolygon')&&wbjs.includes('Inside entered envelope'),'Entered-envelope check missing');
+assert(wbjs.includes('pd-wb-v2-draft')&&wbjs.includes('pd-wb-v2-scenarios'),'W&B autosave/scenarios missing');
+assert(ac.includes('sourceNote')&&ac.includes('wbEnvelope')&&ac.includes('maxLandingWeight'),'Aircraft profile source/envelope fields missing');
+assert(acjs.includes('parseStations')&&acjs.includes('parseEnvelope'),'Aircraft profile validation missing');
+assert(cfg.includes('ca-pub-2325772529624834'),'AdSense publisher ID changed or missing');
+assert(cfg.includes('autoAds:true'),'AdSense Auto Ads support missing');
+assert(!ads.includes("load('/assets/brand.js'"),'Runtime brand swap should not be loaded');
+assert(ads.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'),'AdSense loader support missing');
+assert(ads.includes("if(!slot&&wrap)wrap.hidden=true"),'Empty manual ad placeholders should be hidden');
+assert(sw.includes("CACHE='pilotdesk-v13'"),'Service worker cache version not updated');
+assert(sw.includes("url.pathname.startsWith('/api/')"),'Service worker must bypass live APIs');
+assert(src.includes('FAA-H-8083-25C')&&src.includes('FAA-H-8083-28B'),'Current FAA handbook references missing');
+assert(src.includes('6.01')&&src.includes('6.68'),'Fuel standard-weight reference values missing');
+assert(manifest.includes('"shortcuts"')&&manifest.includes('weight-balance-builder'),'PWA shortcuts missing');
+assert(vercel.includes('Content-Security-Policy')&&vercel.includes('Service-Worker-Allowed'),'Security/service-worker headers missing');
+assert(gen.includes('workflow_dispatch:')&&!/\n\s*push:\s*\n/.test(gen),'Calculator generator must be manual-only to avoid deployment storms');
+for(const p of ['index.html','404.html','about.html','weather.html','sources.html','weight-balance.html','aircraft.html']){if(!fs.existsSync(p))continue;const h=read(p);assert(!h.includes('<span class="brandmark">PD</span>'),`${p} still contains legacy PD logo`)}
+console.log('PilotDesk v2 master smoke checks passed.');

@@ -1,15 +1,6 @@
 name: Generate calculator pages
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'assets/calculator-config.js'
-      - 'scripts/generate-calculator-pages.mjs'
-      - 'scripts/postprocess-site.mjs'
-      - 'scripts/postprocess-extras.mjs'
-      - 'scripts/postprocess-brand-final.mjs'
-      - '.github/workflows/generate-calculators.yml'
   workflow_dispatch:
 
 permissions:
@@ -24,17 +15,13 @@ jobs:
         run: node scripts/generate-calculator-pages.mjs
       - name: Apply static branding and aviation FAQ content
         run: node scripts/postprocess-site.mjs
-      - name: Finalize static brand before first paint
-        run: node scripts/postprocess-brand-final.mjs
-      - name: Apply homepage, 404, and sitemap polish
-        run: node scripts/postprocess-extras.mjs
       - name: Commit generated and postprocessed pages
         run: |
           git config user.name "PilotDesk Automation"
           git config user.email "w3v1n4t0r@gmail.com"
-          git add calculators '*.html' sitemap.xml
+          git add calculators index.html 404.html sitemap.xml
           if git diff --cached --quiet; then
-            echo "Generated pages already current."
+            echo "Static pages already current."
           else
             git commit -m "Refresh static PilotDesk pages"
             git push

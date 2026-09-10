@@ -2,7 +2,7 @@ name: PilotDesk QA
 
 on:
   push:
-    branches: [main]
+    branches: [main, pilotdesk-v2-master]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -24,5 +24,7 @@ jobs:
         run: node qa/qol-smoke.mjs
       - name: Run product polish checks
         run: node qa/product-polish-smoke.mjs
+      - name: Run PilotDesk v2 master checks
+        run: node qa/v2-smoke.mjs
       - name: Run calculator formula regression tests
         run: node qa/formula-tests.mjs

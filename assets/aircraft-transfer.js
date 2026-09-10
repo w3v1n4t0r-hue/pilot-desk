@@ -1,19 +1,11 @@
 (()=>{
-  if(location.pathname!=='/aircraft.html')return;
-  document.addEventListener('DOMContentLoaded',()=>{
-    const panel=document.querySelector('#aircraftList')?.closest('.pd-panel');if(!panel)return;
-    const wrap=document.createElement('div');wrap.className='pd-actions';wrap.innerHTML='<button class="pd-btn secondary" type="button" id="pdExportAircraft">Export profiles</button><label class="pd-btn secondary" style="cursor:pointer">Import profiles<input id="pdImportAircraft" type="file" accept="application/json,.json" hidden></label>';
-    panel.insertBefore(wrap,panel.querySelector('#aircraftList'));
-    document.getElementById('pdExportAircraft').addEventListener('click',()=>{
-      let profiles=[];try{profiles=JSON.parse(localStorage.getItem('pd-aircraft')||'[]')}catch{}
-      const payload={format:'PilotDesk-aircraft-profiles',version:1,exportedAt:new Date().toISOString(),profiles,active:localStorage.getItem('pd-aircraft-active')||null};
-      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pilotdesk-aircraft-profiles.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);window.toast?.('Aircraft profiles exported');
-    });
-    document.getElementById('pdImportAircraft').addEventListener('change',async e=>{
-      const file=e.target.files?.[0];if(!file)return;
-      try{const data=JSON.parse(await file.text());if(data?.format!=='PilotDesk-aircraft-profiles'||!Array.isArray(data.profiles))throw new Error('Invalid PilotDesk profile file');
-        const clean=data.profiles.filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string').slice(0,50);localStorage.setItem('pd-aircraft',JSON.stringify(clean));if(data.active&&clean.some(p=>p.id===data.active))localStorage.setItem('pd-aircraft-active',data.active);else localStorage.removeItem('pd-aircraft-active');location.reload();
-      }catch(err){window.toast?.('That profile file could not be imported')}
-    });
-  });
+'use strict';
+if(location.pathname!=='/aircraft.html')return;
+const toast=m=>window.toast?.(m);
+function read(){try{return JSON.parse(localStorage.getItem('pd-aircraft')||'[]')}catch{return []}}
+function clean(p){if(!p||typeof p!=='object')return null;const s=k=>typeof p[k]==='string'?p[k].slice(0,k==='wbStations'||k==='wbEnvelope'?10000:240):'';const id=typeof p.id==='string'&&p.id?p.id:(globalThis.crypto?.randomUUID?.()||String(Date.now()+Math.random()));const name=s('name').trim();if(!name)return null;return {id,name,type:s('type'),sourceNote:s('sourceNote'),fuelBurn:s('fuelBurn'),maxWeight:s('maxWeight'),maxLandingWeight:s('maxLandingWeight'),va:s('va'),tirePsi:s('tirePsi'),fuelPpg:s('fuelPpg'),emptyWeight:s('emptyWeight'),emptyArm:s('emptyArm'),wbStations:s('wbStations'),wbEnvelope:s('wbEnvelope'),updatedAt:Number.isFinite(Number(p.updatedAt))?Number(p.updatedAt):Date.now()}}
+function run(){const panel=document.querySelector('#aircraftList')?.closest('.pd-panel');if(!panel)return;const wrap=document.createElement('div');wrap.className='pd-actions';wrap.innerHTML='<button class="pd-btn secondary" type="button" id="pdExportAircraft">Export profiles</button><label class="pd-btn secondary" style="cursor:pointer">Import profiles<input id="pdImportAircraft" type="file" accept="application/json,.json" hidden></label>';panel.insertBefore(wrap,panel.querySelector('#aircraftList'));
+document.getElementById('pdExportAircraft').addEventListener('click',()=>{const payload={format:'PilotDesk-aircraft-profiles',version:2,exportedAt:new Date().toISOString(),profiles:read(),active:localStorage.getItem('pd-aircraft-active')||null};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pilotdesk-aircraft-profiles.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Aircraft profiles exported')});
+document.getElementById('pdImportAircraft').addEventListener('change',async e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;if(file.size>2_000_000)return toast('Profile file is too large');try{const data=JSON.parse(await file.text());if(data?.format!=='PilotDesk-aircraft-profiles'||!Array.isArray(data.profiles))throw new Error('Invalid file');let incoming=data.profiles.map(clean).filter(Boolean).slice(0,50);if(!incoming.length)throw new Error('No valid profiles');const existing=read();const merge=existing.length?confirm('Press OK to merge imported profiles with existing profiles. Press Cancel to replace existing profiles.'):true;if(merge&&existing.length){const byId=new Map(existing.map(p=>[p.id,p]));incoming.forEach(p=>byId.set(p.id,p));incoming=[...byId.values()].slice(0,50)}localStorage.setItem('pd-aircraft',JSON.stringify(incoming));if(data.active&&incoming.some(p=>p.id===data.active))localStorage.setItem('pd-aircraft-active',data.active);else if(!incoming.some(p=>p.id===localStorage.getItem('pd-aircraft-active')))localStorage.setItem('pd-aircraft-active',incoming[0].id);location.reload()}catch{toast('That profile file could not be imported')}})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
 })();

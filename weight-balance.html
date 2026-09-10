@@ -1,1 +1,114 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Weight & Balance Builder | PilotDesk</title><meta name="theme-color" content="#08090b"><meta name="color-scheme" content="dark"><link rel="stylesheet" href="/assets/styles.css"><link rel="icon" href="/assets/icon.svg" type="image/svg+xml"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://pilot-desk.com/calculators/weight-balance-builder/"><script defer src="/assets/weight-balance.js"></script><script defer src="/assets/site.js"></script><script defer src="/assets/ad-config.js"></script><script defer src="/assets/ads.js"></script><script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2325772529624834"></script></head><body><a class="skip-link" href="#main-content">Skip to main content</a><header class="topbar"><a class="brand" href="/"><span class="brandmark" aria-label="PilotDesk" data-pd-wireframe="1" style="background:transparent;box-shadow:none;border:1px solid #34383f;color:#d9dde2;width:38px;height:38px;border-radius:8px;padding:3px"><svg viewBox="0 0 64 40" role="img" aria-label="PilotDesk airplane logo" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5v9"/><path d="M32 14c-4.8 0-8 3.8-8 8.5S27.2 31 32 31s8-3.8 8-8.5S36.8 14 32 14Z"/><path d="M25 19 8 15l2 5 14 3"/><path d="m39 23 15-3 2-5-17 4"/><path d="M28 18.5h8"/><path d="M29 18.5v3.5m6-3.5V22"/><circle cx="18" cy="30" r="3.5"/><circle cx="46" cy="30" r="3.5"/><path d="M21.5 27 25 24m21.5 3L39 24"/></g></svg></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><nav><a href="/">Calculators</a><a href="/weather.html">Weather</a><a href="/aircraft.html">Aircraft</a></nav></header><main class="shell" id="main-content"><div class="breadcrumbs"><a href="/">Calculators</a> / Weight & Balance Builder</div><div class="safety-strip"><strong>Use approved aircraft data.</strong> This tool calculates arithmetic only; it does not know your aircraft's approved CG envelope or limitations.</div><div class="calculator-layout"><section class="calc-main"><div class="calc-hero"><span class="badge">WEIGHT & BALANCE</span><h1>Weight & Balance Builder</h1><p>Add loading stations to calculate total weight, total moment and center of gravity.</p></div><div class="calc-box"><div class="wb-table"><div class="wb-head"><span>Station</span><span>Weight (lb)</span><span>Arm (in)</span><span>Moment</span><span></span></div><div id="wbRows"></div></div><button class="calc-btn" id="addStation" type="button">Add station</button><div id="wbSafetyWarning" class="safety-warning" role="alert"></div><div class="results"><div class="result primary"><small>Total weight</small><strong id="wbW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbM">—</strong></div><div class="result"><small>CG</small><strong id="wbCG">—</strong></div></div><div class="notice">Compare the result with the current POH/AFM weight and CG envelope for the specific aircraft.</div></div></section></div></main><footer><div><b>PilotDesk</b><p>Aviation calculators for planning and training.</p></div><p class="fine">Planning aid only. Verify operational numbers with current approved sources.</p></footer></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Aircraft Weight & Balance Calculator | PilotDesk</title>
+  <meta name="description" content="Build departure and landing aircraft weight-and-balance scenarios with station moments, CG, fuel burn, optional entered-envelope checks, local autosave, and printable worksheets.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#08090b">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://www.pilot-desk.com/calculators/weight-balance-builder/">
+  <meta property="og:title" content="Aircraft Weight & Balance Calculator | PilotDesk">
+  <meta property="og:description" content="Build departure and landing W&B scenarios and verify the results against your aircraft's current approved POH/AFM data.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.pilot-desk.com/calculators/weight-balance-builder/">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/wb-v2.css">
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/site.webmanifest">
+  <script defer src="/assets/site.js"></script>
+  <script defer src="/assets/ad-config.js"></script>
+  <script defer src="/assets/ads.js"></script>
+  <script defer src="/assets/weight-balance.js"></script>
+  <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2325772529624834"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="topbar">
+  <a class="brand" href="/" aria-label="PilotDesk home">
+    <span class="brandmark" aria-hidden="true" data-pd-wireframe="1" style="background:transparent;box-shadow:none;border:1px solid #34383f;color:#d9dde2;width:38px;height:38px;border-radius:8px;padding:3px"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5v9"/><path d="M32 14c-4.8 0-8 3.8-8 8.5S27.2 31 32 31s8-3.8 8-8.5S36.8 14 32 14Z"/><path d="M25 19 8 15l2 5 14 3"/><path d="m39 23 15-3 2-5-17 4"/><path d="M28 18.5h8"/><path d="M29 18.5v3.5m6-3.5V22"/><circle cx="18" cy="30" r="3.5"/><circle cx="46" cy="30" r="3.5"/><path d="M21.5 27 25 24m21.5 3L39 24"/></g></svg></span>
+    <span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span>
+  </a>
+  <button aria-label="Open menu" class="menu-btn" data-menu>☰</button>
+  <nav><a href="/">Calculators</a><a href="/weather.html">Weather</a><a href="/aircraft.html">Aircraft</a><a href="/guides.html">Guides</a><a href="/sources.html">Sources</a></nav>
+</header>
+<main class="shell wb-shell" id="main-content">
+  <div class="breadcrumbs"><a href="/">Calculators</a> / Weight &amp; Balance Builder</div>
+  <div class="safety-strip"><strong>Use current approved aircraft data.</strong> PilotDesk performs arithmetic from the values you enter. It cannot determine airworthiness or replace the aircraft POH/AFM, supplements, placards, limitations, or an operator-approved loading system.</div>
+
+  <section class="calc-hero wb-hero">
+    <span class="badge">WEIGHT &amp; BALANCE</span>
+    <h1>Weight &amp; Balance Builder</h1>
+    <p>Build one loading table for departure and landing. Enter actual station weights and arms from the specific aircraft's current approved data, then compare the calculated totals and CG with the applicable limits.</p>
+  </section>
+
+  <section class="wb-toolbar" aria-label="Scenario controls">
+    <div class="wb-field"><label for="wbScenarioName">Scenario</label><input id="wbScenarioName" maxlength="60" placeholder="Local flight / XC / Lesson"></div>
+    <div class="wb-field"><label for="wbAircraftProfile">Aircraft profile</label><select id="wbAircraftProfile"><option value="">Manual / no profile</option></select></div>
+    <div class="wb-toolbar-actions">
+      <button class="utility-btn" id="wbLoadProfile" type="button">Load profile</button>
+      <button class="utility-btn" id="wbSaveScenario" type="button">Save scenario</button>
+      <button class="utility-btn" id="wbOpenScenarios" type="button">Saved scenarios</button>
+      <button class="utility-btn" id="wbPrint" type="button">Print</button>
+      <button class="utility-btn" id="wbClear" type="button">New</button>
+    </div>
+    <p class="fine wb-toolbar-note" id="wbAutosaveStatus">Changes autosave only on this device.</p>
+  </section>
+
+  <div class="wb-grid-layout">
+    <section class="calc-box wb-main-card">
+      <div class="wb-section-head"><div><h2>Loading stations</h2><p>Use landing weight to account for fuel or other weight changes during flight. For unchanged stations, departure and landing weight may be identical.</p></div><button class="calc-btn" id="addStation" type="button">Add station</button></div>
+      <div class="wb-table" role="table" aria-label="Weight and balance loading stations">
+        <div class="wb-head" role="row"><span>Station</span><span>Departure wt</span><span>Landing wt</span><span>Arm</span><span>Dep moment</span><span>Ldg moment</span><span></span></div>
+        <div id="wbRows"></div>
+      </div>
+      <div id="wbSafetyWarning" class="safety-warning" role="alert" aria-live="polite"></div>
+
+      <div class="wb-total-grid" aria-live="polite">
+        <div class="wb-phase"><h3>Departure</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbDepW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbDepM">—</strong></div><div class="result"><small>CG</small><strong id="wbDepCG">—</strong></div></div><div class="wb-envelope-state" id="wbDepEnvelope">No envelope entered</div></div>
+        <div class="wb-phase"><h3>Landing</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbLdgW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbLdgM">—</strong></div><div class="result"><small>CG</small><strong id="wbLdgCG">—</strong></div></div><div class="wb-envelope-state" id="wbLdgEnvelope">No envelope entered</div></div>
+      </div>
+      <div class="notice">An “inside entered envelope” message means only that the calculated point is inside the boundary you supplied. It is not a determination that the aircraft is safe, legal, or within every applicable limitation.</div>
+    </section>
+
+    <aside class="wb-side">
+      <section class="side-card">
+        <h3>Fuel helper</h3>
+        <p>Convert gallons to station weight without hiding the density assumption.</p>
+        <div class="wb-field"><label for="wbFuelStation">Apply to station</label><select id="wbFuelStation"></select></div>
+        <div class="wb-two"><div class="wb-field"><label for="wbFuelDepGal">Departure gal</label><input id="wbFuelDepGal" type="number" min="0" step="any" inputmode="decimal"></div><div class="wb-field"><label for="wbFuelLdgGal">Landing gal</label><input id="wbFuelLdgGal" type="number" min="0" step="any" inputmode="decimal"></div></div>
+        <div class="wb-field"><label for="wbFuelDensity">Fuel density (lb/US gal)</label><input id="wbFuelDensity" type="number" min="0.1" max="20" step="0.01" inputmode="decimal" value="6.01"></div>
+        <div class="wb-chip-row" aria-label="Common fuel density planning values"><button type="button" data-density="6.01">Avgas 59°F · 6.01</button><button type="button" data-density="6.68">Jet A/A-1 59°F · 6.68</button></div>
+        <button class="utility-btn wb-full" id="wbApplyFuel" type="button">Apply fuel weights</button>
+        <p class="fine">FAA Weight &amp; Balance Handbook standard weights vary with temperature; use actual or aircraft/operator-approved values when available.</p>
+      </section>
+
+      <section class="side-card">
+        <h3>Optional entered envelope</h3>
+        <p>Paste boundary points from the applicable approved CG envelope in order around the perimeter. Format each line as <b>CG inches, weight pounds</b>.</p>
+        <textarea id="wbEnvelope" class="wb-envelope-input" placeholder="82.0, 1950&#10;86.0, 2550&#10;93.0, 2550&#10;95.0, 1950"></textarea>
+        <button class="utility-btn wb-full" id="wbApplyEnvelope" type="button">Apply entered envelope</button>
+        <canvas id="wbChart" width="560" height="390" aria-label="Weight and balance envelope graph" role="img"></canvas>
+        <p class="fine" id="wbEnvelopeHint">No envelope is loaded. PilotDesk will calculate CG without judging limits.</p>
+      </section>
+    </aside>
+  </div>
+
+  <div class="ad-wrap"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="content"><span>Ad space</span></div></div>
+
+  <section class="info-card wb-reference">
+    <h2>What the calculator is doing</h2>
+    <p>For each station, moment is weight multiplied by arm. Total center of gravity is total moment divided by total weight. PilotDesk performs that calculation independently for the departure and landing columns so a fuel burn or other in-flight weight change can be represented without rebuilding the entire table.</p>
+    <details><summary>Show formulas</summary><div class="formula">Station moment = station weight × station arm<br>Total weight = Σ station weights<br>Total moment = Σ station moments<br>CG = total moment ÷ total weight</div></details>
+    <h2>Before using the result</h2>
+    <p>Verify basic empty weight and moment/arm against the current aircraft weight-and-balance record, use the correct station arms, account for required occupants, baggage, fuel and equipment, and compare both departure and landing conditions with every applicable approved limit. If actual weights are available, they are preferable to generic standard weights.</p>
+    <div class="source-links"><a href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation" rel="noopener" target="_blank">FAA Aviation Handbooks</a><a href="/guides/weight-and-balance.html">PilotDesk W&amp;B guide</a><a href="/sources.html">PilotDesk sources</a><a href="/legal/safety.html">Safety notes</a></div>
+  </section>
+</main>
+
+<dialog id="wbScenarioDialog" class="wb-dialog"><form method="dialog"><div class="wb-dialog-head"><h2>Saved W&amp;B scenarios</h2><button class="utility-btn" value="cancel" aria-label="Close">Close</button></div></form><div id="wbScenarioList"></div><p class="fine">Saved only in this browser. Do not use local storage as an aircraft record or required operational record.</p></dialog>
+
+<footer><div><b>PilotDesk</b><p>Aviation calculators for planning and training.</p></div><div class="footer-links"><a href="/about.html">About</a><a href="/legal/privacy.html">Privacy</a><a href="/legal/terms.html">Terms</a><a href="/legal/disclaimer.html">Disclaimer</a><a href="/sources.html">Sources</a></div><p class="fine">Planning aid only. Verify operational numbers with current approved sources.</p></footer>
+</body>
+</html>

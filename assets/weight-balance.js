@@ -1,36 +1,72 @@
-(() => {
-  const rows=document.getElementById('wbRows');
-  if(!rows)return;
-  const outW=document.getElementById('wbW'), outM=document.getElementById('wbM'), outCG=document.getElementById('wbCG');
-  let warning=document.getElementById('wbSafetyWarning');
-  function setWarning(msg){warning.textContent=msg;warning.classList.toggle('show',Boolean(msg));}
-  function calcWB(){
-    let W=0,M=0,msg='';
-    const data=[...document.querySelectorAll('.wb-data')];
-    if(!data.length)msg='Add at least one loading station.';
-    for(const r of data){
-      const ins=r.querySelectorAll('input');
-      const w=Number(ins[1].value), a=Number(ins[2].value);
-      if(ins[1].value.trim()===''||ins[2].value.trim()===''||!Number.isFinite(w)||!Number.isFinite(a)){msg='Every station needs a valid weight and arm.';r.querySelector('.moment').textContent='—';break;}
-      if(w<0||w>1000000||a<-10000||a>10000){msg='A station contains an implausible weight or arm. Recheck the aircraft loading data.';r.querySelector('.moment').textContent='—';break;}
-      const m=w*a;W+=w;M+=m;r.querySelector('.moment').textContent=m.toFixed(0);
-    }
-    if(!msg && W<=0)msg='Total weight must be greater than zero.';
-    if(msg){setWarning(msg);outW.textContent=outM.textContent=outCG.textContent='—';return;}
-    setWarning('');outW.textContent=W.toFixed(1)+' lb';outM.textContent=M.toFixed(0)+' lb-in';outCG.textContent=(M/W).toFixed(2)+' in';
-  }
-  function add(n='Station',w=0,a=0){
-    const r=document.createElement('div');r.className='wb-row wb-data';
-    const name=document.createElement('input');name.value=n;name.setAttribute('aria-label','Station name');name.maxLength=80;
-    const weight=document.createElement('input');weight.type='number';weight.step='any';weight.value=w;weight.setAttribute('aria-label','Station weight in pounds');
-    const arm=document.createElement('input');arm.type='number';arm.step='any';arm.value=a;arm.setAttribute('aria-label','Station arm in inches');
-    const moment=document.createElement('span');moment.className='moment';moment.textContent='0';
-    const remove=document.createElement('button');remove.type='button';remove.className='remove';remove.textContent='×';remove.setAttribute('aria-label','Remove station');
-    [weight,arm].forEach(i=>i.addEventListener('input',calcWB));remove.addEventListener('click',()=>{r.remove();calcWB()});
-    r.append(name,weight,arm,moment,remove);rows.appendChild(r);calcWB();
-  }
-  function activeProfile(){try{const all=JSON.parse(localStorage.getItem('pd-aircraft')||'[]'),id=localStorage.getItem('pd-aircraft-active');return all.find(x=>x.id===id)||null}catch{return null}}
-  function loadProfile(){const p=activeProfile();if(!p)return false;rows.innerHTML='';let count=0;if(p.emptyWeight!==''&&p.emptyArm!==''&&Number.isFinite(Number(p.emptyWeight))&&Number.isFinite(Number(p.emptyArm))){add('Basic Empty Weight',Number(p.emptyWeight),Number(p.emptyArm));count++}String(p.wbStations||'').split(/\r?\n/).forEach(line=>{const parts=line.split(',').map(x=>x.trim());if(parts.length<3)return;const w=Number(parts[1]),a=Number(parts[2]);if(parts[0]&&Number.isFinite(w)&&Number.isFinite(a)){add(parts[0],w,a);count++}});if(count){const note=document.createElement('div');note.className='notice';note.textContent=`Loaded ${p.name||'active aircraft'} profile. Verify every station and arm against current approved aircraft data.`;rows.parentElement?.insertBefore(note,rows);return true}return false}
-  if(!loadProfile()){add('Basic Empty Weight',1600,85);add('Front seats',360,80.5);add('Fuel',240,95);}
-  document.getElementById('addStation')?.addEventListener('click',()=>add());
+(()=>{
+'use strict';
+const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
+const KEY_DRAFT='pd-wb-v2-draft', KEY_SCEN='pd-wb-v2-scenarios';
+const rowsHost=qs('#wbRows'); if(!rowsHost)return;
+const depW=qs('#wbDepW'),depM=qs('#wbDepM'),depCG=qs('#wbDepCG'),ldgW=qs('#wbLdgW'),ldgM=qs('#wbLdgM'),ldgCG=qs('#wbLdgCG');
+const warn=qs('#wbSafetyWarning'), depEnv=qs('#wbDepEnvelope'),ldgEnv=qs('#wbLdgEnvelope'),chart=qs('#wbChart');
+const profileSelect=qs('#wbAircraftProfile'),fuelStation=qs('#wbFuelStation'),envelopeInput=qs('#wbEnvelope'),scenarioName=qs('#wbScenarioName');
+let rows=[], envelope=[], autosaveTimer=0, undoRow=null;
+const uid=()=>globalThis.crypto?.randomUUID?.()||('r'+Date.now().toString(36)+Math.random().toString(36).slice(2));
+const n=v=>{if(String(v??'').trim()==='')return NaN;const x=Number(v);return Number.isFinite(x)?x:NaN};
+const fmt=(v,d=1)=>Number.isFinite(v)?v.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toast=m=>window.toast?.(m);
+function loadJSON(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}}
+function saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}}
+function setWarn(m=''){warn.textContent=m;warn.classList.toggle('show',Boolean(m))}
+function blankRow(name='Station',dep='',ldg='',arm=''){return {id:uid(),name,dep:String(dep),ldg:String(ldg),arm:String(arm)}}
+function defaultRows(){return [blankRow('Basic Empty Weight'),blankRow('Front seats'),blankRow('Rear seats'),blankRow('Fuel'),blankRow('Baggage')]}
+function profiles(){return loadJSON('pd-aircraft',[])}
+function activeProfile(){const id=localStorage.getItem('pd-aircraft-active');return profiles().find(p=>p.id===id)||null}
+function rowHTML(r){return `<div class="wb-row wb-data" role="row" data-id="${esc(r.id)}">
+<label class="wb-cell wb-name"><span class="wb-mobile-label">Station</span><input data-k="name" value="${esc(r.name)}" maxlength="80" aria-label="Station name"></label>
+<label class="wb-cell"><span class="wb-mobile-label">Departure wt</span><input data-k="dep" type="number" step="any" inputmode="decimal" value="${esc(r.dep)}" aria-label="Departure station weight in pounds"></label>
+<label class="wb-cell"><span class="wb-mobile-label">Landing wt</span><input data-k="ldg" type="number" step="any" inputmode="decimal" value="${esc(r.ldg)}" aria-label="Landing station weight in pounds"></label>
+<label class="wb-cell"><span class="wb-mobile-label">Arm</span><input data-k="arm" type="number" step="any" inputmode="decimal" value="${esc(r.arm)}" aria-label="Station arm in inches"></label>
+<div class="wb-cell wb-number"><span class="wb-mobile-label">Dep moment</span><span data-dep-moment>—</span></div>
+<div class="wb-cell wb-number"><span class="wb-mobile-label">Ldg moment</span><span data-ldg-moment>—</span></div>
+<div class="wb-row-actions"><button type="button" data-duplicate aria-label="Duplicate station" title="Duplicate station">⧉</button><button type="button" data-remove aria-label="Remove station" title="Remove station">×</button></div>
+</div>`}
+function renderRows(){rowsHost.innerHTML=rows.map(rowHTML).join('');refreshFuelStations();calculate(false)}
+function readDOM(){qsa('.wb-row',rowsHost).forEach(el=>{const r=rows.find(x=>x.id===el.dataset.id);if(!r)return;qsa('[data-k]',el).forEach(i=>r[i.dataset.k]=i.value)})}
+function validRow(r){const dw=n(r.dep),lw=n(r.ldg),a=n(r.arm);if(!r.name.trim())return {ok:false,msg:'Each station needs a name.'};if(!Number.isFinite(dw)||!Number.isFinite(lw)||!Number.isFinite(a))return {ok:false,msg:`${r.name}: enter departure weight, landing weight, and arm.`};if(dw<0||lw<0)return {ok:false,msg:`${r.name}: station weights cannot be negative.`};if(Math.abs(a)>10000||dw>1000000||lw>1000000)return {ok:false,msg:`${r.name}: a value appears implausible. Recheck the approved loading data.`};return {ok:true,dw,lw,a}}
+function totals(phase){let W=0,M=0;for(const r of rows){const v=validRow(r);if(!v.ok)return {ok:false,msg:v.msg};const w=phase==='dep'?v.dw:v.lw;W+=w;M+=w*v.a}if(!(W>0))return {ok:false,msg:'Total weight must be greater than zero.'};return {ok:true,W,M,cg:M/W}}
+function pointInPolygon(x,y,poly){let inside=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];const cross=((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi);if(cross)inside=!inside}return inside}
+function envelopeState(t,el){if(!t.ok){el.textContent='Unable to evaluate';el.dataset.state='';return}if(envelope.length<3){el.textContent='No envelope entered';el.dataset.state='';return}const inside=pointInPolygon(t.cg,t.W,envelope);el.textContent=inside?'Inside entered envelope':'Outside entered envelope';el.dataset.state=inside?'inside':'outside'}
+function draw(dep,ldg){if(!chart)return;const ctx=chart.getContext('2d');const W=chart.width,H=chart.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#090b0d';ctx.fillRect(0,0,W,H);const pts=[...envelope];if(dep?.ok)pts.push([dep.cg,dep.W]);if(ldg?.ok)pts.push([ldg.cg,ldg.W]);if(!pts.length){ctx.fillStyle='#777b82';ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText('Enter an envelope to graph CG',W/2,H/2);return}
+let xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),xmin=Math.min(...xs),xmax=Math.max(...xs),ymin=Math.min(...ys),ymax=Math.max(...ys);let xp=Math.max(2,(xmax-xmin)*.12),yp=Math.max(50,(ymax-ymin)*.12);xmin-=xp;xmax+=xp;ymin=Math.max(0,ymin-yp);ymax+=yp;const L=58,R=18,T=20,B=42,sx=x=>L+(x-xmin)/(xmax-xmin||1)*(W-L-R),sy=y=>H-B-(y-ymin)/(ymax-ymin||1)*(H-T-B);
+ctx.strokeStyle='#2f3339';ctx.lineWidth=1;ctx.fillStyle='#8d9198';ctx.font='14px system-ui';ctx.textAlign='right';for(let i=0;i<=4;i++){let y=ymin+(ymax-ymin)*i/4,py=sy(y);ctx.beginPath();ctx.moveTo(L,py);ctx.lineTo(W-R,py);ctx.stroke();ctx.fillText(Math.round(y),L-8,py+5)}ctx.textAlign='center';for(let i=0;i<=4;i++){let x=xmin+(xmax-xmin)*i/4,px=sx(x);ctx.beginPath();ctx.moveTo(px,T);ctx.lineTo(px,H-B);ctx.stroke();ctx.fillText(x.toFixed(1),px,H-16)}ctx.save();ctx.translate(15,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('Weight (lb)',0,0);ctx.restore();ctx.fillText('CG (in)',(L+W-R)/2,H-2);
+if(envelope.length>=3){ctx.beginPath();envelope.forEach((p,i)=>{const x=sx(p[0]),y=sy(p[1]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath();ctx.fillStyle='rgba(180,185,192,.08)';ctx.fill();ctx.strokeStyle='#9fa4ab';ctx.lineWidth=2;ctx.stroke()}
+const dot=(t,label,shape)=>{if(!t?.ok)return;ctx.fillStyle=shape==='dep'?'#f2f3f5':'#a9afb8';ctx.beginPath();ctx.arc(sx(t.cg),sy(t.W),7,0,Math.PI*2);ctx.fill();ctx.font='bold 13px system-ui';ctx.textAlign='left';ctx.fillText(label,sx(t.cg)+10,sy(t.W)-9)};dot(dep,'Departure','dep');dot(ldg,'Landing','ldg')}
+function calculate(doSave=true){readDOM();let firstErr='';qsa('.wb-row',rowsHost).forEach(el=>{const r=rows.find(x=>x.id===el.dataset.id),v=r?validRow(r):{ok:false};el.classList.toggle('wb-invalid',!v.ok);if(v.ok){qs('[data-dep-moment]',el).textContent=fmt(v.dw*v.a,0);qs('[data-ldg-moment]',el).textContent=fmt(v.lw*v.a,0)}else{qs('[data-dep-moment]',el).textContent='—';qs('[data-ldg-moment]',el).textContent='—';if(!firstErr)firstErr=v.msg||'Check station inputs.'}});
+const d=totals('dep'),l=totals('ldg');if(!d.ok||!l.ok){setWarn(firstErr||d.msg||l.msg);[depW,depM,depCG,ldgW,ldgM,ldgCG].forEach(e=>e.textContent='—');envelopeState(d,depEnv);envelopeState(l,ldgEnv);draw(d,l);if(doSave)scheduleSave();return}
+setWarn('');depW.textContent=fmt(d.W,1)+' lb';depM.textContent=fmt(d.M,0)+' lb-in';depCG.textContent=fmt(d.cg,2)+' in';ldgW.textContent=fmt(l.W,1)+' lb';ldgM.textContent=fmt(l.M,0)+' lb-in';ldgCG.textContent=fmt(l.cg,2)+' in';envelopeState(d,depEnv);envelopeState(l,ldgEnv);draw(d,l);if(doSave)scheduleSave()}
+function currentState(){readDOM();return {version:2,name:scenarioName.value.trim(),profileId:profileSelect.value,rows:rows.map(r=>({...r})),envelopeText:envelopeInput.value,updatedAt:Date.now()}}
+function scheduleSave(){clearTimeout(autosaveTimer);qs('#wbAutosaveStatus').textContent='Saving…';autosaveTimer=setTimeout(()=>{const ok=saveJSON(KEY_DRAFT,currentState());qs('#wbAutosaveStatus').textContent=ok?'Autosaved on this device.':'Could not autosave in this browser.'},250)}
+function restoreDraft(){const d=loadJSON(KEY_DRAFT,null);if(!d||d.version!==2||!Array.isArray(d.rows)||!d.rows.length)return false;rows=d.rows.map(r=>({id:r.id||uid(),name:String(r.name||'Station'),dep:String(r.dep??''),ldg:String(r.ldg??''),arm:String(r.arm??'')}));scenarioName.value=d.name||'';envelopeInput.value=d.envelopeText||'';parseEnvelope(false);return true}
+function populateProfiles(){const arr=profiles(),active=localStorage.getItem('pd-aircraft-active');profileSelect.innerHTML='<option value="">Manual / no profile</option>'+arr.map(p=>`<option value="${esc(p.id)}">${esc(p.name||p.type||'Aircraft')}</option>`).join('');if(active&&arr.some(p=>p.id===active))profileSelect.value=active}
+function loadProfile(p){if(!p)return;const out=[];const ew=n(p.emptyWeight),ea=n(p.emptyArm);if(Number.isFinite(ew)&&Number.isFinite(ea))out.push(blankRow('Basic Empty Weight',ew,ew,ea));String(p.wbStations||'').split(/\r?\n/).forEach(line=>{const parts=line.split(',').map(x=>x.trim());if(parts.length<3||!parts[0])return;const w=n(parts[1]),a=n(parts[2]);out.push(blankRow(parts[0],Number.isFinite(w)?w:'',Number.isFinite(w)?w:'',Number.isFinite(a)?a:''))});rows=out.length?out:defaultRows();scenarioName.value=p.name?`${p.name} loading`:'';if(p.wbEnvelope)envelopeInput.value=p.wbEnvelope;else envelopeInput.value='';parseEnvelope(false);renderRows();localStorage.setItem('pd-aircraft-active',p.id);scheduleSave();toast('Aircraft profile loaded — verify every value')}
+function refreshFuelStations(){const old=fuelStation.value;fuelStation.innerHTML=rows.map(r=>`<option value="${esc(r.id)}">${esc(r.name||'Station')}</option>`).join('');if(rows.some(r=>r.id===old))fuelStation.value=old;else{const likely=rows.find(r=>/fuel/i.test(r.name));if(likely)fuelStation.value=likely.id}}
+function parseEnvelope(show=true){const pts=[];let bad=0;String(envelopeInput.value||'').split(/\r?\n/).forEach(line=>{if(!line.trim())return;const p=line.split(',').map(v=>Number(v.trim()));if(p.length>=2&&Number.isFinite(p[0])&&Number.isFinite(p[1]))pts.push([p[0],p[1]]);else bad++});envelope=pts.length>=3?pts:[];const hint=qs('#wbEnvelopeHint');if(bad)hint.textContent=`${bad} envelope line${bad===1?'':'s'} could not be read.`;else if(pts.length&&pts.length<3)hint.textContent='Enter at least three boundary points to define an envelope.';else if(envelope.length)hint.textContent=`${envelope.length} entered boundary points are being used. Verify them against the current approved source.`;else hint.textContent='No envelope is loaded. PilotDesk will calculate CG without judging limits.';calculate(false);if(show&&envelope.length)toast('Entered envelope applied')}
+function scenarioList(){const host=qs('#wbScenarioList'),arr=loadJSON(KEY_SCEN,[]);host.innerHTML=arr.length?arr.map(s=>`<article class="wb-saved"><div><b>${esc(s.name||'Untitled scenario')}</b><small>${new Date(s.savedAt).toLocaleString()}</small></div><div><button class="utility-btn" data-wb-open="${esc(s.id)}">Open</button><button class="utility-btn" data-wb-delete="${esc(s.id)}">Delete</button></div></article>`).join(''):'<p>No saved W&amp;B scenarios on this device.</p>'}
+function saveScenario(){const name=scenarioName.value.trim()||`W&B ${new Date().toLocaleDateString()}`;let arr=loadJSON(KEY_SCEN,[]);const state=currentState(),id=uid();arr.unshift({...state,id,name,savedAt:Date.now()});arr=arr.slice(0,30);saveJSON(KEY_SCEN,arr);scenarioName.value=name;scenarioList();toast('W&B scenario saved')}
+function openScenario(id){const s=loadJSON(KEY_SCEN,[]).find(x=>x.id===id);if(!s)return;rows=(s.rows||[]).map(r=>({...r,id:r.id||uid()}));scenarioName.value=s.name||'';profileSelect.value=s.profileId||'';envelopeInput.value=s.envelopeText||'';parseEnvelope(false);renderRows();qs('#wbScenarioDialog')?.close();scheduleSave();toast('Scenario loaded')}
+function applyFuel(){const r=rows.find(x=>x.id===fuelStation.value);if(!r)return toast('Choose a fuel station');const dg=n(qs('#wbFuelDepGal').value),lg=n(qs('#wbFuelLdgGal').value),dens=n(qs('#wbFuelDensity').value);if(!Number.isFinite(dg)||!Number.isFinite(lg)||!Number.isFinite(dens)||dg<0||lg<0||dens<=0)return toast('Check fuel gallons and density');if(lg>dg){setWarn('Landing fuel is greater than departure fuel. That may be intentional, but verify the scenario.')}r.dep=(dg*dens).toFixed(2);r.ldg=(lg*dens).toFixed(2);renderRows();scheduleSave();toast('Fuel weights applied')}
+rowsHost.addEventListener('input',e=>{if(e.target.matches('[data-k]'))calculate()});
+rowsHost.addEventListener('click',e=>{const el=e.target.closest('.wb-row');if(!el)return;const i=rows.findIndex(r=>r.id===el.dataset.id);if(i<0)return;if(e.target.closest('[data-remove]')){undoRow={row:{...rows[i]},index:i};rows.splice(i,1);renderRows();scheduleSave();toast('Station removed')}if(e.target.closest('[data-duplicate]')){const copy={...rows[i],id:uid(),name:(rows[i].name||'Station')+' copy'};rows.splice(i+1,0,copy);renderRows();scheduleSave();toast('Station duplicated')}});
+qs('#addStation').addEventListener('click',()=>{rows.push(blankRow());renderRows();qsa('.wb-row input',rowsHost).at(-6)?.focus();scheduleSave()});
+qs('#wbLoadProfile').addEventListener('click',()=>{const p=profiles().find(x=>x.id===profileSelect.value);if(!p)return toast('Choose an aircraft profile first');if(rows.some(r=>[r.dep,r.ldg,r.arm].some(v=>String(v).trim()!==''))&&!confirm('Replace the current loading table with the selected aircraft profile?'))return;loadProfile(p)});
+qs('#wbSaveScenario').addEventListener('click',saveScenario);
+qs('#wbOpenScenarios').addEventListener('click',()=>{scenarioList();qs('#wbScenarioDialog')?.showModal()});
+qs('#wbScenarioList').addEventListener('click',e=>{const o=e.target.closest('[data-wb-open]'),d=e.target.closest('[data-wb-delete]');if(o)openScenario(o.dataset.wbOpen);if(d){saveJSON(KEY_SCEN,loadJSON(KEY_SCEN,[]).filter(x=>x.id!==d.dataset.wbDelete));scenarioList();toast('Scenario deleted')}});
+qs('#wbClear').addEventListener('click',()=>{if(!confirm('Start a new blank W&B scenario?'))return;rows=defaultRows();scenarioName.value='';envelopeInput.value='';envelope=[];renderRows();localStorage.removeItem(KEY_DRAFT);toast('New W&B scenario')});
+qs('#wbPrint').addEventListener('click',()=>window.print());
+qs('#wbApplyEnvelope').addEventListener('click',()=>parseEnvelope(true));
+qs('#wbApplyFuel').addEventListener('click',applyFuel);
+qsa('[data-density]').forEach(b=>b.addEventListener('click',()=>{qs('#wbFuelDensity').value=b.dataset.density;toast(`Fuel density set to ${b.dataset.density} lb/US gal`)}));
+scenarioName.addEventListener('input',scheduleSave);profileSelect.addEventListener('change',scheduleSave);envelopeInput.addEventListener('input',()=>{clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>{parseEnvelope(false);scheduleSave()},450)});
+window.addEventListener('beforeunload',()=>saveJSON(KEY_DRAFT,currentState()));
+populateProfiles();if(!restoreDraft()){const p=activeProfile();if(p)loadProfile(p);else rows=defaultRows()}renderRows();
+window.PilotDeskWB={getState:currentState,calculate,totals:()=>({departure:totals('dep'),landing:totals('ldg')})};
 })();

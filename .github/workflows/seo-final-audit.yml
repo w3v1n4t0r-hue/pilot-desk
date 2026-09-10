@@ -1,0 +1,44 @@
+name: PilotDesk Final SEO Audit
+
+on:
+  push:
+    branches: [seo-max-safe]
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seo-max-safe
+          fetch-depth: 0
+      - name: Generate canonical sitemap with accurate lastmod
+        run: node scripts/generate-sitemap.mjs
+      - name: Check JavaScript syntax
+        run: find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+      - name: Run complete PilotDesk QA
+        run: |
+          node qa/smoke.mjs
+          node qa/qol-smoke.mjs
+          node qa/product-polish-smoke.mjs
+          node qa/v2-smoke.mjs
+          node qa/planner-lab-tests.mjs
+          node qa/formula-tests.mjs
+          node qa/site-integrity.mjs
+          node qa/copy-tone.mjs
+          node qa/google-audit.mjs
+          node qa/seo-hardening.mjs
+      - name: Commit canonical sitemap
+        run: |
+          git config user.name "PilotDesk Automation"
+          git config user.email "w3v1n4t0r@gmail.com"
+          git add sitemap.xml
+          if git diff --cached --quiet; then
+            echo "Sitemap already current."
+          else
+            git commit -m "Include canonical rewrite targets in sitemap"
+            git push origin HEAD:seo-max-safe
+          fi

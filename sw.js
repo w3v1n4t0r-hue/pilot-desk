@@ -1,10 +1,10 @@
-const CACHE='pilotdesk-v8';
-const CORE=['/','/index.html','/about.html','/weather.html','/aircraft.html','/assets/styles.css','/assets/site.js','/assets/ad-config.js','/assets/ads.js','/assets/analytics.js','/assets/features.js','/assets/brand.js','/assets/share-enhance.js','/assets/aircraft-transfer.js','/assets/update.js','/assets/errors.js','/assets/icon.svg','/site.webmanifest'];
-self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)))});
+const CACHE='pilotdesk-v10';
+const CORE=['/','/index.html','/404.html','/about.html','/weather.html','/aircraft.html','/guides.html','/weight-balance.html','/assets/styles.css','/assets/site.js','/assets/safety.js','/assets/ad-config.js','/assets/ads.js','/assets/analytics.js','/assets/features.js','/assets/brand.js','/assets/share-enhance.js','/assets/calculator-ux.js','/assets/theme.js','/assets/offline-weather.js','/assets/aircraft-transfer.js','/assets/wb-export.js','/assets/update.js','/assets/errors.js','/assets/icon.svg','/site.webmanifest'];
+async function precache(){const cache=await caches.open(CACHE);await cache.addAll(CORE);try{const r=await fetch('/sitemap.xml',{cache:'no-store'});if(r.ok){const xml=await r.text();const urls=[...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(m=>new URL(m[1]).pathname).filter(p=>!p.startsWith('/api/'));await Promise.allSettled([...new Set(urls)].map(p=>cache.add(p)))}}catch{}}
+self.addEventListener('install',event=>event.waitUntil(precache()));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
-self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
-self.addEventListener('fetch',event=>{
-  const req=event.request;if(req.method!=='GET')return;const url=new URL(req.url);if(url.origin!==self.location.origin)return;if(url.pathname.startsWith('/api/')||url.pathname.startsWith('/_vercel/'))return;
-  if(req.mode==='navigate'){event.respondWith(fetch(req).then(res=>{const copy=res.clone();caches.open(CACHE).then(cache=>cache.put(req,copy));return res}).catch(()=>caches.match(req).then(hit=>hit||caches.match('/index.html'))));return}
-  event.respondWith(caches.match(req).then(hit=>{const network=fetch(req).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(cache=>cache.put(req,copy))}return res}).catch(()=>hit);return hit||network}))
+self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',event=>{const req=event.request;if(req.method!=='GET')return;const url=new URL(req.url);if(url.origin!==self.location.origin)return;if(url.pathname.startsWith('/api/')||url.pathname.startsWith('/_vercel/'))return;
+  if(req.mode==='navigate'){event.respondWith(caches.match(req).then(hit=>fetch(req).then(res=>{if(res.ok)caches.open(CACHE).then(c=>c.put(req,res.clone()));return res}).catch(()=>hit||caches.match('/404.html')||caches.match('/index.html'))));return}
+  event.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(res=>{if(res.ok)caches.open(CACHE).then(c=>c.put(req,res.clone()));return res})));
 });

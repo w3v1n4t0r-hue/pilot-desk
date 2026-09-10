@@ -3,6 +3,8 @@ name: PilotDesk QA
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -15,6 +17,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check JavaScript syntax
         run: |
-          find assets api qa -name '*.js' -o -name '*.mjs' | while read file; do node --check "$file"; done
+          find assets api qa -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
       - name: Run PilotDesk smoke checks
         run: node qa/smoke.mjs
+      - name: Run calculator formula regression tests
+        run: node qa/formula-tests.mjs

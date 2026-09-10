@@ -6,6 +6,6 @@ const theme=read('assets/theme.js');for(const s of ['system','light','dark','nig
 const seo=read('assets/seo.js');for(const s of ['application/ld+json','BreadcrumbList','twitter:card','WebApplication'])ok(seo.includes(s),`SEO missing ${s}`);
 const ads=read('assets/ads.js');ok(ads.includes('runtime-qol.js'),'QoL runtime is not globally loaded');ok(ads.includes('wrap.hidden=true'),'Blank ad placeholders are not suppressed early');
 const sw=read('sw.js');ok(sw.includes("startsWith('/api/')"),'Service worker must leave live APIs network-only');ok(sw.includes('runtime-qol.js'),'Runtime QoL not precached');
-const weather=read('api/weather.js');ok(weather.includes('s-maxage=60'),'Weather endpoint should use a short server-side freshness cache');ok(weather.includes('X-Robots-Tag'),'Weather API should be noindex');
+const weather=read('api/weather.js'),ages=[...weather.matchAll(/s-maxage=(\d+)/g)].map(m=>Number(m[1]));ok(ages.some(x=>x>0&&x<=120),'Weather endpoint should use a short server-side freshness cache');ok(weather.includes('X-Robots-Tag'),'Weather API should be noindex');
 const v=JSON.stringify(JSON.parse(read('vercel.json')));for(const s of ['X-Content-Type-Options','Referrer-Policy','Permissions-Policy','Cache-Control','Service-Worker-Allowed'])ok(v.includes(s),`Vercel policy missing ${s}`);
 if(failures.length){console.error(`QoL smoke failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}console.log('PilotDesk QoL smoke passed.');

@@ -4,23 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Aircraft Weight & Balance Calculator | PilotDesk</title>
-  <meta name="description" content="Build departure and landing aircraft weight-and-balance scenarios with station moments, CG, fuel burn, optional entered-envelope checks, local autosave, and printable worksheets.">
+  <meta name="description" content="Build departure and landing aircraft weight-and-balance scenarios with a visual cabin loader, station moments, CG, fuel burn, optional entered-envelope checks, local autosave, and printable worksheets.">
   <meta name="robots" content="index,follow">
   <meta name="theme-color" content="#08090b">
   <meta name="color-scheme" content="dark light">
   <link rel="canonical" href="https://www.pilot-desk.com/calculators/weight-balance-builder/">
   <meta property="og:title" content="Aircraft Weight & Balance Calculator | PilotDesk">
-  <meta property="og:description" content="Build departure and landing W&B scenarios and verify the results against your aircraft's current approved POH/AFM data.">
+  <meta property="og:description" content="Build departure and landing W&B scenarios with a visual cabin loader and verify the results against your aircraft's current approved POH/AFM data.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.pilot-desk.com/calculators/weight-balance-builder/">
   <link rel="stylesheet" href="/assets/styles.css">
   <link rel="stylesheet" href="/assets/wb-v2.css">
+  <link rel="stylesheet" href="/assets/wb-cabin.css">
   <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
   <link rel="manifest" href="/site.webmanifest">
   <script defer src="/assets/site.js"></script>
   <script defer src="/assets/ad-config.js"></script>
   <script defer src="/assets/ads.js"></script>
   <script defer src="/assets/weight-balance.js"></script>
+  <script defer src="/assets/wb-cabin.js"></script>
   <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2325772529624834"></script>
 </head>
 <body>
@@ -31,7 +33,7 @@
     <span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span>
   </a>
   <button aria-label="Open menu" class="menu-btn" data-menu>☰</button>
-  <nav><a href="/">Calculators</a><a href="/weather.html">Weather</a><a href="/aircraft.html">Aircraft</a><a href="/guides.html">Guides</a><a href="/sources.html">Sources</a></nav>
+  <nav><a href="/">Calculators</a><a href="/planner.html">Planner</a><a href="/weather.html">Weather</a><a href="/aircraft.html">Aircraft</a><a href="/guides.html">Guides</a><a href="/sources.html">Sources</a></nav>
 </header>
 <main class="shell wb-shell" id="main-content">
   <div class="breadcrumbs"><a href="/">Calculators</a> / Weight &amp; Balance Builder</div>
@@ -40,7 +42,7 @@
   <section class="calc-hero wb-hero">
     <span class="badge">WEIGHT &amp; BALANCE</span>
     <h1>Weight &amp; Balance Builder</h1>
-    <p>Build one loading table for departure and landing. Enter actual station weights and arms from the specific aircraft's current approved data, then compare the calculated totals and CG with the applicable limits.</p>
+    <p>Load the airplane visually, then use the advanced station table only when you need it. PilotDesk calculates departure and landing weight, moment, and CG from the exact weights and arms you provide.</p>
   </section>
 
   <section class="wb-toolbar" aria-label="Scenario controls">
@@ -58,11 +60,41 @@
 
   <div class="wb-grid-layout">
     <section class="calc-box wb-main-card">
-      <div class="wb-section-head"><div><h2>Loading stations</h2><p>Use landing weight to account for fuel or other weight changes during flight. For unchanged stations, departure and landing weight may be identical.</p></div><button class="calc-btn" id="addStation" type="button">Add station</button></div>
-      <div class="wb-table" role="table" aria-label="Weight and balance loading stations">
-        <div class="wb-head" role="row"><span>Station</span><span>Departure wt</span><span>Landing wt</span><span>Arm</span><span>Dep moment</span><span>Ldg moment</span><span></span></div>
-        <div id="wbRows"></div>
-      </div>
+      <section class="wb-cabin-card" aria-labelledby="wbCabinTitle">
+        <div class="wb-cabin-head">
+          <div>
+            <span class="badge">QUICK LOAD</span>
+            <h2 id="wbCabinTitle">Visual cabin loader</h2>
+            <p>Choose a generic top-view layout, then enter occupant/cargo weights and the approved arm for each station. The picture is only an organizing aid; it does not supply aircraft-specific arms or limits.</p>
+          </div>
+          <div class="wb-cabin-controls">
+            <label class="wb-field" for="wbCabinLayout"><span>Cabin view</span><select id="wbCabinLayout"><option value="four">4-seat single</option><option value="six">6-seat cabin</option><option value="twin">4-seat light twin</option><option value="utility">Utility / cargo</option></select></label>
+            <label class="wb-mirror"><input id="wbMirrorLanding" type="checkbox" checked> Mirror visual weights to landing</label>
+            <button class="utility-btn" id="wbCabinRefresh" type="button">Refresh from table</button>
+          </div>
+        </div>
+        <div class="wb-cabin-meta">
+          <label><span>Basic empty weight</span><div><input id="wbVisualBEWWeight" type="number" step="any" inputmode="decimal" placeholder="lb"><input id="wbVisualBEWArm" type="number" step="any" inputmode="decimal" placeholder="arm in"></div></label>
+          <p class="fine">Loading an aircraft profile can prefill approved station arms you previously saved. Always verify them against the current aircraft records.</p>
+        </div>
+        <div class="wb-aircraft-stage" id="wbAircraftStage">
+          <div id="wbAircraftSilhouette" class="wb-aircraft-silhouette" aria-hidden="true"></div>
+          <div id="wbCabinSlots" class="wb-cabin-slots"></div>
+        </div>
+        <p class="fine wb-cabin-note" id="wbCabinStatus">Visual entries synchronize with the loading station table below.</p>
+      </section>
+
+      <details class="wb-advanced" id="wbAdvancedStations">
+        <summary><span><b>Advanced station table</b><small>Custom stations, separate landing weights, moments, and fine adjustments</small></span><span aria-hidden="true">⌄</span></summary>
+        <div class="wb-advanced-body">
+          <div class="wb-section-head"><div><h2>Loading stations</h2><p>For unchanged stations, departure and landing weight may be identical. Use separate landing weights when fuel or another load changes in flight.</p></div><button class="calc-btn" id="addStation" type="button">Add station</button></div>
+          <div class="wb-table" role="table" aria-label="Weight and balance loading stations">
+            <div class="wb-head" role="row"><span>Station</span><span>Departure wt</span><span>Landing wt</span><span>Arm</span><span>Dep moment</span><span>Ldg moment</span><span></span></div>
+            <div id="wbRows"></div>
+          </div>
+        </div>
+      </details>
+
       <div id="wbSafetyWarning" class="safety-warning" role="alert" aria-live="polite"></div>
 
       <div class="wb-total-grid" aria-live="polite">

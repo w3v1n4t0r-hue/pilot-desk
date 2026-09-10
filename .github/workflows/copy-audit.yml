@@ -21,6 +21,9 @@ jobs:
           p=Path('scripts/clean-copy.mjs')
           s=p.read_text()
           s=s.replace("['48 aviation calculators in one place.','48 aviation calculators.'],","['aviation calculators in one place.','aviation calculators.'],")
+          a=s.index("edit('qa/planner-lab-tests.mjs'")
+          b=s.index("edit('.github/workflows/workspace-live.yml'",a)
+          s=s[:a]+s[b:]
           p.write_text(s)
           PY
           node scripts/clean-copy.mjs

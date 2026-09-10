@@ -30,10 +30,18 @@ await check('shared crosswind link prefills and calculates',async()=>{
 await check('weather lookup reaches PilotDesk weather API',async()=>{
   await page.goto(base+'/weather.html',{waitUntil:'domcontentloaded',timeout:30000});
   await page.locator('#station').fill('KGFK');
+  const responsePromise=page.waitForResponse(r=>r.url().includes('/api/weather?station=KGFK'),{timeout:15000});
   await page.locator('#weatherForm button[type="submit"]').click();
-  await page.waitForFunction(()=>{const x=document.querySelector('#weatherOutput');return x&&/METAR|No current data found|Weather lookup failed/.test(x.textContent||'')},{timeout:25000});
-  const text=await page.locator('#weatherOutput').innerText();
-  if(/Weather lookup failed/i.test(text))throw new Error('live weather lookup failed');
+  const response=await responsePromise;
+  const body=await response.text();
+  if(!response.ok())throw new Error(`weather API HTTP ${response.status()}: ${body.slice(0,300)}`);
+  await page.waitForFunction(()=>{
+    const status=document.querySelector('#weatherStatus')?.textContent||'';
+    const output=document.querySelector('#weatherOutput')?.textContent||'';
+    return !/Fetching|Loading/i.test(status+output) && /KGFK|METAR|No current products/i.test(status+output);
+  },{timeout:10000});
+  const text=(await page.locator('#weatherStatus').innerText())+' '+(await page.locator('#weatherOutput').innerText());
+  if(/Weather retrieval failed|Weather could not be loaded/i.test(text))throw new Error(text.slice(0,400));
   if(!/KGFK|METAR/i.test(text))throw new Error('weather response did not render');
 });
 

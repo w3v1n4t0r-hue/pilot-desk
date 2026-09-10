@@ -1,1 +1,42 @@
-(()=>{const all=window.PD_CALCS||[];const slug=location.pathname.split('/').filter(Boolean).pop()||new URLSearchParams(location.search).get('slug');const c=all.find(x=>x[0]===slug);if(!c){document.getElementById('pdTitle').textContent='Calculator not found';document.getElementById('pdDesc').textContent='Choose a calculator from the PilotDesk home page.';return}const [s,key,title,desc,fields,results]=c;document.body.dataset.calc=key;document.title=title+' | PilotDesk';document.getElementById('pdTitle').textContent=title;document.getElementById('pdDesc').textContent=desc;document.getElementById('pdCrumb').textContent=title;const canonical=document.createElement('link');canonical.rel='canonical';canonical.href='https://pilot-desk.com/calculators/'+s+'/';document.head.appendChild(canonical);const box=document.getElementById('pdFields');for(const [id,label,value,unit] of fields){const f=document.createElement('div');f.className='field';const l=document.createElement('label');l.htmlFor=id;l.textContent=label;const w=document.createElement('div');w.className='input-wrap';const i=document.createElement('input');i.id=id;i.type='number';i.step='any';i.value=value;i.setAttribute('data-calc-input','');i.setAttribute('inputmode','decimal');w.appendChild(i);if(unit){const u=document.createElement('span');u.textContent=unit;w.appendChild(u)}f.append(l,w);box.appendChild(f)}const out=document.getElementById('pdResults');results.forEach((label,n)=>{const r=document.createElement('div');r.className='result'+(n===0?' primary':'');const sm=document.createElement('small');sm.textContent=label;const st=document.createElement('strong');st.id='out'+n;st.textContent='—';r.append(sm,st);out.appendChild(r)});})();
+(()=>{
+  const all=window.PD_CALCS||[];
+  const parts=location.pathname.split('/').filter(Boolean);
+  const slug=parts[parts.length-1]||new URLSearchParams(location.search).get('slug');
+  const c=all.find(x=>x[0]===slug);
+  if(!c){
+    document.getElementById('pdTitle').textContent='Calculator not found';
+    document.getElementById('pdDesc').textContent='Choose a calculator from the PilotDesk home page.';
+    return;
+  }
+  const [s,key,title,desc,fields,results]=c;
+  document.body.dataset.calc=key;
+  document.title=title+' | PilotDesk';
+  document.getElementById('pdTitle').textContent=title;
+  document.getElementById('pdDesc').textContent=desc;
+  document.getElementById('pdCrumb').textContent=title;
+  const canonical=document.createElement('link');
+  canonical.rel='canonical';
+  canonical.href='https://www.pilot-desk.com/calculators/'+s+'/';
+  document.head.appendChild(canonical);
+  const params=new URLSearchParams(location.search);
+  const box=document.getElementById('pdFields');
+  for(const [id,label,value,unit] of fields){
+    const f=document.createElement('div');f.className='field';
+    const l=document.createElement('label');l.htmlFor=id;l.textContent=label;
+    const w=document.createElement('div');w.className='input-wrap';
+    const i=document.createElement('input');i.id=id;i.type='number';i.step='any';
+    const incoming=params.get(id);
+    i.value=incoming!==null&&incoming.trim()!==''&&Number.isFinite(Number(incoming))?incoming:value;
+    i.setAttribute('data-calc-input','');i.setAttribute('inputmode','decimal');
+    w.appendChild(i);
+    if(unit){const u=document.createElement('span');u.textContent=unit;w.appendChild(u)}
+    f.append(l,w);box.appendChild(f);
+  }
+  const out=document.getElementById('pdResults');
+  results.forEach((label,n)=>{
+    const r=document.createElement('div');r.className='result'+(n===0?' primary':'');
+    const sm=document.createElement('small');sm.textContent=label;
+    const st=document.createElement('strong');st.id='out'+n;st.textContent='—';
+    r.append(sm,st);out.appendChild(r);
+  });
+})();

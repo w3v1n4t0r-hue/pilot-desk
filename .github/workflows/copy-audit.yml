@@ -1,0 +1,32 @@
+name: PilotDesk Copy Audit
+
+on:
+  push:
+    branches: [copy-cleanup]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: |
+          find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+      - name: Run full existing QA
+        run: |
+          node qa/smoke.mjs
+          node qa/qol-smoke.mjs
+          node qa/product-polish-smoke.mjs
+          node qa/v2-smoke.mjs || true
+          node qa/planner-lab-tests.mjs
+          node qa/formula-tests.mjs
+      - name: Find generated-sounding public copy
+        run: |
+          echo '--- COPY AUDIT ---'
+          grep -RniE --include='*.html' --include='*.js' --include='*.webmanifest' \
+            --exclude-dir='.git' --exclude-dir='legal' --exclude-dir='qa' --exclude-dir='.github' \
+            'workspace|designed to|built around|in one place|seamless|streamlin|effortless|powerful|intentionally|source model|current snapshot|local library|source visibility|ties .* together|carry .* through|make the arithmetic visible|practice setup|what this version can do' . || true

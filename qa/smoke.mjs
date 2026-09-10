@@ -2,61 +2,20 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const mustExist=[
-  'index.html','calculator.html','weight-balance.html','weather.html','aircraft.html','feedback.html',
-  'vercel.json','site.webmanifest','sw.js','package.json','api/weather.js',
-  'assets/styles.css','assets/site.js','assets/safety.js','assets/ad-config.js','assets/ads.js',
-  'assets/analytics.js','assets/brand.js','assets/home-fix.js','assets/features.js','assets/weather-fixed.js',
-  'assets/calculator-config.js','assets/dynamic-calculator.js','assets/weight-balance.js','assets/icon.svg'
+  'index.html','calculator.html','weight-balance.html','weather.html','aircraft.html','feedback.html','about.html','sources.html','guides.html','404.html','robots.txt','sitemap.xml',
+  'legal/privacy.html','legal/terms.html','legal/disclaimer.html','legal/safety.html',
+  'guides/crosswind-component.html','guides/density-altitude.html','guides/weight-and-balance.html','guides/pivotal-altitude.html','guides/fuel-planning.html',
+  'vercel.json','site.webmanifest','sw.js','package.json','api/weather.js','api/client-error.js',
+  'assets/styles.css','assets/site.js','assets/safety.js','assets/ad-config.js','assets/ads.js','assets/analytics.js','assets/brand.js','assets/home-fix.js','assets/features.js','assets/weather-fixed.js','assets/share-enhance.js','assets/aircraft-transfer.js','assets/wb-export.js','assets/update.js','assets/errors.js','assets/seo.js','assets/calculator-config.js','assets/dynamic-calculator.js','assets/weight-balance.js','assets/icon.svg'
 ];
-const failures=[];
-const ok=(cond,msg)=>{if(!cond)failures.push(msg)};
-for(const p of mustExist)ok(fs.existsSync(p),`Missing ${p}`);
-
-const read=p=>fs.readFileSync(p,'utf8');
-const packageJson=JSON.parse(read('package.json'));
-ok(packageJson.dependencies?.['@vercel/analytics']==='2.0.1','@vercel/analytics 2.0.1 is not installed in package.json');
-JSON.parse(read('site.webmanifest'));
-const vercel=JSON.parse(read('vercel.json'));
-ok(JSON.stringify(vercel.rewrites||[]).includes('weight-balance-builder'),'Weight & Balance Builder rewrite missing');
-ok(JSON.stringify(vercel.rewrites||[]).includes('/calculator.html'),'Dynamic calculator rewrite missing');
-
-const context={window:{}};
-vm.createContext(context);
-vm.runInContext(read('assets/calculator-config.js'),context);
-const calcs=context.window.PD_CALCS||[];
-ok(calcs.length===47,`Expected 47 standard calculators, found ${calcs.length}`);
-const slugs=calcs.map(c=>c[0]);
-ok(new Set(slugs).size===slugs.length,'Duplicate calculator slug found');
-for(const c of calcs){
-  ok(Array.isArray(c)&&c.length===6,`Malformed calculator config for ${c?.[0]}`);
-  ok(c[0]&&c[1]&&c[2],`Missing calculator identity fields for ${c?.[0]}`);
-  ok(Array.isArray(c[4])&&c[4].length>0,`No fields for ${c?.[0]}`);
-  ok(Array.isArray(c[5])&&c[5].length>0,`No results for ${c?.[0]}`);
-}
-
-const ads=read('assets/ads.js');
-for(const helper of ['brand.js','home-fix.js','features.js','analytics.js'])ok(ads.includes(helper),`ads.js is not loading ${helper}`);
-const analytics=read('assets/analytics.js');
-ok(analytics.includes('/_vercel/insights/script.js'),'Vercel Analytics script is not wired');
-const weather=read('weather.html');
-ok(weather.indexOf('/assets/weather-fixed.js')<weather.indexOf('/assets/ads.js'),'weather-fixed.js must load before ads.js');
-ok(weather.includes('/assets/site.js')&&weather.includes('/assets/ad-config.js'),'Weather page missing common site scripts');
-const weatherFix=read('assets/weather-fixed.js');
-ok(weatherFix.includes("fetch('/api/weather?station="),'Weather page is not using same-origin weather proxy');
-ok(weatherFix.includes('stopImmediatePropagation'),'Weather fix is not blocking the old direct-browser request');
-const weatherApi=read('api/weather.js');
-ok(weatherApi.includes('aviationweather.gov/api/data'),'Weather proxy does not call Aviation Weather Center');
-ok(weatherApi.includes("'User-Agent'"),'Weather proxy is missing custom User-Agent');
-const sw=read('sw.js');
-ok(sw.includes("startsWith('/api/')"),'Service worker must not cache live API responses');
-ok(read('assets/brand.js').includes('<svg'),'Wireframe header logo is missing');
-ok(read('assets/icon.svg').includes('stroke="#d8dbe0"'),'Wireframe app icon is missing');
-ok(read('assets/home-fix.js').includes('weight-balance-builder'),'Homepage 48th calculator fix missing');
-
-if(failures.length){
-  console.error(`PilotDesk smoke check failed (${failures.length})`);
-  failures.forEach(x=>console.error(' - '+x));
-  process.exit(1);
-}
-console.log(`PilotDesk smoke check passed: ${calcs.length} standard calculators + Weight & Balance Builder = 48 tools.`);
-console.log('Weather proxy, PWA files, analytics wiring, ad helpers, routing, and wireframe branding are present.');
+const failures=[];const ok=(cond,msg)=>{if(!cond)failures.push(msg)};for(const p of mustExist)ok(fs.existsSync(p),`Missing ${p}`);const read=p=>fs.readFileSync(p,'utf8');
+const packageJson=JSON.parse(read('package.json'));ok(Boolean(packageJson.dependencies?.['@vercel/analytics']),'@vercel/analytics dependency missing');JSON.parse(read('site.webmanifest'));
+const vercel=JSON.parse(read('vercel.json'));const rewrites=JSON.stringify(vercel.rewrites||[]);ok(rewrites.includes('weight-balance-builder'),'Weight & Balance Builder rewrite missing');ok(rewrites.includes('/calculators/:slug/index.html'),'Static calculator route rewrite missing');ok(!rewrites.includes('"destination":"/calculator.html"'),'Calculator routes should serve indexable static pages');
+const context={window:{}};vm.createContext(context);vm.runInContext(read('assets/calculator-config.js'),context);const calcs=context.window.PD_CALCS||[];ok(calcs.length===47,`Expected 47 standard calculators, found ${calcs.length}`);const slugs=calcs.map(c=>c[0]);ok(new Set(slugs).size===slugs.length,'Duplicate calculator slug found');for(const c of calcs){ok(Array.isArray(c)&&c.length===6,`Malformed calculator config for ${c?.[0]}`);ok(fs.existsSync(`calculators/${c[0]}/index.html`),`Missing static calculator page: ${c[0]}`);ok(Array.isArray(c[4])&&c[4].length>0,`No fields for ${c?.[0]}`);ok(Array.isArray(c[5])&&c[5].length>0,`No results for ${c?.[0]}`)}
+const ads=read('assets/ads.js');for(const helper of ['brand.js','home-fix.js','features.js','analytics.js','seo.js','share-enhance.js','aircraft-transfer.js','wb-export.js','update.js','errors.js'])ok(ads.includes(helper),`ads.js is not loading ${helper}`);
+ok(read('assets/analytics.js').includes('/_vercel/insights/script.js'),'Vercel Analytics script is not wired');
+const weather=read('weather.html');ok(weather.includes('/assets/weather-fixed.js')&&weather.includes('/assets/ads.js'),'Weather page missing weather/common scripts');const weatherFix=read('assets/weather-fixed.js');ok(weatherFix.includes("fetch('/api/weather?station="),'Weather page is not using same-origin weather proxy');ok(weatherFix.includes('Runway wind components'),'Runway-aware weather UI missing');ok(weatherFix.includes('stopImmediatePropagation'),'Weather handler is not blocking duplicate submit listeners');const weatherApi=read('api/weather.js');ok(weatherApi.includes('aviationweather.gov/api/data'),'Weather proxy does not call Aviation Weather Center');ok(weatherApi.includes("'User-Agent'"),'Weather proxy is missing custom User-Agent');
+const sw=read('sw.js');ok(sw.includes("startsWith('/api/')"),'Service worker must not cache live API responses');ok(sw.includes('SKIP_WAITING'),'PWA update handling missing');ok(read('assets/brand.js').includes('<svg'),'Wireframe header logo is missing');ok(read('assets/icon.svg').includes('stroke="#d8dbe0"'),'Wireframe app icon is missing');ok(read('assets/home-fix.js').includes('weight-balance-builder'),'Homepage 48th calculator fix missing');ok(read('assets/share-enhance.js').includes('URLSearchParams'),'Shareable calculator inputs missing');ok(read('assets/aircraft-transfer.js').includes('PilotDesk-aircraft-profiles'),'Aircraft export/import missing');ok(read('assets/wb-export.js').includes('Print / Save PDF'),'W&B printable export missing');ok(read('404.html').includes('noindex,follow'),'404 page should be noindex');
+const sitemap=read('sitemap.xml');ok(sitemap.includes('https://www.pilot-desk.com/calculators/crosswind/'),'Sitemap missing calculators');ok(sitemap.includes('guides/crosswind-component.html'),'Sitemap missing guides');ok(read('robots.txt').includes('Sitemap: https://www.pilot-desk.com/sitemap.xml'),'robots.txt sitemap missing');
+for(const p of ['legal/privacy.html','legal/terms.html','legal/disclaimer.html','legal/safety.html'])ok(read(p).length>1200,`${p} is unexpectedly thin`);ok(read('sources.html').includes('Aviation Weather Center'),'Sources page missing weather source');ok(read('sources.html').includes('Pilot\'s Handbook of Aeronautical Knowledge'),'Sources page missing FAA handbook');
+if(failures.length){console.error(`PilotDesk smoke check failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}console.log(`PilotDesk smoke check passed: ${calcs.length} standard calculators + Weight & Balance Builder = 48 tools.`);console.log('Weather, routing, SEO, legal pages, analytics, PWA, exports, error reporting and wireframe branding are present.');

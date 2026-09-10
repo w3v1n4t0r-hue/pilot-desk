@@ -3,30 +3,42 @@ name: PilotDesk Copy Audit
 on:
   push:
     branches: [copy-cleanup]
-  workflow_dispatch:
+    paths:
+      - '.github/RUN_COPY_AUDIT'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Regenerate calculator pages
+        run: |
+          node scripts/generate-calculator-pages.mjs
+          node scripts/postprocess-site.mjs
       - name: Check JavaScript syntax
         run: |
           find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
-      - name: Run full existing QA
+      - name: Run full QA
         run: |
           node qa/smoke.mjs
           node qa/qol-smoke.mjs
           node qa/product-polish-smoke.mjs
-          node qa/v2-smoke.mjs || true
+          node qa/v2-smoke.mjs
           node qa/planner-lab-tests.mjs
           node qa/formula-tests.mjs
-      - name: Find generated-sounding public copy
+          node qa/site-integrity.mjs
+          node qa/copy-tone.mjs
+      - name: Commit regenerated calculator pages
         run: |
-          echo '--- COPY AUDIT ---'
-          grep -RniE --include='*.html' --include='*.js' --include='*.webmanifest' \
-            --exclude-dir='.git' --exclude-dir='legal' --exclude-dir='qa' --exclude-dir='.github' \
-            'workspace|designed to|built around|in one place|seamless|streamlin|effortless|powerful|intentionally|source model|current snapshot|local library|source visibility|ties .* together|carry .* through|make the arithmetic visible|practice setup|what this version can do' . || true
+          git config user.name "PilotDesk Automation"
+          git config user.email "w3v1n4t0r@gmail.com"
+          git add calculators
+          if git diff --cached --quiet; then
+            echo "Calculator pages already current."
+          else
+            git commit -m "Refresh calculator copy"
+            git push
+          fi

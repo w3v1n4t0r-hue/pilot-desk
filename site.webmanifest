@@ -2,8 +2,8 @@
   "id": "/",
   "name": "PilotDesk",
   "short_name": "PilotDesk",
-  "description": "Fast aviation calculators, aircraft profiles, weight-and-balance planning math, and airport weather tools.",
-  "start_url": "/",
+  "description": "Connected aviation planning tools for airport search, live weather, FAA chart route planning, saved flights, flight briefs, aircraft profiles, weight and balance, and pilot math.",
+  "start_url": "/planner.html",
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
@@ -14,9 +14,9 @@
     {"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
   ],
   "shortcuts": [
-    {"name":"Crosswind Component","short_name":"Crosswind","description":"Calculate runway headwind, tailwind, and crosswind components.","url":"/calculators/crosswind/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Density Altitude","short_name":"Density Alt","description":"Calculate density altitude from pressure altitude and temperature.","url":"/calculators/density-altitude/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Airport Weather","short_name":"Weather","description":"Open current METAR and TAF lookup.","url":"/weather.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Weight & Balance","short_name":"W&B","description":"Open the departure and landing weight-and-balance builder.","url":"/calculators/weight-balance-builder/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]}
+    {"name":"Airport Search","short_name":"Airports","description":"Search an airport and open weather, runway, procedure, and planning context.","url":"/airport.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Route Planner","short_name":"Planner","description":"Open the FAA chart route planner and navlog.","url":"/route-planner.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Saved Flights","short_name":"Flights","description":"Open locally saved PilotDesk flights.","url":"/flights.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Airport Weather","short_name":"Weather","description":"Open current METAR and TAF lookup.","url":"/weather.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }

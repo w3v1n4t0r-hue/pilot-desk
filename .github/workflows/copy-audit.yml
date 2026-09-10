@@ -51,6 +51,7 @@ jobs:
           git config user.name "PilotDesk Automation"
           git config user.email "w3v1n4t0r@gmail.com"
           git add -A
+          git reset HEAD .github/workflows/qa.yml .github/workflows/workspace-live.yml
           if git diff --cached --quiet; then
             echo "Cleanup already current."
           else

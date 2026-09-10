@@ -17,6 +17,15 @@ jobs:
           fetch-depth: 0
       - name: Apply maximum safe SEO pass
         run: python scripts/apply-seo-max-safe.py
+      - name: Preserve calculator disclosure copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/generate-calculator-pages.mjs')
+          s=p.read_text()
+          s=s.replace('<summary><strong>${esc(title)} formula and assumptions</strong></summary>', '<summary><strong>Show formula and assumptions</strong></summary>')
+          p.write_text(s)
+          PY
       - name: Regenerate calculator pages
         run: node scripts/generate-calculator-pages.mjs
       - name: Apply static postprocessing

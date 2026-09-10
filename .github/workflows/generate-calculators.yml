@@ -8,6 +8,7 @@ on:
       - 'scripts/generate-calculator-pages.mjs'
       - 'scripts/postprocess-site.mjs'
       - 'scripts/postprocess-extras.mjs'
+      - 'scripts/postprocess-brand-final.mjs'
       - '.github/workflows/generate-calculators.yml'
   workflow_dispatch:
 
@@ -23,6 +24,8 @@ jobs:
         run: node scripts/generate-calculator-pages.mjs
       - name: Apply static branding and aviation FAQ content
         run: node scripts/postprocess-site.mjs
+      - name: Finalize static brand before first paint
+        run: node scripts/postprocess-brand-final.mjs
       - name: Apply homepage, 404, and sitemap polish
         run: node scripts/postprocess-extras.mjs
       - name: Commit generated and postprocessed pages

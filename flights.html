@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Saved Flights & Local Flight Plans | PilotDesk</title>
+  <meta name="description" content="Save routes, aircraft, planning TAS, fuel burn, winds, dates, and notes locally in PilotDesk, then open a one-page flight brief or send the flight back to the route planner.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#08090b">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://www.pilot-desk.com/flights.html">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/planner-suite.css">
+  <link rel="stylesheet" href="/assets/hub.css">
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/site.webmanifest">
+  <script defer src="/assets/site.js"></script>
+  <script defer src="/assets/product-nav.js"></script>
+  <script defer src="/assets/flights.js"></script>
+  <script defer src="/assets/ad-config.js"></script>
+  <script defer src="/assets/ads.js"></script>
+  <script async crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2325772529624834"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true" data-pd-wireframe="1" style="background:transparent;box-shadow:none;border:1px solid #34383f;color:#d9dde2;width:38px;height:38px;border-radius:8px;padding:3px"><svg viewBox="0 0 64 40"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M32 5v9"/><path d="M32 14c-4.8 0-8 3.8-8 8.5S27.2 31 32 31s8-3.8 8-8.5S36.8 14 32 14Z"/><path d="M25 19 8 15l2 5 14 3"/><path d="m39 23 15-3 2-5-17 4"/></g></svg></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/">Calculators</a><a href="/airport.html">Airports</a><a href="/planner.html">Planner</a><a href="/flights.html" aria-current="page">Flights</a><a href="/aircraft.html">Hangar</a><a href="/guides.html">Guides</a></nav></header>
+<main class="shell content-page" id="main-content">
+  <section class="pd-flight-hero"><span class="badge">LOCAL FLIGHT LIBRARY</span><h1>Saved Flights</h1><p>Keep the route, aircraft, TAS, fuel burn, planning wind, date, and notes together. Saved flights stay in this browser; no account is required.</p></section>
+  <div class="safety-strip"><strong>Planning convenience only.</strong> A saved flight is not a filed flight plan, dispatch release, or official weather briefing. Recheck all current operational information before flight.</div>
+  <section class="pd-panel">
+    <div class="pd-card-head"><div><h2 id="flightFormTitle">Save a flight</h2><p>Use your active Hangar aircraft for quick defaults, or enter planning values manually.</p></div><button class="pd-btn secondary" type="button" id="flightImportPlanner">Use latest planner route</button></div>
+    <form id="flightForm">
+      <input type="hidden" id="flightId" name="id">
+      <div class="pd-form-grid">
+        <div class="pd-field"><label for="flightName">Flight name</label><input id="flightName" name="name" maxlength="100" placeholder="Grand Forks to Fargo"></div>
+        <div class="pd-field"><label for="flightDate">Planned date</label><input id="flightDate" name="date" type="date"></div>
+        <div class="pd-field" style="grid-column:1/-1"><label for="flightRoute">Route</label><input id="flightRoute" name="route" maxlength="400" placeholder="KGFK KFAR KMSP" required><small>Use airport, NAVAID, or fix identifiers accepted by the Route Planner.</small></div>
+        <div class="pd-field"><label for="flightAircraft">Aircraft</label><select id="flightAircraft" name="aircraftId"></select></div>
+        <div class="pd-field"><label for="flightTas">Planning TAS (kt)</label><input id="flightTas" name="tas" type="number" min="1" step="any" inputmode="decimal"></div>
+        <div class="pd-field"><label for="flightBurn">Fuel burn (GPH)</label><input id="flightBurn" name="burn" type="number" min="0" step="any" inputmode="decimal"></div>
+        <div class="pd-field"><label for="flightWindDir">Planning wind FROM (° true)</label><input id="flightWindDir" name="windDir" type="number" min="0" max="360" step="any" value="270"></div>
+        <div class="pd-field"><label for="flightWindSpeed">Planning wind speed (kt)</label><input id="flightWindSpeed" name="windSpeed" type="number" min="0" step="any" value="20"></div>
+        <div class="pd-field"><label for="flightVariation">Magnetic variation (° east positive)</label><input id="flightVariation" name="variation" type="number" step="any" value="0"></div>
+        <div class="pd-field" style="grid-column:1/-1"><label for="flightNotes">Notes</label><textarea id="flightNotes" name="notes" maxlength="1200" placeholder="Fuel stop, instructor notes, preferred runway, training objective…"></textarea></div>
+      </div>
+      <p id="flightStatus" class="notice" role="status" aria-live="polite">Saved flight data stays on this device.</p>
+      <div class="pd-actions"><button class="pd-btn" type="submit">Save flight</button><button class="pd-btn secondary" id="flightReset" type="button">Clear form</button><a class="pd-btn secondary" href="/route-planner.html">Open Route Planner</a></div>
+    </form>
+  </section>
+  <section class="pd-panel"><div class="pd-card-head"><div><h2>Your flights</h2><p id="flightCount">Stored only on this device.</p></div><a class="pd-btn secondary" href="/flight-brief.html">Open latest brief</a></div><div id="savedFlights" class="pd-flight-list"></div></section>
+  <div class="ad-wrap"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="content"><span>Ad space</span></div></div>
+  <section class="info-card"><h2>How saved flights work</h2><p>PilotDesk stores saved flights in your browser. Clearing site data removes them. They are designed to move a route and planning assumptions quickly between the saved-flight library, Route Planner, and Flight Brief.</p><div class="source-links"><a href="/aircraft.html">My Hangar</a><a href="/airport.html">Airport Search</a><a href="/route-planner.html">Route Planner</a><a href="/legal/privacy.html">Privacy</a></div></section>
+</main>
+<footer><div><b>PilotDesk</b><p>Aviation planning, calculation, and training tools.</p></div><div class="footer-links"><a href="/airport.html">Airports</a><a href="/flight-brief.html">Flight Brief</a><a href="/legal/safety.html">Safety</a><a href="/sources.html">Sources</a></div></footer>
+</body>
+</html>

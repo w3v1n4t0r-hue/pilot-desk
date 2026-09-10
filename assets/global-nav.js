@@ -22,7 +22,7 @@ function apply(){
   document.querySelectorAll('header.topbar').forEach(header=>{
     const nav=header.querySelector(':scope > nav');if(!nav)return;
     nav.classList.add('pd-global-nav');
-    nav.replaceChildren(...NAV.map(([href,label])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(isCurrent(href,path))a.setAttribute('aria-current','page');return a}));
+    const expected=NAV.map(([href,label])=>href+'|'+label).join('||'),current=[...nav.querySelectorAll(':scope > a')].map(a=>(a.getAttribute('href')||'')+'|'+(a.textContent||'').trim()).join('||');if(current!==expected)nav.replaceChildren(...NAV.map(([href,label])=>{const a=document.createElement('a');a.href=href;a.textContent=label;return a}));nav.querySelectorAll(':scope > a').forEach(a=>{if(isCurrent(a.getAttribute('href')||'',path))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
     let menu=header.querySelector('[data-menu]');
     if(!menu){menu=document.createElement('button');menu.type='button';menu.className='menu-btn';menu.dataset.menu='';menu.setAttribute('aria-label','Open navigation');menu.setAttribute('aria-expanded','false');menu.textContent='☰';header.insertBefore(menu,nav)}
     if(!menu.dataset.pdBound){menu.dataset.pdBound='1';menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')});nav.addEventListener('click',e=>{if(e.target.closest('a')){nav.classList.remove('open');menu.setAttribute('aria-expanded','false')}});document.addEventListener('click',e=>{if(!header.contains(e.target)){nav.classList.remove('open');menu.setAttribute('aria-expanded','false')}})}

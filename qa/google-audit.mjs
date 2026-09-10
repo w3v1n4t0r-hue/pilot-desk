@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+const fail=m=>{console.error('Google audit regression:',m);process.exitCode=1};
+const read=p=>fs.readFileSync(p,'utf8');
+const home=read('index.html'),ads=read('assets/ads.js'),theme=read('assets/theme.js'),site=read('assets/site.js'),product=read('assets/product-nav.js'),nav=read('assets/global-nav.js'),vercel=read('vercel.json');
+if(/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=/.test(home))fail('homepage eagerly loads AdSense');
+if(!ads.includes('scheduleAds()')||!ads.includes('setTimeout(start,6000)'))fail('AdSense lazy-start guard missing');
+if(!theme.includes("valid.has(saved)?saved:'dark'"))fail('dark default theme guard missing');
+for(const x of ['#4a515b','#4f5660','#858a92','#9da2aa'])if(!theme.includes(x))fail('contrast color missing '+x);
+if(!site.includes("if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();"))fail('homepage workspace-shell CLS guard missing');
+if(!site.includes('No recent tools yet.'))fail('recent-tools stable empty state missing');
+if(!product.includes("location.pathname==='/'||location.pathname==='/index.html'"))fail('product-nav homepage CLS guard missing');
+if(!nav.includes('current!==expected'))fail('stable canonical nav guard missing');
+if(!vercel.includes('includeSubDomains; preload'))fail('HSTS preload token missing');
+if(vercel.includes("https: http:;"))fail('HTTP scheme still allowed in script-src');
+const ratio=(a,b)=>{const lum=h=>{const v=h.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4);return .2126*v[0]+.7152*v[1]+.0722*v[2]};const [x,y]=[lum(a),lum(b)].sort((m,n)=>n-m);return (x+.05)/(y+.05)};
+for(const [fg,bg] of [['#4f5660','#ffffff'],['#4a515b','#f5f6f8'],['#9da2aa','#111317'],['#858a92','#070809']])if(ratio(fg,bg)<4.5)fail(`contrast ${fg} on ${bg} = ${ratio(fg,bg).toFixed(2)}`);
+if(!process.exitCode)console.log('Google audit regression checks PASS');

@@ -17,110 +17,7 @@ jobs:
         with:
           ref: google-audit-fixes
       - name: Apply Lighthouse fixes
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re, json
-
-          def edit(path, fn):
-              p=Path(path); old=p.read_text(); new=fn(old)
-              if new==old: print('no change',path)
-              else: p.write_text(new); print('updated',path)
-
-          def once(s,a,b,path):
-              if a not in s: raise SystemExit(f'missing expected text in {path}: {a[:100]}')
-              return s.replace(a,b,1)
-
-          # Keep the intended black/silver theme as the default and make the optional light theme accessible too.
-          def theme(s):
-              s=once(s,"let saved;try{saved=localStorage.getItem(KEY)}catch{}let mode=valid.has(saved)?saved:'system';","let saved;try{saved=localStorage.getItem(KEY)}catch{}let mode=valid.has(saved)?saved:'dark';",'assets/theme.js')
-              marker='.pd-theme-control{position:fixed'
-              rules='''.brand small,.breadcrumbs,footer,.fine,.ad-label,.ad-slot{color:#858a92}.topbar nav a{color:#a3a7ae}.tool-card p,.trust-card,.hero p,.calc-hero p,.notice,.info-card p,.info-card li,.side-card p,.related a,.content-page p,.content-page li,.source-table td{color:#9da2aa}html[data-pd-theme="light"] .brand small,html[data-pd-theme="light"] .topbar nav a,html[data-pd-theme="light"] footer,html[data-pd-theme="light"] .fine,html[data-pd-theme="light"] .breadcrumbs,html[data-pd-theme="light"] .ad-label,html[data-pd-theme="light"] .ad-slot{color:#4a515b}html[data-pd-theme="light"] .eyebrow,html[data-pd-theme="light"] .badge{color:#474e58}html[data-pd-theme="light"] .tool-card p,html[data-pd-theme="light"] .trust-card,html[data-pd-theme="light"] .hero p,html[data-pd-theme="light"] .calc-hero p,html[data-pd-theme="light"] .notice,html[data-pd-theme="light"] .info-card p,html[data-pd-theme="light"] .info-card li,html[data-pd-theme="light"] .side-card p,html[data-pd-theme="light"] .related a,html[data-pd-theme="light"] .content-page p,html[data-pd-theme="light"] .content-page li,html[data-pd-theme="light"] .source-table td{color:#4f5660}html[data-pd-theme="light"] footer b{color:#252a31}'''
-              return once(s,marker,rules+marker,'assets/theme.js')
-          edit('assets/theme.js',theme)
-
-          # Do not inject the workspace pill row above the homepage after first paint.
-          edit('assets/product-nav.js',lambda s: once(s,'function init(){addNav();addProductRow()}','function init(){if(location.pathname===\'/\'||location.pathname===\'/index.html\')return;addNav();addProductRow()}', 'assets/product-nav.js'))
-
-          # Keep the homepage layout stable: no late workspace shell and no collapsing recent section.
-          def site(s):
-              s=once(s,"if(!a.length){el.closest('.recent-section')?.classList.add('hidden');return}","if(!a.length){el.innerHTML='<span class=\"fine\">No recent tools yet.</span>';return}",'assets/site.js')
-              s=once(s,'loadWorkspaceShell();',"if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();",'assets/site.js')
-              return s
-          edit('assets/site.js',site)
-
-          # Avoid rebuilding an already-correct top navigation and shifting it after paint.
-          def nav(s):
-              old="nav.replaceChildren(...NAV.map(([href,label])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(isCurrent(href,path))a.setAttribute('aria-current','page');return a}));"
-              new="const expected=NAV.map(([href,label])=>href+'|'+label).join('||'),current=[...nav.querySelectorAll(':scope > a')].map(a=>(a.getAttribute('href')||'')+'|'+(a.textContent||'').trim()).join('||');if(current!==expected)nav.replaceChildren(...NAV.map(([href,label])=>{const a=document.createElement('a');a.href=href;a.textContent=label;return a}));nav.querySelectorAll(':scope > a').forEach(a=>{if(isCurrent(a.getAttribute('href')||'',path))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});"
-              return once(s,old,new,'assets/global-nav.js')
-          edit('assets/global-nav.js',nav)
-
-          # Keyboard search still works on home, but don't inject another nav button after paint there.
-          def plus(s):
-              old="const nav=qs('.topbar nav');if(nav&&!qs('.pd-cmd-open')){"
-              new="const nav=qs('.topbar nav');if(path!=='/'&&path!=='/index.html'&&nav&&!qs('.pd-cmd-open')){"
-              return once(s,old,new,'assets/pilotdesk-plus.js')
-          edit('assets/pilotdesk-plus.js',plus)
-
-          # Lazy-load AdSense after the useful page is ready. It still loads on interaction or after an idle delay.
-          def ads(s):
-              old="if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureAds,{once:true});else ensureAds();"
-              new="function scheduleAds(){let started=false,timer=null;const start=()=>{if(started)return;started=true;if(timer)clearTimeout(timer);const run=()=>ensureAds();if('requestIdleCallback' in window)requestIdleCallback(run,{timeout:1500});else setTimeout(run,0)};const interact=()=>start();['pointerdown','keydown','touchstart','scroll'].forEach(ev=>addEventListener(ev,interact,{once:true,passive:true}));const later=()=>{timer=setTimeout(start,6000)};if(document.readyState==='complete')later();else addEventListener('load',later,{once:true})}scheduleAds();"
-              return once(s,old,new,'assets/ads.js')
-          edit('assets/ads.js',ads)
-
-          # Remove the eager AdSense loader wherever PilotDesk's lazy loader is already present.
-          ad_re=re.compile(r'<script\b[^>]*src=["\']https://pagead2\.googlesyndication\.com/pagead/js/adsbygoogle\.js\?client=ca-pub-2325772529624834["\'][^>]*>\s*</script>',re.I)
-          removed=0
-          for p in Path('.').rglob('*.html'):
-              s=p.read_text()
-              if '/assets/ads.js' not in s: continue
-              n=ad_re.sub('',s)
-              if n!=s:
-                  p.write_text(n); removed+=1
-          print('removed eager AdSense tags from',removed,'HTML files')
-          for p in Path('scripts').glob('*.mjs'):
-              s=p.read_text(); n=ad_re.sub('',s)
-              if n!=s: p.write_text(n); print('updated generator',p)
-
-          # Make the static homepage nav match the canonical nav so global-nav does not need to rebuild it.
-          def home(s):
-              old='<nav><a href="/">Calculators</a><a href="/weather.html">Weather</a><a href="/aircraft.html">Aircraft</a><a href="/guides.html">Guides</a><a href="/about.html">About</a><a href="/legal/privacy.html">Privacy</a><a href="/sources.html">Sources</a></nav>'
-              new='<nav><a href="/">Calculators</a><a href="/planner.html">Planner</a><a href="/aircraft.html">Aircraft</a><a href="/weather.html">Weather</a><a href="/guides.html">Guides</a><a href="/about.html">About</a><a href="/sources.html">Sources</a><a href="/legal/privacy.html">Privacy</a></nav>'
-              s=once(s,old,new,'index.html')
-              s=s.replace('class="recent-row" id="recentTools"','class="recent-row pd-stable-home" id="recentTools"')
-              return s
-          edit('index.html',home)
-
-          # Safe header improvements. Trusted Types/strict CSP are intentionally not forced until DOM sinks are refactored.
-          def vercel(s):
-              s=once(s,'max-age=31536000; includeSubDomains','max-age=31536000; includeSubDomains; preload','vercel.json')
-              s=once(s,"script-src 'self' 'unsafe-inline' 'unsafe-eval' https: http:;","script-src 'self' 'unsafe-inline' 'unsafe-eval' https:;",'vercel.json')
-              json.loads(s)
-              return s
-          edit('vercel.json',vercel)
-
-          # Permanent regression check for the Google/Lighthouse fixes.
-          Path('qa/google-audit.mjs').write_text(r'''import fs from 'node:fs';
-const fail=m=>{console.error('Google audit regression:',m);process.exitCode=1};
-const read=p=>fs.readFileSync(p,'utf8');
-const home=read('index.html'),ads=read('assets/ads.js'),theme=read('assets/theme.js'),site=read('assets/site.js'),product=read('assets/product-nav.js'),nav=read('assets/global-nav.js'),vercel=read('vercel.json');
-if(/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=/.test(home))fail('homepage eagerly loads AdSense');
-if(!ads.includes('scheduleAds()')||!ads.includes('setTimeout(start,6000)'))fail('AdSense lazy-start guard missing');
-if(!theme.includes("valid.has(saved)?saved:'dark'"))fail('dark default theme guard missing');
-for(const x of ['#4a515b','#4f5660','#858a92','#9da2aa'])if(!theme.includes(x))fail('contrast color missing '+x);
-if(!site.includes("if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();"))fail('homepage workspace-shell CLS guard missing');
-if(!site.includes('No recent tools yet.'))fail('recent-tools stable empty state missing');
-if(!product.includes("location.pathname==='/'||location.pathname==='/index.html'"))fail('product-nav homepage CLS guard missing');
-if(!nav.includes('current!==expected'))fail('stable canonical nav guard missing');
-if(!vercel.includes('includeSubDomains; preload'))fail('HSTS preload token missing');
-if(vercel.includes("https: http:;"))fail('HTTP scheme still allowed in script-src');
-const ratio=(a,b)=>{const lum=h=>{const v=h.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4);return .2126*v[0]+.7152*v[1]+.0722*v[2]};const [x,y]=[lum(a),lum(b)].sort((m,n)=>n-m);return (x+.05)/(y+.05)};
-for(const [fg,bg] of [['#4f5660','#ffffff'],['#4a515b','#f5f6f8'],['#9da2aa','#111317'],['#858a92','#070809']])if(ratio(fg,bg)<4.5)fail(`contrast ${fg} on ${bg} = ${ratio(fg,bg).toFixed(2)}`);
-if(!process.exitCode)console.log('Google audit regression checks PASS');
-''')
-          PY
+        run: python scripts/apply-google-audit-fixes.py
       - name: Check JavaScript syntax
         run: find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
       - name: Run full QA
@@ -139,7 +36,7 @@ if(!process.exitCode)console.log('Google audit regression checks PASS');
           git config user.name "PilotDesk Automation"
           git config user.email "w3v1n4t0r@gmail.com"
           git add -A
-          git reset HEAD .github/workflows/google-audit-fixes.yml .github/RUN_GOOGLE_AUDIT || true
+          git reset HEAD .github/workflows/google-audit-fixes.yml .github/RUN_GOOGLE_AUDIT scripts/apply-google-audit-fixes.py || true
           if git diff --cached --quiet; then
             echo "No site changes to commit."
           else

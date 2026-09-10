@@ -1,6 +1,6 @@
 (()=>{
-  // Vercel Web Analytics for a plain static site. The endpoint is first-party on Vercel.
-  // It begins reporting when Web Analytics is enabled for the Vercel project.
+  // Vercel's documented plain-HTML analytics bootstrap.
+  window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
   if(document.querySelector('script[data-pd-vercel-analytics]'))return;
   const s=document.createElement('script');
   s.defer=true;

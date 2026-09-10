@@ -1,0 +1,52 @@
+name: PilotDesk SEO Indexing Pass
+
+on:
+  push:
+    branches: [seo-indexing-pass]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seo-indexing-pass
+      - name: Apply SEO indexing pass
+        run: python scripts/apply-seo-indexing-pass.py
+      - name: Regenerate calculator pages
+        run: node scripts/generate-calculator-pages.mjs
+      - name: Apply static postprocessing
+        run: node scripts/postprocess-site.mjs
+      - name: Check JavaScript syntax
+        run: find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+      - name: Run full QA
+        run: |
+          node qa/smoke.mjs
+          node qa/qol-smoke.mjs
+          node qa/product-polish-smoke.mjs
+          node qa/v2-smoke.mjs
+          node qa/planner-lab-tests.mjs
+          node qa/formula-tests.mjs
+          node qa/site-integrity.mjs
+          node qa/copy-tone.mjs
+          node qa/google-audit.mjs
+      - name: Check SEO output
+        run: |
+          grep -q 'data-pd-static-calc-schema' calculators/crosswind/index.html
+          grep -q 'datePublished' guides/crosswind-component.html
+          grep -q 'data-pd-static-schema' index.html
+          grep -q 'current METARs and TAFs' weather.html
+      - name: Commit tested SEO changes
+        run: |
+          git config user.name "PilotDesk Automation"
+          git config user.email "w3v1n4t0r@gmail.com"
+          git add scripts/generate-calculator-pages.mjs calculators index.html planner.html airport.html weather.html route-planner.html metar-decoder.html weight-balance.html poh-chart-studio.html flight-training.html checklist-trainer.html guides/crosswind-component.html
+          if git diff --cached --quiet; then
+            echo "SEO files already current."
+          else
+            git commit -m "Improve indexing signals and structured data"
+            git push origin HEAD:seo-indexing-pass
+          fi

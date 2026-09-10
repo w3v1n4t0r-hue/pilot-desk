@@ -7,39 +7,46 @@ on:
       - 'api/weather.js'
       - 'assets/weather-fixed.js'
       - 'weather.html'
+      - 'sw.js'
+      - 'vercel.json'
       - '.github/workflows/weather-live.yml'
   workflow_dispatch:
 
 jobs:
   verify-weather:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 4
     steps:
       - name: Verify deployed weather endpoint
         shell: bash
         run: |
           node <<'NODE'
-          const url='https://www.pilot-desk.com/api/weather?station=KGFK';
+          const stations=['KGFK','KMCO'];
           const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-          let last='';
-          for(let i=0;i<30;i++){
-            try{
-              const r=await fetch(url,{headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});
-              const text=await r.text();
-              const version=r.headers.get('x-pilotdesk-weather')||'';
-              last=`HTTP ${r.status} version=${version} body=${text.slice(0,500)}`;
-              console.log(`attempt ${i+1}: ${last}`);
-              if(version==='3.0'&&r.ok){
-                const j=JSON.parse(text);
-                if(!j.metar?.rawOb)throw new Error('deployed endpoint returned no METAR rawOb');
-                if(!/KGFK/.test(j.metar.rawOb)&&j.resolvedStation!=='KGFK')throw new Error('deployed endpoint did not return KGFK data');
-                console.log('PRODUCTION WEATHER PASS');
-                console.log(j.metar.rawOb);
-                if(j.taf?.rawTAF)console.log(j.taf.rawTAF);
-                process.exit(0);
-              }
-            }catch(e){last=String(e?.stack||e);console.error(last)}
-            await sleep(3000);
+          for(const station of stations){
+            const url=`https://www.pilot-desk.com/api/weather?station=${station}`;
+            let last='';
+            let passed=false;
+            for(let i=0;i<30;i++){
+              try{
+                const r=await fetch(url,{headers:{'Cache-Control':'no-cache','Pragma':'no-cache'}});
+                const text=await r.text();
+                const version=r.headers.get('x-pilotdesk-weather')||'';
+                last=`HTTP ${r.status} version=${version} body=${text.slice(0,700)}`;
+                console.log(`${station} attempt ${i+1}: ${last}`);
+                if(version==='3.0'&&r.ok){
+                  const j=JSON.parse(text);
+                  if(!j.metar?.rawOb)throw new Error(`${station} returned no METAR rawOb`);
+                  if(!new RegExp(station).test(j.metar.rawOb)&&j.resolvedStation!==station)throw new Error(`${station} returned wrong station data`);
+                  console.log(`${station} PRODUCTION WEATHER PASS`);
+                  console.log(j.metar.rawOb);
+                  if(j.taf?.rawTAF)console.log(j.taf.rawTAF);
+                  passed=true;
+                  break;
+                }
+              }catch(e){last=String(e?.stack||e);console.error(last)}
+              await sleep(3000);
+            }
+            if(!passed)throw new Error(`${station} production weather verification failed: ${last}`);
           }
-          throw new Error('Production weather verification failed: '+last);
           NODE

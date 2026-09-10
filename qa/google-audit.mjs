@@ -8,6 +8,7 @@ if(!theme.includes("valid.has(saved)?saved:'dark'"))fail('dark default theme gua
 for(const x of ['#4a515b','#4f5660','#858a92','#9da2aa'])if(!theme.includes(x))fail('contrast color missing '+x);
 if(!site.includes("if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();"))fail('homepage workspace-shell CLS guard missing');
 if(!site.includes('No recent tools yet.'))fail('recent-tools stable empty state missing');
+if(!site.includes('setTimeout(start,12000)'))fail('service worker should not take over the initial audit load');
 if(!product.includes("location.pathname==='/'||location.pathname==='/index.html'"))fail('product-nav homepage CLS guard missing');
 if(!nav.includes('current!==expected'))fail('stable canonical nav guard missing');
 if(!vercel.includes('includeSubDomains; preload'))fail('HSTS preload token missing');

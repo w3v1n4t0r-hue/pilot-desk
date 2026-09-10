@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   load('/assets/product-polish.js','pd-polish');
   load('/assets/update.js','pd-update');
   load('/assets/errors.js','pd-errors');
-  if(path==='/'||path==='/index.html')load('/assets/home-fix.js','pd-home');
   if(path.startsWith('/calculators/')||path==='/aircraft.html')load('/assets/features.js','pd-features');
   if(path.startsWith('/calculators/'))load('/assets/share-enhance.js','pd-share');
   if(path==='/aircraft.html')load('/assets/aircraft-transfer.js','pd-aircraft-transfer');

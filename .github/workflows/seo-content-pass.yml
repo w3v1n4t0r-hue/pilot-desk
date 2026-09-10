@@ -1,0 +1,54 @@
+name: PilotDesk SEO Content Pass
+
+on:
+  push:
+    branches: [seo-content-pass]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seo-content-pass
+      - name: Apply content pass
+        run: python scripts/apply-seo-content-pass.py
+      - name: Regenerate calculator pages
+        run: node scripts/generate-calculator-pages.mjs
+      - name: Apply static postprocessing
+        run: node scripts/postprocess-site.mjs
+      - name: Check JavaScript syntax
+        run: find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+      - name: Run full QA
+        run: |
+          node qa/smoke.mjs
+          node qa/qol-smoke.mjs
+          node qa/product-polish-smoke.mjs
+          node qa/v2-smoke.mjs
+          node qa/planner-lab-tests.mjs
+          node qa/formula-tests.mjs
+          node qa/site-integrity.mjs
+          node qa/copy-tone.mjs
+          node qa/google-audit.mjs
+      - name: Check useful SEO content
+        run: |
+          grep -q 'Worked example' guides/density-altitude.html
+          grep -q 'Common wind-triangle mistakes' guides/wind-triangle.html
+          grep -q 'data-pd-guide-schema' guides/pivotal-altitude.html
+          grep -q 'Pilot Flight Planner &amp; Aviation Tools' planner.html
+          grep -q 'Aircraft POH Performance Chart Practice' poh-chart-studio.html
+          grep -q 'meta name="description" content="${esc(desc)}"' scripts/generate-calculator-pages.mjs
+      - name: Commit tested content changes
+        run: |
+          git config user.name "PilotDesk Automation"
+          git config user.email "w3v1n4t0r@gmail.com"
+          git add guides/density-altitude.html guides/pressure-altitude.html guides/three-degree-descent.html guides/fuel-planning.html guides/pivotal-altitude.html guides/wind-triangle.html planner.html poh-chart-studio.html scripts/generate-calculator-pages.mjs calculators
+          if git diff --cached --quiet; then
+            echo "SEO content already current."
+          else
+            git commit -m "Strengthen aviation guides and search snippets"
+            git push origin HEAD:seo-content-pass
+          fi

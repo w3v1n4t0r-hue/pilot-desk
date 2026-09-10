@@ -1,0 +1,41 @@
+name: PilotDesk Charset Live Debug
+
+on:
+  push:
+    branches: [charset-live-debug]
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect production response
+        run: |
+          set -euxo pipefail
+          echo '=== HTTPS pilot-desk.com ==='
+          curl -sS -D /tmp/h1 -o /tmp/b1 https://pilot-desk.com/
+          cat /tmp/h1
+          echo '--- first 1200 bytes ---'
+          head -c 1200 /tmp/b1
+          echo
+          echo '=== HTTPS www.pilot-desk.com ==='
+          curl -sS -D /tmp/h2 -o /tmp/b2 https://www.pilot-desk.com/
+          cat /tmp/h2
+          echo '--- first 1200 bytes ---'
+          head -c 1200 /tmp/b2
+          echo
+          echo '=== Follow redirect from bare domain ==='
+          curl -sSL -D /tmp/h3 -o /tmp/b3 https://pilot-desk.com/
+          cat /tmp/h3
+          echo '--- first 1200 bytes final body ---'
+          head -c 1200 /tmp/b3
+          echo
+          python - <<'PY'
+          from pathlib import Path
+          for f in ['/tmp/b1','/tmp/b2','/tmp/b3']:
+              b=Path(f).read_bytes()
+              lo=b[:1024].lower()
+              print(f, 'len=',len(b),'charset-in-first-1024=', b'charset' in lo, 'meta-charset=', b'<meta charset=' in lo)
+          PY

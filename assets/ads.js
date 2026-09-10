@@ -13,7 +13,7 @@ if(path.startsWith('/calculators/')&&!path.includes('weight-balance-builder'))lo
 if(path.startsWith('/calculators/')&&!path.includes('weight-balance-builder')){load('/assets/share-enhance.js','pd-share');load('/assets/calculator-ux.js','pd-calc-ux')}
 load('/assets/pilotdesk-plus.js','pd-plus');load('/assets/update.js','pd-update');load('/assets/errors.js','pd-errors');
 if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js','pd-aircraft-transfer');load('/assets/aircraft-training.js','pd-aircraft-training')}
-if(path==='/route-planner.html')load('/assets/planner-pro.js','pd-planner-pro');
+if(path==='/route-planner.html'){load('/assets/planner-pro.js','pd-planner-pro');load('/assets/flight-library.js','pd-flight-library')}
 if(path==='/procedures.html')load('/assets/procedure-pro.js','pd-procedure-pro');
 if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js','pd-trainer-pro');
 if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline');

@@ -5,6 +5,7 @@ PilotDesk provides free browser-based aviation calculators, an online E6B flight
 ## Primary pages
 - https://www.pilot-desk.com/ — aviation calculators
 - https://www.pilot-desk.com/e6b-flight-computer.html — free online E6B flight computer for wind, time, fuel, altitude, airspeed, performance, and conversions
+- https://www.pilot-desk.com/flight-planning-workspace.html — connected flight-planning workspace for wind correction, groundspeed, time, fuel, top of descent, and descent rate
 - https://www.pilot-desk.com/planner.html — pilot flight planner
 - https://www.pilot-desk.com/route-planner.html — route and navlog planner
 - https://www.pilot-desk.com/weather.html — aviation weather, METAR and TAF
@@ -14,6 +15,8 @@ PilotDesk provides free browser-based aviation calculators, an online E6B flight
 - https://www.pilot-desk.com/poh-chart-studio.html — POH performance chart training workspace
 - https://www.pilot-desk.com/checklist-trainer.html — aircraft checklist practice tool
 - https://www.pilot-desk.com/flight-training.html — flight training tools for students and instructors
+- https://www.pilot-desk.com/for-flight-schools.html — free PilotDesk tools and embeddable calculators for flight schools, CFIs, and flying clubs
+- https://www.pilot-desk.com/embed.html — embeddable aviation calculator widgets
 - https://www.pilot-desk.com/guides.html — aviation guides
 
 ## Guide hubs

@@ -1,4 +1,5 @@
 (()=>{
+  const queued=Array.isArray(window.__pdTrackQueue)?window.__pdTrackQueue.slice():[];
   window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
   window.si=window.si||function(){(window.siq=window.siq||[]).push(arguments)};
 
@@ -21,6 +22,8 @@
       window.va('event',{name:clean(name),data:safe});
     }catch{}
   };
+  queued.splice(0,50).forEach(([name,data])=>window.pdTrack(name,data));
+  window.__pdTrackQueue=[];
 
   const path=location.pathname;
   const slug=()=>document.body.dataset.calc||path.split('/').filter(Boolean).pop()||'home';

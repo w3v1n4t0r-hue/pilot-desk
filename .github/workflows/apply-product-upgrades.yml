@@ -1,0 +1,29 @@
+name: Apply product upgrades
+
+on:
+  push:
+    branches:
+      - product/full-site-upgrade-2026-09-11
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply PilotDesk product upgrades
+        run: node scripts/apply-product-upgrades.mjs
+      - name: Commit static upgrade output
+        run: |
+          git config user.name "PilotDesk Automation"
+          git config user.email "w3v1n4t0r@gmail.com"
+          git add '*.html' calculators sitemap.xml
+          if git diff --cached --quiet; then
+            echo "Static product upgrades already current."
+          else
+            git commit -m "Apply static PilotDesk product upgrades"
+            git push
+          fi

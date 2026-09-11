@@ -29,7 +29,7 @@ jobs:
         run: node scripts/generate-calculator-pages.mjs
       - name: Apply static branding and aviation FAQ content
         run: node scripts/postprocess-site.mjs
-      - name: Deepen guide content and internal links
+      - name: Deepen guides and core tool pages
         run: node scripts/strengthen-guides.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
@@ -42,7 +42,7 @@ jobs:
         run: |
           git config user.name "PilotDesk Automation"
           git config user.email "w3v1n4t0r@gmail.com"
-          git add calculators guides index.html 404.html sitemap.xml robots.txt
+          git add -A
           if git diff --cached --quiet; then
             echo "Generated pages already current."
           else

@@ -24,6 +24,8 @@ jobs:
         run: node qa/qol-smoke.mjs
       - name: Run product polish checks
         run: node qa/product-polish-smoke.mjs
+      - name: Run app bootstrap checks
+        run: node qa/app-bootstrap-smoke.mjs
       - name: Run PilotDesk v2 master checks
         run: node qa/v2-smoke.mjs
       - name: Run planner lab checks

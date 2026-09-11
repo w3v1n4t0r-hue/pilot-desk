@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(p,'utf8');
 const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
-const wb=read('weight-balance.html'),wbjs=read('assets/weight-balance.js'),ads=read('assets/ads.js'),cfg=read('assets/ad-config.js'),ac=read('aircraft.html'),acjs=read('assets/aircraft-v2.js'),sw=read('sw.js'),src=read('sources.html'),manifest=read('site.webmanifest'),vercel=read('vercel.json'),gen=read('.github/workflows/generate-calculators.yml');
+const wb=read('weight-balance.html'),wbjs=read('assets/weight-balance.js'),ads=read('assets/ads.js'),cfg=read('assets/ad-config.js'),ac=read('aircraft.html'),acjs=read('assets/aircraft-v2.js'),sw=read('sw.js'),src=read('sources.html'),manifestRaw=read('site.webmanifest'),manifest=JSON.parse(manifestRaw),vercel=read('vercel.json'),gen=read('.github/workflows/generate-calculators.yml');
 assert(wb.includes('wbDepW')&&wb.includes('wbLdgW'),'W&B must show departure and landing totals');
 assert(wb.includes('wbEnvelope')&&wb.includes('wbChart'),'W&B must include optional entered envelope and chart');
 assert(wb.includes('/assets/wb-v2.css'),'W&B stylesheet missing');
@@ -21,8 +21,8 @@ const swVersion=Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0);assert(swVe
 assert(sw.includes("url.pathname.startsWith('/api/')"),'Service worker must bypass live APIs');
 assert(src.includes('FAA-H-8083-25C')&&src.includes('FAA-H-8083-28B'),'Current FAA handbook references missing');
 assert(src.includes('6.01')&&src.includes('6.68'),'Fuel standard-weight reference values missing');
-assert(manifest.includes('"shortcuts"')&&manifest.includes('weight-balance-builder'),'PWA shortcuts missing');
+const wbShortcut=(manifest.shortcuts||[]).find(x=>x.name==='Weight & Balance'||x.short_name==='W&B');assert(wbShortcut?.url==='/weight-balance.html','PWA Weight & Balance shortcut must use the direct tool URL');
 assert(vercel.includes('Content-Security-Policy')&&vercel.includes('Service-Worker-Allowed'),'Security/service-worker headers missing');
-assert(gen.includes('workflow_dispatch:')&&!/\n\s*push:\s*\n/.test(gen),'Calculator generator must be manual-only to avoid deployment storms');
+assert(gen.includes('workflow_dispatch:')&&gen.includes('push:')&&gen.includes('paths:')&&gen.includes("github.actor != 'PilotDesk Automation'")&&gen.includes('concurrency:'),'Calculator generator must keep scoped push triggers plus anti-loop/concurrency guards');
 for(const p of ['index.html','404.html','about.html','weather.html','sources.html','weight-balance.html','aircraft.html']){if(!fs.existsSync(p))continue;const h=read(p);assert(!h.includes('<span class="brandmark">PD</span>'),`${p} still contains legacy PD logo`)}
 console.log('PilotDesk v2 master smoke checks passed.');

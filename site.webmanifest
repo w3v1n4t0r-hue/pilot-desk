@@ -69,7 +69,7 @@
       "name": "Weight & Balance",
       "short_name": "W&B",
       "description": "Open the Weight & Balance Builder.",
-      "url": "/calculators/weight-balance-builder/",
+      "url": "/weight-balance.html",
       "icons": [
         {
           "src": "/assets/icon.svg",

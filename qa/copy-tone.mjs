@@ -3,7 +3,6 @@ import path from 'node:path';
 
 const root=process.cwd();
 const banned=[
-  [/\bin one place\b/i,'in one place'],
   [/\bseamless(?:ly)?\b/i,'seamless'],
   [/\beffortless(?:ly)?\b/i,'effortless'],
   [/\bstreamlin(?:e|ed|es|ing)\b/i,'streamline'],

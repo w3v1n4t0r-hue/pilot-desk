@@ -59,13 +59,18 @@ jobs:
           node --check api/nearby-airports.js
           node --check api/weather.js
           node -e "JSON.parse(require('fs').readFileSync('site.webmanifest','utf8')); console.log('manifest JSON PASS')"
-          grep -q 'sitemap-core.xml' sitemap.xml
-          grep -q 'airport.html' sitemap-core.xml
-          grep -q 'flight-training.html' sitemap-core.xml
+          if grep -q '<sitemapindex' sitemap.xml; then
+            test -f sitemap-core.xml
+            SITE_MAP=sitemap-core.xml
+          else
+            SITE_MAP=sitemap.xml
+          fi
+          grep -q 'airport.html' "$SITE_MAP"
+          grep -q 'flight-training.html' "$SITE_MAP"
           grep -q 'noindex,follow' flight-brief.html
           grep -q 'noindex,follow' flights.html
-          ! grep -q 'flight-brief.html</loc>' sitemap-core.xml
-          ! grep -q 'flights.html</loc>' sitemap-core.xml
+          ! grep -q 'flight-brief.html</loc>' "$SITE_MAP"
+          ! grep -q 'flights.html</loc>' "$SITE_MAP"
           grep -q 'pilotdesk-v21' sw.js
           echo 'LOCAL WORKSPACE CHECKS PASS'
 

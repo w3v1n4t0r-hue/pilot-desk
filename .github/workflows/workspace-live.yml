@@ -12,6 +12,7 @@ on:
       - 'assets/flight-brief.js'
       - 'assets/route-save.js'
       - 'assets/product-nav.js'
+      - 'assets/professional-polish.css'
       - 'assets/hub.css'
       - 'assets/weather-extra.js'
       - 'assets/metar-decoder.js'
@@ -71,7 +72,8 @@ jobs:
           grep -q 'noindex,follow' flights.html
           ! grep -q 'flight-brief.html</loc>' "$SITE_MAP"
           ! grep -q 'flights.html</loc>' "$SITE_MAP"
-          grep -q 'pilotdesk-v21' sw.js
+          node -e "const s=require('fs').readFileSync('sw.js','utf8');const v=Number(s.match(/pilotdesk-v(\\d+)/)?.[1]||0);if(v<23)process.exit(1);console.log('service worker cache version',v,'PASS')"
+          test -f assets/professional-polish.css
           echo 'LOCAL WORKSPACE CHECKS PASS'
 
       - name: Verify deployed workspace and airport search
@@ -87,11 +89,11 @@ jobs:
           for(let attempt=1;attempt<=40;attempt++){
             try{
               const [planner,airport,flights,brief,decoder]=await Promise.all([
-                text('/planner.html?workspace_live=21'),
-                text('/airport.html?workspace_live=21'),
-                text('/flights.html?workspace_live=21'),
-                text('/flight-brief.html?workspace_live=21'),
-                text('/metar-decoder.html?workspace_live=21')
+                text('/planner.html?workspace_live=23'),
+                text('/airport.html?workspace_live=23'),
+                text('/flights.html?workspace_live=23'),
+                text('/flight-brief.html?workspace_live=23'),
+                text('/metar-decoder.html?workspace_live=23')
               ]);
               if(!planner.includes('<h1>Plan a flight</h1>'))throw new Error('planner marker not deployed yet');
               if(!airport.includes('<h1>Airport Search</h1>'))throw new Error('airport page marker not deployed yet');
@@ -99,16 +101,16 @@ jobs:
               if(!brief.includes('FLIGHT BRIEF'))throw new Error('flight brief marker not deployed yet');
               if(!decoder.includes('Group-by-group explanation'))throw new Error('METAR decoder marker not deployed yet');
 
-              const mco=await json('/api/airport-search?q=MCO&workspace_live=21');
+              const mco=await json('/api/airport-search?q=MCO&workspace_live=23');
               if(!Array.isArray(mco.results)||!mco.results.some(x=>x.id==='KMCO'))throw new Error('MCO search did not resolve/include KMCO');
 
-              const orlando=await json('/api/airport-search?q=Orlando&workspace_live=21');
+              const orlando=await json('/api/airport-search?q=Orlando&workspace_live=23');
               if(!Array.isArray(orlando.results)||!orlando.results.some(x=>x.id==='KMCO'))throw new Error('Orlando name search did not include KMCO');
 
-              const wx=await json('/api/weather?station=KMCO&workspace_live=21');
+              const wx=await json('/api/weather?station=KMCO&workspace_live=23');
               if(!wx.metar?.rawOb||!wx.metar.rawOb.includes('KMCO'))throw new Error('KMCO live weather missing METAR');
 
-              const nearby=await json('/api/nearby-airports?lat=28.4294&lon=-81.3089&exclude=KMCO&limit=5&workspace_live=21');
+              const nearby=await json('/api/nearby-airports?lat=28.4294&lon=-81.3089&exclude=KMCO&limit=5&workspace_live=23');
               if(!Array.isArray(nearby.results)||nearby.results.length<1)throw new Error('nearby airport/weather station lookup returned no results');
 
               console.log('PRODUCTION WORKSPACE PASS');

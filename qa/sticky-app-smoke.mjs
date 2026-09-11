@@ -24,7 +24,7 @@ for(const forbidden of ['calculator inputs','tail number','passenger'])check(!an
 check(ads.includes('ensureManualPlaceholders')&&ads.includes("validSlot('top')")&&ads.includes("validSlot('sidebar')"),'manual AdSense placements are not config-ready');
 check(weather.includes('tafIssueAge')&&weather.includes('tafExpired')&&weather.includes('Check TAF currency.'),'TAF freshness/validity safeguards missing');
 check(weather.includes('pilotdesk:weatherloaded'),'weather analytics should expose only a coarse result event');
-check(sw.includes("CACHE='pilotdesk-v22'")&&sw.includes("'/offline.html'")&&sw.includes('Promise.allSettled'),'offline release hardening missing');
+check(sw.includes("CACHE='pilotdesk-v23'")&&sw.includes("'/offline.html'")&&sw.includes('Promise.allSettled'),'offline release hardening missing');
 check(offline.includes('Do not rely on cached operational data')&&offline.includes('Flight Planning Workspace'),'offline page needs safety boundary and useful cached tools');
 check(manifest.launch_handler?.client_mode==='navigate-existing','PWA launch handler missing');
 check((manifest.shortcuts||[]).some(x=>x.url==='/flight-planning-workspace.html'),'PWA shortcut for flight workspace missing');

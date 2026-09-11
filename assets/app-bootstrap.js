@@ -4,6 +4,14 @@ if(window.__pilotDeskAppBootstrap)return;
 window.__pilotDeskAppBootstrap=true;
 
 const path=location.pathname;
+const loadStyle=(href,key)=>{
+  if(document.querySelector(`link[data-${key}]`)||[...document.styleSheets].some(s=>{try{return new URL(s.href,location.href).pathname===href}catch{return false}}))return;
+  const l=document.createElement('link');
+  l.rel='stylesheet';
+  l.href=href;
+  l.setAttribute(`data-${key}`,'1');
+  document.head.appendChild(l);
+};
 const load=(src,key)=>{
   if(document.querySelector(`script[data-${key}]`)||[...document.scripts].some(s=>{try{return new URL(s.src,location.href).pathname===src}catch{return false}}))return;
   const s=document.createElement('script');
@@ -12,6 +20,9 @@ const load=(src,key)=>{
   s.setAttribute(`data-${key}`,'1');
   document.head.appendChild(s);
 };
+
+// Presentation stays isolated from product logic so visual changes cannot change calculations.
+loadStyle('/assets/professional-polish.css','pd-professional-polish');
 
 // Core product behavior must never depend on whether an ad blocker allows ads.js.
 load('/assets/global-nav.js','pd-global-nav');

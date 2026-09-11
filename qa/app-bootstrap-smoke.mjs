@@ -16,6 +16,8 @@ for(const asset of ['analytics.js','errors.js','seo.js','product-polish.js','run
   check(bootstrap.includes(`/assets/${asset}`),`app bootstrap is missing ${asset}`);
   check(!ads.includes(`/assets/${asset}`),`ads.js still owns non-ad module ${asset}`);
 }
+check(bootstrap.includes("loadStyle('/assets/professional-polish.css','pd-professional-polish')"),'professional visual layer must load from the ad-independent bootstrap');
+check(!ads.includes('professional-polish.css'),'professional visual layer must not depend on ads.js');
 check(safety.includes('/assets/app-bootstrap.js'),'calculator/home path must load app bootstrap without ads.js');
 check(productNav.includes('/assets/app-bootstrap.js'),'workspace path must load app bootstrap without ads.js');
 check(bootstrap.includes("Quick Start")&&bootstrap.includes('data-pd-launch'),'homepage quick-start conversion surface is missing');
@@ -28,7 +30,8 @@ check(flightMath?.url==='/flight-planning-workspace.html','installed app must ex
 check(manifest.launch_handler?.client_mode==='navigate-existing','installed app should reuse an existing app window where supported');
 check(sw.includes("'/assets/app-bootstrap.js'"),'service worker must cache app-bootstrap.js');
 check(sw.includes("'/assets/sticky-app.js'"),'service worker must cache sticky-app.js');
-check(sw.includes("CACHE='pilotdesk-v22'"),'service worker cache version should match the sticky-app release');
+check(sw.includes("'/assets/professional-polish.css'"),'service worker must cache the professional visual layer');
+check(sw.includes("CACHE='pilotdesk-v23'"),'service worker cache version should match the professional-polish release');
 check(sw.includes("'/offline.html'"),'service worker must cache a dedicated offline fallback');
 check(sw.includes('Promise.allSettled'),'precache should tolerate a single optional asset failure');
 check(!sw.includes("fetch('/sitemap.xml'"),'service-worker install should not crawl the whole sitemap');
@@ -38,4 +41,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('App bootstrap checks passed: ad-independent features, sticky app shell, PWA shortcuts, resilient offline cache, and analytics privacy verified.');
+console.log('App bootstrap checks passed: ad-independent features, isolated professional polish, sticky app shell, PWA shortcuts, resilient offline cache, and analytics privacy verified.');

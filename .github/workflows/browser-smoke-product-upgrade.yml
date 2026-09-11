@@ -28,7 +28,7 @@ jobs:
           curl --fail http://127.0.0.1:4173/ >/dev/null
       - name: Run browser smoke test
         run: |
-          cat > /tmp/pilotdesk-smoke.mjs <<'EOF'
+          cat > .pilotdesk-smoke.mjs <<'EOF'
           import { chromium } from 'playwright';
           const browser=await chromium.launch({headless:true});
           const context=await browser.newContext({viewport:{width:1280,height:900}});
@@ -100,4 +100,4 @@ jobs:
           await browser.close();
           console.log('PilotDesk browser smoke test passed.');
           EOF
-          node /tmp/pilotdesk-smoke.mjs
+          node .pilotdesk-smoke.mjs

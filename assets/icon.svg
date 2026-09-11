@@ -1,1 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PilotDesk temporary monogram"><rect x="3" y="3" width="58" height="58" rx="14" fill="#0b0d10" stroke="#d9dde2" stroke-width="2"/><g fill="none" stroke="#f1f3f5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 45V19h11c7 0 11 4 11 9s-4 9-11 9H17"/><path d="M38 19h5c9 0 12 6 12 13s-3 13-12 13h-5"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="PilotDesk aviation math logo">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15181c"/>
+      <stop offset="1" stop-color="#090b0e"/>
+    </linearGradient>
+    <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.55" stop-color="#e5e7ea"/>
+      <stop offset="1" stop-color="#aeb3ba"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="122" height="122" rx="25" fill="url(#bg)" stroke="#2e3339" stroke-width="1.5"/>
+  <g fill="none" stroke="url(#silver)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 20 L60.8 27.5 Q57.5 28.8 56.8 33 L54.8 52.5 L21.5 55.8 Q17 56.4 16.5 61 L17.5 68.2 L54.2 73.2 L58.2 94.2 L45.5 98.2 Q41.7 99.4 41.2 103.5 L42 109.5 L56.5 112.2 L64 104.8 L71.5 112.2 L86 109.5 L86.8 103.5 Q86.3 99.4 82.5 98.2 L69.8 94.2 L73.8 73.2 L110.5 68.2 L111.5 61 Q111 56.4 106.5 55.8 L73.2 52.5 L71.2 33 Q70.5 28.8 67.2 27.5 Z" stroke-width="3.2"/>
+    <path d="M64 104.8 L61.1 113.5 M64 104.8 L66.9 113.5" stroke-width="2.4"/>
+    <g stroke-width="4" stroke="#f2f4f6">
+      <path d="M25 33 H39 M32 26 V40"/>
+      <path d="M90 33 H104"/>
+      <path d="M25.5 86.5 L38.5 99.5 M38.5 86.5 L25.5 99.5"/>
+      <path d="M91 92.5 H103"/>
+      <circle cx="97" cy="85.2" r="1.8" fill="#e8eaed" stroke="none"/>
+      <circle cx="97" cy="99.8" r="1.8" fill="#e8eaed" stroke="none"/>
+    </g>
+  </g>
+</svg>

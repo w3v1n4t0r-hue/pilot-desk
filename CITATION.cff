@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you reference PilotDesk in training material or documentation, please cite the website."
+title: "PilotDesk"
+type: software
+version: "1.0"
+date-released: "2026-09-10"
+url: "https://www.pilot-desk.com/"
+repository-code: "https://github.com/w3v1n4t0r-hue/pilot-desk"
+license: "NOASSERTION"
+abstract: "Free aviation calculators, airport weather, flight planning, aircraft profiles, weight and balance, and pilot math guides."

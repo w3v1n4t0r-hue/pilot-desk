@@ -1,5 +1,24 @@
 (()=>{
-  const mark=`<svg viewBox="0 0 64 40" role="img" aria-label="PilotDesk airplane logo" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5v9"/><path d="M32 14c-4.8 0-8 3.8-8 8.5S27.2 31 32 31s8-3.8 8-8.5S36.8 14 32 14Z"/><path d="M25 19 8 15l2 5 14 3"/><path d="m39 23 15-3 2-5-17 4"/><path d="M28 18.5h8"/><path d="M29 18.5v3.5m6-3.5V22"/><circle cx="18" cy="30" r="3.5"/><circle cx="46" cy="30" r="3.5"/><path d="M21.5 27 25 24m21.5 3L39 24"/></g></svg>`;
-  function apply(){document.querySelectorAll('.brandmark').forEach(el=>{if(el.dataset.pdWireframe==='1')return;el.dataset.pdWireframe='1';el.innerHTML=mark;el.setAttribute('aria-label','PilotDesk');el.style.background='transparent';el.style.boxShadow='none';el.style.border='1px solid #34383f';el.style.color='#d9dde2';el.style.width='38px';el.style.height='38px';el.style.borderRadius='8px';el.style.padding='3px'})}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
+  const applyBrand=()=>{
+    const brand=document.querySelector('.brand');
+    if(!brand)return;
+    let mark=brand.querySelector('.brandmark');
+    if(!mark){
+      mark=document.createElement('span');
+      mark.className='brandmark';
+      brand.insertBefore(mark,brand.firstChild);
+    }
+    mark.dataset.pdWireframe='2';
+    mark.innerHTML='<img src="/assets/icon.svg" alt="" width="42" height="42" aria-hidden="true">';
+    mark.setAttribute('aria-label','PilotDesk');
+    Object.assign(mark.style,{width:'42px',height:'42px',padding:'0',border:'0',borderRadius:'10px',overflow:'hidden',background:'transparent',boxShadow:'none',display:'grid',placeItems:'center',flex:'0 0 auto'});
+    const img=mark.querySelector('img');
+    if(img)Object.assign(img.style,{width:'100%',height:'100%',display:'block'});
+    const name=brand.querySelector('b');
+    if(name)Object.assign(name.style,{fontFamily:'Bahnschrift Condensed, Arial Narrow, Roboto Condensed, Segoe UI, sans-serif',fontStyle:'italic',fontWeight:'750',fontSize:'18px',letterSpacing:'.045em',lineHeight:'1.05'});
+    const tag=brand.querySelector('small');
+    if(tag)Object.assign(tag.style,{letterSpacing:'.20em',fontSize:'8.5px'});
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyBrand,{once:true});
+  else applyBrand();
 })();

@@ -13,8 +13,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Generate static calculator pages
         run: node scripts/generate-calculator-pages.mjs
-      - name: Apply static branding and aviation FAQ content
+      - name: Apply static aviation FAQ content
         run: node scripts/postprocess-site.mjs
+      - name: Normalize centralized logo asset
+        run: node scripts/postprocess-logo.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
       - name: Commit generated and postprocessed pages

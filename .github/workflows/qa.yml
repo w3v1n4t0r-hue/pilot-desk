@@ -2,7 +2,7 @@ name: PilotDesk QA
 
 on:
   push:
-    branches: [main, pilotdesk-v2-master]
+    branches: [main, pilotdesk-v2-master, product/full-site-upgrade-2026-09-11]
   pull_request:
     branches: [main]
   workflow_dispatch:

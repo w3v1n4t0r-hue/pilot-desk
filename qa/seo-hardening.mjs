@@ -12,9 +12,15 @@ for(const file of ['guides.html','flight-training.html']){ const h=fs.readFileSy
 const map=new Map();
 function walk(dir='.') { for(const ent of fs.readdirSync(dir,{withFileTypes:true})) { if(['.git','node_modules','.github','api','assets','qa','scripts'].includes(ent.name)) continue; const p=path.join(dir,ent.name); if(ent.isDirectory()) walk(p); else if(ent.isFile()&&ent.name.endsWith('.html')&&ent.name!=='404.html'){ const f=p.replaceAll('\\','/').replace(/^\.\//,''),h=fs.readFileSync(p,'utf8'); const m=h.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)||h.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i); if(m) map.set(m[1].replace('https://pilot-desk.com','https://www.pilot-desk.com'),{f,h}); }} }
 walk();
-const sitemap=fs.readFileSync('sitemap.xml','utf8'); const locs=[...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(x=>x[1].replaceAll('&amp;','&')); for(const u of locs){ const entry=map.get(u); if(!entry) fail(`sitemap URL missing self-canonical HTML: ${u}`); else if(/noindex/i.test((entry.h.match(/<meta[^>]+name=["']robots["'][^>]*>/i)||[''])[0])) fail(`sitemap contains noindex page: ${u}`); }
+const rootSitemap=fs.readFileSync('sitemap.xml','utf8');
+const childFiles=[...rootSitemap.matchAll(/<loc>https:\/\/www\.pilot-desk\.com\/([^<]+\.xml)<\/loc>/g)].map(x=>x[1]).filter(f=>fs.existsSync(f));
+const sitemapBodies=childFiles.length?childFiles.map(f=>fs.readFileSync(f,'utf8')):[rootSitemap];
+const sitemap=sitemapBodies.join('\n');
+const locs=[...sitemap.matchAll(/<loc>(https:\/\/www\.pilot-desk\.com\/(?![^<]*\.xml<)[^<]*)<\/loc>/g)].map(x=>x[1].replaceAll('&amp;','&'));
+if(rootSitemap.includes('<sitemapindex')&&!childFiles.length)fail('sitemap index has no readable local child sitemaps');
+for(const u of locs){ const entry=map.get(u); if(!entry) fail(`sitemap URL missing self-canonical HTML: ${u}`); else if(/noindex/i.test((entry.h.match(/<meta[^>]+name=["']robots["'][^>]*>/i)||[''])[0])) fail(`sitemap contains noindex page: ${u}`); }
 if(!sitemap.includes('<loc>https://www.pilot-desk.com/e6b-flight-computer.html</loc>')) fail('E6B hub missing from sitemap');
 if(sitemap.includes('weight-balance.html</loc>')) fail('canonicalized weight-balance.html must not be in sitemap');
 if(fs.readFileSync('assets/seo.js','utf8').includes('SearchAction')) fail('fake homepage SearchAction should not be emitted');
 if(errors.length){ console.error(errors.join('\n')); process.exit(1); }
-console.log(`SEO hardening PASS: ${calcDirs.length} calculator dirs, ${locs.length} sitemap URLs, guide schemas/images, pillar content, E6B hub, and app offers checked.`);
+console.log(`SEO hardening PASS: ${calcDirs.length} calculator dirs, ${locs.length} sitemap URLs across ${sitemapBodies.length} sitemap file(s), guide schemas/images, pillar content, E6B hub, and app offers checked.`);

@@ -56,5 +56,7 @@ for(const x of ['/planner.html','/route-planner.html','/procedures.html','/poh-c
 if(!sw.includes("url.pathname.startsWith('/api/')"))throw new Error('Live APIs must bypass service worker cache');
 
 const sitemap=fs.readFileSync('sitemap.xml','utf8');
-if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missing from sitemap');
+const sitemapCore=fs.readFileSync('sitemap-core.xml','utf8');
+if(!sitemap.includes('/sitemap-core.xml'))throw new Error('Root sitemap index missing core sitemap');
+if(!sitemapCore.includes('/procedures.html'))throw new Error('Procedures page missing from core sitemap');
 console.log('PilotDesk planner, FAA chart, procedure viewer, training library, navigation, and weather tests passed.');

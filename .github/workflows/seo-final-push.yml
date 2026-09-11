@@ -64,7 +64,7 @@ jobs:
         run: |
           git config user.name "PilotDesk Automation"
           git config user.email "w3v1n4t0r@gmail.com"
-          git add assets/calculator-config.js calculators guides.html guides/pilot-math-formulas.html guides/aviation-math-glossary.html about.html sources.html aircraft.html procedures.html embed.html weight-balance.html flights.html flight-brief.html changelog.html sitemap.xml
+          git add assets/calculator-config.js scripts/generate-calculator-pages.mjs calculators guides.html guides/pilot-math-formulas.html guides/aviation-math-glossary.html about.html sources.html aircraft.html procedures.html embed.html weight-balance.html flights.html flight-brief.html changelog.html sitemap.xml
           if git diff --cached --quiet; then
             echo "SEO output already current."
           else

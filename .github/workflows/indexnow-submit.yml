@@ -6,6 +6,19 @@ on:
     branches: [main]
     paths:
       - sitemap.xml
+      - index.html
+      - guides.html
+      - guides/**
+      - calculators/**
+      - flight-training.html
+      - metar-decoder.html
+      - airport.html
+      - weather.html
+      - planner.html
+      - route-planner.html
+      - procedures.html
+      - about.html
+      - sources.html
       - scripts/submit-indexnow.py
       - c731d63e44f2d52fcd122041601cfb22.txt
       - .github/workflows/indexnow-submit.yml

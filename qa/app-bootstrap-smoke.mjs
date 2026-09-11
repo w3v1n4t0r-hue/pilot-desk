@@ -12,12 +12,15 @@ const manifest=JSON.parse(read('site.webmanifest'));
 const sw=read('sw.js');
 
 check(bootstrap.includes("window.__pilotDeskAppBootstrap"),'app bootstrap needs an idempotency guard');
-for(const asset of ['analytics.js','errors.js','seo.js','product-polish.js','runtime-qol.js','pilotdesk-plus.js','sticky-app.js','update.js']){
+for(const asset of ['analytics.js','errors.js','seo.js','product-polish.js','runtime-qol.js','pilotdesk-plus.js','sticky-app.js','update.js','performance.js','tool-first-layout.js']){
   check(bootstrap.includes(`/assets/${asset}`),`app bootstrap is missing ${asset}`);
   check(!ads.includes(`/assets/${asset}`),`ads.js still owns non-ad module ${asset}`);
 }
 check(bootstrap.includes("loadStyle('/assets/professional-polish.css','pd-professional-polish')"),'professional visual layer must load from the ad-independent bootstrap');
-check(!ads.includes('professional-polish.css'),'professional visual layer must not depend on ads.js');
+check(bootstrap.includes("loadStyle('/assets/performance.css','pd-performance-css')"),'performance layer must load from the ad-independent bootstrap');
+check(bootstrap.includes('deferLoad'),'non-critical modules should be deferred off the first-paint path');
+check(bootstrap.includes('__pdTrackQueue'),'deferred analytics must preserve early product events');
+check(!ads.includes('professional-polish.css')&&!ads.includes('performance.css'),'visual/performance layers must not depend on ads.js');
 check(safety.includes('/assets/app-bootstrap.js'),'calculator/home path must load app bootstrap without ads.js');
 check(productNav.includes('/assets/app-bootstrap.js'),'workspace path must load app bootstrap without ads.js');
 check(bootstrap.includes("Quick Start")&&bootstrap.includes('data-pd-launch'),'homepage quick-start conversion surface is missing');
@@ -28,10 +31,8 @@ const flightMath=(manifest.shortcuts||[]).find(x=>x.short_name==='Flight Math');
 check(wb?.url==='/weight-balance.html','installed-app Weight & Balance shortcut must use the canonical tool URL');
 check(flightMath?.url==='/flight-planning-workspace.html','installed app must expose the connected flight-planning workspace');
 check(manifest.launch_handler?.client_mode==='navigate-existing','installed app should reuse an existing app window where supported');
-check(sw.includes("'/assets/app-bootstrap.js'"),'service worker must cache app-bootstrap.js');
-check(sw.includes("'/assets/sticky-app.js'"),'service worker must cache sticky-app.js');
-check(sw.includes("'/assets/professional-polish.css'"),'service worker must cache the professional visual layer');
-check(sw.includes("CACHE='pilotdesk-v23'"),'service worker cache version should match the professional-polish release');
+for(const asset of ['/assets/app-bootstrap.js','/assets/sticky-app.js','/assets/professional-polish.css','/assets/performance.css','/assets/performance.js','/assets/tool-first-layout.js'])check(sw.includes(`'${asset}'`),`service worker must cache ${asset}`);
+check(sw.includes("CACHE='pilotdesk-v24'"),'service worker cache version should match the optimization release');
 check(sw.includes("'/offline.html'"),'service worker must cache a dedicated offline fallback');
 check(sw.includes('Promise.allSettled'),'precache should tolerate a single optional asset failure');
 check(!sw.includes("fetch('/sitemap.xml'"),'service-worker install should not crawl the whole sitemap');
@@ -41,4 +42,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('App bootstrap checks passed: ad-independent features, isolated professional polish, sticky app shell, PWA shortcuts, resilient offline cache, and analytics privacy verified.');
+console.log('App bootstrap checks passed: ad-independent features, deferred non-critical work, tool-first layout, PWA cache, and analytics privacy verified.');

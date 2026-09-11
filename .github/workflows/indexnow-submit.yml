@@ -5,47 +5,114 @@ on:
   push:
     branches: [main]
     paths:
+      - '**/*.html'
       - sitemap.xml
-      - index.html
-      - guides.html
-      - guides/**
-      - calculators/**
-      - flight-training.html
-      - metar-decoder.html
-      - airport.html
-      - weather.html
-      - planner.html
-      - route-planner.html
-      - procedures.html
-      - about.html
-      - sources.html
+      - robots.txt
+      - assets/app-bootstrap.js
+      - assets/seo.js
+      - assets/product-polish.js
+      - assets/runtime-qol.js
+      - assets/tool-first-layout.js
+      - assets/professional-polish.css
+      - assets/performance.css
+      - assets/performance.js
       - scripts/submit-indexnow.py
       - c731d63e44f2d52fcd122041601cfb22.txt
       - .github/workflows/indexnow-submit.yml
+  schedule:
+    - cron: '17 */2 * * *'
 
 permissions:
   contents: read
+  statuses: read
 
 jobs:
   submit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build IndexNow payload
-        run: python scripts/submit-indexnow.py
-      - name: Verify key is live
+
+      - name: Compute searchable-content signature
+        id: signature
+        shell: bash
         run: |
-          for i in 1 2 3 4 5 6; do
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
+          import hashlib
+
+          files=[]
+          for p in Path('.').rglob('*.html'):
+              if '.git' not in p.parts:
+                  files.append(p)
+          for name in [
+              'sitemap.xml','robots.txt','assets/app-bootstrap.js','assets/seo.js',
+              'assets/product-polish.js','assets/runtime-qol.js','assets/tool-first-layout.js',
+              'assets/professional-polish.css','assets/performance.css','assets/performance.js'
+          ]:
+              p=Path(name)
+              if p.exists(): files.append(p)
+          h=hashlib.sha256()
+          for p in sorted(set(files),key=lambda x:x.as_posix()):
+              h.update(p.as_posix().encode())
+              h.update(b'\0')
+              h.update(p.read_bytes())
+              h.update(b'\0')
+          print('value='+h.hexdigest())
+          PY
+
+      - name: Restore IndexNow submission marker
+        id: submitted
+        uses: actions/cache@v4
+        with:
+          path: .indexnow-submitted
+          key: indexnow-${{ steps.signature.outputs.value }}
+
+      - name: Wait for Vercel production success
+        if: steps.submitted.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          for i in $(seq 1 60); do
+            state=$(curl -fsSL \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/status" \
+              | python -c "import json,sys; d=json.load(sys.stdin); s=[x.get('state') for x in d.get('statuses',[]) if x.get('context')=='Vercel']; print(s[0] if s else 'pending')" \
+              || echo pending)
+            echo "Vercel production status: $state"
+            if [ "$state" = "success" ]; then exit 0; fi
+            sleep 30
+          done
+          echo "Production deployment was not confirmed; skipping IndexNow rather than submitting before the release is live."
+          exit 1
+
+      - name: Skip unchanged content
+        if: steps.submitted.outputs.cache-hit == 'true' && github.event_name != 'workflow_dispatch'
+        run: echo "This searchable-content version was already submitted to IndexNow."
+
+      - name: Build IndexNow payload
+        if: steps.submitted.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+        run: python scripts/submit-indexnow.py
+
+      - name: Verify key is live
+        if: steps.submitted.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          for i in $(seq 1 30); do
             body=$(curl -fsSL https://www.pilot-desk.com/c731d63e44f2d52fcd122041601cfb22.txt || true)
             if [ "$body" = "c731d63e44f2d52fcd122041601cfb22" ]; then
               echo "IndexNow key is live"
               exit 0
             fi
-            sleep 10
+            sleep 20
           done
           echo "IndexNow key file is not live yet"
           exit 1
+
       - name: Submit canonical URLs
+        if: steps.submitted.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
+        shell: bash
         run: |
           code=$(curl -sS -o indexnow-response.txt -w "%{http_code}" -X POST \
             -H "Content-Type: application/json; charset=utf-8" \
@@ -54,6 +121,8 @@ jobs:
           echo "IndexNow HTTP status: $code"
           cat indexnow-response.txt || true
           case "$code" in
-            200|202) exit 0 ;;
+            200|202) ;;
             *) exit 1 ;;
           esac
+          mkdir -p .indexnow-submitted
+          printf '%s\n' '${{ steps.signature.outputs.value }}' > .indexnow-submitted/signature

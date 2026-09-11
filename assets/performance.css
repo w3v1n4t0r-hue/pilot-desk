@@ -1,0 +1,51 @@
+/* PilotDesk tool-first performance layer. Presentation only; no calculator math. */
+html{scrollbar-gutter:stable}
+img,video,canvas{max-width:100%}
+img{height:auto}
+button,a,input,select,textarea{touch-action:manipulation}
+.results,.pd-kpi-grid,.wb-table{font-variant-numeric:tabular-nums}
+.tool-card p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+
+@supports(content-visibility:auto){
+  .category{content-visibility:auto;contain-intrinsic-size:auto 480px}
+  footer{content-visibility:auto;contain-intrinsic-size:auto 180px}
+}
+
+.pd-popular-tools{margin:12px 0 20px}
+.pd-popular-tools .category-head{margin-bottom:8px}
+.pd-popular-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.pd-popular-grid a{display:flex;min-height:66px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);font-size:11px;font-weight:700;line-height:1.25}
+.pd-popular-grid a:hover,.pd-popular-grid a:focus-visible{border-color:var(--silver2);outline:none}
+
+.pd-home-library{margin:18px 0;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
+.pd-home-library>summary{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:50px;padding:0 14px;cursor:pointer;font-size:12px;font-weight:700;list-style:none}
+.pd-home-library>summary::-webkit-details-marker{display:none}
+.pd-home-library>summary:after{content:'Open';color:var(--muted2);font-size:10px;font-weight:600}
+.pd-home-library[open]>summary:after{content:'Close'}
+.pd-home-library>.recent-section{margin:0;padding:12px 14px;border-top:1px solid var(--line)}
+.pd-home-library .category-head{margin-bottom:8px}
+
+.pd-learn-panel{margin-top:20px;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
+.pd-learn-panel>summary{display:flex;align-items:center;justify-content:space-between;min-height:54px;padding:0 16px;cursor:pointer;font-size:13px;font-weight:800;list-style:none}
+.pd-learn-panel>summary::-webkit-details-marker{display:none}
+.pd-learn-panel>summary:after{content:'Read';color:var(--muted2);font-size:10px;font-weight:600}
+.pd-learn-panel[open]>summary:after{content:'Hide'}
+.pd-learn-panel>.info-card{margin:0;border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none}
+.calc-main>.info-card[data-pd-faq]{margin-top:12px}
+.calc-hero .fine{max-width:62ch}
+
+@media(max-width:980px){.pd-popular-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){
+  html{scrollbar-gutter:auto}
+  input,select,textarea{font-size:16px!important}
+  .calc-btn,.pd-btn,.utility-btn,.calc-actions button,.calc-actions a{min-height:44px}
+  .tool-card{content-visibility:auto;contain-intrinsic-size:auto 118px}
+  .calc-hero .fine{display:none}
+  .breadcrumbs{font-size:9px;margin-bottom:8px}
+  .safety-strip{padding:8px 10px;font-size:10px}
+  .pd-popular-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pd-popular-grid a{min-height:58px}
+  .pd-home-library>.recent-section{padding:10px 12px}
+}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}

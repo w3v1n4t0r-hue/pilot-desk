@@ -28,6 +28,8 @@ jobs:
         run: node qa/app-bootstrap-smoke.mjs
       - name: Run professional visual polish checks
         run: node qa/professional-polish-smoke.mjs
+      - name: Run tool-first optimization checks
+        run: node qa/tool-first-smoke.mjs
       - name: Run sticky app release checks
         run: node qa/sticky-app-smoke.mjs
       - name: Run flight workspace checks
@@ -46,5 +48,7 @@ jobs:
         run: node qa/copy-tone.mjs
       - name: Check Google audit regressions
         run: node qa/google-audit.mjs
+      - name: Run multi-engine SEO checks
+        run: node qa/multi-engine-seo.mjs
       - name: Run SEO hardening checks
         run: node qa/seo-hardening.mjs

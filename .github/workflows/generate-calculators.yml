@@ -1,13 +1,27 @@
-name: Generate calculator pages
+name: Generate calculator and guide pages
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/generate-calculator-pages.mjs'
+      - 'scripts/strengthen-guides.mjs'
+      - 'scripts/postprocess-site.mjs'
+      - 'scripts/generate-sitemap.mjs'
+      - 'assets/calculator-config.js'
+      - '.github/workflows/generate-calculators.yml'
 
 permissions:
   contents: write
 
+concurrency:
+  group: pilotdesk-seo-generation
+  cancel-in-progress: false
+
 jobs:
   generate:
+    if: github.actor != 'PilotDesk Automation'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,16 +29,23 @@ jobs:
         run: node scripts/generate-calculator-pages.mjs
       - name: Apply static branding and aviation FAQ content
         run: node scripts/postprocess-site.mjs
+      - name: Deepen guide content and internal links
+        run: node scripts/strengthen-guides.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
-      - name: Commit generated and postprocessed pages
+      - name: Verify generated JavaScript
+        run: |
+          node --check scripts/generate-calculator-pages.mjs
+          node --check scripts/strengthen-guides.mjs
+          node --check scripts/generate-sitemap.mjs
+      - name: Commit generated pages
         run: |
           git config user.name "PilotDesk Automation"
           git config user.email "w3v1n4t0r@gmail.com"
-          git add calculators index.html 404.html sitemap.xml
+          git add calculators guides index.html 404.html sitemap.xml robots.txt
           if git diff --cached --quiet; then
-            echo "Static pages already current."
+            echo "Generated pages already current."
           else
-            git commit -m "Refresh static PilotDesk pages"
+            git commit -m "Refresh sitewide SEO content"
             git push
           fi

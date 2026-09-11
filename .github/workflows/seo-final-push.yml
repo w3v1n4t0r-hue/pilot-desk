@@ -1,0 +1,73 @@
+name: PilotDesk Final SEO Push
+
+on:
+  push:
+    branches: [seo-final-push]
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: seo-final-push
+          fetch-depth: 0
+      - name: Apply final SEO pass
+        run: python scripts/apply-seo-final-push.py
+      - name: Regenerate calculator pages
+        run: node scripts/generate-calculator-pages.mjs
+      - name: Apply static postprocessing
+        run: node scripts/postprocess-site.mjs
+      - name: Generate canonical sitemap
+        run: node scripts/generate-sitemap.mjs
+      - name: Check calculator snippets
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          for(const d of fs.readdirSync('calculators')){
+            const p=`calculators/${d}/index.html`; if(!fs.existsSync(p)) continue;
+            const h=fs.readFileSync(p,'utf8'); const m=h.match(/<meta name="description" content="([^"]*)">/);
+            if(!m) throw new Error(`${p}: missing meta description`);
+            if(m[1].length<70 || m[1].length>160) throw new Error(`${p}: meta description length ${m[1].length}`);
+          }
+          console.log('Calculator meta descriptions are within target range.');
+          NODE
+      - name: Check JavaScript syntax
+        run: find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+      - name: Run full QA
+        run: |
+          node qa/smoke.mjs
+          node qa/qol-smoke.mjs
+          node qa/product-polish-smoke.mjs
+          node qa/v2-smoke.mjs
+          node qa/planner-lab-tests.mjs
+          node qa/formula-tests.mjs
+          node qa/site-integrity.mjs
+          node qa/copy-tone.mjs
+          node qa/google-audit.mjs
+          node qa/seo-hardening.mjs
+      - name: Check focused indexing rules
+        run: |
+          grep -q 'noindex,follow' flights.html
+          grep -q 'noindex,follow' flight-brief.html
+          grep -q 'noindex,follow' changelog.html
+          ! grep -q 'flights.html</loc>' sitemap.xml
+          ! grep -q 'flight-brief.html</loc>' sitemap.xml
+          ! grep -q 'changelog.html</loc>' sitemap.xml
+          grep -q 'data-pd-wb-schema' weight-balance.html
+          grep -q 'data-pd-about-schema' about.html
+          grep -q 'data-pd-sources-schema' sources.html
+      - name: Commit tested SEO output
+        run: |
+          git config user.name "PilotDesk Automation"
+          git config user.email "w3v1n4t0r@gmail.com"
+          git add assets/calculator-config.js calculators guides.html guides/pilot-math-formulas.html guides/aviation-math-glossary.html about.html sources.html aircraft.html procedures.html embed.html weight-balance.html flights.html flight-brief.html changelog.html sitemap.xml
+          if git diff --cached --quiet; then
+            echo "SEO output already current."
+          else
+            git commit -m "Strengthen PilotDesk search snippets and indexing focus"
+            git push origin HEAD:seo-final-push
+          fi

@@ -1,6 +1,6 @@
 # PilotDesk
 
-[PilotDesk](https://www.pilot-desk.com/) is a free aviation utility with pilot calculators, airport weather, route planning, aircraft profiles, weight and balance, and pilot math guides.
+[PilotDesk](https://www.pilot-desk.com/) is a free aviation utility with pilot calculators, airport weather, route planning, aircraft profiles, weight and balance, pilot math guides, and training resources.
 
 - Website: https://www.pilot-desk.com/
 - Aviation calculators: https://www.pilot-desk.com/
@@ -8,6 +8,8 @@
 - Flight planning: https://www.pilot-desk.com/planner.html
 - Pilot math guides: https://www.pilot-desk.com/guides.html
 - Flight training resources: https://www.pilot-desk.com/flight-training.html
+- Free tools for flight schools and CFIs: https://www.pilot-desk.com/for-flight-schools.html
+- Embeddable aviation calculator widgets: https://www.pilot-desk.com/embed.html
 
 Production changes on `main` are checked by the PilotDesk QA workflow, including JavaScript syntax, calculator coverage, site wiring, representative formula regression tests, Google audit regressions, and SEO hardening checks.
 

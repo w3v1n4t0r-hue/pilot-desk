@@ -4,8 +4,18 @@ let errors=[];
 const fail=x=>errors.push(x);
 const calcDirs=fs.readdirSync('calculators',{withFileTypes:true}).filter(x=>x.isDirectory());
 for(const d of calcDirs){ const file=`calculators/${d.name}/index.html`; if(!fs.existsSync(file)) continue; const h=fs.readFileSync(file,'utf8'); if(!h.includes('data-pd-static-calc-schema')) fail(`${file}: missing static app schema`); if(!h.includes('"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}')) fail(`${file}: free app Offer schema missing`); if(!h.includes('data-pd-static-breadcrumbs')) fail(`${file}: breadcrumb schema missing`); if(!h.includes('Pilot math formula reference')) fail(`${file}: semantic internal link block missing`); }
-for(const ent of fs.readdirSync('guides',{withFileTypes:true}).filter(x=>x.isFile()&&x.name.endsWith('.html'))){ const file=`guides/${ent.name}`,h=fs.readFileSync(file,'utf8'); if(!h.includes('data-pd-guide-schema')) fail(`${file}: Article schema missing`); if(!h.includes('data-pd-guide-breadcrumbs')) fail(`${file}: breadcrumb schema missing`); if(!/"image":"https:\/\/www\.pilot-desk\.com\/assets\/(?:aviation-guide-reference|pilot-math-reference)\.svg"/.test(h)) fail(`${file}: representative Article image missing`); if(!h.includes('property="og:image"')) fail(`${file}: social image missing`); }
-for(const file of ['guides/pilot-math-formulas.html','guides/aviation-math-glossary.html']){ const h=fs.readFileSync(file,'utf8'); const words=h.replace(/<[^>]+>/g,' ').split(/\s+/).filter(Boolean).length; if(words<700) fail(`${file}: pillar content too short (${words} words)`); }
+for(const ent of fs.readdirSync('guides',{withFileTypes:true}).filter(x=>x.isFile()&&x.name.endsWith('.html'))){
+  const file=`guides/${ent.name}`,h=fs.readFileSync(file,'utf8');
+  const hasStructuredPage=/"@type"\s*:\s*"(?:Article|WebPage)"/.test(h);
+  const hasRepresentativeImage=/"image"\s*:\s*"https:\/\/www\.pilot-desk\.com\/assets\/[^"]+\.(?:svg|png|jpg|jpeg|webp)"/.test(h)||/property=["']og:image["']/.test(h);
+  const hasCanonical=/<link[^>]+rel=["']canonical["'][^>]+href=["']https:\/\/www\.pilot-desk\.com\/guides\//i.test(h)||/<link[^>]+href=["']https:\/\/www\.pilot-desk\.com\/guides\/[^"']+["'][^>]+rel=["']canonical["']/i.test(h);
+  const robots=(h.match(/<meta[^>]+name=["']robots["'][^>]*>/i)||[''])[0];
+  if(!hasStructuredPage) fail(`${file}: Article/WebPage schema missing`);
+  if(!hasRepresentativeImage) fail(`${file}: representative guide image missing`);
+  if(!hasCanonical) fail(`${file}: self-canonical missing`);
+  if(/noindex/i.test(robots)) fail(`${file}: guide should be indexable`);
+}
+for(const file of ['guides/pilot-math-formulas.html','guides/aviation-math-glossary.html']){ const h=fs.readFileSync(file,'utf8'); const words=h.replace(/<[^>]+>/g,' ').split(/\s+/).filter(Boolean).length; if(words<700) fail(`${file}: pillar content too short (${words} words)`); if(!h.includes('property="og:image"')) fail(`${file}: pillar social image missing`); if(!h.includes('data-pd-guide-breadcrumbs')&&!/"@type"\s*:\s*"BreadcrumbList"/.test(h)) fail(`${file}: pillar breadcrumb schema missing`); }
 const e6bFile='e6b-flight-computer.html';
 if(!fs.existsSync(e6bFile)) fail(`${e6bFile}: missing E6B search hub`); else { const h=fs.readFileSync(e6bFile,'utf8'); const words=h.replace(/<[^>]+>/g,' ').split(/\s+/).filter(Boolean).length; if(words<900) fail(`${e6bFile}: E6B content too short (${words} words)`); if(!/<title>[^<]*E6B Flight Computer[^<]*<\/title>/i.test(h)) fail(`${e6bFile}: E6B title missing`); if(!h.includes('rel="canonical" href="https://www.pilot-desk.com/e6b-flight-computer.html"')) fail(`${e6bFile}: self-canonical missing`); if(!h.includes('name="robots" content="index,follow"')) fail(`${e6bFile}: index/follow missing`); for(const href of ['/calculators/wind-triangle/','/calculators/time-speed-distance/','/calculators/fuel-required/','/calculators/density-altitude/','/calculators/true-airspeed/']) if(!h.includes(`href="${href}"`)) fail(`${e6bFile}: missing key E6B link ${href}`); if(!h.includes('"@type":"ItemList"')) fail(`${e6bFile}: ItemList schema missing`); if(!/Planning and training aid only/i.test(h)) fail(`${e6bFile}: safety language missing`); }
 for(const file of ['guides.html','flight-training.html']){ const h=fs.readFileSync(file,'utf8'); if(!h.includes('href="/e6b-flight-computer.html"')) fail(`${file}: missing internal link to E6B hub`); }
@@ -24,4 +34,4 @@ if(allSitemapText.includes('weight-balance.html</loc>')) fail('canonicalized wei
 if(!locs.includes('https://www.pilot-desk.com/flight-planning-workspace.html')) fail('Flight Planning Workspace missing from product sitemap');
 if(fs.readFileSync('assets/seo.js','utf8').includes('SearchAction')) fail('fake homepage SearchAction should not be emitted');
 if(errors.length){ console.error(errors.join('\n')); process.exit(1); }
-console.log(`SEO hardening PASS: ${calcDirs.length} calculator dirs, ${locs.length} sitemap URLs across ${childSitemaps.length} child sitemaps, guide schemas/images, pillar content, E6B hub, and app offers checked.`);
+console.log(`SEO hardening PASS: ${calcDirs.length} calculator dirs, ${locs.length} sitemap URLs across ${childSitemaps.length} child sitemaps, guide structured data/images, pillar content, E6B hub, and app offers checked.`);

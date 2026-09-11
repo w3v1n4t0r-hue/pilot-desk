@@ -7,6 +7,7 @@ on:
     paths:
       - 'scripts/generate-calculator-pages.mjs'
       - 'scripts/strengthen-guides.mjs'
+      - 'scripts/normalize-public-copy.mjs'
       - 'scripts/postprocess-site.mjs'
       - 'scripts/generate-sitemap.mjs'
       - 'assets/calculator-config.js'
@@ -31,6 +32,8 @@ jobs:
         run: node scripts/postprocess-site.mjs
       - name: Deepen guides and core tool pages
         run: node scripts/strengthen-guides.mjs
+      - name: Normalize generated public copy
+        run: node scripts/normalize-public-copy.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
       - name: Check JavaScript syntax

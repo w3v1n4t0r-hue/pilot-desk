@@ -34,6 +34,8 @@ jobs:
         run: node qa/formula-tests.mjs
       - name: Run site integrity checks
         run: node qa/site-integrity.mjs
+      - name: Run trust and safety checks
+        run: node qa/trust-safety-smoke.mjs
       - name: Check public copy tone
         run: node qa/copy-tone.mjs
       - name: Check Google audit regressions

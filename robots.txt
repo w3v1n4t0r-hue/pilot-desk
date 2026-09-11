@@ -2,4 +2,3 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Sitemap: https://www.pilot-desk.com/sitemap.xml
-Sitemap: https://www.pilot-desk.com/sitemap-seo-expansion.xml

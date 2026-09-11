@@ -11,7 +11,7 @@ const disclaimer=read('legal/disclaimer.html');
 const calcSafety=read('assets/safety.js');
 
 assert(safety.includes('TRUST &amp; SAFETY')&&safety.includes('Useful aviation tools, with clear limits.'),'Trust & Safety page identity missing');
-assert(safety.includes('not an FAA-approved navigation source')&&safety.includes('not an emergency service'),'Core aviation limitations missing');
+assert(safety.includes('not an FAA-approved navigation source')&&safety.includes('not monitored as an emergency service'),'Core aviation limitations missing');
 assert(safety.includes('more than 90 minutes old')&&safety.includes('official or approved sources'),'Weather freshness policy missing');
 assert(safety.includes('Advertising is isolated')&&safety.includes('Advertising content does not change calculator formulas'),'Ad independence statement missing');
 assert(safety.includes('secondary cross-check')&&safety.includes('/sources.html'),'Source hierarchy guidance missing');

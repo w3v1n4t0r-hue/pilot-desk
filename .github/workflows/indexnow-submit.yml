@@ -1,0 +1,27 @@
+name: Submit PilotDesk to IndexNow
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build IndexNow payload
+        run: python scripts/submit-indexnow.py
+      - name: Submit canonical URLs
+        run: |
+          code=$(curl -sS -o indexnow-response.txt -w "%{http_code}" -X POST \
+            -H "Content-Type: application/json; charset=utf-8" \
+            --data-binary @indexnow-payload.json \
+            https://api.indexnow.org/indexnow)
+          echo "IndexNow HTTP status: $code"
+          cat indexnow-response.txt || true
+          case "$code" in
+            200|202) exit 0 ;;
+            *) exit 1 ;;
+          esac

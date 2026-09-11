@@ -4,6 +4,25 @@ if(window.__pilotDeskAppBootstrap)return;
 window.__pilotDeskAppBootstrap=true;
 
 const path=location.pathname;
+const isHome=path==='/'||path==='/index.html';
+const isCalculator=path.startsWith('/calculators/')&&!path.includes('weight-balance-builder');
+const isMobile=matchMedia('(max-width:760px)').matches;
+const isStandalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+
+// Apply the saved theme before the rest of the app paints to avoid a light/dark flash.
+try{
+  const saved=localStorage.getItem('pd-theme');
+  const valid=new Set(['system','light','dark','night-red']);
+  const mode=valid.has(saved)?saved:'dark';
+  const resolved=mode==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):mode;
+  document.documentElement.dataset.pdTheme=resolved;
+  document.documentElement.style.colorScheme=resolved==='light'?'light':'dark';
+}catch{}
+
+// Buffer privacy-safe product events while the analytics library loads after first paint.
+window.__pdTrackQueue=Array.isArray(window.__pdTrackQueue)?window.__pdTrackQueue:[];
+if(!window.pdTrack)window.pdTrack=(name,data={})=>window.__pdTrackQueue.push([name,data]);
+
 const loadStyle=(href,key)=>{
   if(document.querySelector(`link[data-${key}]`)||[...document.styleSheets].some(s=>{try{return new URL(s.href,location.href).pathname===href}catch{return false}}))return;
   const l=document.createElement('link');
@@ -20,27 +39,29 @@ const load=(src,key)=>{
   s.setAttribute(`data-${key}`,'1');
   document.head.appendChild(s);
 };
+const ready=fn=>document.readyState==='loading'?document.addEventListener('DOMContentLoaded',fn,{once:true}):fn();
+const idle=(fn,timeout=1400)=>'requestIdleCallback'in window?requestIdleCallback(fn,{timeout}):setTimeout(fn,Math.min(timeout,700));
+const afterPaint=fn=>requestAnimationFrame(()=>requestAnimationFrame(fn));
+const deferLoad=(src,key,timeout=1400)=>ready(()=>afterPaint(()=>idle(()=>load(src,key),timeout)));
 
-// Presentation stays isolated from product logic so visual changes cannot change calculations.
+// Presentation is isolated from calculations. Performance CSS is small and paint-focused.
 loadStyle('/assets/professional-polish.css','pd-professional-polish');
+loadStyle('/assets/performance.css','pd-performance-css');
 
-// Core product behavior must never depend on whether an ad blocker allows ads.js.
+// Critical shell: navigation, identity, theme, metadata, error capture and performance helpers.
 load('/assets/global-nav.js','pd-global-nav');
 load('/assets/brand.js','pd-brand');
 load('/assets/theme.js','pd-theme');
-load('/assets/analytics.js','pd-analytics');
 load('/assets/seo.js','pd-seo');
-load('/assets/product-polish.js','pd-polish');
-load('/assets/runtime-qol.js','pd-qol');
-if(path.startsWith('/calculators/')&&!path.includes('weight-balance-builder')){
+load('/assets/errors.js','pd-errors');
+load('/assets/performance.js','pd-performance');
+
+// Calculator behavior remains eager so math and safety interactions are immediately available.
+if(isCalculator){
   load('/assets/features.js','pd-features');
   load('/assets/share-enhance.js','pd-share');
   load('/assets/calculator-ux.js','pd-calc-ux');
 }
-load('/assets/pilotdesk-plus.js','pd-plus');
-load('/assets/sticky-app.js','pd-sticky-app');
-load('/assets/update.js','pd-update');
-load('/assets/errors.js','pd-errors');
 if(path==='/aircraft.html'){
   load('/assets/aircraft-transfer.js','pd-aircraft-transfer');
   load('/assets/aircraft-training.js','pd-aircraft-training');
@@ -48,14 +69,22 @@ if(path==='/aircraft.html'){
 if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline');
 if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export');
 
+// Non-critical enhancements are intentionally moved off the first paint / input path.
+deferLoad('/assets/analytics.js','pd-analytics',650);
+deferLoad('/assets/product-polish.js','pd-polish',900);
+deferLoad('/assets/runtime-qol.js','pd-qol',1000);
+if(isMobile||isStandalone)ready(()=>afterPaint(()=>load('/assets/sticky-app.js','pd-sticky-app')));
+else deferLoad('/assets/sticky-app.js','pd-sticky-app',1800);
+deferLoad('/assets/pilotdesk-plus.js','pd-plus',isHome||path==='/history.html'||isCalculator?1100:2600);
+deferLoad('/assets/update.js','pd-update',3000);
+
 const canonicalWeightBalance='/weight-balance.html';
 function repairLegacyLinks(root=document){
   root.querySelectorAll?.('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]').forEach(a=>a.setAttribute('href',canonicalWeightBalance));
 }
 
 function addQuickStart(){
-  if(path!=='/'&&path!=='/index.html')return;
-  if(document.getElementById('pdQuickStart'))return;
+  if(!isHome||document.getElementById('pdQuickStart'))return;
   const hero=document.querySelector('.hero');
   if(!hero)return;
   const section=document.createElement('section');
@@ -80,13 +109,15 @@ function analyticsHooks(){
     if(launch)window.pdTrack?.('Quick Start',{target:launch.dataset.pdLaunch||'unknown'});
     const favorite=e.target.closest('.pd-star');
     if(favorite)window.pdTrack?.('Favorite Toggle',{tool:document.body.dataset.calc||'unknown'});
+    const legacy=e.target.closest('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]');
+    if(legacy)legacy.setAttribute('href',canonicalWeightBalance);
   },true);
   const search=document.getElementById('toolSearch');
   if(search)search.addEventListener('input',()=>{
     if(searchTracked||search.value.trim().length<2)return;
     searchTracked=true;
     window.pdTrack?.('Homepage Search',{page:'home'});
-  });
+  },{passive:true});
 }
 
 function init(){
@@ -94,10 +125,6 @@ function init(){
   repairLegacyLinks();
   addQuickStart();
   analyticsHooks();
-  const mo=new MutationObserver(records=>{
-    for(const r of records)for(const n of r.addedNodes)if(n.nodeType===1)repairLegacyLinks(n);
-  });
-  mo.observe(document.documentElement,{subtree:true,childList:true});
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+ready(init);
 })();

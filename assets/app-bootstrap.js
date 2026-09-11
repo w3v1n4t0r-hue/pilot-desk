@@ -13,10 +13,11 @@ const load=(src,key)=>{
   document.head.appendChild(s);
 };
 
-// Product behavior must never depend on whether an ad blocker allows ads.js.
+// Core product behavior must never depend on whether an ad blocker allows ads.js.
 load('/assets/global-nav.js','pd-global-nav');
 load('/assets/theme.js','pd-theme');
 load('/assets/analytics.js','pd-analytics');
+load('/assets/seo.js','pd-seo');
 load('/assets/product-polish.js','pd-polish');
 load('/assets/runtime-qol.js','pd-qol');
 if(path.startsWith('/calculators/')&&!path.includes('weight-balance-builder')){

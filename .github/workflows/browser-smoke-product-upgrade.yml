@@ -42,7 +42,9 @@ jobs:
           await page.locator('#pdPopularNow').waitFor();
           if(await page.locator('#pdPopularNow a[href="/e6b-flight-computer.html"]').count()!==1)fail('Homepage missing E6B popular link');
           if(await page.locator('#pdPopularNow a[href="/flight-planning-workspace.html"]').count()!==1)fail('Homepage missing planning workspace');
-          if(await page.locator('.brandmark img[src="/assets/icon.svg"]').count()!==1)fail('Central logo asset missing');
+          await page.locator('img.pd-wordmark[src="/assets/wordmark.svg"]').waitFor();
+          const iconAsset=await page.request.get('http://127.0.0.1:4173/assets/icon.svg');
+          if(!iconAsset.ok())fail('App icon asset failed to load');
           await page.locator('#pdCmdBackdrop').waitFor({state:'attached'});
 
           await page.goto('http://127.0.0.1:4173/calculators/crosswind/',{waitUntil:'domcontentloaded'});
@@ -89,12 +91,15 @@ jobs:
           await page.goto('http://127.0.0.1:4173/calculators/density-altitude/',{waitUntil:'domcontentloaded'});
           await page.locator('#pdMobileBar').waitFor();
           if(!(await page.locator('#pdMobileBar').isVisible()))fail('Mobile quick bar is not visible');
+          if(!(await page.locator('img.pd-wordmark').isVisible()))fail('PilotDesk wordmark is not visible on mobile');
 
           const manifest=await page.request.get('http://127.0.0.1:4173/site.webmanifest');
           if(!manifest.ok())fail('PWA manifest failed to load');
           const manifestJson=await manifest.json();
           if(manifestJson.start_url!=='/')fail('PWA start URL is not homepage');
           if(!manifestJson.shortcuts?.some(x=>x.url==='/flight-planning-workspace.html'))fail('PWA workspace shortcut missing');
+          if(!manifestJson.shortcuts?.some(x=>x.url==='/calculators/weight-balance-builder/'))fail('PWA weight and balance shortcut missing');
+          if(!manifestJson.icons?.some(x=>x.src==='/assets/icon.svg'))fail('PWA PilotDesk icon missing');
 
           if(pageErrors.length)fail('Browser page errors: '+pageErrors.join(' | '));
           await browser.close();

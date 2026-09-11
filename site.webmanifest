@@ -2,81 +2,19 @@
   "id": "/",
   "name": "PilotDesk",
   "short_name": "PilotDesk",
-  "description": "Pilot tools for airport search, aviation weather, FAA chart route planning, saved flights, flight briefs, aircraft profiles, weight and balance, and pilot math.",
-  "start_url": "/planner.html",
+  "description": "Pilot tools for aviation math, flight planning, airport weather, route planning, aircraft profiles, weight and balance, and training.",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": [
-    "standalone",
-    "minimal-ui"
-  ],
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#08090b",
   "theme_color": "#08090b",
-  "categories": [
-    "navigation",
-    "utilities",
-    "education"
-  ],
-  "icons": [
-    {
-      "src": "/assets/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ],
+  "categories": ["navigation", "utilities", "education"],
+  "icons": [{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
   "shortcuts": [
-    {
-      "name": "Airport Search",
-      "short_name": "Airports",
-      "description": "Search airports, weather, runways, nearby stations, and FAA procedures.",
-      "url": "/airport.html",
-      "icons": [
-        {
-          "src": "/assets/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
-    },
-    {
-      "name": "Route Planner",
-      "short_name": "Planner",
-      "description": "Open the FAA chart route planner and navlog.",
-      "url": "/route-planner.html",
-      "icons": [
-        {
-          "src": "/assets/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
-    },
-    {
-      "name": "Airport Weather",
-      "short_name": "Weather",
-      "description": "Open current METAR and TAF reports.",
-      "url": "/weather.html",
-      "icons": [
-        {
-          "src": "/assets/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
-    },
-    {
-      "name": "Weight & Balance",
-      "short_name": "W&B",
-      "description": "Open the Weight & Balance Builder.",
-      "url": "/calculators/weight-balance-builder/",
-      "icons": [
-        {
-          "src": "/assets/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
-    }
+    {"name":"Flight Planning Workspace","short_name":"Workspace","description":"Connect wind, groundspeed, time, fuel and descent planning.","url":"/flight-planning-workspace.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Online E6B","short_name":"E6B","description":"Open the PilotDesk online E6B flight computer.","url":"/e6b-flight-computer.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Crosswind Calculator","short_name":"Crosswind","description":"Calculate runway wind components.","url":"/calculators/crosswind/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Airport Weather","short_name":"Weather","description":"Open current METAR and TAF reports.","url":"/weather.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }

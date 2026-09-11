@@ -1,5 +1,6 @@
 (()=>{
 'use strict';
+if(![...document.scripts].some(s=>{try{return new URL(s.src,location.href).pathname==='/assets/app-bootstrap.js'}catch{return false}})){const s=document.createElement('script');s.src='/assets/app-bootstrap.js';s.async=false;s.dataset.pdAppBootstrap='1';document.head.appendChild(s)}
 let installPrompt=null;
 const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 function modal(){

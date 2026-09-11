@@ -31,9 +31,10 @@ replacements={
 'Calculate aircraft wing loading.':'Calculate aircraft wing loading in pounds per square foot from aircraft weight and wing area.'
 }
 for old,new in replacements.items():
-    if old not in s:
+    if old in s:
+        s=s.replace(old,new,1)
+    elif new not in s:
         raise SystemExit(f'missing calculator description: {old}')
-    s=s.replace(old,new,1)
 p.write_text(s)
 
 # Keep every calculator search snippet descriptive even if a future tool is added with a terse UI description.

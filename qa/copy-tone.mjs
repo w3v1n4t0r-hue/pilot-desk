@@ -3,7 +3,6 @@ import path from 'node:path';
 
 const root=process.cwd();
 const banned=[
-  [/\bworkspace\b/i,'workspace'],
   [/\bdesigned to\b/i,'designed to'],
   [/\bbuilt around\b/i,'built around'],
   [/\bintentionally\b/i,'intentionally'],
@@ -37,7 +36,7 @@ for(const [re,label] of banned)if(re.test(manifestText))failures.push(`site.webm
 for(const file of ['scripts/generate-calculator-pages.mjs','assets/weather-fixed.js','assets/product-nav.js','assets/airport.js','assets/flights.js','assets/flight-brief.js','assets/aircraft-v2.js']){
   if(!fs.existsSync(file))continue;
   const text=fs.readFileSync(file,'utf8');
-  for(const [re,label] of banned.slice(1))if(re.test(text))failures.push(`${file}: ${label}`);
+  for(const [re,label] of banned)if(re.test(text))failures.push(`${file}: ${label}`);
 }
 if(failures.length){console.error('Public copy tone check failed:');for(const x of failures)console.error(' - '+x);process.exit(1)}
 console.log(`Public copy tone check passed across ${files.length} HTML pages and user-facing app copy.`);

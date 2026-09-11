@@ -57,7 +57,11 @@ jobs:
           node --check api/weather.js
           node -e "JSON.parse(require('fs').readFileSync('site.webmanifest','utf8')); console.log('manifest JSON PASS')"
           grep -q 'airport.html' sitemap.xml
-          grep -q 'flight-brief.html' sitemap.xml
+          grep -q 'flight-training.html' sitemap.xml
+          grep -q 'noindex,follow' flight-brief.html
+          grep -q 'noindex,follow' flights.html
+          ! grep -q 'flight-brief.html</loc>' sitemap.xml
+          ! grep -q 'flights.html</loc>' sitemap.xml
           grep -q 'pilotdesk-v20' sw.js
           echo 'LOCAL WORKSPACE CHECKS PASS'
 

@@ -15,6 +15,7 @@
     {"name":"Flight Planning Workspace","short_name":"Workspace","description":"Connect wind, groundspeed, time, fuel and descent planning.","url":"/flight-planning-workspace.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Online E6B","short_name":"E6B","description":"Open the PilotDesk online E6B flight computer.","url":"/e6b-flight-computer.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Crosswind Calculator","short_name":"Crosswind","description":"Calculate runway wind components.","url":"/calculators/crosswind/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Weight & Balance Builder","short_name":"W&B","description":"Build a loading table and calculate weight, moment, and center of gravity.","url":"/calculators/weight-balance-builder/","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Airport Weather","short_name":"Weather","description":"Open current METAR and TAF reports.","url":"/weather.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }

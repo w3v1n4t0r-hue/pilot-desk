@@ -22,15 +22,24 @@
     }catch{}
   };
 
+  const path=location.pathname;
+  const slug=()=>document.body.dataset.calc||path.split('/').filter(Boolean).pop()||'home';
+  const pageKind=()=>path.startsWith('/calculators/')?'calculator':path.startsWith('/guides/')?'guide':path==='/weather.html'?'weather':path.includes('planner')||path==='/flights.html'||path==='/flight-brief.html'?'planning':path==='/aircraft.html'||path==='/weight-balance.html'?'aircraft':'other';
+  try{
+    const key='pd-analytics-open:'+path;
+    if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');window.pdTrack('Tool Opened',{type:pageKind(),tool:slug()})}
+  }catch{}
+
   document.addEventListener('click',e=>{
     const el=e.target.closest('a,button');if(!el)return;
-    if(el.matches('[data-calculate]'))window.pdTrack('Calculator Used',{tool:document.body.dataset.calc||location.pathname.split('/').filter(Boolean).pop()||'unknown'});
-    else if(el.matches('#pdInstallHome,.pd-install'))window.pdTrack('Install Prompt',{page:location.pathname});
+    if(el.matches('[data-calculate]'))window.pdTrack('Calculator Used',{tool:slug()});
+    else if(el.matches('#pdInstallHome,.pd-install'))window.pdTrack('Install Prompt',{page:path});
     else if(el.matches('#pdExportAircraft'))window.pdTrack('Aircraft Export',{page:'aircraft'});
     else if(el.matches('[data-wb-print]'))window.pdTrack('WB Print',{page:'weight-balance'});
     else if(el.matches('[data-wb-copy]'))window.pdTrack('WB Copy',{page:'weight-balance'});
-    else if(el.matches('[data-copy-link]'))window.pdTrack('Share Link',{tool:location.pathname.split('/').filter(Boolean).pop()||'calculator'});
-    else if(el.tagName==='A'&&location.pathname.startsWith('/guides/')&&el.getAttribute('href')?.startsWith('/calculators/'))window.pdTrack('Guide To Calculator',{guide:location.pathname.split('/').pop()||'guide'});
+    else if(el.matches('[data-copy-link],[data-pd-copy-link],[data-pd-share],#workspaceShare'))window.pdTrack('Share Action',{tool:slug()});
+    else if(el.matches('[data-save-scenario],#workspaceSave,.pd-star'))window.pdTrack('Save Action',{tool:slug()});
+    else if(el.tagName==='A'&&path.startsWith('/guides/')&&el.getAttribute('href')?.startsWith('/calculators/'))window.pdTrack('Guide To Calculator',{guide:slug()});
   },true);
 
   document.addEventListener('submit',e=>{
@@ -41,4 +50,7 @@
   document.addEventListener('change',e=>{
     if(e.target?.id==='pdImportAircraft')window.pdTrack('Aircraft Import',{source:'aircraft'});
   },true);
+
+  document.addEventListener('pilotdesk:calculated',()=>window.pdTrack('Calculation Completed',{tool:slug()}));
+  document.addEventListener('pilotdesk:weatherloaded',e=>window.pdTrack('Weather Result',{freshness:e.detail?.stale?'stale':'fresh',source:e.detail?.fallback?'backup':'primary'}));
 })();

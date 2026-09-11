@@ -10,6 +10,11 @@
     "standalone",
     "minimal-ui"
   ],
+  "orientation": "any",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "prefer_related_applications": false,
   "background_color": "#08090b",
   "theme_color": "#08090b",
   "categories": [
@@ -31,52 +36,42 @@
       "short_name": "Airports",
       "description": "Search airports, weather, runways, nearby stations, and FAA procedures.",
       "url": "/airport.html",
-      "icons": [
-        {
-          "src": "/assets/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
+      "icons": [{"src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml"}]
     },
     {
       "name": "Route Planner",
       "short_name": "Planner",
       "description": "Open the FAA chart route planner and navlog.",
       "url": "/route-planner.html",
-      "icons": [
-        {
-          "src": "/assets/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
+      "icons": [{"src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml"}]
+    },
+    {
+      "name": "Flight Planning Workspace",
+      "short_name": "Flight Math",
+      "description": "Connect wind, groundspeed, time, fuel, and descent planning.",
+      "url": "/flight-planning-workspace.html",
+      "icons": [{"src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml"}]
     },
     {
       "name": "Airport Weather",
       "short_name": "Weather",
       "description": "Open current METAR and TAF reports.",
       "url": "/weather.html",
-      "icons": [
-        {
-          "src": "/assets/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
+      "icons": [{"src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml"}]
     },
     {
       "name": "Weight & Balance",
       "short_name": "W&B",
       "description": "Open the Weight & Balance Builder.",
       "url": "/weight-balance.html",
-      "icons": [
-        {
-          "src": "/assets/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
-        }
-      ]
+      "icons": [{"src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml"}]
+    },
+    {
+      "name": "Calculation History",
+      "short_name": "History",
+      "description": "Reopen recent PilotDesk calculations stored on this device.",
+      "url": "/history.html",
+      "icons": [{"src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml"}]
     }
   ]
 }

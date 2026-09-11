@@ -27,6 +27,7 @@ if(path.startsWith('/calculators/')&&!path.includes('weight-balance-builder')){
   load('/assets/calculator-ux.js','pd-calc-ux');
 }
 load('/assets/pilotdesk-plus.js','pd-plus');
+load('/assets/sticky-app.js','pd-sticky-app');
 load('/assets/update.js','pd-update');
 load('/assets/errors.js','pd-errors');
 if(path==='/aircraft.html'){

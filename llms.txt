@@ -1,13 +1,15 @@
 # PilotDesk
 
-PilotDesk provides free browser-based aviation calculators, pilot math references, airport weather tools, flight-planning tools, aircraft profiles, and training aids.
+PilotDesk provides free browser-based aviation calculators, an online E6B flight-computer hub, pilot math references, airport weather tools, flight-planning tools, aircraft profiles, and training aids.
 
 ## Primary pages
 - https://www.pilot-desk.com/ — aviation calculators
+- https://www.pilot-desk.com/e6b-flight-computer.html — free online E6B flight computer for wind, time, fuel, altitude, airspeed, performance, and conversions
 - https://www.pilot-desk.com/planner.html — pilot flight planner
 - https://www.pilot-desk.com/weather.html — aviation weather, METAR and TAF
 - https://www.pilot-desk.com/metar-decoder.html — METAR decoder
 - https://www.pilot-desk.com/airport.html — airport search and FAA procedure links
+- https://www.pilot-desk.com/flight-training.html — flight training tools for students and instructors
 - https://www.pilot-desk.com/guides.html — aviation guides
 - https://www.pilot-desk.com/guides/pilot-math-formulas.html — pilot math formula reference
 - https://www.pilot-desk.com/guides/aviation-math-glossary.html — aviation math glossary

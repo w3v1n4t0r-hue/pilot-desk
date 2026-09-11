@@ -6,11 +6,11 @@ const calcDirs=fs.readdirSync('calculators',{withFileTypes:true}).filter(x=>x.is
 for(const d of calcDirs){ const file=`calculators/${d.name}/index.html`; if(!fs.existsSync(file)) continue; const h=fs.readFileSync(file,'utf8'); if(!h.includes('data-pd-static-calc-schema')) fail(`${file}: missing static app schema`); if(!h.includes('"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}')) fail(`${file}: free app Offer schema missing`); if(!h.includes('data-pd-static-breadcrumbs')) fail(`${file}: breadcrumb schema missing`); if(!h.includes('Pilot math formula reference')) fail(`${file}: semantic internal link block missing`); }
 for(const ent of fs.readdirSync('guides',{withFileTypes:true}).filter(x=>x.isFile()&&x.name.endsWith('.html'))){
   const file=`guides/${ent.name}`,h=fs.readFileSync(file,'utf8');
-  const hasStructuredPage=/"@type"\s*:\s*"(?:Article|WebPage)"/.test(h);
+  const hasStructuredPage=/"@type"\s*:\s*"(?:Article|WebPage|CollectionPage)"/.test(h);
   const hasRepresentativeImage=/"image"\s*:\s*"https:\/\/www\.pilot-desk\.com\/assets\/[^"]+\.(?:svg|png|jpg|jpeg|webp)"/.test(h)||/property=["']og:image["']/.test(h);
   const hasCanonical=/<link[^>]+rel=["']canonical["'][^>]+href=["']https:\/\/www\.pilot-desk\.com\/guides\//i.test(h)||/<link[^>]+href=["']https:\/\/www\.pilot-desk\.com\/guides\/[^"']+["'][^>]+rel=["']canonical["']/i.test(h);
   const robots=(h.match(/<meta[^>]+name=["']robots["'][^>]*>/i)||[''])[0];
-  if(!hasStructuredPage) fail(`${file}: Article/WebPage schema missing`);
+  if(!hasStructuredPage) fail(`${file}: Article/WebPage/CollectionPage schema missing`);
   if(!hasRepresentativeImage) fail(`${file}: representative guide image missing`);
   if(!hasCanonical) fail(`${file}: self-canonical missing`);
   if(/noindex/i.test(robots)) fail(`${file}: guide should be indexable`);

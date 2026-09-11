@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const SITE='https://www.pilot-desk.com';
 const skipDirs=new Set(['.git','node_modules','.github','api','assets','qa','scripts']);
@@ -21,6 +22,17 @@ function publicUrl(file){
   return SITE+'/'+file;
 }
 
+function lastModified(file){
+  const today=new Date().toISOString().slice(0,10);
+  try{
+    execFileSync('git',['diff','--quiet','HEAD','--',file],{stdio:'ignore'});
+    const date=execFileSync('git',['log','-1','--format=%cs','--',file],{encoding:'utf8'}).trim();
+    return date||today;
+  }catch{
+    return today;
+  }
+}
+
 const urls=[];
 for(const file of files){
   const html=fs.readFileSync(file,'utf8');
@@ -32,12 +44,17 @@ for(const file of files){
   if(!normalized.startsWith(SITE+'/')) continue;
   const expected=publicUrl(file);
   if(normalized.replace(/\/$/,'')!==expected.replace(/\/$/,'')) continue;
-  urls.push(normalized);
+  urls.push({url:normalized,file,lastmod:lastModified(file)});
 }
 
-const unique=[...new Set(urls)].sort((a,b)=>a===SITE+'/'?-1:b===SITE+'/'?1:a.localeCompare(b));
+const byUrl=new Map();
+for(const item of urls){
+  const prior=byUrl.get(item.url);
+  if(!prior||item.lastmod>prior.lastmod) byUrl.set(item.url,item);
+}
+const unique=[...byUrl.values()].sort((a,b)=>a.url===SITE+'/'?-1:b.url===SITE+'/'?1:a.url.localeCompare(b.url));
 const esc=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
-const xml=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',...unique.map(u=>`<url><loc>${esc(u)}</loc></url>`),'</urlset>',''].join('\n');
+const xml=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',...unique.map(({url,lastmod})=>`<url><loc>${esc(url)}</loc><lastmod>${lastmod}</lastmod></url>`),'</urlset>',''].join('\n');
 fs.writeFileSync('sitemap.xml',xml);
 fs.writeFileSync('robots.txt',`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`Generated one canonical sitemap with ${unique.length} indexable URLs and refreshed robots.txt.`);
+console.log(`Generated one canonical sitemap with ${unique.length} indexable URLs, accurate lastmod dates, and refreshed robots.txt.`);

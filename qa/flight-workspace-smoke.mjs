@@ -17,7 +17,7 @@ assert(html.includes('aria-live="polite"'),'Workspace results should announce up
 assert(js.includes('const ranges=')&&js.includes('outside the supported range'),'Workspace input range validation missing');
 assert(js.includes('function clear()')&&js.includes("textContent='—'"),'Workspace must fail closed by clearing stale outputs');
 assert(js.includes('crosswind component exceeds TAS')&&js.includes('groundspeed is zero or negative'),'Wind-triangle failure handling missing');
-assert(js.includes("localStorage.setItem('pd-flight-workspace'")&&js.includes('Copy share link'),'Workspace save/share behavior missing');
+assert(js.includes("localStorage.setItem('pd-flight-workspace'")&&js.includes("$('workspaceShare')")&&html.includes('Copy share link'),'Workspace save/share behavior missing');
 assert(bootstrap.includes('/flight-planning-workspace.html')&&bootstrap.includes('data-pd-launch="flight-workspace"'),'Homepage must expose the published workspace');
 assert(bootstrap.includes("load('/assets/brand.js','pd-brand')"),'Branding must load independently of advertising');
 assert(!ads.includes('/assets/brand.js'),'ads.js must not own branding');

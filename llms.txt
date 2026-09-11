@@ -1,19 +1,28 @@
 # PilotDesk
 
-PilotDesk provides free browser-based aviation calculators, an online E6B flight-computer hub, pilot math references, airport weather tools, flight-planning tools, aircraft profiles, and training aids.
+PilotDesk provides free browser-based aviation calculators, an online E6B flight-computer hub, pilot math references, airport weather tools, flight-planning tools, aircraft profiles, weight-and-balance tools, POH chart training, checklist practice, and aviation training aids.
 
 ## Primary pages
 - https://www.pilot-desk.com/ — aviation calculators
 - https://www.pilot-desk.com/e6b-flight-computer.html — free online E6B flight computer for wind, time, fuel, altitude, airspeed, performance, and conversions
 - https://www.pilot-desk.com/planner.html — pilot flight planner
+- https://www.pilot-desk.com/route-planner.html — route and navlog planner
 - https://www.pilot-desk.com/weather.html — aviation weather, METAR and TAF
 - https://www.pilot-desk.com/metar-decoder.html — METAR decoder
 - https://www.pilot-desk.com/airport.html — airport search and FAA procedure links
+- https://www.pilot-desk.com/weight-balance.html — aircraft weight and balance workspace
+- https://www.pilot-desk.com/poh-chart-studio.html — POH performance chart training workspace
+- https://www.pilot-desk.com/checklist-trainer.html — aircraft checklist practice tool
 - https://www.pilot-desk.com/flight-training.html — flight training tools for students and instructors
 - https://www.pilot-desk.com/guides.html — aviation guides
+
+## Guide hubs
+- https://www.pilot-desk.com/guides/navigation-reference.html — headings, wind, groundspeed, DME arcs, coordinates, navlogs and route math
+- https://www.pilot-desk.com/guides/aviation-weather-reference.html — METARs, TAFs, flight categories, ceiling, visibility, wind and dew point
+- https://www.pilot-desk.com/guides/aircraft-performance-reference.html — altitude, climb, turns, glide, weight and balance, CG and POH performance
+- https://www.pilot-desk.com/guides/aviation-conversions.html — aviation speed, distance, temperature, pressure, volume, weight and vertical-speed conversions
 - https://www.pilot-desk.com/guides/pilot-math-formulas.html — pilot math formula reference
 - https://www.pilot-desk.com/guides/aviation-math-glossary.html — aviation math glossary
-- https://www.pilot-desk.com/sources.html — sources and methods
 
 ## Notes
 PilotDesk is a supplemental planning and training aid. Operational decisions should be verified against current approved aircraft data, official weather, regulations, procedures, NOTAMs, and other applicable authoritative sources.

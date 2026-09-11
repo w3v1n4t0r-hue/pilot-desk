@@ -33,11 +33,31 @@ jobs:
         run: node scripts/strengthen-guides.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
-      - name: Verify generated JavaScript
+      - name: Check JavaScript syntax
         run: |
-          node --check scripts/generate-calculator-pages.mjs
-          node --check scripts/strengthen-guides.mjs
-          node --check scripts/generate-sitemap.mjs
+          find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+      - name: Run PilotDesk smoke checks
+        run: node qa/smoke.mjs
+      - name: Run QoL smoke checks
+        run: node qa/qol-smoke.mjs
+      - name: Run product polish checks
+        run: node qa/product-polish-smoke.mjs
+      - name: Run app bootstrap checks
+        run: node qa/app-bootstrap-smoke.mjs
+      - name: Run PilotDesk v2 master checks
+        run: node qa/v2-smoke.mjs
+      - name: Run planner lab checks
+        run: node qa/planner-lab-tests.mjs
+      - name: Run calculator formula regression tests
+        run: node qa/formula-tests.mjs
+      - name: Run site integrity checks
+        run: node qa/site-integrity.mjs
+      - name: Check public copy tone
+        run: node qa/copy-tone.mjs
+      - name: Check Google audit regressions
+        run: node qa/google-audit.mjs
+      - name: Run SEO hardening checks
+        run: node qa/seo-hardening.mjs
       - name: Commit generated pages
         run: |
           git config user.name "PilotDesk Automation"

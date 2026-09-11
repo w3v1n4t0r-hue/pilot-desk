@@ -36,6 +36,21 @@ for old,new in replacements.items():
     s=s.replace(old,new,1)
 p.write_text(s)
 
+# Keep every calculator search snippet descriptive even if a future tool is added with a terse UI description.
+p=Path('scripts/generate-calculator-pages.mjs')
+s=p.read_text()
+if 'const metaSuffix=' not in s:
+    anchor="const categoryFor=s=>Object.entries(categories).find(([,a])=>a.includes(s))?.[0]||'Aviation';"
+    suffix="const metaSuffix={'Flight Planning':' Use it for pilot flight planning and training checks.','Atmosphere & Weather':' Use it for aviation weather, performance, and training checks.','Performance':' Use it for aircraft performance planning and pilot training checks.','Maneuvers & Turns':' Use it for maneuver planning and pilot training math.','Navigation':' Use it for aviation navigation and flight-planning checks.','Weight & Balance':' Use it for aircraft loading, CG, and pilot training calculations.','Conversions':' Use it for aviation unit conversions and flight-planning checks.'};"
+    s=s.replace(anchor,anchor+suffix,1)
+if 'const metaDesc=desc.length<70' not in s:
+    anchor="const guideLink=guideFor[slug]?`<a href=\"${guideFor[slug]}\">Read the related guide</a>`:'';"
+    s=s.replace(anchor,anchor+"const metaDesc=desc.length<70?desc+(metaSuffix[category]||' Use it for aviation planning and pilot training checks.'):desc;",1)
+s=s.replace('<meta name="description" content="${esc(desc)}">','<meta name="description" content="${esc(metaDesc)}">')
+s=s.replace('<meta property="og:description" content="${esc(desc)}">','<meta property="og:description" content="${esc(metaDesc)}">')
+s=s.replace('url:`https://www.pilot-desk.com/calculators/${slug}/`,description:desc,publisher:', 'url:`https://www.pilot-desk.com/calculators/${slug}/`,description:metaDesc,publisher:')
+p.write_text(s)
+
 # Tighten the guide hub title/snippet.
 p=Path('guides.html'); s=p.read_text()
 s=s.replace('<title>Aviation Guides | PilotDesk</title>','<title>Pilot Aviation Guides & Flight Training Reference | PilotDesk</title>')

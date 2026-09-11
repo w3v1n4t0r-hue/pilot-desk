@@ -48,5 +48,7 @@ jobs:
         run: node qa/copy-tone.mjs
       - name: Check Google audit regressions
         run: node qa/google-audit.mjs
+      - name: Run multi-engine SEO checks
+        run: node qa/multi-engine-seo.mjs
       - name: Run SEO hardening checks
         run: node qa/seo-hardening.mjs

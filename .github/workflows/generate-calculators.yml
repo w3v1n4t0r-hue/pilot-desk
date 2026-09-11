@@ -17,8 +17,12 @@ jobs:
         run: node scripts/postprocess-site.mjs
       - name: Normalize centralized logo asset
         run: node scripts/postprocess-logo.mjs
+      - name: Apply product upgrades
+        run: node scripts/apply-product-upgrades.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
+      - name: Re-apply product sitemap additions
+        run: node scripts/apply-product-upgrades.mjs
       - name: Commit generated and postprocessed pages
         run: |
           git config user.name "PilotDesk Automation"

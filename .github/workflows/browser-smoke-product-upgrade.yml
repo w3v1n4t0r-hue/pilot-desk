@@ -1,0 +1,103 @@
+name: Browser smoke product upgrade
+
+on:
+  push:
+    branches:
+      - product/full-site-upgrade-2026-09-11
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser test runtime
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Start static PilotDesk server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/pilotdesk-server.log 2>&1 &
+          echo $! > /tmp/pilotdesk-server.pid
+          sleep 2
+          curl --fail http://127.0.0.1:4173/ >/dev/null
+      - name: Run browser smoke test
+        run: |
+          cat > /tmp/pilotdesk-smoke.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const context=await browser.newContext({viewport:{width:1280,height:900}});
+          const page=await context.newPage();
+          const pageErrors=[];
+          page.on('pageerror',e=>pageErrors.push(String(e)));
+          const fail=m=>{throw new Error(m)};
+          const text=async sel=>(await page.locator(sel).first().textContent())?.trim()||'';
+
+          await page.goto('http://127.0.0.1:4173/',{waitUntil:'domcontentloaded'});
+          await page.locator('#pdPopularNow').waitFor();
+          if(await page.locator('#pdPopularNow a[href="/e6b-flight-computer.html"]').count()!==1)fail('Homepage missing E6B popular link');
+          if(await page.locator('#pdPopularNow a[href="/flight-planning-workspace.html"]').count()!==1)fail('Homepage missing planning workspace');
+          if(await page.locator('.brandmark img[src="/assets/icon.svg"]').count()!==1)fail('Central logo asset missing');
+          await page.locator('#pdCmdBackdrop').waitFor({state:'attached'});
+
+          await page.goto('http://127.0.0.1:4173/calculators/crosswind/',{waitUntil:'domcontentloaded'});
+          await page.locator('.calc-actions[data-pd-advanced="1"]').waitFor();
+          await page.locator('#runway').fill('173');
+          await page.locator('#windDir').fill('215');
+          await page.locator('#windSpeed').fill('18');
+          await page.locator('[data-calculate]').click();
+          await page.waitForTimeout(100);
+          const result=await text('.result.primary strong');
+          if(!result||result==='—')fail('Crosswind did not calculate');
+          if(!page.url().includes('runway=173'))fail('Shareable calculator URL did not preserve input');
+          if(await page.locator('#pdResultContext').count()!==1)fail('Result context missing');
+          if(await page.locator('[data-pd-embed]').count()!==1)fail('Embed action missing on supported calculator');
+          if(await page.locator('#pdScenarioPanel').count()!==1)fail('Saved scenarios panel missing');
+          if(await page.locator('#pdToolActions').count()!==1)fail('Calculator next-step actions missing');
+          if(await page.locator('.pd-offline-ready').count()!==1)fail('Offline-ready badge missing');
+          await page.locator('.pd-star').click();
+          const favs=await page.evaluate(()=>JSON.parse(localStorage.getItem('pd-favorites')||'[]'));
+          if(!favs.some(x=>x.path==='/calculators/crosswind/'))fail('Favorite was not stored');
+          const hist=await page.evaluate(()=>JSON.parse(localStorage.getItem('pd-calculation-history')||'[]'));
+          if(!hist.some(x=>x.path==='/calculators/crosswind/'))fail('Calculation history was not stored');
+          await page.keyboard.press('Control+KeyK');
+          await page.locator('#pdCmdBackdrop.show').waitFor();
+          await page.locator('#pdCmdInput').fill('density altitude');
+          if(await page.locator('#pdCmdResults a[href="/calculators/density-altitude/"]').count()!==1)fail('Command search did not find density altitude');
+          await page.keyboard.press('Escape');
+
+          await page.goto('http://127.0.0.1:4173/history.html',{waitUntil:'domcontentloaded'});
+          await page.locator('#historyList').waitFor();
+          if(!(await text('#historyList')).includes('Crosswind'))fail('History page did not render stored result');
+
+          await page.goto('http://127.0.0.1:4173/flight-planning-workspace.html',{waitUntil:'domcontentloaded'});
+          await page.locator('#workspaceCalculate').waitFor();
+          const heading=await text('#rHeading');
+          if(!heading||heading==='—')fail('Flight Planning Workspace did not calculate');
+          await page.locator('#course').fill('101');
+          await page.locator('#workspaceCalculate').click();
+          if(!page.url().includes('course=101'))fail('Workspace share URL did not preserve input');
+          if((await text('#rFuel'))==='—')fail('Workspace fuel result missing');
+          if((await text('#rTod'))==='—')fail('Workspace TOD result missing');
+
+          await page.setViewportSize({width:390,height:844});
+          await page.goto('http://127.0.0.1:4173/calculators/density-altitude/',{waitUntil:'domcontentloaded'});
+          await page.locator('#pdMobileBar').waitFor();
+          if(!(await page.locator('#pdMobileBar').isVisible()))fail('Mobile quick bar is not visible');
+
+          const manifest=await page.request.get('http://127.0.0.1:4173/site.webmanifest');
+          if(!manifest.ok())fail('PWA manifest failed to load');
+          const manifestJson=await manifest.json();
+          if(manifestJson.start_url!=='/')fail('PWA start URL is not homepage');
+          if(!manifestJson.shortcuts?.some(x=>x.url==='/flight-planning-workspace.html'))fail('PWA workspace shortcut missing');
+
+          if(pageErrors.length)fail('Browser page errors: '+pageErrors.join(' | '));
+          await browser.close();
+          console.log('PilotDesk browser smoke test passed.');
+          EOF
+          node /tmp/pilotdesk-smoke.mjs

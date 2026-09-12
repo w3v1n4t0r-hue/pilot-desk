@@ -1,4 +1,4 @@
-const CACHE='pilotdesk-v25';
+const CACHE='pilotdesk-v26';
 const CORE=[
   '/','/index.html','/offline.html','/404.html','/planner.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html',
   '/calculators/crosswind/','/calculators/time-speed-distance/','/calculators/fuel-required/','/calculators/top-of-descent/',

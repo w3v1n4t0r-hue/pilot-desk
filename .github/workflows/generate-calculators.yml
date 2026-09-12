@@ -29,6 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Generate static calculator pages
         run: node scripts/generate-calculator-pages.mjs
       - name: Apply static branding and aviation FAQ content

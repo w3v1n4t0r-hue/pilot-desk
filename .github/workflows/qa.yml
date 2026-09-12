@@ -2,13 +2,20 @@ name: PilotDesk QA
 
 on:
   push:
-    branches: [main, pilotdesk-v2-master]
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - 'CITATION.cff'
   pull_request:
     branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: pilotdesk-qa-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   smoke:
@@ -32,6 +39,8 @@ jobs:
         run: node qa/tool-first-smoke.mjs
       - name: Run deployment discipline checks
         run: node qa/deployment-discipline.mjs
+      - name: Run performance budget checks
+        run: node qa/performance-budget.mjs
       - name: Run sticky app release checks
         run: node qa/sticky-app-smoke.mjs
       - name: Run flight workspace checks

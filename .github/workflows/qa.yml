@@ -37,6 +37,8 @@ jobs:
         run: node qa/professional-polish-smoke.mjs
       - name: Run tool-first optimization checks
         run: node qa/tool-first-smoke.mjs
+      - name: Run preview consolidation checks
+        run: node qa/preview-consolidation-smoke.mjs
       - name: Run deployment discipline checks
         run: node qa/deployment-discipline.mjs
       - name: Run performance budget checks

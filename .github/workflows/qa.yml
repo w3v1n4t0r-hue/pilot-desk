@@ -30,6 +30,8 @@ jobs:
         run: node qa/professional-polish-smoke.mjs
       - name: Run tool-first optimization checks
         run: node qa/tool-first-smoke.mjs
+      - name: Run deployment discipline checks
+        run: node qa/deployment-discipline.mjs
       - name: Run sticky app release checks
         run: node qa/sticky-app-smoke.mjs
       - name: Run flight workspace checks

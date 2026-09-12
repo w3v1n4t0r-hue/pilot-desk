@@ -1,17 +1,19 @@
-const CACHE='pilotdesk-v26';
+const CACHE='pilotdesk-v27';
 const CORE=[
   '/','/index.html','/offline.html','/404.html','/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html',
   '/calculators/crosswind/','/calculators/time-speed-distance/','/calculators/fuel-required/','/calculators/top-of-descent/',
   '/assets/styles.css','/assets/professional-polish.css','/assets/performance.css','/assets/weather.css','/assets/wb-v2.css','/assets/planner-suite.css','/assets/route-planner.css','/assets/procedure-viewer.css','/assets/checklist-trainer.css',
   '/assets/site.js','/assets/app-bootstrap.js','/assets/performance.js','/assets/tool-first-layout.js','/assets/sticky-app.js','/assets/flight-workspace.js','/assets/product-nav.js','/assets/navlog-core.js','/assets/procedures.js','/assets/route-planner.js','/assets/poh-chart-studio.js','/assets/checklist-trainer.js',
-  '/assets/safety.js','/assets/global-nav.js','/assets/brand.js','/assets/theme.js','/assets/features.js','/assets/share-enhance.js','/assets/calculator-ux.js','/assets/offline-weather.js','/assets/runtime-qol.js','/assets/pilotdesk-plus.js','/assets/aircraft-training.js',
+  '/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js',
+  '/assets/safety.js','/assets/global-nav.js','/assets/brand.js','/assets/theme.js','/assets/features.js','/assets/share-enhance.js','/assets/calculator-ux.js','/assets/offline-weather.js','/assets/runtime-qol.js','/assets/pilotdesk-plus.js','/assets/aircraft-training.js','/assets/aircraft-transfer.js',
   '/assets/icon.svg','/site.webmanifest'
 ];
 const CORE_PATHS=new Set(CORE);
 const MAX_RUNTIME_ENTRIES=120;
 const NETWORK_FIRST_ASSETS=new Set([
   '/assets/app-bootstrap.js','/assets/tool-first-layout.js','/assets/performance.js','/assets/sticky-app.js','/assets/weather-fixed.js','/assets/weather-extra.js',
-  '/assets/product-nav.js','/assets/airport.js','/assets/flights.js','/assets/flight-brief.js','/assets/route-save.js','/assets/aircraft-v2.js'
+  '/assets/product-nav.js','/assets/airport.js','/assets/flights.js','/assets/flight-brief.js','/assets/route-save.js','/assets/aircraft-v2.js',
+  '/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js','/assets/poh-chart-studio.js'
 ]);
 const cacheable=r=>r&&r.ok&&(r.type==='basic'||r.type==='default');
 const pathOf=req=>{try{return new URL(typeof req==='string'?req:req.url,self.location.origin).pathname}catch{return String(req||'')}};

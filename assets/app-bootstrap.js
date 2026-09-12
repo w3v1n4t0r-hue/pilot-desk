@@ -6,6 +6,7 @@ window.__pilotDeskAppBootstrap=true;
 const path=location.pathname;
 const isHome=path==='/'||path==='/index.html';
 const isCalculator=path.startsWith('/calculators/')&&!path.includes('weight-balance-builder');
+const isGuide=path.startsWith('/guides/');
 const isMobile=matchMedia('(max-width:760px)').matches;
 const isStandalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 
@@ -55,6 +56,16 @@ if(path==='/aircraft.html'){
 }
 if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline');
 if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export');
+
+// Unique, compatible capabilities recovered from older Preview branches. They are deliberately
+// isolated from calculator formulas and loaded after the primary interface is usable.
+if(path==='/route-planner.html'){
+  deferLoad('/assets/planner-pro.js','pd-planner-pro',500);
+  deferLoad('/assets/flight-library.js','pd-flight-library',700);
+}
+if(path==='/procedures.html')deferLoad('/assets/procedure-pro.js','pd-procedure-pro',600);
+if(path==='/checklist-trainer.html')deferLoad('/assets/trainer-pro.js','pd-trainer-pro',600);
+if(isCalculator||isGuide)deferLoad('/assets/preview-harvest.js','pd-preview-harvest',1200);
 
 // Static HTML already contains canonical/structured SEO data and core safety copy, so these
 // enhancement/error modules can load after first paint without changing indexability or math.

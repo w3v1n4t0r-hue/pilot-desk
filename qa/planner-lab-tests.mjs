@@ -23,7 +23,7 @@ const trainingLink=fs.readFileSync('assets/aircraft-training.js','utf8');
 if(!trainingLink.includes('/checklist-trainer.html?aircraft='))throw new Error('Aircraft cards do not link into the training library');
 
 const pcs=fs.readFileSync('assets/poh-chart-studio.js','utf8');
-if(!pcs.includes('deterministic interpolation')||!pcs.includes('xCal')||!pcs.includes('yCal'))throw new Error('POH chart calibration missing');
+if(!pcs.includes('function interp')||!pcs.includes('xCal')||!pcs.includes('yCal')||!pcs.includes('will not extrapolate'))throw new Error('POH chart calibration/interpolation safeguards missing');
 
 const rp=fs.readFileSync('route-planner.html','utf8');
 const rpjs=fs.readFileSync('assets/route-planner.js','utf8');

@@ -52,6 +52,7 @@ jobs:
             echo "Generated output is stale. Run the generators on the release branch and commit the results before merging."
             git --no-pager diff --stat
             git --no-pager diff -- . ':(exclude)sitemap.xml' | head -n 300 || true
+            git --no-pager diff -- sitemap.xml | head -n 220 || true
             exit 1
           fi
       - name: Check JavaScript syntax

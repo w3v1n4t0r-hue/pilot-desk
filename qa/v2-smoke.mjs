@@ -23,6 +23,7 @@ assert(src.includes('FAA-H-8083-25C')&&src.includes('FAA-H-8083-28B'),'Current F
 assert(src.includes('6.01')&&src.includes('6.68'),'Fuel standard-weight reference values missing');
 const wbShortcut=(manifest.shortcuts||[]).find(x=>x.name==='Weight & Balance'||x.short_name==='W&B');assert(wbShortcut?.url==='/weight-balance.html','PWA Weight & Balance shortcut must use the direct tool URL');
 assert(vercel.includes('Content-Security-Policy')&&vercel.includes('Service-Worker-Allowed'),'Security/service-worker headers missing');
-assert(gen.includes('workflow_dispatch:')&&gen.includes('push:')&&gen.includes('paths:')&&gen.includes("github.actor != 'PilotDesk Automation'")&&gen.includes('concurrency:'),'Calculator generator must keep scoped push triggers plus anti-loop/concurrency guards');
+assert(gen.includes('workflow_dispatch:')&&gen.includes('pull_request:')&&gen.includes('paths:')&&gen.includes('concurrency:')&&gen.includes('git diff --quiet'),'Calculator generator must verify scoped generated output before merge without creating production commits');
+assert(!gen.includes('contents: write')&&!/\bgit\s+push\b/.test(gen),'Calculator generator must not auto-push to main');
 for(const p of ['index.html','404.html','about.html','weather.html','sources.html','weight-balance.html','aircraft.html']){if(!fs.existsSync(p))continue;const h=read(p);assert(!h.includes('<span class="brandmark">PD</span>'),`${p} still contains legacy PD logo`)}
 console.log('PilotDesk v2 master smoke checks passed.');

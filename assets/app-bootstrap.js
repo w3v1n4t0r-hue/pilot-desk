@@ -37,11 +37,10 @@ const deferLoad=(src,key,timeout=1400)=>ready(()=>afterPaint(()=>idle(()=>load(s
 loadStyle('/assets/professional-polish.css','pd-professional-polish');
 loadStyle('/assets/performance.css','pd-performance-css');
 
+// Keep only visible shell and input-performance behavior on the first-paint path.
 load('/assets/global-nav.js','pd-global-nav');
 load('/assets/brand.js','pd-brand');
 load('/assets/theme.js','pd-theme');
-load('/assets/seo.js','pd-seo');
-load('/assets/errors.js','pd-errors');
 load('/assets/performance.js','pd-performance');
 load('/assets/tool-first-layout.js','pd-tool-first');
 
@@ -57,14 +56,17 @@ if(path==='/aircraft.html'){
 if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline');
 if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export');
 
+// Static HTML already contains canonical/structured SEO data and core safety copy, so these
+// enhancement/error modules can load after first paint without changing indexability or math.
+deferLoad('/assets/seo.js','pd-seo',350);
+deferLoad('/assets/errors.js','pd-errors',450);
 deferLoad('/assets/analytics.js','pd-analytics',650);
 deferLoad('/assets/product-polish.js','pd-polish',900);
 deferLoad('/assets/runtime-qol.js','pd-qol',1000);
 if(isMobile||isStandalone)ready(()=>afterPaint(()=>load('/assets/sticky-app.js','pd-sticky-app')));
 else deferLoad('/assets/sticky-app.js','pd-sticky-app',1800);
 deferLoad('/assets/pilotdesk-plus.js','pd-plus',isHome||path==='/history.html'||isCalculator?1100:2600);
-deLoadUpdate();
-function deLoadUpdate(){deferLoad('/assets/update.js','pd-update',3000)}
+deferLoad('/assets/update.js','pd-update',3000);
 
 const canonicalWeightBalance='/weight-balance.html';
 function repairLegacyLinks(root=document){root.querySelectorAll?.('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]').forEach(a=>a.setAttribute('href',canonicalWeightBalance))}

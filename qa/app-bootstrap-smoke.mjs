@@ -16,6 +16,7 @@ for(const asset of ['analytics.js','errors.js','seo.js','product-polish.js','run
   check(bootstrap.includes(`/assets/${asset}`),`app bootstrap is missing ${asset}`);
   check(!ads.includes(`/assets/${asset}`),`ads.js still owns non-ad module ${asset}`);
 }
+for(const asset of ['planner-pro.js','flight-library.js','procedure-pro.js','trainer-pro.js','preview-harvest.js'])check(bootstrap.includes(`/assets/${asset}`),`consolidated bootstrap is missing ${asset}`);
 check(bootstrap.includes("loadStyle('/assets/professional-polish.css','pd-professional-polish')"),'professional visual layer must load from the ad-independent bootstrap');
 check(bootstrap.includes("loadStyle('/assets/performance.css','pd-performance-css')"),'performance layer must load from the ad-independent bootstrap');
 check(bootstrap.includes('deferLoad'),'non-critical modules should be deferred off the first-paint path');
@@ -31,8 +32,8 @@ const flightMath=(manifest.shortcuts||[]).find(x=>x.short_name==='Flight Math');
 check(wb?.url==='/weight-balance.html','installed-app Weight & Balance shortcut must use the canonical tool URL');
 check(flightMath?.url==='/flight-planning-workspace.html','installed app must expose the connected flight-planning workspace');
 check(manifest.launch_handler?.client_mode==='navigate-existing','installed app should reuse an existing app window where supported');
-for(const asset of ['/assets/app-bootstrap.js','/assets/sticky-app.js','/assets/professional-polish.css','/assets/performance.css','/assets/performance.js','/assets/tool-first-layout.js'])check(sw.includes(`'${asset}'`),`service worker must cache ${asset}`);
-check(sw.includes("CACHE='pilotdesk-v26'"),'service worker cache version should match the mega-optimization release');
+for(const asset of ['/assets/app-bootstrap.js','/assets/sticky-app.js','/assets/professional-polish.css','/assets/performance.css','/assets/performance.js','/assets/tool-first-layout.js','/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js'])check(sw.includes(`'${asset}'`),`service worker must cache ${asset}`);
+check(sw.includes("CACHE='pilotdesk-v27'"),'service worker cache version should match the consolidated-preview release');
 check(sw.includes("'/offline.html'"),'service worker must cache a dedicated offline fallback');
 check(sw.includes('Promise.allSettled'),'precache should tolerate a single optional asset failure');
 check(sw.includes('event.preloadResponse'),'navigation preload should be consumed instead of duplicating a navigation request');
@@ -45,4 +46,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('App bootstrap checks passed: ad-independent features, deferred non-critical work, tool-first layout, bounded PWA cache, navigation preload, and analytics privacy verified.');
+console.log('App bootstrap checks passed: ad-independent features, consolidated preview modules, deferred non-critical work, tool-first layout, bounded PWA cache, navigation preload, and analytics privacy verified.');

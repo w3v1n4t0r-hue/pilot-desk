@@ -9,6 +9,12 @@
       "main": true
     }
   },
+  "redirects": [
+    {"source":"/calculators","destination":"/","permanent":true},
+    {"source":"/calculators/","destination":"/","permanent":true},
+    {"source":"/guides","destination":"/guides.html","permanent":true},
+    {"source":"/guides/","destination":"/guides.html","permanent":true}
+  ],
   "rewrites": [
     {"source":"/calculators/weight-balance-builder","destination":"/weight-balance.html"},
     {"source":"/calculators/weight-balance-builder/","destination":"/weight-balance.html"},

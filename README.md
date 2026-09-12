@@ -8,7 +8,9 @@
 - Flight planning: https://www.pilot-desk.com/planner.html
 - Online E6B flight computer: https://www.pilot-desk.com/e6b-flight-computer.html
 - Pilot math guides: https://www.pilot-desk.com/guides.html
-- Multi-engine VMC factors guide: https://www.pilot-desk.com/guides/multiengine-vmc-factors.html
+- Multi-engine checkride study guide: https://www.pilot-desk.com/guides/multiengine-checkride-study-guide.html
+- Multi-engine VMC factors: https://www.pilot-desk.com/guides/multiengine-vmc-factors.html
+- Critical engine and PAST: https://www.pilot-desk.com/guides/past-critical-engine.html
 - Flight training resources: https://www.pilot-desk.com/flight-training.html
 - Free tools for flight schools and CFIs: https://www.pilot-desk.com/for-flight-schools.html
 - Embeddable aviation calculator widgets: https://www.pilot-desk.com/embed.html

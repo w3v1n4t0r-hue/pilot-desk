@@ -4,7 +4,7 @@ const CORE=[
   '/calculators/crosswind/','/calculators/time-speed-distance/','/calculators/fuel-required/','/calculators/top-of-descent/',
   '/assets/styles.css','/assets/professional-polish.css','/assets/performance.css','/assets/weather.css','/assets/wb-v2.css','/assets/planner-suite.css',
   '/assets/site.js','/assets/app-bootstrap.js','/assets/performance.js','/assets/tool-first-layout.js','/assets/sticky-app.js','/assets/flight-workspace.js','/assets/product-nav.js',
-  '/assets/safety.js','/assets/global-nav.js','/assets/brand.js','/assets/theme.js','/assets/features.js','/assets/share-enhance.js','/assets/calculator-ux.js','/assets/offline-weather.js','/assets/runtime-qol.js',
+  '/assets/safety.js','/assets/global-nav.js','/assets/brand.js','/assets/theme.js','/assets/features.js','/assets/share-enhance.js','/assets/calculator-ux.js','/assets/offline-weather.js','/assets/runtime-qol.js','/assets/pilotdesk-plus.js',
   '/assets/icon.svg','/site.webmanifest'
 ];
 const CORE_PATHS=new Set(CORE);

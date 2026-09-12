@@ -1,6 +1,8 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": false,
   "trailingSlash": true,
+  "ignoreCommand": "bash scripts/vercel-ignore-build.sh",
   "git": {
     "deploymentEnabled": {
       "*": false,
@@ -14,8 +16,9 @@
     {"source":"/calculators/:slug/","destination":"/calculators/:slug/index.html"}
   ],
   "headers": [
-    {"source":"/","headers":[{"key":"Content-Type","value":"text/html; charset=utf-8"}]},
-    {"source":"/(.*\\.html)","headers":[{"key":"Content-Type","value":"text/html; charset=utf-8"}]},
+    {"source":"/","headers":[{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"Cache-Control","value":"public, max-age=0, must-revalidate"}]},
+    {"source":"/(.*\\.html)","headers":[{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"Cache-Control","value":"public, max-age=0, must-revalidate"}]},
+    {"source":"/calculators/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=0, must-revalidate"}]},
     {"source":"/(.*)","headers":[
       {"key":"X-Content-Type-Options","value":"nosniff"},
       {"key":"X-Frame-Options","value":"SAMEORIGIN"},

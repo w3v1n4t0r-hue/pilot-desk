@@ -67,7 +67,7 @@ jobs:
           path: .indexnow-submitted
           key: indexnow-${{ steps.signature.outputs.value }}
 
-      - name: Check Vercel production status
+      - name: Wait for Vercel production success
         id: deploy
         if: steps.submitted.outputs.cache-hit != 'true' || github.event_name == 'workflow_dispatch'
         env:

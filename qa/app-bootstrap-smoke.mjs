@@ -32,9 +32,12 @@ check(wb?.url==='/weight-balance.html','installed-app Weight & Balance shortcut 
 check(flightMath?.url==='/flight-planning-workspace.html','installed app must expose the connected flight-planning workspace');
 check(manifest.launch_handler?.client_mode==='navigate-existing','installed app should reuse an existing app window where supported');
 for(const asset of ['/assets/app-bootstrap.js','/assets/sticky-app.js','/assets/professional-polish.css','/assets/performance.css','/assets/performance.js','/assets/tool-first-layout.js'])check(sw.includes(`'${asset}'`),`service worker must cache ${asset}`);
-check(sw.includes("CACHE='pilotdesk-v24'"),'service worker cache version should match the optimization release');
+check(sw.includes("CACHE='pilotdesk-v25'"),'service worker cache version should match the mega-optimization release');
 check(sw.includes("'/offline.html'"),'service worker must cache a dedicated offline fallback');
 check(sw.includes('Promise.allSettled'),'precache should tolerate a single optional asset failure');
+check(sw.includes('event.preloadResponse'),'navigation preload should be consumed instead of duplicating a navigation request');
+check(sw.includes('MAX_RUNTIME_ENTRIES'),'runtime cache should be bounded');
+check(sw.includes("if(req.mode==='navigate'){u.search='';"),'navigation cache keys should ignore query-string variants');
 check(!sw.includes("fetch('/sitemap.xml'"),'service-worker install should not crawl the whole sitemap');
 
 if(failures.length){
@@ -42,4 +45,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('App bootstrap checks passed: ad-independent features, deferred non-critical work, tool-first layout, PWA cache, and analytics privacy verified.');
+console.log('App bootstrap checks passed: ad-independent features, deferred non-critical work, tool-first layout, bounded PWA cache, navigation preload, and analytics privacy verified.');

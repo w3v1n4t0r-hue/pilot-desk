@@ -1,10 +1,10 @@
 const CACHE='pilotdesk-v26';
 const CORE=[
-  '/','/index.html','/offline.html','/404.html','/planner.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html',
+  '/','/index.html','/offline.html','/404.html','/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html',
   '/calculators/crosswind/','/calculators/time-speed-distance/','/calculators/fuel-required/','/calculators/top-of-descent/',
-  '/assets/styles.css','/assets/professional-polish.css','/assets/performance.css','/assets/weather.css','/assets/wb-v2.css','/assets/planner-suite.css',
-  '/assets/site.js','/assets/app-bootstrap.js','/assets/performance.js','/assets/tool-first-layout.js','/assets/sticky-app.js','/assets/flight-workspace.js','/assets/product-nav.js',
-  '/assets/safety.js','/assets/global-nav.js','/assets/brand.js','/assets/theme.js','/assets/features.js','/assets/share-enhance.js','/assets/calculator-ux.js','/assets/offline-weather.js','/assets/runtime-qol.js','/assets/pilotdesk-plus.js',
+  '/assets/styles.css','/assets/professional-polish.css','/assets/performance.css','/assets/weather.css','/assets/wb-v2.css','/assets/planner-suite.css','/assets/route-planner.css','/assets/procedure-viewer.css','/assets/checklist-trainer.css',
+  '/assets/site.js','/assets/app-bootstrap.js','/assets/performance.js','/assets/tool-first-layout.js','/assets/sticky-app.js','/assets/flight-workspace.js','/assets/product-nav.js','/assets/navlog-core.js','/assets/procedures.js','/assets/route-planner.js','/assets/poh-chart-studio.js','/assets/checklist-trainer.js',
+  '/assets/safety.js','/assets/global-nav.js','/assets/brand.js','/assets/theme.js','/assets/features.js','/assets/share-enhance.js','/assets/calculator-ux.js','/assets/offline-weather.js','/assets/runtime-qol.js','/assets/pilotdesk-plus.js','/assets/aircraft-training.js',
   '/assets/icon.svg','/site.webmanifest'
 ];
 const CORE_PATHS=new Set(CORE);

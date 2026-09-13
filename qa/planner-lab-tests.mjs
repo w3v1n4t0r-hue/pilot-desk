@@ -38,10 +38,11 @@ if(!proxy.includes('aeronav.faa.gov/d-tpp/')||!proxy.includes('application/pdf')
 if(!procPage.includes('procViewer')||!procPage.includes('procFilters')||!procPage.includes('FAA d-TPP'))throw new Error('FAA plate viewer missing');
 
 const gn=fs.readFileSync('assets/global-nav.js','utf8');
-const order=['Calculators','Planner','Aircraft','Weather','Guides','About','Sources','Privacy'];
+const order=['Calculators','Planner','Aircraft','Weather','Training','Guides','About','Sources'];
 let pos=-1;
 for(const item of order){const next=gn.indexOf(`'${item}'`);if(next<0||next<=pos)throw new Error(`Top navigation order is wrong at ${item}`);pos=next}
 if((gn.match(/'Planner'/g)||[]).length!==1)throw new Error('Top navigation should contain Planner once');
+if((gn.match(/'Training'/g)||[]).length!==1)throw new Error('Top navigation should contain Training once');
 if(!gn.includes('pd-global-nav')||!gn.includes("max-width:820px"))throw new Error('Global navigation/mobile behavior missing');
 
 const wx=fs.readFileSync('api/weather.js','utf8');

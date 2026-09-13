@@ -2,6 +2,24 @@ name: Verify generated calculator and guide pages
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/generate-calculator-pages.mjs'
+      - 'scripts/strengthen-guides.mjs'
+      - 'scripts/clean-guide-boilerplate.mjs'
+      - 'scripts/normalize-guide-schema.mjs'
+      - 'scripts/normalize-public-copy.mjs'
+      - 'scripts/postprocess-site.mjs'
+      - 'scripts/generate-sitemap.mjs'
+      - 'assets/calculator-config.js'
+      - 'calculators/**'
+      - 'guides/**'
+      - 'training/**'
+      - 'flight-training.html'
+      - 'sitemap*.xml'
+      - 'robots.txt'
+      - '.github/workflows/generate-calculators.yml'
   pull_request:
     branches: [main]
     paths:

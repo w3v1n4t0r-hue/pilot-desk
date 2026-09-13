@@ -7,6 +7,7 @@ on:
     paths:
       - 'scripts/generate-calculator-pages.mjs'
       - 'scripts/strengthen-guides.mjs'
+      - 'scripts/clean-guide-boilerplate.mjs'
       - 'scripts/normalize-guide-schema.mjs'
       - 'scripts/normalize-public-copy.mjs'
       - 'scripts/postprocess-site.mjs'
@@ -14,7 +15,10 @@ on:
       - 'assets/calculator-config.js'
       - 'calculators/**'
       - 'guides/**'
-      - 'sitemap.xml'
+      - 'training/**'
+      - 'flight-training.html'
+      - 'sitemap*.xml'
+      - 'robots.txt'
       - '.github/workflows/generate-calculators.yml'
 
 permissions:
@@ -41,6 +45,37 @@ jobs:
         run: node scripts/normalize-guide-schema.mjs
       - name: Normalize generated public copy
         run: node scripts/normalize-public-copy.mjs
+      - name: Restore hand-edited aviation pages
+        shell: bash
+        run: |
+          git restore --source=HEAD -- \
+            calculators/glide-range/index.html \
+            flight-training.html \
+            guides/glide-range.html \
+            guides/how-far-can-an-airplane-glide.html \
+            guides/best-glide-speed-vs-glide-ratio.html \
+            guides/emergency-glide-planning.html \
+            guides/checkride-study-guides.html \
+            guides/pilot-checkride-math.html \
+            guides/multiengine-checkride-study-guide.html \
+            guides/critical-engine-multiengine.html \
+            guides/multiengine-vmc-factors.html \
+            guides/vmc-vs-vyse.html \
+            guides/accelerate-stop-accelerate-go.html \
+            guides/feathering-vs-windmilling-propeller.html \
+            guides/identify-verify-feather.html \
+            guides/past-critical-engine.html \
+            guides/single-engine-climb-performance.html \
+            guides/single-engine-service-ceiling.html \
+            guides/vmc-demonstration-explained.html \
+            guides/zero-sideslip-multiengine.html \
+            guides/avgas-weight-per-gallon.html \
+            guides/cessna-172-glide-distance.html \
+            guides/crosswind-component-chart.html \
+            guides/seminole-vmc-study.html \
+            guides/three-degree-descent-rate-chart.html
+      - name: Remove generic guide boilerplate
+        run: node scripts/clean-guide-boilerplate.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
       - name: Verify generated output is already committed

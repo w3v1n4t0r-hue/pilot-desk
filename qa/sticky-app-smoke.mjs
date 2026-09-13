@@ -21,11 +21,11 @@ check(sticky.includes('viewport-fit')===false,'sticky app should not rewrite vie
 check(sticky.includes('min-height:46px'),'mobile dock targets should be touch-friendly');
 check(analytics.includes('Tool Opened')&&analytics.includes('Calculation Completed')&&analytics.includes('Save Action')&&analytics.includes('Share Action'),'analytics funnel milestones missing');
 check(analytics.includes('__pdTrackQueue'),'deferred analytics must flush buffered early events');
-for(const forbidden of ['calculator inputs','tail number','passenger'])check(!analytics.toLowerCase().includes(forbidden),'analytics bundle should not contain sensitive-value collection logic');
+check(analytics.includes('blockedKey')&&analytics.includes('query|search|term|text')&&analytics.includes('tailnumber')&&analytics.includes('passenger'),'analytics must discard free-text and personal-value fields before sending events');
 check(ads.includes('ensureManualPlaceholders')&&ads.includes("validSlot('top')")&&ads.includes("validSlot('sidebar')"),'manual AdSense placements are not config-ready');
 check(weather.includes('tafIssueAge')&&weather.includes('tafExpired')&&weather.includes('Check TAF currency.'),'TAF freshness/validity safeguards missing');
 check(weather.includes('pilotdesk:weatherloaded'),'weather analytics should expose only a coarse result event');
-check(sw.includes("CACHE='pilotdesk-v27'")&&sw.includes("'/offline.html'")&&sw.includes('Promise.allSettled'),'offline release hardening missing');
+check(sw.includes("CACHE='pilotdesk-v28'")&&sw.includes("'/offline.html'")&&sw.includes('Promise.allSettled'),'offline release hardening missing');
 check(sw.includes('MAX_RUNTIME_ENTRIES')&&sw.includes('event.preloadResponse'),'PWA cache should stay bounded and use navigation preload');
 check(offline.includes('Do not rely on cached operational data')&&offline.includes('Flight Planning Workspace'),'offline page needs safety boundary and useful cached tools');
 check(manifest.launch_handler?.client_mode==='navigate-existing','PWA launch handler missing');

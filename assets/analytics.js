@@ -1,59 +1,25 @@
 (()=>{
-  const queued=Array.isArray(window.__pdTrackQueue)?window.__pdTrackQueue.slice():[];
-  window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
-  window.si=window.si||function(){(window.siq=window.siq||[]).push(arguments)};
-
-  const load=(src,key)=>{
-    if(document.querySelector(`script[data-${key}]`))return;
-    const s=document.createElement('script');
-    s.defer=true;
-    s.src=src;
-    s.setAttribute(`data-${key}`,'1');
-    document.head.appendChild(s);
-  };
-  load('/_vercel/insights/script.js','pd-vercel-analytics');
-  load('/_vercel/speed-insights/script.js','pd-speed-insights');
-
-  const clean=v=>String(v??'').slice(0,80);
-  window.pdTrack=(name,data={})=>{
-    try{
-      const safe={};
-      Object.entries(data).slice(0,2).forEach(([k,v])=>safe[clean(k)]=clean(v));
-      window.va('event',{name:clean(name),data:safe});
-    }catch{}
-  };
-  queued.splice(0,50).forEach(([name,data])=>window.pdTrack(name,data));
-  window.__pdTrackQueue=[];
-
-  const path=location.pathname;
-  const slug=()=>document.body.dataset.calc||path.split('/').filter(Boolean).pop()||'home';
-  const pageKind=()=>path.startsWith('/calculators/')?'calculator':path.startsWith('/guides/')?'guide':path==='/weather.html'?'weather':path.includes('planner')||path==='/flights.html'||path==='/flight-brief.html'?'planning':path==='/aircraft.html'||path==='/weight-balance.html'?'aircraft':'other';
-  try{
-    const key='pd-analytics-open:'+path;
-    if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');window.pdTrack('Tool Opened',{type:pageKind(),tool:slug()})}
-  }catch{}
-
-  document.addEventListener('click',e=>{
-    const el=e.target.closest('a,button');if(!el)return;
-    if(el.matches('[data-calculate]'))window.pdTrack('Calculator Used',{tool:slug()});
-    else if(el.matches('#pdInstallHome,.pd-install'))window.pdTrack('Install Prompt',{page:path});
-    else if(el.matches('#pdExportAircraft'))window.pdTrack('Aircraft Export',{page:'aircraft'});
-    else if(el.matches('[data-wb-print]'))window.pdTrack('WB Print',{page:'weight-balance'});
-    else if(el.matches('[data-wb-copy]'))window.pdTrack('WB Copy',{page:'weight-balance'});
-    else if(el.matches('[data-copy-link],[data-pd-copy-link],[data-pd-share],#workspaceShare'))window.pdTrack('Share Action',{tool:slug()});
-    else if(el.matches('[data-save-scenario],#workspaceSave,.pd-star'))window.pdTrack('Save Action',{tool:slug()});
-    else if(el.tagName==='A'&&path.startsWith('/guides/')&&el.getAttribute('href')?.startsWith('/calculators/'))window.pdTrack('Guide To Calculator',{guide:slug()});
-  },true);
-
-  document.addEventListener('submit',e=>{
-    if(e.target?.id==='weatherForm')window.pdTrack('Weather Search',{source:'weather'});
-    if(e.target?.id==='aircraftForm')window.pdTrack('Aircraft Saved',{source:'aircraft'});
-  },true);
-
-  document.addEventListener('change',e=>{
-    if(e.target?.id==='pdImportAircraft')window.pdTrack('Aircraft Import',{source:'aircraft'});
-  },true);
-
-  document.addEventListener('pilotdesk:calculated',()=>window.pdTrack('Calculation Completed',{tool:slug()}));
-  document.addEventListener('pilotdesk:weatherloaded',e=>window.pdTrack('Weather Result',{freshness:e.detail?.stale?'stale':'fresh',source:e.detail?.fallback?'backup':'primary'}));
+'use strict';
+if(window.__pilotDeskAnalytics)return;window.__pilotDeskAnalytics=true;
+const queued=Array.isArray(window.__pdTrackQueue)?window.__pdTrackQueue.slice():[];
+window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
+window.si=window.si||function(){(window.siq=window.siq||[]).push(arguments)};
+const load=(src,key)=>{if(document.querySelector(`script[data-${key}]`))return;const s=document.createElement('script');s.defer=true;s.src=src;s.setAttribute(`data-${key}`,'1');document.head.appendChild(s)};
+load('/_vercel/insights/script.js','pd-vercel-analytics');load('/_vercel/speed-insights/script.js','pd-speed-insights');
+const clean=v=>String(v??'').slice(0,80),recent=new Map(),blockedKey=/^(?:query|search|term|text|name|email|tail|tailnumber|passenger|route|notes?)$/i;
+window.pdTrack=(name,data={})=>{try{const safe={};Object.entries(data).slice(0,8).forEach(([k,v])=>{const key=clean(k);if(blockedKey.test(key))return;safe[key]=clean(v)});const n=clean(name),finger=n+'|'+JSON.stringify(safe),now=Date.now(),last=recent.get(finger)||0;if(now-last<700)return;recent.set(finger,now);if(recent.size>80)for(const [k,t] of recent)if(now-t>10000)recent.delete(k);window.va('event',{name:n,data:safe})}catch{}};
+queued.splice(0,50).forEach(([name,data])=>window.pdTrack(name,data));window.__pdTrackQueue=[];
+const path=location.pathname,slug=()=>document.body.dataset.calc||path.split('/').filter(Boolean).pop()||'home';
+const pageKind=()=>path.startsWith('/calculators/')?'calculator':path.startsWith('/guides/')?'guide':path.startsWith('/training/')?'training':path==='/weather.html'?'weather':path.includes('planner')||path==='/flights.html'||path==='/flight-brief.html'?'planning':path==='/aircraft.html'||path==='/weight-balance.html'?'aircraft':'other';
+try{const key='pd-analytics-open:'+path;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');window.pdTrack('Tool Opened',{type:pageKind(),tool:slug()})}}catch{}
+try{const k='pd-visit-stats',today=new Date().toISOString().slice(0,10),v=JSON.parse(localStorage.getItem(k)||'{}'),returning=Boolean(v.firstDay&&v.firstDay!==today);v.firstDay=v.firstDay||today;v.lastDay=today;v.sessions=(Number(v.sessions)||0)+1;localStorage.setItem(k,JSON.stringify(v));if(returning)window.pdTrack('Returning Visitor',{pageType:pageKind()})}catch{}
+try{const ref=new URL(document.referrer||location.href);if(ref.hostname!==location.hostname){const source=/google\./i.test(ref.hostname)?'google':/bing\./i.test(ref.hostname)?'bing':/duckduckgo\./i.test(ref.hostname)?'duckduckgo':/yahoo\./i.test(ref.hostname)?'yahoo':'referral';window.pdTrack('External Visit',{source,pageType:pageKind()})}}catch{}
+let calcDirty=false,calcDone=false;
+document.addEventListener('input',e=>{if(path.startsWith('/calculators/')&&e.target?.matches?.('[data-calc-input]'))calcDirty=true},{passive:true});
+document.addEventListener('click',e=>{const el=e.target.closest('a,button');if(!el)return;if(el.matches('[data-calculate]'))window.pdTrack('Calculator Start',{tool:slug()});else if(el.matches('#pdInstallHome,.pd-install'))window.pdTrack('Install Prompt',{page:path});else if(el.matches('#pdExportAircraft'))window.pdTrack('Aircraft Export',{page:'aircraft'});else if(el.matches('[data-wb-print]'))window.pdTrack('WB Print',{page:'weight-balance'});else if(el.matches('[data-wb-copy]'))window.pdTrack('WB Copy',{page:'weight-balance'});else if(el.matches('[data-copy-link],[data-pd-copy-link],[data-pd-share],[data-pd-share-card],#workspaceShare'))window.pdTrack('Share Action',{tool:slug()});else if(el.matches('[data-save-scenario],#workspaceSave,.pd-star'))window.pdTrack('Save Action',{tool:slug()});else if(el.tagName==='A'&&path.startsWith('/guides/')&&el.getAttribute('href')?.startsWith('/calculators/'))window.pdTrack('Guide To Calculator',{guide:slug()});else if(el.tagName==='A'&&/^https?:/.test(el.href)&&new URL(el.href).hostname!==location.hostname){const h=new URL(el.href).hostname;window.pdTrack('Outbound Link',{source:/faa\.gov$|aviationweather\.gov$|notams\.aim\.faa\.gov$/i.test(h)?'official':'external',pageType:pageKind()})}},true);
+document.addEventListener('submit',e=>{if(e.target?.id==='weatherForm')window.pdTrack('Weather Search',{source:'weather'});if(e.target?.id==='aircraftForm')window.pdTrack('Aircraft Saved',{source:'aircraft'})},true);
+document.addEventListener('change',e=>{if(e.target?.id==='pdImportAircraft')window.pdTrack('Aircraft Import',{source:'aircraft'})},true);
+document.addEventListener('pilotdesk:calculated',()=>{calcDone=true;window.pdTrack('Calculation Completed',{tool:slug()})});
+document.addEventListener('pilotdesk:weatherloaded',e=>window.pdTrack('Weather Result',{freshness:e.detail?.stale?'stale':'fresh',source:e.detail?.fallback?'backup':'primary'}));
+addEventListener('pagehide',()=>{if(path.startsWith('/calculators/')&&calcDirty&&!calcDone)window.pdTrack('Calculator Abandoned',{tool:slug(),device:matchMedia('(max-width:760px)').matches?'mobile':'desktop'})},{once:true});
 })();

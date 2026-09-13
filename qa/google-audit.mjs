@@ -3,7 +3,7 @@ const fail=m=>{console.error('Google audit regression:',m);process.exitCode=1};
 const read=p=>fs.readFileSync(p,'utf8');
 const home=read('index.html'),ads=read('assets/ads.js'),theme=read('assets/theme.js'),site=read('assets/site.js'),product=read('assets/product-nav.js'),nav=read('assets/global-nav.js'),vercel=read('vercel.json');
 if(/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=/.test(home))fail('homepage eagerly loads AdSense');
-if(!ads.includes('scheduleAds()')||!ads.includes('setTimeout(start,6000)'))fail('AdSense lazy-start guard missing');
+if(!ads.includes('scheduleAds()')||!ads.includes("isCalc?10000:7000")||!ads.includes("requestIdleCallback"))fail('AdSense lazy-start guard missing');
 if(!theme.includes("valid.has(saved)?saved:'dark'"))fail('dark default theme guard missing');
 for(const x of ['#4a515b','#4f5660','#858a92','#9da2aa'])if(!theme.includes(x))fail('contrast color missing '+x);
 if(!site.includes("if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();"))fail('homepage workspace-shell CLS guard missing');

@@ -2,49 +2,76 @@
 'use strict';
 const path=location.pathname;if(path!=='/'&&path!=='/index.html')return;
 const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
-const homeClass=()=>document.documentElement.classList.add('pd-home-command-center');homeClass();
-const svg=(body)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
-const icon={
- airport:svg('<path d="M5 21 9.25 3M19 21 14.75 3"/><path d="M8 14h8M9 9h6"/><path d="M18.25 5.25a2.75 2.75 0 1 1-5.5 0 2.75 2.75 0 0 1 5.5 0Z"/><path d="M15.5 8v2.25"/>'),
- route:svg('<circle cx="5" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><path d="M7 18h2.5a3 3 0 0 0 3-3V9a3 3 0 0 1 3-3H17"/><path d="m15 13 2 2-2 2"/>'),
- math:svg('<rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M7.5 7.5h9M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>'),
- weather:svg('<path d="M7.5 18.5h9.25a4.25 4.25 0 0 0 .47-8.47A6 6 0 0 0 6 9.5a4.5 4.5 0 0 0 1.5 9Z"/><path d="M18 3v2M21 6h-2M19.8 4.2l-1.4 1.4"/>'),
- wb:svg('<path d="M12 3v18M6 6h12M8 6l-3 6h6L8 6ZM16 6l-3 6h6l-3-6Z"/><path d="M4 13c.8 1.5 2.2 2.25 4 2.25s3.2-.75 4-2.25M12 13c.8 1.5 2.2 2.25 4 2.25s3.2-.75 4-2.25M8 21h8"/>')
-};
-function installCardPolish(){if(q('#pdTaskCardPolish'))return;const s=document.createElement('style');s.id='pdTaskCardPolish';s.textContent=`
-.pd-home-command-center #pdQuickStart{padding:15px!important;background:linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,.006))!important}
-.pd-home-command-center .pd-quick-head{margin-bottom:12px!important}.pd-home-command-center .pd-quick-head h2{font-size:12px!important;letter-spacing:.01em}.pd-home-command-center .pd-quick-head>span{font-size:9px!important}
-.pd-home-command-center .pd-task-strip{gap:9px!important}
-.pd-home-command-center .pd-task-card{min-height:118px!important;padding:14px!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:3px!important;text-align:left!important;border:1px solid #2a2e34!important;border-radius:11px!important;background:linear-gradient(155deg,#111318,#0c0e11)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;transform:none!important}
-.pd-home-command-center .pd-task-card:before{content:''!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:1px!important;background:linear-gradient(90deg,transparent,rgba(255,255,255,.20),transparent)!important;opacity:.7!important}
-.pd-home-command-center .pd-task-card:after{content:'↗'!important;position:absolute!important;right:13px!important;top:12px!important;border:0!important;border-radius:0!important;box-shadow:none!important;color:#626872!important;font-size:12px!important;line-height:1!important;opacity:.8!important}
-.pd-home-command-center .pd-task-icon{position:static!important;transform:none!important;width:38px!important;height:38px!important;display:grid!important;place-items:center!important;margin:0 0 8px!important;border:1px solid #30353c!important;border-radius:9px!important;background:#0a0c0f!important;color:#dfe2e6!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important}
-.pd-home-command-center .pd-task-icon svg{width:23px!important;height:23px!important;display:block!important}
-.pd-home-command-center .pd-task-card b{font-size:12.5px!important;line-height:1.2!important;font-weight:650!important;letter-spacing:-.01em!important}
-.pd-home-command-center .pd-task-card span{font-size:9.25px!important;line-height:1.35!important;color:#80858d!important;max-width:22ch!important}
-.pd-home-command-center .pd-task-card:hover,.pd-home-command-center .pd-task-card:focus-visible{transform:translateY(-1px)!important;border-color:#5d636c!important;background:linear-gradient(155deg,#171a1f,#0e1014)!important;box-shadow:0 10px 26px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.05)!important}
-.pd-home-command-center .pd-task-card:hover .pd-task-icon,.pd-home-command-center .pd-task-card:focus-visible .pd-task-icon{border-color:#59606a!important;background:#111419!important;color:#fff!important}
-.pd-home-command-center .pd-task-card.is-active{transform:none!important;border-color:#686f79!important;background:linear-gradient(155deg,#171a1f,#0e1014)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.035)!important}
-.pd-home-command-center .pd-task-card.is-active .pd-task-icon{border-color:#69717b!important;background:#15181d!important;color:#fff!important}
-@media(max-width:900px){.pd-home-command-center .pd-task-card{min-height:124px!important}.pd-home-command-center .pd-task-icon{width:40px!important;height:40px!important}.pd-home-command-center .pd-task-icon svg{width:24px!important;height:24px!important}}
-`;document.head.appendChild(s)}
+document.documentElement.classList.add('pd-home-command-center');
+
 function openGlobalSearch(query=''){
   const attempt=(n=0)=>{const trigger=q('[data-pd-global-search]');if(trigger){trigger.click();setTimeout(()=>{const input=q('#pdSearchDialog input');if(input){input.value=query;input.dispatchEvent(new Event('input',{bubbles:true}));input.focus()}},20);return}if(n<20){setTimeout(()=>attempt(n+1),50);return}const local=q('#toolSearch');if(local){local.value=query;local.dispatchEvent(new Event('input',{bubbles:true}));q('#pdAllCalculators')?.scrollIntoView({behavior:'smooth',block:'start'})}};attempt();
 }
-function installTopSearch(){const top=q('.topbar'),brand=q('.brand',top);if(!top||!brand||q('.pd-top-search',top))return;const form=document.createElement('form');form.className='pd-top-search';form.setAttribute('role','search');form.innerHTML='<input type="search" aria-label="Search PilotDesk" autocomplete="off" placeholder="Search PilotDesk…"><kbd>⌘K</kbd>';brand.insertAdjacentElement('afterend',form);form.addEventListener('submit',e=>{e.preventDefault();openGlobalSearch(q('input',form).value.trim())});q('input',form).addEventListener('focus',()=>window.pdTrack?.('Homepage Search Focus',{placement:'topbar'}),{once:true})}
-function buildHero(){const hero=q('.hero');if(!hero)return;hero.classList.add('pd-command-hero');const copy=hero.firstElementChild;if(copy){copy.classList.add('pd-hero-copy');if(!q('.pd-hero-search',copy)){const form=document.createElement('form');form.className='pd-hero-search';form.setAttribute('role','search');form.innerHTML='<input type="search" autocomplete="off" spellcheck="false" aria-label="Search PilotDesk calculators and study tools" placeholder="Search 48 calculators, training, weather, guides…"><button type="submit" aria-label="Search PilotDesk">Press ↵</button>';q('h1',copy)?.insertAdjacentElement('afterend',form);form.addEventListener('submit',e=>{e.preventDefault();const query=q('input',form).value.trim();window.pdTrack?.('Homepage Search',{placement:'hero'});openGlobalSearch(query)})}}
- let host=q('.hero-stat',hero)||q('#pdHeroWidget');if(!host){host=document.createElement('div');hero.appendChild(host)}host.className='pd-hero-widget-host';host.id='pdHeroWidget';host.replaceChildren();document.dispatchEvent(new CustomEvent('pilotdesk:home-widget-ready'))}
-function taskMarkup(){return `<div class="pd-quick-head"><div><h2>What are you doing today?</h2></div><span>Jump straight into the flight tool you need.</span></div><div class="pd-task-strip">
-<a class="pd-task-card" href="/airport.html" data-pd-launch="airport" data-home-task="airport"><i class="pd-task-icon">${icon.airport}</i><b>Airport search</b><span>Runways, weather and procedures</span></a>
-<a class="pd-task-card" href="/route-planner.html" data-pd-launch="route" data-home-task="route"><i class="pd-task-icon">${icon.route}</i><b>Plan a route</b><span>Route, navlog and saved flights</span></a>
-<a class="pd-task-card" href="/flight-planning-workspace.html" data-pd-launch="flight-workspace" data-home-task="flight-workspace"><i class="pd-task-icon">${icon.math}</i><b>Flight math</b><span>Wind, time, fuel and descent in one flow</span></a>
-<a class="pd-task-card" href="/weather.html" data-pd-launch="weather" data-home-task="weather"><i class="pd-task-icon">${icon.weather}</i><b>Live weather</b><span>METAR, TAF and nearby stations</span></a>
-<a class="pd-task-card" href="/weight-balance.html" data-pd-launch="weight-balance" data-home-task="weight-balance"><i class="pd-task-icon">${icon.wb}</i><b>Weight &amp; balance</b><span>Build and save a loading scenario</span></a>
+
+function installTopSearch(){
+  const top=q('.topbar'),brand=q('.brand',top);if(!top||!brand||q('.pd-top-search',top))return;
+  const form=document.createElement('form');form.className='pd-top-search';form.setAttribute('role','search');
+  form.innerHTML='<span class="pd-search-icon" aria-hidden="true">⌕</span><input type="search" aria-label="Search PilotDesk" autocomplete="off" placeholder="Search PilotDesk"><kbd>⌘ K</kbd>';
+  brand.insertAdjacentElement('afterend',form);
+  form.addEventListener('submit',e=>{e.preventDefault();openGlobalSearch(q('input',form).value.trim())});
+  q('input',form).addEventListener('focus',()=>window.pdTrack?.('Homepage Search Focus',{placement:'topbar'}),{once:true});
+}
+
+function buildHero(){
+  const hero=q('.hero');if(!hero)return;hero.classList.add('pd-command-hero');
+  const copy=hero.firstElementChild;
+  if(copy){
+    copy.classList.add('pd-hero-copy');
+    const eyebrow=q('.eyebrow',copy);if(eyebrow)eyebrow.innerHTML='<span></span>PILOTDESK // FLIGHT TOOLS';
+    if(!q('.pd-hero-search',copy)){
+      const form=document.createElement('form');form.className='pd-hero-search';form.setAttribute('role','search');
+      form.innerHTML='<span class="pd-hero-search-icon" aria-hidden="true">⌕</span><input type="search" autocomplete="off" spellcheck="false" aria-label="Search PilotDesk calculators and study tools" placeholder="Search calculators, weather, training, guides…"><button type="submit"><span>Search</span><kbd>↵</kbd></button>';
+      q('h1',copy)?.insertAdjacentElement('afterend',form);
+      form.addEventListener('submit',e=>{e.preventDefault();const query=q('input',form).value.trim();window.pdTrack?.('Homepage Search',{placement:'hero'});openGlobalSearch(query)});
+    }
+  }
+  let host=q('.hero-stat',hero)||q('#pdHeroWidget');if(!host){host=document.createElement('div');hero.appendChild(host)}
+  host.className='pd-hero-widget-host';host.id='pdHeroWidget';host.replaceChildren();
+  document.dispatchEvent(new CustomEvent('pilotdesk:home-widget-ready'));
+}
+
+function taskMarkup(){return `<div class="pd-quick-head"><div><span class="pd-section-kicker">QUICK START</span><h2>What are you doing today?</h2></div><span>Go straight to the tool you need.</span></div><div class="pd-task-strip">
+<a class="pd-task-card" href="/airport.html" data-pd-launch="airport" data-home-task="airport"><i class="pd-task-icon" aria-hidden="true"></i><b>Airport search</b><span>Runways, weather and procedures</span></a>
+<a class="pd-task-card" href="/route-planner.html" data-pd-launch="route" data-home-task="route"><i class="pd-task-icon" aria-hidden="true"></i><b>Plan a route</b><span>Route, navlog and saved flights</span></a>
+<a class="pd-task-card" href="/flight-planning-workspace.html" data-pd-launch="flight-workspace" data-home-task="flight-workspace"><i class="pd-task-icon" aria-hidden="true"></i><b>Flight math</b><span>Wind, time, fuel and descent</span></a>
+<a class="pd-task-card" href="/weather.html" data-pd-launch="weather" data-home-task="weather"><i class="pd-task-icon" aria-hidden="true"></i><b>Live weather</b><span>METAR, TAF and nearby stations</span></a>
+<a class="pd-task-card" href="/weight-balance.html" data-pd-launch="weight-balance" data-home-task="weight-balance"><i class="pd-task-icon" aria-hidden="true"></i><b>Weight &amp; balance</b><span>Build and save a loading scenario</span></a>
 </div>`}
-function buildQuickStart(){const hero=q('.hero');if(!hero)return;let section=q('#pdQuickStart');if(!section){section=document.createElement('section');section.id='pdQuickStart';section.className='pd-quick-start';hero.insertAdjacentElement('afterend',section)}section.innerHTML=taskMarkup();let active='';try{active=localStorage.getItem('pd-home-task')||''}catch{}qa('[data-home-task]',section).forEach(card=>{card.classList.toggle('is-active',Boolean(active)&&card.dataset.homeTask===active);card.addEventListener('pointerdown',()=>{qa('[data-home-task]',section).forEach(x=>x.classList.remove('is-active'));card.classList.add('is-active')});card.addEventListener('click',()=>{try{localStorage.setItem('pd-home-task',card.dataset.homeTask||'')}catch{}})})}
-function arrangePersonal(){if(q('#pdHomePersonal'))return;const sections=qa('main.shell > .recent-section');if(sections.length<2)return;const panel=document.createElement('section');panel.id='pdHomePersonal';panel.innerHTML='<div class="pd-home-personal-head"><h2>Recent & favorite tools</h2><span>Saved only in this browser</span></div><div class="pd-home-personal-grid"></div>';const quick=q('#pdQuickStart');(quick||q('.hero')).insertAdjacentElement('afterend',panel);const grid=q('.pd-home-personal-grid',panel);grid.append(sections[0],sections[1]);if(sections[2]){sections[2].classList.add('pd-home-history-lower');const guides=q('#pdGuidesHome');if(guides)guides.insertAdjacentElement('beforebegin',sections[2]);else q('main.shell')?.appendChild(sections[2])}}
-function arrangeLowerPage(){const main=q('main.shell');if(!main)return;const trust=q('.trust-row');if(trust){trust.classList.add('pd-home-trust-lower');const guides=q('#pdGuidesHome');if(guides)guides.insertAdjacentElement('afterend',trust)}const search=q('.search');if(search&&!q('#pdAllCalculators')){const intro=document.createElement('section');intro.id='pdAllCalculators';intro.innerHTML='<div class="pd-all-head"><div><h2>All aviation calculators</h2><p>Filter the full calculator library, or use the search above for guides and training.</p></div><span class="pd-all-count">48 tools</span></div>';search.insertAdjacentElement('beforebegin',intro);const input=q('#toolSearch',search);if(input)input.placeholder='Filter the 48 calculators…'}const ad=qa('main.shell > .ad-wrap')[0],cats=qa('main.shell > .category');if(ad&&cats[1])cats[1].insertAdjacentElement('afterend',ad)}
-function removeDuplicateDiscovery(){const kill=()=>qa('#pdUniversalSearch,#pdDiscovery,#pdPopularTools').forEach(x=>x.remove());kill();const main=q('main.shell');if(!main)return;const mo=new MutationObserver(kill);mo.observe(main,{childList:true});setTimeout(()=>mo.disconnect(),5000)}
-function init(){installCardPolish();installTopSearch();buildHero();buildQuickStart();arrangePersonal();arrangeLowerPage();removeDuplicateDiscovery();if(new URLSearchParams(location.search).get('search')==='1')setTimeout(()=>q('.pd-hero-search input')?.focus(),80)}
+
+function buildQuickStart(){
+  const hero=q('.hero');if(!hero)return;let section=q('#pdQuickStart');
+  if(!section){section=document.createElement('section');section.id='pdQuickStart';section.className='pd-quick-start';hero.insertAdjacentElement('afterend',section)}
+  section.innerHTML=taskMarkup();
+  qa('[data-home-task]',section).forEach(card=>card.addEventListener('pointerdown',()=>{qa('[data-home-task]',section).forEach(x=>x.classList.remove('is-active'));card.classList.add('is-active')}));
+}
+
+function arrangePersonal(){
+  if(q('#pdHomePersonal'))return;const sections=qa('main.shell > .recent-section');if(sections.length<2)return;
+  const panel=document.createElement('section');panel.id='pdHomePersonal';panel.innerHTML='<div class="pd-home-personal-head"><div><span class="pd-section-kicker">YOUR PILOTDESK</span><h2>Pick up where you left off</h2></div><span>Saved only in this browser</span></div><div class="pd-home-personal-grid"></div>';
+  const quick=q('#pdQuickStart');(quick||q('.hero')).insertAdjacentElement('afterend',panel);const grid=q('.pd-home-personal-grid',panel);grid.append(sections[0],sections[1]);
+  if(sections[2]){sections[2].classList.add('pd-home-history-lower');const guides=q('#pdGuidesHome');if(guides)guides.insertAdjacentElement('beforebegin',sections[2]);else q('main.shell')?.appendChild(sections[2])}
+}
+
+function arrangeLowerPage(){
+  const main=q('main.shell');if(!main)return;
+  const trust=q('.trust-row');if(trust){trust.classList.add('pd-home-trust-lower');const guides=q('#pdGuidesHome');if(guides)guides.insertAdjacentElement('afterend',trust)}
+  const search=q('.search');if(search&&!q('#pdAllCalculators')){const intro=document.createElement('section');intro.id='pdAllCalculators';intro.innerHTML='<div class="pd-all-head"><div><span class="pd-section-kicker">CALCULATOR LIBRARY</span><h2>All aviation calculators</h2><p>Fast tools for planning, performance, navigation and training.</p></div><span class="pd-all-count">48 tools</span></div>';search.insertAdjacentElement('beforebegin',intro);const input=q('#toolSearch',search);if(input)input.placeholder='Filter the 48 calculators…'}
+  const ad=qa('main.shell > .ad-wrap')[0],cats=qa('main.shell > .category');if(ad&&cats[1])cats[1].insertAdjacentElement('afterend',ad);
+}
+
+function removeDuplicateDiscovery(){
+  const kill=()=>qa('#pdUniversalSearch,#pdDiscovery,#pdPopularTools').forEach(x=>x.remove());kill();const main=q('main.shell');if(!main)return;
+  const mo=new MutationObserver(kill);mo.observe(main,{childList:true});setTimeout(()=>mo.disconnect(),5000);
+}
+
+function init(){
+  installTopSearch();buildHero();buildQuickStart();arrangePersonal();arrangeLowerPage();removeDuplicateDiscovery();
+  if(new URLSearchParams(location.search).get('search')==='1')setTimeout(()=>q('.pd-hero-search input')?.focus(),80);
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{init();setTimeout(()=>{buildQuickStart();arrangePersonal();arrangeLowerPage()},120)},{once:true});else init();
 })();

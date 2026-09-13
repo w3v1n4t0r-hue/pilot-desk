@@ -8,7 +8,7 @@ const failures=[];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const check=async(name,fn)=>{try{await fn();console.log('PASS',name)}catch(e){failures.push(`${name}: ${e.message}`);console.error('FAIL',name,e.message)}};
 
-async function gotoRetry(page,path,{attempts=3,timeout=45000}={}){
+async function gotoRetry(page,path,{attempts=3,timeout=30000}={}){
   let last;
   for(let i=0;i<attempts;i++){
     try{
@@ -16,12 +16,12 @@ async function gotoRetry(page,path,{attempts=3,timeout=45000}={}){
       if(r?.ok())return r;
       last=new Error(`HTTP ${r?.status()??'no response'}`);
     }catch(e){last=e}
-    await sleep(1200*(i+1));
+    await sleep(800*(i+1));
   }
   throw last||new Error(`Could not load ${path}`);
 }
 
-async function requestRetry(path,{attempts=3,timeout=30000,maxRedirects=20}={}){
+async function requestRetry(path,{attempts=2,timeout=15000,maxRedirects=20}={}){
   let last;
   for(let i=0;i<attempts;i++){
     try{
@@ -29,7 +29,7 @@ async function requestRetry(path,{attempts=3,timeout=30000,maxRedirects=20}={}){
       if(r.ok())return r;
       last=new Error(`${path} returned ${r.status()}`);
     }catch(e){last=e}
-    await sleep(700*(i+1));
+    await sleep(400*(i+1));
   }
   throw last||new Error(`Request failed for ${path}`);
 }
@@ -72,7 +72,7 @@ await check('shared crosswind link prefills, calculates, and has one set of shar
 });
 
 await check('weather API and UI both return a usable KGFK result',async()=>{
-  const api=await requestRetry('/api/weather?station=KGFK',{attempts:4,timeout:30000,maxRedirects:20});
+  const api=await requestRetry('/api/weather?station=KGFK',{attempts:3,timeout:20000,maxRedirects:20});
   const type=(api.headers()['content-type']||'').toLowerCase();
   if(!type.includes('json'))throw new Error(`weather API returned unexpected content type ${type||'(missing)'}`);
   const payload=await api.json().catch(()=>null);
@@ -92,12 +92,11 @@ await check('weather API and UI both return a usable KGFK result',async()=>{
 await check('aircraft profile saves locally',async()=>{
   await gotoRetry(desktop,'/aircraft.html');
   await desktop.evaluate(()=>{localStorage.removeItem('pd-aircraft');localStorage.removeItem('pd-aircraft-active')});
-  await desktop.reload({waitUntil:'domcontentloaded',timeout:45000});
+  await desktop.reload({waitUntil:'domcontentloaded',timeout:30000});
   await desktop.waitForFunction(()=>document.querySelector('#aircraftForm')&&document.querySelector('#aircraftList'),{timeout:10000});
   await desktop.locator('[name="name"]').fill('PilotDesk E2E Test');
   await desktop.locator('[name="type"]').fill('TEST');
   await desktop.locator('[name="fuelBurn"]').fill('10');
-  await desktop.locator('#aircraftForm button[type="submit"]').waitFor({state:'visible'});
   await desktop.locator('#aircraftForm').evaluate(form=>form.requestSubmit());
   await desktop.waitForFunction(()=>document.querySelector('#aircraftList')?.textContent?.includes('PilotDesk E2E Test'),{timeout:8000});
   const saved=await desktop.evaluate(()=>JSON.parse(localStorage.getItem('pd-aircraft')||'[]'));
@@ -105,7 +104,7 @@ await check('aircraft profile saves locally',async()=>{
 });
 
 await check('weight and balance builder renders and calculates',async()=>{
-  await gotoRetry(desktop,'/calculators/weight-balance-builder/',{attempts:4,timeout:45000});
+  await gotoRetry(desktop,'/calculators/weight-balance-builder/',{attempts:3,timeout:30000});
   await desktop.waitForSelector('#wbRows',{timeout:12000});
   await desktop.waitForFunction(()=>document.querySelectorAll('.wb-data').length>0,{timeout:10000});
   await desktop.waitForFunction(()=>{
@@ -125,9 +124,9 @@ await check('every canonical sitemap URL is live and structurally usable',async(
   const issues=[];
   const inspect=async url=>{
     let r,last;
-    for(let n=0;n<3;n++){
-      try{r=await desktop.request.get(url,{timeout:30000,maxRedirects:20});if(r.ok())break;last=new Error(`HTTP ${r.status()}`)}catch(e){last=e}
-      await sleep(400*(n+1));
+    for(let n=0;n<2;n++){
+      try{r=await desktop.request.get(url,{timeout:12000,maxRedirects:20});if(r.ok())break;last=new Error(`HTTP ${r.status()}`)}catch(e){last=e}
+      await sleep(250*(n+1));
     }
     if(!r?.ok()){issues.push(`${url} ${last?.message||'request failed'}`);return}
     const body=await r.text();
@@ -140,17 +139,19 @@ await check('every canonical sitemap URL is live and structurally usable',async(
       if(!canonical||!canonical.startsWith(base+'/'))issues.push(`${url} missing valid PilotDesk canonical`);
     }
   };
-  for(let i=0;i<urls.length;i+=6)await Promise.all(urls.slice(i,i+6).map(inspect));
+  const concurrency=18;
+  for(let i=0;i<urls.length;i+=concurrency)await Promise.all(urls.slice(i,i+concurrency).map(inspect));
   if(issues.length)throw new Error(`${issues.length} crawl issue(s): ${issues.slice(0,12).join(' | ')}`);
   console.log(`Checked ${urls.length} canonical production URLs.`);
 });
 
 await check('training, long-tail guides, sources, privacy and sitemaps are live',async()=>{
-  for(const p of ['/flight-training.html','/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html','/guides/crosswind-component-chart.html','/guides/avgas-weight-per-gallon.html','/guides/three-degree-descent-rate-chart.html','/guides/cessna-172-glide-distance.html','/guides/seminole-vmc-study.html','/guides/popular-aviation-tools.html','/sources.html','/legal/privacy.html','/sitemap.xml','/sitemap-growth.xml','/sitemap-retention.xml'])await requestRetry(p);
+  const paths=['/flight-training.html','/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html','/guides/crosswind-component-chart.html','/guides/avgas-weight-per-gallon.html','/guides/three-degree-descent-rate-chart.html','/guides/cessna-172-glide-distance.html','/guides/seminole-vmc-study.html','/guides/popular-aviation-tools.html','/sources.html','/legal/privacy.html','/sitemap.xml','/sitemap-growth.xml','/sitemap-retention.xml'];
+  for(let i=0;i<paths.length;i+=8)await Promise.all(paths.slice(i,i+8).map(p=>requestRetry(p)));
 });
 
 await check('retired SEO-named guide permanently redirects to the public guide',async()=>{
-  const r=await desktop.request.get(base+'/guides/pilot-seo-priority.html',{timeout:30000,maxRedirects:0});
+  const r=await desktop.request.get(base+'/guides/pilot-seo-priority.html',{timeout:15000,maxRedirects:0});
   if(![301,308].includes(r.status()))throw new Error(`expected permanent redirect, got HTTP ${r.status()}`);
   const location=r.headers()['location']||'';
   if(!location.includes('/guides/popular-aviation-tools.html'))throw new Error(`unexpected redirect location: ${location||'(missing)'}`);

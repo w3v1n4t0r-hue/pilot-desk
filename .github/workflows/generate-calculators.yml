@@ -2,11 +2,24 @@ name: Verify generated calculator and guide pages
 
 on:
   workflow_dispatch:
+  push:
+    branches: [release/growth-retention-all-in-one]
+    paths:
+      - 'scripts/**'
+      - 'assets/calculator-config.js'
+      - 'calculators/**'
+      - 'guides/**'
+      - 'training/**'
+      - 'flight-training.html'
+      - 'sitemap*.xml'
+      - 'robots.txt'
+      - '.github/workflows/generate-calculators.yml'
   pull_request:
     branches: [main]
     paths:
       - 'scripts/generate-calculator-pages.mjs'
       - 'scripts/strengthen-guides.mjs'
+      - 'scripts/clean-guide-boilerplate.mjs'
       - 'scripts/normalize-guide-schema.mjs'
       - 'scripts/normalize-public-copy.mjs'
       - 'scripts/postprocess-site.mjs'
@@ -21,7 +34,7 @@ on:
       - '.github/workflows/generate-calculators.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pilotdesk-generated-pages-${{ github.event.pull_request.number || github.ref }}
@@ -73,8 +86,23 @@ jobs:
             guides/crosswind-component-chart.html \
             guides/seminole-vmc-study.html \
             guides/three-degree-descent-rate-chart.html
+      - name: Remove generic guide boilerplate
+        run: node scripts/clean-guide-boilerplate.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
+      - name: Commit cleaned generated output on release branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/release/growth-retention-all-in-one'
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "Generated output is already current."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add calculators guides sitemap.xml robots.txt
+            git commit -m "Remove generic guide boilerplate"
+            git push origin HEAD:release/growth-retention-all-in-one
+          fi
       - name: Verify generated output is already committed
         shell: bash
         run: |

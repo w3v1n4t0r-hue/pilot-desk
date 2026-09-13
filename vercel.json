@@ -13,7 +13,8 @@
     {"source":"/calculators","destination":"/","permanent":true},
     {"source":"/calculators/","destination":"/","permanent":true},
     {"source":"/guides","destination":"/guides.html","permanent":true},
-    {"source":"/guides/","destination":"/guides.html","permanent":true}
+    {"source":"/guides/","destination":"/guides.html","permanent":true},
+    {"source":"/guides/pilot-seo-priority.html","destination":"/guides/popular-aviation-tools.html","permanent":true}
   ],
   "rewrites": [
     {"source":"/calculators/weight-balance-builder","destination":"/weight-balance.html"},

@@ -23,7 +23,7 @@ const homeCss=read('assets/home-command-center.css');
 ok(homeCss.includes('grid-auto-flow:column')&&homeCss.includes('scroll-snap-type:x mandatory'),'mobile task cards must swipe horizontally');
 ok(homeCss.includes('.pd-task-card.is-active'),'selected task card treatment missing');
 const polish=read('assets/home-task-polish.css');
-ok(polish.includes('grid-template-columns:38px minmax(0,1fr)'),'task cards must use compact icon/text layout');
+ok(polish.includes('grid-template-rows:68px auto auto')&&polish.includes('mask-image:url('),'task cards must use the reference-style centered aviation icon layout');
 ok(polish.includes('.pd-task-card.is-active'),'polish layer must neutralize selected task styling');
 const widget=read('assets/context-widget.js');
 for(const s of ['crosswindBody','densityBody','weatherBody','wbBody','descentBody','fuelBody','/api/weather?station=','pd-last-context-widget'])ok(widget.includes(s),`context widget missing ${s}`);
@@ -40,4 +40,4 @@ const descent=read('guides/three-degree-descent-rate-chart.html');ok(descent.inc
 const sw=read('sw.js');ok(sw.includes("pilotdesk-v29")&&sw.includes("'/assets/growth-suite.js'")&&sw.includes("'/assets/home-task-polish.css'"),'service worker not updated for growth suite and homepage refresh');
 for(const s of ['/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-command-center.js','/assets/context-widget.js'])ok(sw.includes(s),`service worker missing ${s}`);
 if(failures.length){console.error(`Growth + retention check failed (${failures.length})`);for(const x of failures)console.error(' - '+x);process.exit(1)}
-console.log('Growth + retention smoke check passed: search, command-center homepage, polished task cards, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA, and indexing hooks are present.');
+console.log('Growth + retention smoke check passed: search, command-center homepage, reference-style task cards, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA, and indexing hooks are present.');

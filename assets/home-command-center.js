@@ -22,7 +22,7 @@ function buildHero(){
   const copy=hero.firstElementChild;
   if(copy){
     copy.classList.add('pd-hero-copy');
-    const eyebrow=q('.eyebrow',copy);if(eyebrow)eyebrow.innerHTML='<span></span>PILOTDESK // FLIGHT TOOLS';
+    const eyebrow=q('.eyebrow',copy);if(eyebrow)eyebrow.innerHTML='<span></span><b>PILOTDESK</b><span class="pd-sr-only">flight tools</span><i class="pd-cycle-word" aria-hidden="true">FLIGHT TOOLS</i>';
     if(!q('.pd-hero-search',copy)){
       const form=document.createElement('form');form.className='pd-hero-search';form.setAttribute('role','search');
       form.innerHTML='<span class="pd-hero-search-icon" aria-hidden="true">⌕</span><input type="search" autocomplete="off" spellcheck="false" aria-label="Search PilotDesk calculators and study tools" placeholder="Search calculators, weather, training, guides…"><button type="submit"><span>Search</span><kbd>↵</kbd></button>';
@@ -71,6 +71,8 @@ function removeDuplicateDiscovery(){
 
 function init(){
   installTopSearch();buildHero();buildQuickStart();arrangePersonal();arrangeLowerPage();removeDuplicateDiscovery();
+  const word=q('.pd-cycle-word'),labels=['FLIGHT TOOLS','LIVE WEATHER','PERFORMANCE','NAVIGATION','TRAINING'];
+  if(word&&!word.dataset.cycling&&!matchMedia('(prefers-reduced-motion: reduce)').matches){word.dataset.cycling='1';let i=0;setInterval(()=>{word.classList.add('is-changing');setTimeout(()=>{i=(i+1)%labels.length;word.textContent=labels[i];word.classList.remove('is-changing')},180)},2600)}
   if(new URLSearchParams(location.search).get('search')==='1')setTimeout(()=>q('.pd-hero-search input')?.focus(),80);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{init();setTimeout(()=>{buildQuickStart();arrangePersonal();arrangeLowerPage()},120)},{once:true});else init();

@@ -1,4 +1,4 @@
-const CACHE='pilotdesk-v30';
+const CACHE='pilotdesk-v31';
 const CORE=[
   '/','/index.html','/offline.html','/404.html','/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html','/flight-training.html',
   '/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html',

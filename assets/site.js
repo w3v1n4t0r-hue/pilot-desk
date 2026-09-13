@@ -63,4 +63,15 @@ function renderRecent(){const el=document.getElementById('recentTools');if(!el)r
 function registerSW(){if(!('serviceWorker' in navigator)||location.protocol!=='https:')return;let started=false,timer=null;const start=()=>{if(started)return;started=true;if(timer)clearTimeout(timer);navigator.serviceWorker.register('/sw.js').catch(()=>{})};['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,start,{once:true,passive:true}));const later=()=>{timer=setTimeout(start,12000)};if(document.readyState==='complete')later();else addEventListener('load',later,{once:true})}
 function loadWorkspaceShell(){if(!document.querySelector('link[href="/assets/hub.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/hub.css';document.head.appendChild(l)}if(!document.querySelector('script[src*="/assets/product-nav.js"]')){const s=document.createElement('script');s.src='/assets/product-nav.js';s.defer=true;document.head.appendChild(s)}}
 if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();
-document.addEventListener('DOMContentLoaded',()=>{$$('[data-calc-input]').forEach(e=>{e.setAttribute('inputmode','decimal');e.addEventListener('input',calculate)});$('[data-calculate]')?.addEventListener('click',calculate);calculate();setupCalcActions();recordRecent();renderRecent();const q=$('#toolSearch');if(q)q.addEventListener('input',()=>{let s=q.value.toLowerCase().trim(),visible=0;$$('.tool-card').forEach(c=>{let hide=s&&!c.innerText.toLowerCase().includes(s);c.classList.toggle('hidden',hide);if(!hide)visible++});const n=$('#searchCount');if(n)n.textContent=s?`${visible} tool${visible===1?'':'s'} found`:''});registerSW()});
+function polishInteractions(){
+  const cards=$$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card');
+  cards.forEach((card,index)=>{
+    card.style.setProperty('--pd-order',String(index%8));
+    card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--pd-x',`${e.clientX-r.left}px`);card.style.setProperty('--pd-y',`${e.clientY-r.top}px`)},{passive:true});
+  });
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver'in window){
+    const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.animate([{opacity:.01,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],{duration:420,delay:Number(entry.target.style.getPropertyValue('--pd-order')||0)*28,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});reveal.unobserve(entry.target)}),{rootMargin:'0px 0px -6%'});
+    cards.forEach(card=>reveal.observe(card));
+  }
+}
+document.addEventListener('DOMContentLoaded',()=>{$$('[data-calc-input]').forEach(e=>{e.setAttribute('inputmode','decimal');e.addEventListener('input',calculate)});$('[data-calculate]')?.addEventListener('click',calculate);calculate();setupCalcActions();recordRecent();renderRecent();polishInteractions();const q=$('#toolSearch');if(q)q.addEventListener('input',()=>{let s=q.value.toLowerCase().trim(),visible=0;$$('.tool-card').forEach(c=>{let hide=s&&!c.innerText.toLowerCase().includes(s);c.classList.toggle('hidden',hide);if(!hide)visible++});const n=$('#searchCount');if(n)n.textContent=s?`${visible} tool${visible===1?'':'s'} found`:''});registerSW()});

@@ -53,3 +53,28 @@
 @media(max-width:600px){.pd-home-command-center .shell{padding:0 14px 62px!important}.pd-home-command-center .topbar{height:62px!important}.pd-home-command-center .hero.pd-command-hero{padding:34px 0 28px!important}.pd-home-command-center .hero h1{font-size:44px!important;line-height:.98!important;margin-bottom:22px!important}.pd-home-command-center .hero .eyebrow{font-size:8px!important}.pd-home-command-center .pd-hero-search input{height:52px!important;padding-right:54px!important;font-size:12px!important}.pd-home-command-center .pd-hero-search button{width:38px!important;height:38px!important;right:7px!important;top:7px!important;padding:0!important;justify-content:center!important}.pd-home-command-center .pd-hero-search button span{display:none!important}.pd-home-command-center #pdQuickStart .pd-quick-head>span,.pd-home-command-center .pd-home-personal-head>span{display:none!important}.pd-home-command-center #pdQuickStart .pd-task-strip{grid-auto-columns:minmax(215px,82vw)!important}.pd-home-command-center #pdQuickStart .pd-task-card{min-height:150px!important}.pd-home-command-center #pdQuickStart .pd-task-icon{height:66px!important}.pd-home-command-center #pdQuickStart .pd-task-icon:before{width:61px;height:61px}.pd-home-command-center .grid{grid-template-columns:1fr 1fr!important}.pd-home-command-center .tool-card{min-height:110px!important;padding:14px!important}.pd-home-command-center .tool-card p{display:none!important}.pd-home-command-center .pd-all-head h2{font-size:24px!important}}
 @media(max-width:420px){.pd-home-command-center .grid{grid-template-columns:1fr!important}.pd-home-command-center .tool-card p{display:block!important}.pd-home-command-center .pd-context-widget{border-radius:14px!important}.pd-home-command-center .pd-widget-result strong{font-size:24px!important}}
 @media(prefers-reduced-motion:reduce){.pd-home-command-center *{scroll-behavior:auto!important}.pd-home-command-center .pd-task-card,.pd-home-command-center .tool-card,.pd-home-command-center .pd-task-icon:before,.pd-home-command-center .pd-hero-search input{transition:none!important}}
+
+/* Readable cockpit-scale typography and signature motion */
+.pd-home-command-center .hero .eyebrow{font-size:11px!important;color:#a9cfe6!important}
+.pd-home-command-center .hero .eyebrow:before{display:none!important}
+.pd-home-command-center .hero .eyebrow b{font:inherit;color:#d8e4eb}
+.pd-home-command-center .pd-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.pd-home-command-center .pd-cycle-word{min-width:112px;font-style:normal;color:#8dd3ff;transition:opacity .18s ease,transform .18s ease}
+.pd-home-command-center .pd-cycle-word.is-changing{opacity:0;transform:translateY(5px)}
+.pd-home-command-center .pd-top-search input{font-size:13px!important}
+.pd-home-command-center .pd-quick-head>span,.pd-home-command-center .pd-home-personal-head>span{font-size:12px!important}
+.pd-home-command-center .pd-section-kicker{font-size:10px!important;color:#91a1ae}
+.pd-home-command-center #pdQuickStart .pd-task-card b{font-size:15px!important}
+.pd-home-command-center #pdQuickStart .pd-task-card span{font-size:13px!important;line-height:1.45!important;color:#9ba8b3!important}
+.pd-home-command-center .pd-home-personal-grid .category-head h2{font-size:14px!important}
+.pd-home-command-center .pd-home-personal-head h2{font-size:20px!important}
+.pd-home-command-center .pd-all-head p{font-size:14px!important;color:#98a5b0!important}
+.pd-home-command-center .pd-all-count,.pd-home-command-center .category-head span{font-size:11px!important}
+.pd-home-command-center .category-head h2{font-size:19px!important}
+.pd-home-command-center .tool-card b{font-size:15px!important}
+.pd-home-command-center .tool-card p{font-size:13px!important;line-height:1.55!important;color:#96a3ae!important}
+.pd-home-command-center .trust-card{font-size:13px!important;color:#96a2ac!important}
+.pd-home-command-center .trust-card b{font-size:14px!important}
+.pd-home-command-center .pd-context-head b,.pd-home-command-center .pd-context-tabs button,.pd-home-command-center .pd-widget-field label,.pd-home-command-center .pd-widget-result small,.pd-home-command-center .pd-widget-note{font-size:11px!important}
+.pd-home-command-center .pd-widget-field input{height:40px!important;font-size:14px!important}
+@media(max-width:600px){.pd-home-command-center .hero .eyebrow{font-size:10px!important}.pd-home-command-center .grid{grid-template-columns:1fr!important}.pd-home-command-center .tool-card{min-height:132px!important;padding:18px!important}.pd-home-command-center .tool-card p{display:block!important;font-size:13px!important}.pd-home-command-center #pdQuickStart .pd-task-card span{font-size:12px!important}}

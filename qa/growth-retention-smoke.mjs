@@ -2,7 +2,7 @@ import fs from 'node:fs';
 const read=p=>fs.readFileSync(p,'utf8');
 const failures=[];const ok=(c,m)=>{if(!c)failures.push(m)};
 const must=[
-'assets/growth-suite.js','assets/share-enhance.js','training/private-pilot.html','training/instrument-rating.html','training/commercial-pilot.html','training/multiengine.html','training/cfi.html','guides/crosswind-component-chart.html','guides/avgas-weight-per-gallon.html','guides/three-degree-descent-rate-chart.html','guides/cessna-172-glide-distance.html','guides/seminole-vmc-study.html','sitemap-retention.xml'
+'assets/growth-suite.js','assets/share-enhance.js','assets/home-command-center.css','assets/home-command-center.js','assets/context-widget.js','training/private-pilot.html','training/instrument-rating.html','training/commercial-pilot.html','training/multiengine.html','training/cfi.html','guides/crosswind-component-chart.html','guides/avgas-weight-per-gallon.html','guides/three-degree-descent-rate-chart.html','guides/cessna-172-glide-distance.html','guides/seminole-vmc-study.html','sitemap-retention.xml'
 ];
 for(const p of must)ok(fs.existsSync(p),`Missing ${p}`);
 const growth=read('assets/growth-suite.js');
@@ -14,6 +14,18 @@ const features=read('assets/features.js');ok(features.includes('Pin to dashboard
 const ads=read('assets/ads.js');ok(ads.includes("!isCalc")&&ads.includes("pilotdesk:calculated"),'ad loading does not protect calculator-first UX');
 const adcfg=read('assets/ad-config.js');ok(adcfg.includes("pathname==='/assets/brand.js'"),'brand loader duplicate-request guard missing');
 const brand=read('assets/brand.js');ok(brand.includes('/assets/growth-suite.js'),'growth suite is not globally loaded');
+for(const s of ['/assets/home-command-center.css','/assets/home-command-center.js','/assets/context-widget.js','pd-home-command-center'])ok(brand.includes(s),`brand.js missing ${s}`);
+const home=read('assets/home-command-center.js');
+for(const s of ['pd-top-search','pd-hero-search','pdHeroWidget','What are you doing today?','Recent & favorite tools','All aviation calculators','pd-home-task'])ok(home.includes(s),`home command center missing ${s}`);
+for(const href of ['/airport.html','/route-planner.html','/flight-planning-workspace.html','/weather.html','/weight-balance.html'])ok(home.includes(href),`home task card missing ${href}`);
+ok(home.includes('openGlobalSearch'),'homepage must route hero/topbar search into universal search');
+const homeCss=read('assets/home-command-center.css');
+ok(homeCss.includes('grid-auto-flow:column')&&homeCss.includes('scroll-snap-type:x mandatory'),'mobile task cards must swipe horizontally');
+ok(homeCss.includes('.pd-task-card.is-active'),'selected task card treatment missing');
+const widget=read('assets/context-widget.js');
+for(const s of ['crosswindBody','densityBody','weatherBody','wbBody','descentBody','fuelBody','/api/weather?station=','pd-last-context-widget'])ok(widget.includes(s),`context widget missing ${s}`);
+ok(widget.includes('Math.sin(rel)')&&widget.includes('Math.cos(rel)'),'crosswind quick-widget math missing');
+ok(widget.includes('Math.tan(3*Math.PI/180)'),'descent quick-widget geometry missing');
 const manifest=JSON.parse(read('site.webmanifest'));ok(manifest.start_url==='/', 'PWA should open at dashboard/home');ok(manifest.shortcuts?.some(x=>x.url==='/flight-training.html'),'PWA training shortcut missing');ok(manifest.shortcuts?.some(x=>x.url==='/?search=1'),'PWA search shortcut missing');
 const robots=read('robots.txt');ok(robots.includes('sitemap-retention.xml'),'robots.txt missing retention sitemap');
 const submit=read('scripts/submit-indexnow.py');ok(submit.includes("glob('sitemap*.xml')"),'IndexNow should collect all sitemap files');
@@ -23,5 +35,6 @@ const c172=read('guides/cessna-172-glide-distance.html');ok(c172.includes('not</
 const avgas=read('guides/avgas-weight-per-gallon.html');ok(avgas.includes('6.01 lb per U.S. gallon at 59°F'),'Avgas guide standard value/source note missing');
 const descent=read('guides/three-degree-descent-rate-chart.html');ok(descent.includes('120 kt')&&descent.includes('637 fpm')&&descent.includes('600 fpm'),'3-degree chart regression value missing');
 const sw=read('sw.js');ok(sw.includes("pilotdesk-v28")&&sw.includes("'/assets/growth-suite.js'"),'service worker not updated for growth suite');
+for(const s of ['/assets/home-command-center.css','/assets/home-command-center.js','/assets/context-widget.js'])ok(sw.includes(s),`service worker missing ${s}`);
 if(failures.length){console.error(`Growth + retention check failed (${failures.length})`);for(const x of failures)console.error(' - '+x);process.exit(1)}
-console.log('Growth + retention smoke check passed: search, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA, and indexing hooks are present.');
+console.log('Growth + retention smoke check passed: search, command-center homepage, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA, and indexing hooks are present.');

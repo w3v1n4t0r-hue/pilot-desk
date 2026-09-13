@@ -8,23 +8,22 @@ for(const p of must)ok(fs.existsSync(p),`Missing ${p}`);
 const growth=read('assets/growth-suite.js');
 for(const needle of ['What are you trying to calculate or study?','Search No Results','pd-recent-weather','pd-saved-flights','Pinned tools','Workspace Open','/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html'])ok(growth.includes(needle),`growth-suite missing ${needle}`);
 const share=read('assets/share-enhance.js');ok(share.includes('data-pd-share-card')||share.includes('pdShareCard'),'Share card missing');ok(!share.includes('applyParams()'),'share-enhance must not duplicate calculator URL hydration');ok(!share.includes("dataset.copyLink='1'"),'share-enhance must not add a second copy-link control');
-const analytics=read('assets/analytics.js');for(const n of ['Calculator Abandoned','Returning Visitor','Search Engine Visit'].filter(()=>false)){} // keep syntax simple
-for(const n of ['Calculator Abandoned','Returning Visitor','External Visit'])ok(analytics.includes(n),`analytics missing ${n}`);ok(analytics.includes('now-last<700'),'analytics event de-duplication missing');
+const analytics=read('assets/analytics.js');for(const n of ['Calculator Abandoned','Returning Visitor','External Visit'])ok(analytics.includes(n),`analytics missing ${n}`);ok(analytics.includes('now-last<700'),'analytics event de-duplication missing');
 const features=read('assets/features.js');ok(features.includes('Pin to dashboard')&&features.includes('★ Pinned'),'calculator pinning copy missing');
 const ads=read('assets/ads.js');ok(ads.includes("!isCalc")&&ads.includes("pilotdesk:calculated"),'ad loading does not protect calculator-first UX');
 const adcfg=read('assets/ad-config.js');ok(adcfg.includes("pathname==='/assets/brand.js'"),'brand loader duplicate-request guard missing');
 const brand=read('assets/brand.js');ok(brand.includes('/assets/growth-suite.js'),'growth suite is not globally loaded');
 for(const s of ['/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-command-center.js','/assets/context-widget.js','pd-home-command-center'])ok(brand.includes(s),`brand.js missing ${s}`);
 const home=read('assets/home-command-center.js');
-for(const s of ['pd-top-search','pd-hero-search','pdHeroWidget','What are you doing today?','Recent & favorite tools','All aviation calculators','pd-home-task'])ok(home.includes(s),`home command center missing ${s}`);
+for(const s of ['pd-top-search','pd-hero-search','pdHeroWidget','What are you doing today?','Pick up where you left off','All aviation calculators','pd-section-kicker'])ok(home.includes(s),`home command center missing ${s}`);
 for(const href of ['/airport.html','/route-planner.html','/flight-planning-workspace.html','/weather.html','/weight-balance.html'])ok(home.includes(href),`home task card missing ${href}`);
 ok(home.includes('openGlobalSearch'),'homepage must route hero/topbar search into universal search');
-const homeCss=read('assets/home-command-center.css');
-ok(homeCss.includes('grid-auto-flow:column')&&homeCss.includes('scroll-snap-type:x mandatory'),'mobile task cards must swipe horizontally');
-ok(homeCss.includes('.pd-task-card.is-active'),'selected task card treatment missing');
+ok(!home.includes('installCardPolish'),'homepage visual polish must not be injected at runtime');
+const homeCss=read('assets/home-command-center.css');ok(homeCss.includes('grid-auto-flow:column')&&homeCss.includes('scroll-snap-type:x mandatory'),'mobile task cards must swipe horizontally');
 const polish=read('assets/home-task-polish.css');
-ok(polish.includes('grid-template-rows:68px auto auto')&&polish.includes('mask-image:url('),'task cards must use the reference-style centered aviation icon layout');
-ok(polish.includes('.pd-task-card.is-active'),'polish layer must neutralize selected task styling');
+ok(polish.includes('grid-template-rows:76px auto auto')&&polish.includes('mask-image:url('),'task cards must use the premium centered aviation icon layout');
+ok(polish.includes('--pd-home-max:1380px')&&polish.includes('backdrop-filter:blur(18px)'),'premium homepage shell/header treatment missing');
+ok(polish.includes('.tool-card:hover'),'calculator library polish missing');
 const widget=read('assets/context-widget.js');
 for(const s of ['crosswindBody','densityBody','weatherBody','wbBody','descentBody','fuelBody','/api/weather?station=','pd-last-context-widget'])ok(widget.includes(s),`context widget missing ${s}`);
 ok(widget.includes('Math.sin(rel)')&&widget.includes('Math.cos(rel)'),'crosswind quick-widget math missing');
@@ -40,4 +39,4 @@ const descent=read('guides/three-degree-descent-rate-chart.html');ok(descent.inc
 const sw=read('sw.js');ok(sw.includes("pilotdesk-v29")&&sw.includes("'/assets/growth-suite.js'")&&sw.includes("'/assets/home-task-polish.css'"),'service worker not updated for growth suite and homepage refresh');
 for(const s of ['/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-command-center.js','/assets/context-widget.js'])ok(sw.includes(s),`service worker missing ${s}`);
 if(failures.length){console.error(`Growth + retention check failed (${failures.length})`);for(const x of failures)console.error(' - '+x);process.exit(1)}
-console.log('Growth + retention smoke check passed: search, command-center homepage, reference-style task cards, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA, and indexing hooks are present.');
+console.log('Growth + retention smoke check passed: search, premium command-center homepage, aviation task cards, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA and indexing hooks are present.');

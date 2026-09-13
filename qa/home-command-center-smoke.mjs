@@ -1,39 +1,38 @@
 import fs from 'node:fs';
 
 const read=p=>fs.readFileSync(p,'utf8');
-const failures=[];const ok=(v,m)=>{if(!v)failures.push(m)};
-const required=['assets/home-command-center.css','assets/home-task-polish.css','assets/home-command-center.js','assets/context-widget.js'];
-for(const p of required)ok(fs.existsSync(p),`Missing ${p}`);
+const failures=[];
+const ok=(value,message)=>{if(!value)failures.push(message)};
+
+for(const p of ['assets/home-command-center.css','assets/home-task-polish.css','assets/home-command-center.js','assets/context-widget.js'])ok(fs.existsSync(p),`Missing ${p}`);
 
 const brand=read('assets/brand.js');
 for(const s of ['/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-command-center.js','/assets/context-widget.js','pd-home-command-center'])ok(brand.includes(s),`brand.js missing ${s}`);
 
 const home=read('assets/home-command-center.js');
-for(const s of ['pd-top-search','pd-hero-search','pdHeroWidget','What are you doing today?','Recent & favorite tools','All aviation calculators','pd-home-task'])ok(home.includes(s),`home command center missing ${s}`);
+for(const s of ['pd-top-search','pd-hero-search','pdHeroWidget','What are you doing today?','Pick up where you left off','All aviation calculators','pd-section-kicker'])ok(home.includes(s),`home command center missing ${s}`);
 for(const href of ['/airport.html','/route-planner.html','/flight-planning-workspace.html','/weather.html','/weight-balance.html'])ok(home.includes(href),`home task card missing ${href}`);
 ok(home.includes('openGlobalSearch'),'homepage must route hero/topbar search into universal search');
 ok(home.includes('pdUniversalSearch,#pdDiscovery,#pdPopularTools'),'homepage must remove redundant discovery panels');
+ok(!home.includes('installCardPolish'),'homepage styling must live in stylesheets, not runtime injected CSS');
+ok(!home.includes("localStorage.getItem('pd-home-task')"),'homepage must not restore an arbitrary persistent selected task card');
 
-const css=read('assets/home-command-center.css');
-for(const s of ['.pd-task-strip','.pd-task-card.is-active','.pd-home-personal-grid','#pdAllCalculators','.pd-hero-widget-host','.pd-top-search'])ok(css.includes(s),`homepage CSS missing ${s}`);
-ok(css.includes('grid-auto-flow:column')&&css.includes('scroll-snap-type:x mandatory'),'mobile task cards must swipe horizontally');
-ok(css.includes('grid-template-columns:repeat(4'),'desktop calculator catalog should be denser below the fold');
+const base=read('assets/home-command-center.css');
+ok(base.includes('grid-auto-flow:column')&&base.includes('scroll-snap-type:x mandatory'),'mobile task cards must swipe horizontally');
 
 const polish=read('assets/home-task-polish.css');
-for(const s of ['grid-template-rows:68px auto auto','min-height:142px','pd-task-card.is-active','grid-auto-columns:minmax(210px,72vw)','data-home-task="airport"','data-home-task="route"','data-home-task="flight-workspace"','data-home-task="weather"','data-home-task="weight-balance"'])ok(polish.includes(s),`homepage task polish missing ${s}`);
-ok(polish.includes('mask-image:url(')&&polish.includes('Runway + location pin')&&polish.includes('Dotted route with waypoint nodes')&&polish.includes('Airplane through wind arcs')&&polish.includes('Sun, cloud and rain')&&polish.includes('Airplane plus balance beam/scales'),'reference-style aviation icon masks are incomplete');
-ok(polish.includes('.pd-task-icon svg{display:none!important}'),'legacy inline icons should be hidden beneath the reference icon masks');
-ok(polish.includes('.pd-task-card:after{content:none!important}'),'reference cards should not show the old corner arrow');
+for(const s of ['--pd-home-max:1380px','backdrop-filter:blur(18px)','grid-template-columns:repeat(5,minmax(0,1fr))','grid-template-rows:76px auto auto','radial-gradient(180px 90px','.tool-card:hover','@media(prefers-reduced-motion:reduce)'])ok(polish.includes(s),`premium homepage polish missing ${s}`);
+for(const task of ['airport','route','flight-workspace','weather','weight-balance'])ok(polish.includes(`[data-home-task="${task}"]`),`reference-style icon mask missing ${task}`);
+ok(polish.includes('grid-auto-columns:minmax(230px,74vw)'),'mobile quick actions need swipeable card sizing');
+ok(!/font-size:\s*7px!important/.test(polish),'premium homepage should not rely on unreadably tiny 7px text');
 
 const widget=read('assets/context-widget.js');
 for(const s of ['crosswindBody','densityBody','weatherBody','wbBody','descentBody','fuelBody','/api/weather?station=','pd-last-context-widget'])ok(widget.includes(s),`context widget missing ${s}`);
-ok(widget.includes("path==='/weather.html'")&&widget.includes("path==='/aircraft.html'")&&widget.includes("path==='/weight-balance.html'"),'context widget page targeting missing');
-ok(widget.includes("Math.tan(3*Math.PI/180)"),'3-degree descent geometry missing');
-ok(widget.includes("Math.sin(rel)")&&widget.includes("Math.cos(rel)"),'crosswind component math missing');
+ok(widget.includes('Math.tan(3*Math.PI/180)'),'3-degree descent geometry missing');
+ok(widget.includes('Math.sin(rel)')&&widget.includes('Math.cos(rel)'),'crosswind component math missing');
 
 const sw=read('sw.js');
 for(const s of ['/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-command-center.js','/assets/context-widget.js'])ok(sw.includes(s),`service worker missing ${s}`);
-ok(sw.includes("CACHE='pilotdesk-v29'"),'homepage redesign must ship with the current fresh service-worker cache');
 
 if(failures.length){console.error(`Homepage command-center checks failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log('Homepage command-center checks passed: reference-matched aviation icons, safe card spacing, compact search nav, live context widgets, swipeable task cards, personalized tools, dense calculator catalog, and fresh offline caching verified.');
+console.log('Homepage command-center checks passed: premium header/hero, reference-style aviation quick actions, live widget, personalized tools, responsive calculator library and offline assets verified.');

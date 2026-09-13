@@ -74,6 +74,8 @@ jobs:
             guides/crosswind-component-chart.html \
             guides/seminole-vmc-study.html \
             guides/three-degree-descent-rate-chart.html
+      - name: Normalize restored article schema
+        run: node scripts/normalize-guide-schema.mjs
       - name: Remove generic guide boilerplate
         run: node scripts/clean-guide-boilerplate.mjs
       - name: Generate canonical sitemap

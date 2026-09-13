@@ -59,6 +59,8 @@ jobs:
         run: node qa/trust-safety-smoke.mjs
       - name: Check public copy tone
         run: node qa/copy-tone.mjs
+      - name: Guard hand-written aviation copy
+        run: node qa/human-copy-smoke.mjs
       - name: Check Google audit regressions
         run: node qa/google-audit.mjs
       - name: Run multi-engine SEO checks

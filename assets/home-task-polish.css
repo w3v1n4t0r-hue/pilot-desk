@@ -78,3 +78,13 @@
 .pd-home-command-center .pd-context-head b,.pd-home-command-center .pd-context-tabs button,.pd-home-command-center .pd-widget-field label,.pd-home-command-center .pd-widget-result small,.pd-home-command-center .pd-widget-note{font-size:11px!important}
 .pd-home-command-center .pd-widget-field input{height:40px!important;font-size:14px!important}
 @media(max-width:600px){.pd-home-command-center .hero .eyebrow{font-size:10px!important}.pd-home-command-center .grid{grid-template-columns:1fr!important}.pd-home-command-center .tool-card{min-height:132px!important;padding:18px!important}.pd-home-command-center .tool-card p{display:block!important;font-size:13px!important}.pd-home-command-center #pdQuickStart .pd-task-card span{font-size:12px!important}}
+
+/* Precision quick-action pictograms */
+.pd-home-command-center #pdQuickStart .pd-task-icon{width:64px!important;height:64px!important;border:1px solid rgba(141,211,255,.18)!important;border-radius:16px!important;background:linear-gradient(145deg,rgba(141,211,255,.08),rgba(255,255,255,.018))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 10px 24px rgba(0,0,0,.28)!important;filter:none!important}
+.pd-home-command-center #pdQuickStart .pd-task-icon:before{display:none!important}
+.pd-home-command-center #pdQuickStart .pd-task-icon svg{display:block!important;width:48px!important;height:48px!important;fill:none;stroke:#e9f2f7;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.pd-home-command-center #pdQuickStart .pd-task-icon .pd-icon-accent{stroke:#8dd3ff}
+.pd-home-command-center #pdQuickStart .pd-task-card:hover .pd-task-icon,.pd-home-command-center #pdQuickStart .pd-task-card:focus-visible .pd-task-icon{border-color:rgba(141,211,255,.42)!important;background:linear-gradient(145deg,rgba(141,211,255,.13),rgba(255,255,255,.025))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 24px rgba(81,163,211,.12)!important}
+.pd-home-command-center #pdQuickStart .pd-task-card:hover .pd-task-icon svg,.pd-home-command-center #pdQuickStart .pd-task-card:focus-visible .pd-task-icon svg{transform:scale(1.04)}
+.pd-home-command-center #pdQuickStart .pd-task-icon svg{transition:transform .18s ease}
+@media(max-width:600px){.pd-home-command-center #pdQuickStart .pd-task-icon{width:60px!important;height:60px!important}.pd-home-command-center #pdQuickStart .pd-task-icon svg{width:44px!important;height:44px!important}}

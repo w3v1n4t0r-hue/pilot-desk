@@ -22,7 +22,8 @@ ok(base.includes('grid-auto-flow:column')&&base.includes('scroll-snap-type:x man
 
 const polish=read('assets/home-task-polish.css');
 for(const s of ['--pd-home-max:1380px','backdrop-filter:blur(18px)','grid-template-columns:repeat(5,minmax(0,1fr))','grid-template-rows:76px auto auto','radial-gradient(180px 90px','.tool-card:hover','@media(prefers-reduced-motion:reduce)'])ok(polish.includes(s),`premium homepage polish missing ${s}`);
-for(const task of ['airport','route','flight-workspace','weather','weight-balance'])ok(polish.includes(`[data-home-task="${task}"]`),`reference-style icon mask missing ${task}`);
+for(const task of ['airport','route','flight-workspace','weather','weight-balance'])ok(home.includes(`data-home-task="${task}"`),`quick-action card missing ${task}`);
+ok(home.includes('const taskIcon=')&&home.includes('pd-icon-accent')&&polish.includes('Precision quick-action pictograms'),'refined quick-action icon system missing');
 ok(polish.includes('grid-auto-columns:minmax(230px,74vw)'),'mobile quick actions need swipeable card sizing');
 ok(!/font-size:\s*7px!important/.test(polish),'premium homepage should not rely on unreadably tiny 7px text');
 

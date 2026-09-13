@@ -35,12 +35,19 @@ function buildHero(){
   document.dispatchEvent(new CustomEvent('pilotdesk:home-widget-ready'));
 }
 
+const taskIcon={
+  airport:'<svg viewBox="0 0 48 48" focusable="false"><path d="M15 41 20 7h8l5 34M18 33h12M19 25h10"/><path class="pd-icon-accent" d="M24 11v5m0 5v5m0 5v5"/></svg>',
+  route:'<svg viewBox="0 0 48 48" focusable="false"><circle cx="10" cy="36" r="3"/><circle cx="38" cy="12" r="3"/><path d="M13 35c7-2 6-10 13-12s6-8 9-9"/><path class="pd-icon-accent" d="m21 17 10 4-5 3-2 5-3-12Z"/></svg>',
+  math:'<svg viewBox="0 0 48 48" focusable="false"><circle cx="24" cy="24" r="16"/><circle cx="24" cy="24" r="3"/><path d="M24 8v8m0 16v8M8 24h8m16 0h8"/><path class="pd-icon-accent" d="m15 33 18-18M15 15l4 4m10 10 4 4"/></svg>',
+  weather:'<svg viewBox="0 0 48 48" focusable="false"><path d="M12 29h24a7 7 0 0 0-1-13.9A11 11 0 0 0 14.5 18 6 6 0 0 0 12 29Z"/><path class="pd-icon-accent" d="M9 35h18m-12 6h24m-6-6h7"/></svg>',
+  balance:'<svg viewBox="0 0 48 48" focusable="false"><path d="M24 7v34M14 41h20M10 13h28"/><path d="m14 13-6 12h12l-6-12Zm20 0-6 12h12l-6-12Z"/><path class="pd-icon-accent" d="M7 25c1 4 4 6 7 6s6-2 7-6m6 0c1 4 4 6 7 6s6-2 7-6"/></svg>'
+};
 function taskMarkup(){return `<div class="pd-quick-head"><div><span class="pd-section-kicker">QUICK START</span><h2>What are you doing today?</h2></div><span>Go straight to the tool you need.</span></div><div class="pd-task-strip">
-<a class="pd-task-card" href="/airport.html" data-pd-launch="airport" data-home-task="airport"><i class="pd-task-icon" aria-hidden="true"></i><b>Airport search</b><span>Runways, weather and procedures</span></a>
-<a class="pd-task-card" href="/route-planner.html" data-pd-launch="route" data-home-task="route"><i class="pd-task-icon" aria-hidden="true"></i><b>Plan a route</b><span>Route, navlog and saved flights</span></a>
-<a class="pd-task-card" href="/flight-planning-workspace.html" data-pd-launch="flight-workspace" data-home-task="flight-workspace"><i class="pd-task-icon" aria-hidden="true"></i><b>Flight math</b><span>Wind, time, fuel and descent</span></a>
-<a class="pd-task-card" href="/weather.html" data-pd-launch="weather" data-home-task="weather"><i class="pd-task-icon" aria-hidden="true"></i><b>Live weather</b><span>METAR, TAF and nearby stations</span></a>
-<a class="pd-task-card" href="/weight-balance.html" data-pd-launch="weight-balance" data-home-task="weight-balance"><i class="pd-task-icon" aria-hidden="true"></i><b>Weight &amp; balance</b><span>Build and save a loading scenario</span></a>
+<a class="pd-task-card" href="/airport.html" data-pd-launch="airport" data-home-task="airport"><i class="pd-task-icon" aria-hidden="true">${taskIcon.airport}</i><b>Airport search</b><span>Runways, weather and procedures</span></a>
+<a class="pd-task-card" href="/route-planner.html" data-pd-launch="route" data-home-task="route"><i class="pd-task-icon" aria-hidden="true">${taskIcon.route}</i><b>Plan a route</b><span>Route, navlog and saved flights</span></a>
+<a class="pd-task-card" href="/flight-planning-workspace.html" data-pd-launch="flight-workspace" data-home-task="flight-workspace"><i class="pd-task-icon" aria-hidden="true">${taskIcon.math}</i><b>Flight math</b><span>Wind, time, fuel and descent</span></a>
+<a class="pd-task-card" href="/weather.html" data-pd-launch="weather" data-home-task="weather"><i class="pd-task-icon" aria-hidden="true">${taskIcon.weather}</i><b>Live weather</b><span>METAR, TAF and nearby stations</span></a>
+<a class="pd-task-card" href="/weight-balance.html" data-pd-launch="weight-balance" data-home-task="weight-balance"><i class="pd-task-icon" aria-hidden="true">${taskIcon.balance}</i><b>Weight &amp; balance</b><span>Build and save a loading scenario</span></a>
 </div>`}
 
 function buildQuickStart(){

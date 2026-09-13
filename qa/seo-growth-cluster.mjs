@@ -43,7 +43,7 @@ const robots=fs.readFileSync('robots.txt','utf8');
 if(!robots.includes('Sitemap: https://www.pilot-desk.com/sitemap-growth.xml'))fail('robots.txt: growth sitemap missing');
 
 const indexnow=fs.readFileSync('scripts/submit-indexnow.py','utf8');
-if(!indexnow.includes("Path('sitemap-growth.xml')"))fail('IndexNow script: growth sitemap missing');
+if(!indexnow.includes("glob('sitemap*.xml')"))fail('IndexNow script: all-sitemap discovery missing');
 
 if(errors.length){console.error('SEO growth cluster check failed:');for(const e of errors)console.error(' - '+e);process.exit(1)}
 console.log(`SEO growth cluster PASS: ${newGuides.length} new guides, glide intent cluster, checkride cluster, growth sitemap and IndexNow coverage verified.`);

@@ -21,7 +21,7 @@ check(sticky.includes('viewport-fit')===false,'sticky app should not rewrite vie
 check(sticky.includes('min-height:46px'),'mobile dock targets should be touch-friendly');
 check(analytics.includes('Tool Opened')&&analytics.includes('Calculation Completed')&&analytics.includes('Save Action')&&analytics.includes('Share Action'),'analytics funnel milestones missing');
 check(analytics.includes('__pdTrackQueue'),'deferred analytics must flush buffered early events');
-for(const forbidden of ['calculator inputs','tail number','passenger'])check(!analytics.toLowerCase().includes(forbidden),'analytics bundle should not contain sensitive-value collection logic');
+check(analytics.includes('blockedKey')&&analytics.includes('query|search|term|text')&&analytics.includes('tailnumber')&&analytics.includes('passenger'),'analytics must discard free-text and personal-value fields before sending events');
 check(ads.includes('ensureManualPlaceholders')&&ads.includes("validSlot('top')")&&ads.includes("validSlot('sidebar')"),'manual AdSense placements are not config-ready');
 check(weather.includes('tafIssueAge')&&weather.includes('tafExpired')&&weather.includes('Check TAF currency.'),'TAF freshness/validity safeguards missing');
 check(weather.includes('pilotdesk:weatherloaded'),'weather analytics should expose only a coarse result event');

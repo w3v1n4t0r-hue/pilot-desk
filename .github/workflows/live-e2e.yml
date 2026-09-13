@@ -2,6 +2,11 @@ name: PilotDesk Live E2E
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'qa/live-e2e.mjs'
+      - '.github/workflows/live-e2e.yml'
   schedule:
     - cron: '23 9 * * *'
 

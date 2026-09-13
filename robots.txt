@@ -3,3 +3,4 @@ Allow: /
 Disallow: /api/
 Sitemap: https://www.pilot-desk.com/sitemap.xml
 Sitemap: https://www.pilot-desk.com/sitemap-growth.xml
+Sitemap: https://www.pilot-desk.com/sitemap-retention.xml

@@ -2,6 +2,18 @@ name: Verify generated calculator and guide pages
 
 on:
   workflow_dispatch:
+  push:
+    branches: [release/growth-retention-all-in-one]
+    paths:
+      - 'scripts/**'
+      - 'assets/calculator-config.js'
+      - 'calculators/**'
+      - 'guides/**'
+      - 'training/**'
+      - 'flight-training.html'
+      - 'sitemap*.xml'
+      - 'robots.txt'
+      - '.github/workflows/generate-calculators.yml'
   pull_request:
     branches: [main]
     paths:
@@ -14,11 +26,14 @@ on:
       - 'assets/calculator-config.js'
       - 'calculators/**'
       - 'guides/**'
-      - 'sitemap.xml'
+      - 'training/**'
+      - 'flight-training.html'
+      - 'sitemap*.xml'
+      - 'robots.txt'
       - '.github/workflows/generate-calculators.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pilotdesk-generated-pages-${{ github.event.pull_request.number || github.ref }}
@@ -41,8 +56,50 @@ jobs:
         run: node scripts/normalize-guide-schema.mjs
       - name: Normalize generated public copy
         run: node scripts/normalize-public-copy.mjs
+      - name: Restore hand-edited aviation pages
+        shell: bash
+        run: |
+          git restore --source=HEAD -- \
+            calculators/glide-range/index.html \
+            flight-training.html \
+            guides/glide-range.html \
+            guides/how-far-can-an-airplane-glide.html \
+            guides/best-glide-speed-vs-glide-ratio.html \
+            guides/emergency-glide-planning.html \
+            guides/checkride-study-guides.html \
+            guides/pilot-checkride-math.html \
+            guides/multiengine-checkride-study-guide.html \
+            guides/critical-engine-multiengine.html \
+            guides/multiengine-vmc-factors.html \
+            guides/vmc-vs-vyse.html \
+            guides/accelerate-stop-accelerate-go.html \
+            guides/feathering-vs-windmilling-propeller.html \
+            guides/identify-verify-feather.html \
+            guides/past-critical-engine.html \
+            guides/single-engine-climb-performance.html \
+            guides/single-engine-service-ceiling.html \
+            guides/vmc-demonstration-explained.html \
+            guides/zero-sideslip-multiengine.html \
+            guides/avgas-weight-per-gallon.html \
+            guides/cessna-172-glide-distance.html \
+            guides/crosswind-component-chart.html \
+            guides/seminole-vmc-study.html \
+            guides/three-degree-descent-rate-chart.html
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
+      - name: Commit refreshed generated output on release branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/release/growth-retention-all-in-one'
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "Generated output is already current."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add calculators guides sitemap.xml robots.txt
+            git commit -m "Refresh generated pages for release"
+            git push origin HEAD:release/growth-retention-all-in-one
+          fi
       - name: Verify generated output is already committed
         shell: bash
         run: |

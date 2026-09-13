@@ -5,6 +5,12 @@ const ok=(condition,message)=>{if(!condition)failures.push(message)};
 const curated=[
   'calculators/glide-range/index.html',
   'flight-training.html',
+  'for-flight-schools.html',
+  'training/private-pilot.html',
+  'training/instrument-rating.html',
+  'training/commercial-pilot.html',
+  'training/multiengine.html',
+  'training/cfi.html',
   'guides/glide-range.html',
   'guides/how-far-can-an-airplane-glide.html',
   'guides/best-glide-speed-vs-glide-ratio.html',
@@ -38,7 +44,12 @@ const boilerplate=[
   /Use this reference as part of a larger planning or training workflow/i,
   /Whether you['’]re a/i,
   /In today['’]s fast[- ]paced/i,
-  /\bHow How\b/i
+  /\bHow How\b/i,
+  /\bunlock (?:the|your)\b/i,
+  /\belevate your\b/i,
+  /\bgame[- ]changing\b/i,
+  /\bnext[- ]level\b/i,
+  /\bultimate guide\b/i
 ];
 
 for(const file of curated){
@@ -47,12 +58,19 @@ for(const file of curated){
   const html=fs.readFileSync(file,'utf8');
   ok(/<h1\b/i.test(html),`${file}: missing H1`);
   ok(/rel=["']canonical["']/i.test(html),`${file}: missing canonical`);
+  ok(/POH|AFM|FAA|approved source|controlling source/i.test(html),`${file}: no visible source/verification boundary`);
   for(const re of boilerplate)ok(!re.test(html),`${file}: generic generated copy matched ${re}`);
 }
 
 const training=fs.readFileSync('flight-training.html','utf8');
 for(const value of ['For instructors','/for-flight-schools.html','/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html']){
   ok(training.includes(value),`flight-training.html: missing ${value}`);
+}
+
+for(const file of ['training/private-pilot.html','training/instrument-rating.html','training/commercial-pilot.html','training/multiengine.html','training/cfi.html']){
+  const html=fs.readFileSync(file,'utf8');
+  ok(/ACS|Airman Certification Standards/i.test(html),`${file}: ACS context missing`);
+  ok(/FAA/i.test(html),`${file}: FAA source context missing`);
 }
 
 const glide=fs.readFileSync('calculators/glide-range/index.html','utf8');
@@ -65,4 +83,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log(`Human-copy smoke passed across ${curated.length} hand-edited aviation pages.`);
+console.log(`Human-copy smoke passed across ${curated.length} hand-edited aviation and training pages.`);

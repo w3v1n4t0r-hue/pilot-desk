@@ -33,12 +33,13 @@ check(wb?.url==='/weight-balance.html','installed-app Weight & Balance shortcut 
 check(flightMath?.url==='/flight-planning-workspace.html','installed app must expose the connected flight-planning workspace');
 check(manifest.launch_handler?.client_mode==='navigate-existing','installed app should reuse an existing app window where supported');
 for(const asset of ['/assets/app-bootstrap.js','/assets/sticky-app.js','/assets/professional-polish.css','/assets/performance.css','/assets/performance.js','/assets/tool-first-layout.js','/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js'])check(sw.includes(`'${asset}'`),`service worker must cache ${asset}`);
-check(sw.includes("CACHE='pilotdesk-v28'"),'service worker cache version should match the growth-and-retention release');
+check(sw.includes("CACHE='pilotdesk-v29'"),'service worker cache version should match the homepage cache refresh release');
 check(sw.includes("'/offline.html'"),'service worker must cache a dedicated offline fallback');
 check(sw.includes('Promise.allSettled'),'precache should tolerate a single optional asset failure');
 check(sw.includes('event.preloadResponse'),'navigation preload should be consumed instead of duplicating a navigation request');
 check(sw.includes('MAX_RUNTIME_ENTRIES'),'runtime cache should be bounded');
 check(sw.includes("if(req.mode==='navigate'){u.search='';"),'navigation cache keys should ignore query-string variants');
+check(sw.includes("'/assets/home-command-center.css'"),'homepage command-center CSS should be network-first');
 check(!sw.includes("fetch('/sitemap.xml'"),'service-worker install should not crawl the whole sitemap');
 
 if(failures.length){
@@ -46,4 +47,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('App bootstrap checks passed: ad-independent features, consolidated preview modules, deferred non-critical work, tool-first layout, bounded PWA cache, navigation preload, and analytics privacy verified.');
+console.log('App bootstrap checks passed: ad-independent features, consolidated preview modules, fresh homepage assets, bounded PWA cache, navigation preload, and analytics privacy verified.');

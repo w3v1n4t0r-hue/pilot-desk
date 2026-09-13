@@ -55,7 +55,7 @@ for(const item of urls){
 const unique=[...byUrl.values()].sort((a,b)=>a.url===SITE+'/'?-1:b.url===SITE+'/'?1:a.url.localeCompare(b.url));
 const esc=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 const xml=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',...unique.map(({url,lastmod})=>`<url><loc>${esc(url)}</loc><lastmod>${lastmod}</lastmod></url>`),'</urlset>'].join('\n');
-fs.writeFileSync('sitemap.xml',xml);
+fs.writeFileSync('sitemap.xml',xml+'\n');
 
 const sitemapFiles=fs.readdirSync('.').filter(name=>/^sitemap(?:-[a-z0-9-]+)?\.xml$/i.test(name)).sort((a,b)=>a==='sitemap.xml'?-1:b==='sitemap.xml'?1:a.localeCompare(b));
 const sitemapLines=sitemapFiles.map(name=>`Sitemap: ${SITE}/${name}`).join('\n');

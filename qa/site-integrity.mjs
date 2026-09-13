@@ -7,7 +7,7 @@ function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){if([
 walk(root);
 const failures=[];
 const manifest=JSON.parse(fs.readFileSync('site.webmanifest','utf8'));
-JSON.parse(fs.readFileSync('vercel.json','utf8'));
+const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
 
 function localExists(url){
   let p=String(url).split('#')[0].split('?')[0];
@@ -35,5 +35,19 @@ for(const file of htmlFiles){
 for(const s of manifest.shortcuts||[])if(!localExists(s.url))failures.push(`site.webmanifest: missing shortcut target ${s.url}`);
 const sitemap=fs.readFileSync('sitemap.xml','utf8');
 for(const m of sitemap.matchAll(/<loc>https:\/\/www\.pilot-desk\.com([^<]*)<\/loc>/g))if(!localExists(m[1]||'/'))failures.push(`sitemap.xml: missing target ${m[1]||'/'}`);
+
+const retiredGuide='guides/pilot-seo-priority.html';
+const publicGuide='guides/popular-aviation-tools.html';
+if(fs.existsSync(retiredGuide))failures.push(`${retiredGuide}: retired internal SEO-named page must not exist`);
+if(!fs.existsSync(publicGuide))failures.push(`${publicGuide}: public popular-tools guide is missing`);
+const redirect=(vercel.redirects||[]).find(r=>r.source==='/guides/pilot-seo-priority.html');
+if(!redirect||redirect.destination!=='/guides/popular-aviation-tools.html'||redirect.permanent!==true){
+  failures.push('vercel.json: retired pilot-seo-priority URL must permanently redirect to popular-aviation-tools');
+}
+const growthSitemap=fs.readFileSync('sitemap-growth.xml','utf8');
+if(sitemap.includes('pilot-seo-priority')||growthSitemap.includes('pilot-seo-priority'))failures.push('sitemaps: retired pilot-seo-priority URL is still indexed');
+if(!sitemap.includes('https://www.pilot-desk.com/guides/popular-aviation-tools.html'))failures.push('sitemap.xml: popular-aviation-tools URL missing');
+if(!growthSitemap.includes('https://www.pilot-desk.com/guides/popular-aviation-tools.html'))failures.push('sitemap-growth.xml: popular-aviation-tools URL missing');
+
 if(failures.length){console.error(`Site integrity failed with ${failures.length} issue(s):`);for(const x of failures.slice(0,100))console.error(' - '+x);process.exit(1)}
-console.log(`Site integrity passed: ${htmlFiles.length} HTML pages, UTF-8 declarations, local links/assets, duplicate IDs, manifest shortcuts, and sitemap targets checked.`);
+console.log(`Site integrity passed: ${htmlFiles.length} HTML pages, UTF-8 declarations, local links/assets, duplicate IDs, manifest shortcuts, sitemap targets, and retired-URL protections checked.`);

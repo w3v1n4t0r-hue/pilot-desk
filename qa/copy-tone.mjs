@@ -8,7 +8,7 @@ const banned=[
   [/\bstreamlin(?:e|ed|es|ing)\b/i,'streamline'],
   [/\bpowerful\b/i,'powerful'],
   [/\bunlock(?:s|ed|ing)?\b/i,'unlock'],
-  [/\belevat(?:e|es|ed|ing)\b/i,'elevate'],
+  [/\belevate your\b/i,'elevate your'],
   [/\bgame[- ]chang(?:er|ing)\b/i,'game-changing'],
   [/\bcutting[- ]edge\b/i,'cutting-edge'],
   [/\brevolutioniz(?:e|es|ed|ing)\b/i,'revolutionize'],

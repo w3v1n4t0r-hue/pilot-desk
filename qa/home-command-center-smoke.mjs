@@ -20,8 +20,10 @@ ok(css.includes('grid-auto-flow:column')&&css.includes('scroll-snap-type:x manda
 ok(css.includes('grid-template-columns:repeat(4'),'desktop calculator catalog should be denser below the fold');
 
 const polish=read('assets/home-task-polish.css');
-for(const s of ['grid-template-columns:38px minmax(0,1fr)','grid-row:1 / span 2','min-height:96px','pd-task-card.is-active','grid-auto-columns:minmax(220px,72vw)'])ok(polish.includes(s),`homepage task polish missing ${s}`);
-ok(!/height:\s*58px/.test(polish),'polished task cards must not restore giant 58px icons');
+for(const s of ['grid-template-rows:68px auto auto','min-height:142px','pd-task-card.is-active','grid-auto-columns:minmax(210px,72vw)','data-home-task="airport"','data-home-task="route"','data-home-task="flight-workspace"','data-home-task="weather"','data-home-task="weight-balance"'])ok(polish.includes(s),`homepage task polish missing ${s}`);
+ok(polish.includes('mask-image:url(')&&polish.includes('Runway + location pin')&&polish.includes('Dotted route with waypoint nodes')&&polish.includes('Airplane through wind arcs')&&polish.includes('Sun, cloud and rain')&&polish.includes('Airplane plus balance beam/scales'),'reference-style aviation icon masks are incomplete');
+ok(polish.includes('.pd-task-icon svg{display:none!important}'),'legacy inline icons should be hidden beneath the reference icon masks');
+ok(polish.includes('.pd-task-card:after{content:none!important}'),'reference cards should not show the old corner arrow');
 
 const widget=read('assets/context-widget.js');
 for(const s of ['crosswindBody','densityBody','weatherBody','wbBody','descentBody','fuelBody','/api/weather?station=','pd-last-context-widget'])ok(widget.includes(s),`context widget missing ${s}`);
@@ -31,7 +33,7 @@ ok(widget.includes("Math.sin(rel)")&&widget.includes("Math.cos(rel)"),'crosswind
 
 const sw=read('sw.js');
 for(const s of ['/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-command-center.js','/assets/context-widget.js'])ok(sw.includes(s),`service worker missing ${s}`);
-ok(sw.includes("CACHE='pilotdesk-v29'"),'homepage redesign must ship with a fresh service-worker cache');
+ok(sw.includes("CACHE='pilotdesk-v29'"),'homepage redesign must ship with the current fresh service-worker cache');
 
 if(failures.length){console.error(`Homepage command-center checks failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log('Homepage command-center checks passed: compact search nav, clean quick-action cards, live context widgets, swipeable task cards, personalized tools, dense calculator catalog, and fresh offline caching verified.');
+console.log('Homepage command-center checks passed: reference-matched aviation icons, safe card spacing, compact search nav, live context widgets, swipeable task cards, personalized tools, dense calculator catalog, and fresh offline caching verified.');

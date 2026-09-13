@@ -19,6 +19,7 @@
     {"name":"Flight Training","short_name":"Training","description":"Private, instrument, commercial, multi-engine, and CFI study hubs.","url":"/flight-training.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Airport Search","short_name":"Airports","description":"Search airports, weather, runways, nearby stations, and FAA procedures.","url":"/airport.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Route Planner","short_name":"Planner","description":"Open the route planner and navlog.","url":"/route-planner.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Flight Planning Workspace","short_name":"Flight Math","description":"Connect wind, groundspeed, time, fuel, and descent planning.","url":"/flight-planning-workspace.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Airport Weather","short_name":"Weather","description":"Open current METAR and TAF reports.","url":"/weather.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Weight & Balance","short_name":"W&B","description":"Open the Weight & Balance Builder.","url":"/weight-balance.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]

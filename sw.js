@@ -1,4 +1,4 @@
-const CACHE='pilotdesk-v29';
+const CACHE='pilotdesk-v30';
 const CORE=[
   '/','/index.html','/offline.html','/404.html','/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html','/flight-training.html',
   '/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html',
@@ -12,7 +12,7 @@ const CORE=[
 const CORE_PATHS=new Set(CORE);
 const MAX_RUNTIME_ENTRIES=140;
 const NETWORK_FIRST_ASSETS=new Set([
-  '/assets/app-bootstrap.js','/assets/brand.js','/assets/home-command-center.js','/assets/home-command-center.css','/assets/home-task-polish.css','/assets/context-widget.js','/assets/tool-first-layout.js','/assets/performance.js','/assets/sticky-app.js','/assets/growth-suite.js','/assets/weather-fixed.js','/assets/weather-extra.js','/assets/analytics.js','/assets/share-enhance.js',
+  '/assets/app-bootstrap.js','/assets/brand.js','/assets/icon.svg','/assets/styles.css','/assets/professional-polish.css','/assets/home-command-center.js','/assets/home-command-center.css','/assets/home-task-polish.css','/assets/context-widget.js','/assets/tool-first-layout.js','/assets/performance.js','/assets/sticky-app.js','/assets/growth-suite.js','/assets/weather-fixed.js','/assets/weather-extra.js','/assets/analytics.js','/assets/share-enhance.js',
   '/assets/product-nav.js','/assets/airport.js','/assets/flights.js','/assets/flight-brief.js','/assets/route-save.js','/assets/aircraft-v2.js',
   '/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js','/assets/poh-chart-studio.js'
 ]);

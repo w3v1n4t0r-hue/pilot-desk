@@ -7,6 +7,7 @@ on:
     paths:
       - '**/*.html'
       - sitemap.xml
+      - sitemap-growth.xml
       - robots.txt
       - assets/app-bootstrap.js
       - assets/seo.js
@@ -45,7 +46,7 @@ jobs:
               if '.git' not in p.parts:
                   files.append(p)
           for name in [
-              'sitemap.xml','robots.txt','assets/app-bootstrap.js','assets/seo.js',
+              'sitemap.xml','sitemap-growth.xml','robots.txt','assets/app-bootstrap.js','assets/seo.js',
               'assets/product-polish.js','assets/runtime-qol.js','assets/tool-first-layout.js',
               'assets/professional-polish.css','assets/performance.css','assets/performance.js'
           ]:

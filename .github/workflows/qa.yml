@@ -65,3 +65,5 @@ jobs:
         run: node qa/multi-engine-seo.mjs
       - name: Run SEO hardening checks
         run: node qa/seo-hardening.mjs
+      - name: Run SEO growth cluster checks
+        run: node qa/seo-growth-cluster.mjs

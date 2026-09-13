@@ -1,0 +1,49 @@
+name: PilotDesk SEO Growth Live
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'guides/**'
+      - 'calculators/glide-range/**'
+      - 'sitemap-growth.xml'
+      - 'robots.txt'
+      - '.github/workflows/seo-growth-live.yml'
+  schedule:
+    - cron: '41 9 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify SEO growth pages are live
+        shell: bash
+        run: |
+          set -euo pipefail
+          urls=(
+            'https://www.pilot-desk.com/calculators/glide-range/'
+            'https://www.pilot-desk.com/guides/glide-range.html'
+            'https://www.pilot-desk.com/guides/how-far-can-an-airplane-glide.html'
+            'https://www.pilot-desk.com/guides/best-glide-speed-vs-glide-ratio.html'
+            'https://www.pilot-desk.com/guides/emergency-glide-planning.html'
+            'https://www.pilot-desk.com/guides/checkride-study-guides.html'
+            'https://www.pilot-desk.com/guides/pilot-checkride-math.html'
+            'https://www.pilot-desk.com/guides/multiengine-checkride-study-guide.html'
+            'https://www.pilot-desk.com/sitemap-growth.xml'
+          )
+          for url in "${urls[@]}"; do
+            code=$(curl -L -sS -o /tmp/pd-body -w '%{http_code}' --retry 3 --retry-delay 3 "$url")
+            echo "$code $url"
+            test "$code" = '200'
+            test -s /tmp/pd-body
+          done
+      - name: Verify robots advertises both sitemaps
+        shell: bash
+        run: |
+          robots=$(curl -fsSL --retry 3 https://www.pilot-desk.com/robots.txt)
+          grep -Fq 'Sitemap: https://www.pilot-desk.com/sitemap.xml' <<<"$robots"
+          grep -Fq 'Sitemap: https://www.pilot-desk.com/sitemap-growth.xml' <<<"$robots"

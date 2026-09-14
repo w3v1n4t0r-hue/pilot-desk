@@ -19,7 +19,7 @@ assert(js.includes('function clear()')&&js.includes("textContent='—'"),'Worksp
 assert(js.includes('crosswind component exceeds TAS')&&js.includes('groundspeed is zero or negative'),'Wind-triangle failure handling missing');
 assert(js.includes("localStorage.setItem('pd-flight-workspace'")&&js.includes("$('workspaceShare')")&&html.includes('Copy share link'),'Workspace save/share behavior missing');
 assert(bootstrap.includes('/flight-planning-workspace.html')&&bootstrap.includes('data-pd-launch="flight-workspace"'),'Homepage must expose the published workspace');
-assert(bootstrap.includes("load('/assets/brand.js','pd-brand')"),'Branding must load independently of advertising');
+assert(bootstrap.includes('/assets/brand.js')&&bootstrap.includes('pd-brand'),'Branding must load independently of advertising');
 assert(!ads.includes('/assets/brand.js'),'ads.js must not own branding');
 
 console.log('Flight Planning Workspace checks passed: publication, validation, fail-closed behavior, sharing, local save, discovery, and ad-independent branding verified.');

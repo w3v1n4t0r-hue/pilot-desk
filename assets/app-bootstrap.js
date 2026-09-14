@@ -37,6 +37,7 @@ const deferLoad=(src,key,timeout=1400)=>ready(()=>afterPaint(()=>idle(()=>load(s
 
 loadStyle('/assets/professional-polish.css','pd-professional-polish');
 loadStyle('/assets/performance.css','pd-performance-css');
+loadStyle('/assets/avionics-ui.css','pd-avionics-ui');
 
 // Keep only visible shell and input-performance behavior on the first-paint path.
 load('/assets/global-nav.js','pd-global-nav');

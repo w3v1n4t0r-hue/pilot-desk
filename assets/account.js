@@ -10,6 +10,7 @@ const initials=s=>String(s||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'')
 const cleanAirport=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
 const redirectUrl=()=>new URL('/account.html',location.origin).href;
 const ownerView=()=>new URL(location.href).searchParams.get('owner')==='1';
+const edgeHeaders=()=>({apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${state.session?.access_token||''}`});
 
 async function loadSupabase(){
   const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
@@ -49,38 +50,37 @@ function renderMetrics(d){
   show('#pdOwnerClaim',false);box.classList.remove('pd-account-hidden');
   $('#pdMetricTotal').textContent=String(d.total??0);
   $('#pdMetricToday').textContent=String(d.today??0);
-  $('#pdMetric7').textContent=String(d.last_7_days??0);
-  $('#pdMetric30').textContent=String(d.last_30_days??0);
+  $('#pdMetric7').textContent=String(d.last7Days??0);
+  $('#pdMetric30').textContent=String(d.last30Days??0);
   const total=Number(d.total||0),milestones=[10,25,50,100,250,500,1000,2500,5000,10000];
   const target=milestones.find(x=>x>total)||Math.ceil((total+1)/10000)*10000;
   $('#pdAccountMilestone').textContent=`${total} / ${target} accounts`;
   $('#pdAccountProgress').style.width=`${Math.min(100,Math.round((total/target)*100))}%`;
-  $('#pdAccountGenerated').textContent=`Updated ${new Date(d.generated_at||Date.now()).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
+  $('#pdAccountGenerated').textContent=`Updated ${new Date(d.generatedAt||Date.now()).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
 }
 
 async function loadOwnerMetrics(){
   const box=$('#pdOwnerMetrics');if(!box||!ownerView()||!state.session){box?.classList.add('pd-account-hidden');return}
   box.classList.remove('pd-account-hidden');
   try{
-    const {data,error}=await state.client.rpc('get_account_growth_metrics');
-    if(error)throw error;
-    const d=Array.isArray(data)?data[0]:data;
-    if(d)renderMetrics(d);
-  }catch(e){
-    show('#pdOwnerClaim',true);
-    $('#pdAccountGenerated').textContent='Owner access required';
-    console.warn('[PilotDesk owner metrics]',e);
-  }
+    const r=await fetch(`${SUPABASE_URL}/functions/v1/owner-metrics`,{headers:edgeHeaders()});
+    const d=await r.json().catch(()=>({}));
+    if(r.status===403){show('#pdOwnerClaim',true);$('#pdAccountGenerated').textContent='Owner access required';return}
+    if(!r.ok)throw new Error(d.error||'Unable to load account metrics.');
+    renderMetrics(d);
+  }catch(e){$('#pdAccountGenerated').textContent='Metrics unavailable';console.warn('[PilotDesk owner metrics]',e)}
 }
 
 async function claimOwnerAccess(e){
   e?.preventDefault();if(!state.session)return;
-  const token=$('#pdOwnerToken')?.value.trim();
-  if(!token)return;
+  const token=$('#pdOwnerToken')?.value.trim();if(!token)return;
   const note=$('#pdOwnerClaimStatus');note.textContent='Checking owner key…';
-  const {data,error}=await state.client.rpc('claim_pilotdesk_admin',{p_token:token});
-  if(error||data!==true){note.textContent='That owner key was not accepted.';return}
-  note.textContent='Owner access confirmed.';$('#pdOwnerToken').value='';await loadOwnerMetrics();
+  try{
+    const r=await fetch(`${SUPABASE_URL}/functions/v1/owner-metrics`,{method:'POST',headers:{...edgeHeaders(),'Content-Type':'application/json'},body:JSON.stringify({claimToken:token})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok){note.textContent=d.error||'That owner key was not accepted.';return}
+    note.textContent='Owner access confirmed.';$('#pdOwnerToken').value='';renderMetrics(d);
+  }catch{note.textContent='Could not claim owner access right now.'}
 }
 
 async function renderSignedIn(session){
@@ -141,7 +141,7 @@ async function deleteAccount(){
   if(!confirm('Delete this PilotDesk account permanently? This cannot be undone.'))return;
   status('Deleting your account…');
   try{
-    const r=await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${state.session.access_token}`}});
+    const r=await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:edgeHeaders()});
     const d=await r.json().catch(()=>({}));
     if(!r.ok)return status(d.error||'Unable to delete your account.','bad');
     await state.client.auth.signOut({scope:'local'}).catch(()=>{});

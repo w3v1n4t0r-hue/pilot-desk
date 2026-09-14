@@ -1,0 +1,1 @@
+Homepage UI fix: reserve vertical space for the avionics tool-code rail so calculator titles cannot render underneath it, and replace the over-detailed quick-action instrument artwork with simple line symbols. The regression check is wired into PilotDesk QA.

@@ -68,11 +68,19 @@ jobs:
         run: |
           git restore --source=HEAD -- \
             calculators/glide-range/index.html \
+            calculators/crosswind/index.html \
+            calculators/density-altitude/index.html \
+            calculators/pivotal-altitude/index.html \
+            calculators/three-degree-descent/index.html \
             flight-training.html \
             guides/glide-range.html \
             guides/how-far-can-an-airplane-glide.html \
             guides/best-glide-speed-vs-glide-ratio.html \
             guides/emergency-glide-planning.html \
+            guides/crosswind-component.html \
+            guides/density-altitude.html \
+            guides/pivotal-altitude.html \
+            guides/three-degree-descent.html \
             guides/checkride-study-guides.html \
             guides/pilot-checkride-math.html \
             guides/multiengine-checkride-study-guide.html \

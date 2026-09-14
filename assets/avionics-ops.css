@@ -24,7 +24,8 @@ input[type="number"],input[inputmode="decimal"],.pd-num{
 }
 
 /* Utility header controls */
-.topbar{position:sticky!important;top:0!important;z-index:120!important}
+body{padding-top:52px!important}
+.topbar{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;height:52px!important;z-index:120!important}
 .topbar .pd-utility-nav{display:flex;align-items:center;gap:15px;margin-left:auto}
 .topbar .pd-utility-nav a{
   padding:5px 0!important;border:0!important;border-radius:0!important;background:transparent!important;

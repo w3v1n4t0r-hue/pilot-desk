@@ -35,6 +35,8 @@ jobs:
         run: node qa/app-bootstrap-smoke.mjs
       - name: Run professional visual polish checks
         run: node qa/professional-polish-smoke.mjs
+      - name: Run unified UI checks
+        run: node qa/unified-ui-smoke.mjs
       - name: Check homepage card visibility and icons
         run: node scripts/check-home-card-regression.js
       - name: Run tool-first optimization checks

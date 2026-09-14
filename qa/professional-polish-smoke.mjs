@@ -4,6 +4,10 @@ const read=p=>fs.readFileSync(p,'utf8');
 const css=read('assets/professional-polish.css');
 const architecture=read('assets/avionics-architecture.css');
 const architectureJs=read('assets/avionics-architecture.js');
+const opsCss=read('assets/avionics-ops.css');
+const command=read('assets/avionics-command.js');
+const strip=read('assets/flight-strip-export.js');
+const crosswind=read('assets/crosswind-mfd.js');
 const bootstrap=read('assets/app-bootstrap.js');
 const brand=read('assets/brand.js');
 const sw=read('sw.js');
@@ -33,12 +37,29 @@ for(const sentinel of ['height:52px!important','.pd-panel-header','height:42px!i
 for(const sentinel of ['PILOT DESK','DESK // OPS','FLIGHT COMPUTER // OUTPUT','COPY DATA','pd-density-toggle','setInterval(tick,1000)','button.click()']){
   check(architectureJs.includes(sentinel),`avionics behavior missing ${sentinel}`);
 }
+
+/* Flight-desk controls from the second avionics pass. */
+for(const sentinel of ['input[type="number"]::-webkit-inner-spin-button','.pd-command-backdrop','.pd-time-stack','.pd-search-trigger','.pd-flight-strip-copy','.pd-crosswind-display','.pd-xwind-svg']){
+  check(opsCss.includes(sentinel),`avionics ops stylesheet missing ${sentinel}`);
+}
+for(const sentinel of ['[OPS // v1.0]','Ctrl K','Type a tool, abbreviation, or calculation','Crosswind & Headwind Component','Pressure & Density Altitude','inputMode=\'decimal\'','setInterval(tick,1000)']){
+  check(command.includes(sentinel),`command/header behavior missing ${sentinel}`);
+}
+for(const sentinel of ['COPY FLIGHT STRIP','✓ COPIED TO SCRATCHPAD','navigator.clipboard.writeText','CALC: CROSSWIND COMPONENT // PILOT DESK','TIMESTAMP:']){
+  check(strip.includes(sentinel),`flight-strip export missing ${sentinel}`);
+}
+for(const sentinel of ['RUNWAY / WIND VECTOR','data-runway-group','data-wind-group','gustSpeed','Math.sin(rad)','Math.cos(rad)','15 KTS IS NOT A UNIVERSAL AIRCRAFT LIMIT']){
+  check(crosswind.includes(sentinel),`crosswind MFD missing ${sentinel}`);
+}
 check(brand.includes("/assets/avionics-architecture.css")&&brand.includes("/assets/avionics-architecture.js"),'brand loader must install avionics architecture globally');
-check(sw.includes("'/assets/avionics-architecture.css'")&&sw.includes("'/assets/avionics-architecture.js'"),'avionics architecture must be cached/network-first for installed use');
+for(const asset of ['/assets/avionics-ops.css','/assets/avionics-command.js','/assets/flight-strip-export.js','/assets/crosswind-mfd.js']){
+  check(brand.includes(asset),`brand loader missing ${asset}`);
+  check(sw.includes(`'${asset}'`),`service worker missing ${asset}`);
+}
 
 if(failures.length){
   console.error(`Professional polish checks failed with ${failures.length} issue(s):`);
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Professional polish checks passed: visual layer is isolated, responsive, accessible, instrumentation-grade, cached, and protected against generic UI regressions.');
+console.log('Professional polish checks passed: visual layer is isolated, responsive, accessible, command-driven, scratchpad-ready, instrumentation-grade, cached, and protected against generic UI regressions.');

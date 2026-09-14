@@ -26,12 +26,16 @@ for(const [file,max] of Object.entries(budgets)){
 }
 
 const bootstrap=fs.readFileSync('assets/app-bootstrap.js','utf8');
-for(const deferred of ['seo.js','errors.js','analytics.js','product-polish.js','runtime-qol.js','pilotdesk-plus.js','update.js']){
+/* Network/analytics/product extras that do not define the visible shell stay deferred. */
+for(const deferred of ['seo.js','errors.js','analytics.js','pilotdesk-plus.js','update.js']){
   check(bootstrap.includes(`deferLoad('/assets/${deferred}'`),`${deferred} should stay off the first-paint path`);
 }
-for(const eager of ['global-nav.js','brand.js','theme.js','performance.js','tool-first-layout.js']){
-  check(bootstrap.includes(`load('/assets/${eager}'`),`${eager} should remain in the visible-shell path`);
+/* Anything that visibly rearranges or restyles the shell must settle behind the boot gate,
+   otherwise the page paints an obsolete intermediate version and visibly changes afterward. */
+for(const eager of ['global-nav.js','brand.js','theme.js','performance.js','tool-first-layout.js','product-polish.js','runtime-qol.js']){
+  check(bootstrap.includes(`/assets/${eager}`),`${eager} should be owned by the guarded visible-shell boot`);
 }
+check(bootstrap.includes('pd-ui-booting')&&bootstrap.includes('Promise.allSettled(jobs)'),'visible-shell work must remain behind the flash-prevention boot gate');
 
 const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
 check(vercel.ignoreCommand==='bash scripts/vercel-ignore-build.sh','Vercel ignored-build step must protect deployment quota');
@@ -43,4 +47,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Performance budget passed: core assets remain bounded, non-critical modules stay deferred, HTML revalidates, and deployment quota protection is configured.');
+console.log('Performance budget passed: assets remain bounded, nonvisual work stays deferred, visible mutations settle before reveal, HTML revalidates, and deployment quota protection is configured.');

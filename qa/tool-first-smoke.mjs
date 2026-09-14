@@ -22,7 +22,7 @@ check(perfJs.includes("rel='prefetch'")&&perfJs.includes('saveData'),'fast conne
 check(bootstrap.includes("load('/assets/tool-first-layout.js','pd-tool-first')"),'tool-first layout must load from app bootstrap');
 check(bootstrap.includes("load('/assets/performance.js','pd-performance')"),'performance helper must load from app bootstrap');
 check(index.includes('id="toolSearch"')&&index.includes('section class="category"'),'homepage must retain the original search and calculator inventory');
-check(calculator.includes('data-calculate')&&calculator.includes('data-pd-seo-depth'),'calculator must retain both operational controls and reference content');
+check(calculator.includes('data-calculate')&&calculator.includes('class="info-card"')&&calculator.includes('class="formula"'),'calculator must retain operational controls plus visible reference and formula content');
 check(vercel.git?.deploymentEnabled?.main===true&&vercel.git?.deploymentEnabled?.['*']===false,'optimization branches must not spend Vercel deployments');
 
 if(failures.length){console.error(`Tool-first optimization checks failed with ${failures.length} issue(s):`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}

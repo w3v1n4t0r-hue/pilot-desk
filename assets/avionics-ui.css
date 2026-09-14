@@ -1,0 +1,272 @@
+/* PilotDesk precision avionics interface
+   Presentation only: no calculator logic or form behavior lives here. */
+:root{
+  --bg:#09090b!important;
+  --bg2:#0c0d0e!important;
+  --panel:#111216!important;
+  --panel2:#15161a!important;
+  --panel3:#18191d!important;
+  --text:#fafafa!important;
+  --muted:#a1a1aa!important;
+  --muted2:#71717a!important;
+  --line:#27272a!important;
+  --line-hi:#3f3f46!important;
+  --silver:#e4e4e7!important;
+  --silver2:#a1a1aa!important;
+  --shadow:none!important;
+  --pd-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
+html{background:#09090b!important}
+body{
+  background:#09090b!important;
+  background-image:none!important;
+  color:#fafafa!important;
+  font-family:Inter,Geist,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+
+/* Structural shell */
+.topbar{
+  background:#0b0c0e!important;
+  border-bottom:1px solid #27272a!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+.topbar nav a{color:#a1a1aa!important;letter-spacing:.015em}
+.topbar nav a:hover,.topbar nav a[aria-current="page"]{color:#fafafa!important}
+.brandmark{border-radius:4px!important;box-shadow:none!important}
+.brand small{font-family:var(--pd-mono)!important;letter-spacing:.18em!important;color:#71717a!important}
+
+/* Remove soft SaaS styling. */
+.tool-card,.calc-box,.info-card,.side-card,.trust-row,.recent-chip,.ad-slot,
+.pd-card,.pd-panel,.pd-hub-card,.pd-flight-card,.pd-context-widget,
+.pd-home-personal-grid .recent-section,#pdHomePersonal{
+  box-shadow:none!important;
+}
+.tool-card,.calc-box,.info-card,.side-card,.ad-slot,.pd-card,.pd-panel,.pd-hub-card,.pd-flight-card{
+  border-radius:5px!important;
+}
+.trust-row,#pdHomePersonal{border-radius:5px!important}
+.recent-chip,.source-links a,.calc-actions button,.utility-btn,.badge,.safety-strip,.notice{border-radius:4px!important}
+
+/* Cards: flat technical modules, not floating feature tiles. */
+.tool-card{
+  background:#101114!important;
+  border:1px solid #29292d!important;
+  min-height:108px!important;
+  transition:border-color .12s ease,background-color .12s ease!important;
+}
+.tool-card:before{
+  opacity:1!important;
+  left:0!important;
+  right:0!important;
+  width:auto!important;
+  background:#3f3f46!important;
+}
+.tool-card:after{display:none!important}
+.tool-card:hover,.tool-card:focus-visible{
+  transform:none!important;
+  border-color:#52525b!important;
+  background:#141519!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)!important;
+}
+.tool-card b{color:#fafafa!important;font-weight:650!important}
+.tool-card p{color:#8f8f98!important}
+
+/* Section labels resemble panel legends. */
+.category-head{border-bottom:1px solid #242428;padding-bottom:9px!important}
+.category-head h2,.pd-all-head h2{letter-spacing:-.015em!important}
+.category-head span,.pd-section-kicker,.eyebrow,.badge,.ad-label{
+  font-family:var(--pd-mono)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.13em!important;
+}
+.category-head span,.pd-section-kicker{color:#71717a!important}
+
+/* Search controls */
+.search input,.pd-top-search input,.pd-hero-search input{
+  background:#0d0e11!important;
+  color:#fafafa!important;
+  border:1px solid #34343a!important;
+  border-radius:4px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+.search input:focus,.pd-top-search input:focus,.pd-hero-search input:focus{
+  border-color:#71717a!important;
+  box-shadow:0 0 0 2px rgba(228,228,231,.08)!important;
+}
+.search input::placeholder,.pd-top-search input::placeholder,.pd-hero-search input::placeholder{color:#62626b!important}
+.pd-hero-search button{
+  background:#15161a!important;
+  border:1px solid #3f3f46!important;
+  border-radius:3px!important;
+  color:#d4d4d8!important;
+  box-shadow:none!important;
+  font-family:var(--pd-mono)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.08em!important;
+}
+
+/* Calculator instrument panel */
+.calc-box{
+  background:#101114!important;
+  background-image:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px)!important;
+  background-size:28px 28px!important;
+  border:1px solid #34343a!important;
+  padding:22px!important;
+}
+.calc-box:before{
+  left:0!important;
+  right:0!important;
+  height:1px!important;
+  background:#52525b!important;
+  opacity:.65!important;
+}
+.field label,.pd-widget-field label,.wb-head{
+  color:#a1a1aa!important;
+  font-family:var(--pd-mono)!important;
+  font-size:9px!important;
+  font-weight:600!important;
+  letter-spacing:.11em!important;
+  text-transform:uppercase!important;
+}
+.input-wrap{
+  background:#090a0c!important;
+  border:1px solid #34343a!important;
+  border-radius:4px!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.45)!important;
+}
+.input-wrap:focus-within{
+  border-color:#71717a!important;
+  box-shadow:0 0 0 2px rgba(228,228,231,.07),inset 0 1px 2px rgba(0,0,0,.45)!important;
+}
+.input-wrap input,.field input,.field select,.wb-row input,.pd-widget-field input,
+input[type="number"],input[inputmode="decimal"]{
+  font-family:var(--pd-mono)!important;
+  font-variant-numeric:tabular-nums slashed-zero!important;
+  font-feature-settings:"tnum" 1,"zero" 1!important;
+  letter-spacing:-.025em!important;
+}
+.input-wrap span{
+  background:#121317!important;
+  border-left:1px solid #34343a!important;
+  color:#8b8b94!important;
+  font-family:var(--pd-mono)!important;
+  font-size:9px!important;
+  font-weight:600!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+.calc-btn{
+  background:#191a1f!important;
+  color:#fafafa!important;
+  border:1px solid #52525b!important;
+  border-radius:4px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important;
+  font-family:var(--pd-mono)!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  letter-spacing:.1em!important;
+  text-transform:uppercase!important;
+}
+.calc-btn:hover{filter:none!important;background:#202126!important;border-color:#71717a!important}
+
+/* Numeric output readouts */
+.results{gap:8px!important}
+.result{
+  background:#0b0c0e!important;
+  border:1px solid #2e2e33!important;
+  border-radius:4px!important;
+  position:relative!important;
+}
+.result:before{
+  content:'';
+  position:absolute;
+  top:7px;
+  right:7px;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#71717a;
+  opacity:.55;
+}
+.result.primary{
+  background:#111216!important;
+  border-color:#52525b!important;
+}
+.result small,.pd-widget-result small{
+  color:#7f7f89!important;
+  font-family:var(--pd-mono)!important;
+  font-size:8px!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+}
+.result strong,.result.primary strong,.pd-widget-result strong,
+.pd-readout,[data-readout],output{
+  color:#fafafa!important;
+  background:none!important;
+  -webkit-text-fill-color:initial!important;
+  font-family:var(--pd-mono)!important;
+  font-variant-numeric:tabular-nums slashed-zero!important;
+  font-feature-settings:"tnum" 1,"zero" 1!important;
+  letter-spacing:-.045em!important;
+}
+.result.primary strong{font-size:28px!important}
+
+/* Reference/data panels */
+.info-card,.side-card{
+  background:#0f1013!important;
+  border:1px solid #29292d!important;
+}
+.info-card h2,.side-card h3{color:#e4e4e7!important}
+.formula,pre,code,kbd,.pd-widget-raw{
+  font-family:var(--pd-mono)!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.formula{
+  background:#090a0c!important;
+  border:1px solid #303036!important;
+  border-radius:4px!important;
+  color:#d4d4d8!important;
+}
+.source-links a,.related a,.calc-actions button,.utility-btn{
+  background:#0c0d0f!important;
+  border-color:#303036!important;
+  color:#a1a1aa!important;
+}
+.source-links a:hover,.related a:hover,.calc-actions button:hover,.utility-btn:hover{
+  border-color:#52525b!important;
+  color:#fafafa!important;
+}
+.notice{background:#0b0c0e!important;border-left:1px solid #52525b!important;color:#8b8b94!important}
+.safety-strip{background:#0b0c0e!important;border-color:#29292d!important}
+
+/* Tables and technical data */
+.source-table,.wb-table,table{font-variant-numeric:tabular-nums}
+.source-table th,.wb-head,th{font-family:var(--pd-mono)!important;letter-spacing:.07em}
+.wb-row input{background:#090a0c!important;border-radius:4px!important}
+
+/* Chips and messages should not look like pills. */
+.toast,.pd-widget-status,.pd-all-count{
+  border-radius:4px!important;
+  box-shadow:none!important;
+  font-family:var(--pd-mono)!important;
+  letter-spacing:.04em!important;
+}
+.badge{background:#101114!important;border-color:#3f3f46!important;color:#a1a1aa!important}
+
+/* Remove decorative motion that makes the product feel promotional. */
+.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card{transform:none}
+@media (prefers-reduced-motion:no-preference){
+  .tool-card:hover,.pd-card:hover,.pd-hub-card:hover,.pd-flight-card:hover{transform:none!important}
+}
+
+/* Mobile remains dense but touch-safe. */
+@media(max-width:600px){
+  .calc-box{padding:16px!important;background-size:24px 24px!important}
+  .result.primary strong{font-size:24px!important}
+  .input-wrap input{min-height:44px}
+}

@@ -17,7 +17,7 @@ gate.textContent='html.pd-ui-booting body{visibility:hidden!important}';
 document.head.appendChild(gate);
 let opened=false;
 const openGate=()=>{if(opened)return;opened=true;const show=()=>requestAnimationFrame(()=>{root.classList.remove('pd-ui-booting');root.classList.add('pd-ui-ready');gate.remove()});document.readyState==='loading'?document.addEventListener('DOMContentLoaded',show,{once:true}):show()};
-const failOpen=setTimeout(openGate,1600);
+const failOpen=setTimeout(openGate,2000);
 
 try{const saved=localStorage.getItem('pd-theme'),valid=new Set(['system','light','dark','night-red']),mode=valid.has(saved)?saved:'dark',resolved=mode==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):mode;root.dataset.pdTheme=resolved;root.style.colorScheme=resolved==='light'?'light':'dark'}catch{}
 window.__pdTrackQueue=Array.isArray(window.__pdTrackQueue)?window.__pdTrackQueue:[];
@@ -38,8 +38,9 @@ loadStyle('/assets/avionics-architecture.css','pd-avionics-architecture-css');
 loadStyle('/assets/avionics-ops.css','pd-avionics-ops-css');
 if(isHome){loadStyle('/assets/home-task-polish.css','pd-home-task-polish');loadStyle('/assets/home-command-center.css','pd-home-command-css');loadStyle('/assets/home-avionics-final.css','pd-home-avionics-final')}
 
+/* Anything that can add, move, restyle, or replace visible UI settles before reveal. */
 for(const [src,key] of [
- ['/assets/global-nav.js','pd-global-nav'],['/assets/brand.js','pd-brand'],['/assets/theme.js','pd-theme'],['/assets/performance.js','pd-performance'],['/assets/tool-first-layout.js','pd-tool-first'],['/assets/avionics-architecture.js','pd-avionics-architecture-js'],['/assets/avionics-command.js','pd-avionics-command-js'],['/assets/flight-strip-export.js','pd-flight-strip-export-js'],['/assets/crosswind-mfd.js','pd-crosswind-mfd-js'],['/assets/context-widget.js','pd-context-widget'],['/assets/product-polish.js','pd-polish'],['/assets/runtime-qol.js','pd-qol']
+ ['/assets/global-nav.js','pd-global-nav'],['/assets/brand.js','pd-brand'],['/assets/theme.js','pd-theme'],['/assets/performance.js','pd-performance'],['/assets/tool-first-layout.js','pd-tool-first'],['/assets/avionics-architecture.js','pd-avionics-architecture-js'],['/assets/avionics-command.js','pd-avionics-command-js'],['/assets/flight-strip-export.js','pd-flight-strip-export-js'],['/assets/crosswind-mfd.js','pd-crosswind-mfd-js'],['/assets/context-widget.js','pd-context-widget'],['/assets/product-polish.js','pd-polish'],['/assets/runtime-qol.js','pd-qol'],['/assets/growth-suite.js','pd-growth-suite'],['/assets/sticky-app.js','pd-sticky-app'],['/assets/pilotdesk-plus.js','pd-plus']
 ])load(src,key,true);
 if(isHome)load('/assets/home-command-center.js','pd-home-command',true);
 if(isCalculator){load('/assets/features.js','pd-features',true);load('/assets/share-enhance.js','pd-share',true);load('/assets/calculator-ux.js','pd-calc-ux',true)}
@@ -47,13 +48,18 @@ if(isCalculator||isGuide)load('/assets/preview-harvest.js','pd-preview-harvest',
 if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline',true);
 if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export',true);
 if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js','pd-aircraft-transfer',true);load('/assets/aircraft-training.js','pd-aircraft-training',true)}
-Promise.allSettled(jobs).then(()=>{clearTimeout(failOpen);openGate()});
+if(path==='/route-planner.html'){load('/assets/planner-pro.js','pd-planner-pro',true);load('/assets/flight-library.js','pd-flight-library',true)}
+if(path==='/procedures.html')load('/assets/procedure-pro.js','pd-procedure-pro',true);
+if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js','pd-trainer-pro',true);
 
-/* Non-visual/heavier helpers stay off the first paint path. */
-if(path==='/route-planner.html'){deferLoad('/assets/planner-pro.js','pd-planner-pro',500);deferLoad('/assets/flight-library.js','pd-flight-library',700)}
-if(path==='/procedures.html')deferLoad('/assets/procedure-pro.js','pd-procedure-pro',600);
-if(path==='/checklist-trainer.html')deferLoad('/assets/trainer-pro.js','pd-trainer-pro',600);
-deferLoad('/assets/seo.js','pd-seo',350);deferLoad('/assets/errors.js','pd-errors',450);deferLoad('/assets/analytics.js','pd-analytics',650);deferLoad('/assets/sticky-app.js','pd-sticky-app',1100);deferLoad('/assets/pilotdesk-plus.js','pd-plus',1400);deferLoad('/assets/update.js','pd-update',2200);
+/* Give critical modules one short event-loop turn to finish their own tiny UI timers. */
+Promise.allSettled(jobs).then(()=>setTimeout(()=>{clearTimeout(failOpen);openGate()},120));
+
+/* Truly nonvisual helpers stay off the first-paint path. */
+deferLoad('/assets/seo.js','pd-seo',350);
+deferLoad('/assets/errors.js','pd-errors',450);
+deferLoad('/assets/analytics.js','pd-analytics',650);
+deferLoad('/assets/update.js','pd-update',2200);
 
 const canonicalWeightBalance='/weight-balance.html';
 function repairLegacyLinks(){document.querySelectorAll('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]').forEach(a=>a.href=canonicalWeightBalance)}

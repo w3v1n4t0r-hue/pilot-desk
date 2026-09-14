@@ -1,6 +1,6 @@
 # PilotDesk account setup
 
-PilotDesk accounts use Supabase Auth + Postgres. The browser receives only the public Supabase URL and anon key. The service-role key stays server-side in Vercel Functions.
+PilotDesk accounts use Supabase Auth + Postgres. The browser receives only the public Supabase URL and publishable/anon key. The service-role key stays server-side in Vercel Functions.
 
 ## 1. Database
 
@@ -33,11 +33,12 @@ Set the Site URL to the canonical production origin.
 Set these only in project environment settings. Never commit them to GitHub.
 
 - `SUPABASE_URL` — Supabase project URL
-- `SUPABASE_ANON_KEY` — public anon/publishable key
-- `SUPABASE_SERVICE_ROLE_KEY` — server-only service role key
+- `SUPABASE_PUBLISHABLE_KEY` — preferred public browser-safe key
+- `SUPABASE_ANON_KEY` — supported fallback for projects still using the legacy anon key
+- `SUPABASE_SERVICE_ROLE_KEY` — server-only service role key; never expose it to browser code
 - `PILOTDESK_ADMIN_EMAIL` — email allowed to view the private account-growth panel
 
-`PILOTDESK_ADMIN_EMAILS` may be used instead for a comma-separated list of owner/admin emails.
+`PILOTDESK_ADMIN_EMAILS` may be used instead for a comma-separated list of owner/admin emails. Configure either `SUPABASE_PUBLISHABLE_KEY` or `SUPABASE_ANON_KEY`; the app prefers the publishable key when both exist.
 
 ## 4. Owner metrics
 
@@ -68,4 +69,4 @@ Before merging to `main`:
 7. Confirm one user cannot read or edit another user's rows.
 8. Confirm the owner metrics panel is invisible to normal users.
 9. Confirm account deletion removes the auth user and cascades profile data.
-10. Update public privacy/terms copy before production if account sync is enabled.
+10. Verify the published privacy and terms pages match the enabled account features.

@@ -26,16 +26,18 @@ for(const [file,max] of Object.entries(budgets)){
 }
 
 const bootstrap=fs.readFileSync('assets/app-bootstrap.js','utf8');
-/* Network/analytics/product extras that do not define the visible shell stay deferred. */
-for(const deferred of ['seo.js','errors.js','analytics.js','pilotdesk-plus.js','update.js']){
+/* Only work that cannot change the rendered shell is allowed after first reveal. */
+for(const deferred of ['seo.js','errors.js','analytics.js','update.js']){
   check(bootstrap.includes(`deferLoad('/assets/${deferred}'`),`${deferred} should stay off the first-paint path`);
 }
-/* Anything that visibly rearranges or restyles the shell must settle behind the boot gate,
-   otherwise the page paints an obsolete intermediate version and visibly changes afterward. */
-for(const eager of ['global-nav.js','brand.js','theme.js','performance.js','tool-first-layout.js','product-polish.js','runtime-qol.js']){
+/* Anything that adds, moves, restyles, or replaces visible UI must settle behind the gate.
+   That costs a little startup work, but prevents PilotDesk from visibly cycling through versions. */
+for(const eager of ['global-nav.js','brand.js','theme.js','performance.js','tool-first-layout.js','product-polish.js','runtime-qol.js','growth-suite.js','sticky-app.js','pilotdesk-plus.js']){
   check(bootstrap.includes(`/assets/${eager}`),`${eager} should be owned by the guarded visible-shell boot`);
+  check(!bootstrap.includes(`deferLoad('/assets/${eager}'`),`${eager} must not mutate the interface after reveal`);
 }
 check(bootstrap.includes('pd-ui-booting')&&bootstrap.includes('Promise.allSettled(jobs)'),'visible-shell work must remain behind the flash-prevention boot gate');
+check(bootstrap.includes('setTimeout(()=>{clearTimeout(failOpen);openGate()},120)'),'visible modules need the short stabilization turn before reveal');
 
 const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
 check(vercel.ignoreCommand==='bash scripts/vercel-ignore-build.sh','Vercel ignored-build step must protect deployment quota');
@@ -47,4 +49,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Performance budget passed: assets remain bounded, nonvisual work stays deferred, visible mutations settle before reveal, HTML revalidates, and deployment quota protection is configured.');
+console.log('Performance budget passed: assets stay bounded, nonvisual work stays deferred, every visible mutation settles before reveal, HTML revalidates, and deployment quota protection is configured.');

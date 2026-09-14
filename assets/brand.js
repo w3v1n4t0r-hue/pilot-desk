@@ -9,6 +9,7 @@ const addScript=(src,key)=>{if([...document.scripts].some(s=>{try{return new URL
 addStyle('/assets/avionics-ui.css','pdAvionicsUi');
 if(home)addStyle('/assets/home-task-polish.css','pdHomeTaskPolish');
 addStyle('/assets/home-command-center.css','pdHomeCommandCss');
+if(home)addStyle('/assets/home-avionics-final.css','pdHomeAvionicsFinal');
 if(home){document.documentElement.classList.add('pd-home-command-center');addScript('/assets/home-command-center.js','pdHomeCommand')}
 addScript('/assets/context-widget.js','pdContextWidget');
 

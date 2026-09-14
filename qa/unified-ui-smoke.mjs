@@ -23,9 +23,8 @@ requireText(css,'.pd-hero-search input','unified-ui.css');
 requireText(css,'border-radius:var(--pd-ui-radius-sm)!important','unified-ui.css');
 requireText(css,'background-image:none!important','unified-ui.css');
 
-/* styles.css is now a tiny canonical entry point. Every ordinary HTML page already
-   references it, so static guides/legal/content pages receive the exact same UI
-   contract without needing page-specific JavaScript. */
+/* styles.css is the canonical entry point for the whole site: existing layout
+   first, unified component contract second. */
 requireText(baseEntry,'@import url("/assets/styles-legacy.css");','styles.css');
 requireText(baseEntry,'@import url("/assets/unified-ui.css");','styles.css');
 if(baseEntry.indexOf('styles-legacy.css')>baseEntry.indexOf('unified-ui.css')){
@@ -56,18 +55,39 @@ function walk(dir){
   return out;
 }
 
+const finalizerScripts=[
+  '/assets/app-bootstrap.js',
+  '/assets/safety.js',
+  '/assets/product-nav.js',
+  '/assets/global-nav.js',
+  '/assets/site.js'
+];
 const uncovered=[];
+const lateCssWithoutFinalizer=[];
 for(const file of walk(root)){
   const rel=path.relative(root,file).replaceAll(path.sep,'/');
   const html=fs.readFileSync(file,'utf8');
   const hasCanonicalBase=html.includes('/assets/styles.css');
   const hasDirectUnified=html.includes('/assets/unified-ui.css');
-  if(!hasCanonicalBase&&!hasDirectUnified)uncovered.push(rel);
+  if(!hasCanonicalBase&&!hasDirectUnified){uncovered.push(rel);continue}
+
+  const cssRefs=[...html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi)].map(m=>m[1]);
+  const baseIndex=cssRefs.findIndex(x=>x.split('?')[0]==='/assets/styles.css');
+  const directUnifiedIndex=cssRefs.findLastIndex(x=>x.split('?')[0]==='/assets/unified-ui.css');
+  const laterLocalCss=baseIndex>=0?cssRefs.slice(baseIndex+1).filter(x=>{
+    const clean=x.split('?')[0];
+    return clean.startsWith('/assets/')&&clean.endsWith('.css')&&clean!=='/assets/unified-ui.css';
+  }):[];
+  const hasRuntimeFinalizer=finalizerScripts.some(script=>html.includes(script));
+  if(laterLocalCss.length&&!hasRuntimeFinalizer&&directUnifiedIndex<cssRefs.length-1){
+    lateCssWithoutFinalizer.push(`${rel} -> ${laterLocalCss.join(', ')}`);
+  }
 }
 if(uncovered.length)failures.push(`HTML pages outside the canonical UI system: ${uncovered.join(', ')}`);
+if(lateCssWithoutFinalizer.length)failures.push(`Pages load extra CSS after the canonical system without a final unified pass: ${lateCssWithoutFinalizer.join(' | ')}`);
 
 if(failures.length){
   console.error('Unified UI checks failed:\n- '+failures.join('\n- '));
   process.exit(1);
 }
-console.log('Unified UI checks passed: every HTML page enters the canonical stylesheet and rich app pages re-apply the final authority layer after page CSS.');
+console.log('Unified UI checks passed: every HTML page enters the canonical stylesheet and any page-specific CSS is followed by the unified authority layer.');

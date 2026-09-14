@@ -62,6 +62,16 @@ const finalizerScripts=[
   '/assets/global-nav.js',
   '/assets/site.js'
 ];
+const cssFileFinalizes=href=>{
+  const clean=href.split('?')[0];
+  if(clean==='/assets/unified-ui.css')return true;
+  if(!clean.startsWith('/assets/')||!clean.endsWith('.css'))return false;
+  const disk=path.join(root,clean.replace(/^\//,''));
+  if(!fs.existsSync(disk))return false;
+  const text=fs.readFileSync(disk,'utf8');
+  return text.includes('@import url("/assets/unified-ui.css")')||text.includes("@import url('/assets/unified-ui.css')");
+};
+
 const uncovered=[];
 const lateCssWithoutFinalizer=[];
 for(const file of walk(root)){
@@ -73,13 +83,14 @@ for(const file of walk(root)){
 
   const cssRefs=[...html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi)].map(m=>m[1]);
   const baseIndex=cssRefs.findIndex(x=>x.split('?')[0]==='/assets/styles.css');
-  const directUnifiedIndex=cssRefs.findLastIndex(x=>x.split('?')[0]==='/assets/unified-ui.css');
   const laterLocalCss=baseIndex>=0?cssRefs.slice(baseIndex+1).filter(x=>{
     const clean=x.split('?')[0];
     return clean.startsWith('/assets/')&&clean.endsWith('.css')&&clean!=='/assets/unified-ui.css';
   }):[];
   const hasRuntimeFinalizer=finalizerScripts.some(script=>html.includes(script));
-  if(laterLocalCss.length&&!hasRuntimeFinalizer&&directUnifiedIndex<cssRefs.length-1){
+  const lastLocalCss=[...cssRefs].reverse().find(x=>x.split('?')[0].startsWith('/assets/')&&x.split('?')[0].endsWith('.css'));
+  const hasCssFinalizer=Boolean(lastLocalCss&&cssFileFinalizes(lastLocalCss));
+  if(laterLocalCss.length&&!hasRuntimeFinalizer&&!hasCssFinalizer){
     lateCssWithoutFinalizer.push(`${rel} -> ${laterLocalCss.join(', ')}`);
   }
 }

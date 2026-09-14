@@ -1,0 +1,602 @@
+/* PilotDesk instrumentation-grade design system.
+   Structural/presentation layer only. Calculator formulas remain in site.js. */
+:root{
+  --bg-primary:#09090b;
+  --bg-surface:#121316;
+  --bg-elevated:#18191e;
+  --bg-recessed:#0c0d0e;
+  --border-hairline:#27272a;
+  --border-active:#3f3f46;
+  --text-readout:#fafafa;
+  --text-label:#a1a1aa;
+  --text-dim:#71717a;
+  --accent-functional:#ffffff;
+  --status-ready:rgba(16,185,129,.82);
+  --pd-radius:4px;
+  --pd-mono:ui-monospace,"SF Mono","JetBrains Mono","Fira Code",Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+
+  /* compatibility aliases used by existing PilotDesk layers */
+  --bg:var(--bg-primary)!important;
+  --bg2:var(--bg-recessed)!important;
+  --panel:var(--bg-surface)!important;
+  --panel2:var(--bg-elevated)!important;
+  --panel3:#1d1e23!important;
+  --text:var(--text-readout)!important;
+  --muted:var(--text-label)!important;
+  --muted2:var(--text-dim)!important;
+  --line:var(--border-hairline)!important;
+  --line-hi:var(--border-active)!important;
+  --silver:#e4e4e7!important;
+  --silver2:var(--text-label)!important;
+  --shadow:none!important;
+}
+
+.instrument-readout,
+.pd-instrument-readout,
+.result strong,
+output,
+[data-readout],
+.input-wrap input,
+.pd-zulu-clock,
+.pd-tool-code,
+.pd-panel-id,
+.pd-panel-title,
+.pd-panel-state,
+.pd-copy-summary,
+.pd-density-toggle{
+  font-family:var(--pd-mono)!important;
+  font-feature-settings:"tnum" 1,"zero" 1!important;
+  font-variant-numeric:tabular-nums slashed-zero!important;
+}
+
+html,body{background:var(--bg-primary)!important}
+body{background-image:none!important;color:var(--text-readout)!important}
+
+/* =========================================================
+   OPS BAR / PRIMARY NAVIGATION
+   ========================================================= */
+.topbar,
+.pd-home-command-center .topbar{
+  height:52px!important;
+  min-height:52px!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  background:var(--bg-primary)!important;
+  border-bottom:1px solid var(--border-hairline)!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  gap:18px!important;
+}
+.brand{gap:9px!important;min-width:max-content}
+.brandmark,
+.pd-home-command-center .brandmark{
+  width:30px!important;
+  height:30px!important;
+  border-radius:2px!important;
+  filter:none!important;
+  box-shadow:none!important;
+}
+.brand b,
+.pd-home-command-center .brand b{
+  font-family:Inter,Geist,ui-sans-serif,system-ui,sans-serif!important;
+  font-style:normal!important;
+  font-size:14px!important;
+  line-height:1!important;
+  letter-spacing:-.025em!important;
+  font-weight:700!important;
+  text-transform:uppercase!important;
+}
+.brand small,
+.pd-home-command-center .brand small{
+  margin-top:3px!important;
+  color:var(--text-dim)!important;
+  font:600 7px/1 var(--pd-mono)!important;
+  letter-spacing:.17em!important;
+  text-transform:uppercase!important;
+}
+.topbar nav,.topbar .pd-global-nav,.pd-home-command-center .topbar .pd-global-nav{
+  gap:14px!important;
+  margin-left:auto!important;
+  align-items:center!important;
+}
+.topbar nav a,
+.topbar .pd-global-nav a,
+.pd-home-command-center .topbar .pd-global-nav a{
+  padding:5px 0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--text-label)!important;
+  font:600 10px/1 var(--pd-mono)!important;
+  letter-spacing:.09em!important;
+  text-transform:uppercase!important;
+  transition:color .12s ease,border-color .12s ease!important;
+}
+.topbar nav a:hover,.topbar nav a:focus-visible,
+.topbar nav a[aria-current="page"],
+.topbar .pd-global-nav a:hover,.topbar .pd-global-nav a:focus-visible,
+.topbar .pd-global-nav a[aria-current="page"]{
+  color:var(--text-readout)!important;
+  background:transparent!important;
+}
+.topbar nav a[aria-current="page"],.topbar .pd-global-nav a[aria-current="page"]{
+  box-shadow:inset 0 -1px 0 var(--accent-functional)!important;
+}
+.pd-ops-cluster{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+  padding-left:12px;
+  border-left:1px solid var(--border-hairline);
+}
+.pd-zulu-clock{
+  min-width:76px;
+  color:#d4d4d8;
+  font-size:9px!important;
+  line-height:1;
+  letter-spacing:.055em;
+  text-align:right;
+  white-space:nowrap;
+}
+.pd-density-toggle{
+  height:26px;
+  min-width:36px;
+  padding:0 7px;
+  border:1px solid var(--border-hairline);
+  border-radius:2px;
+  background:var(--bg-surface);
+  color:var(--text-dim);
+  font-size:8px!important;
+  font-weight:700;
+  letter-spacing:.09em;
+  cursor:pointer;
+}
+.pd-density-toggle:hover,.pd-density-toggle:focus-visible,.pd-density-toggle[aria-pressed="true"]{
+  border-color:#52525b;
+  color:var(--text-readout);
+  background:var(--bg-elevated);
+}
+
+/* =========================================================
+   MODULAR INSTRUMENT PANELS
+   ========================================================= */
+.pd-instrument-panel,
+.pd-module-panel,
+.tool-card,
+.info-card,
+.side-card,
+.pd-card,
+.pd-panel{
+  border:1px solid var(--border-hairline)!important;
+  border-radius:var(--pd-radius)!important;
+  background:var(--bg-surface)!important;
+  box-shadow:none!important;
+}
+.pd-panel-header{
+  grid-column:1/-1;
+  min-height:32px;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:9px;
+  margin:-22px -22px 18px;
+  padding:0 11px;
+  border-bottom:1px solid var(--border-hairline);
+  background:#101115;
+}
+.pd-panel-state{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--status-ready);
+  box-shadow:0 0 0 1px rgba(16,185,129,.08);
+}
+.pd-panel-title{
+  overflow:hidden;
+  color:var(--text-label);
+  font-size:9px!important;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.pd-panel-id{
+  color:var(--text-dim);
+  font-size:8px!important;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+/* =========================================================
+   PRECISION INPUT CELLS
+   ========================================================= */
+.field label,.pd-widget-field label,.wb-head{
+  margin-bottom:6px!important;
+  color:var(--text-label)!important;
+  font:600 9px/1.2 var(--pd-mono)!important;
+  letter-spacing:.1em!important;
+  text-transform:uppercase!important;
+}
+.input-wrap{
+  height:42px!important;
+  min-height:42px!important;
+  display:flex!important;
+  align-items:stretch!important;
+  overflow:hidden!important;
+  border:1px solid var(--border-hairline)!important;
+  border-radius:3px!important;
+  background:var(--bg-elevated)!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.35)!important;
+}
+.input-wrap:focus-within{
+  border-color:var(--accent-functional)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03)!important;
+}
+.input-wrap input,
+.input-wrap select,
+.field input,
+.field select{
+  min-width:0!important;
+  height:40px!important;
+  padding:0 11px!important;
+  border:0!important;
+  border-radius:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#f4f4f5!important;
+  font:500 13px/40px var(--pd-mono)!important;
+  font-feature-settings:"tnum" 1,"zero" 1!important;
+  font-variant-numeric:tabular-nums slashed-zero!important;
+  letter-spacing:-.02em!important;
+}
+.input-wrap span{
+  min-width:44px;
+  height:40px;
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  padding:0 10px!important;
+  border-left:1px solid var(--border-hairline)!important;
+  background:#14151a!important;
+  color:var(--text-dim)!important;
+  font:700 9px/1 var(--pd-mono)!important;
+  letter-spacing:.1em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap;
+}
+.fields{gap:11px!important}
+.pd-density-compact .fields{gap:8px!important}
+.pd-density-compact .calc-box{padding:17px!important}
+
+/* =========================================================
+   CALCULATOR WORKBENCH: INPUTS LEFT / DISPLAY RIGHT
+   ========================================================= */
+.calc-box.pd-instrument-panel{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.02fr) minmax(285px,.78fr)!important;
+  grid-auto-rows:auto!important;
+  column-gap:18px!important;
+  row-gap:12px!important;
+  padding:22px!important;
+  overflow:visible!important;
+  background:var(--bg-surface)!important;
+  background-image:none!important;
+}
+.calc-box.pd-instrument-panel:before{display:none!important}
+.calc-box.pd-instrument-panel>.fields{
+  grid-column:1;
+  grid-row:2;
+  align-self:start;
+}
+.calc-box.pd-instrument-panel>.calc-btn{
+  grid-column:1;
+  grid-row:3;
+  justify-self:start;
+  margin-top:0!important;
+}
+.calc-box.pd-instrument-panel>.results{
+  grid-column:2;
+  grid-row:2 / span 2;
+  align-self:start;
+  position:sticky;
+  top:70px;
+  margin:0!important;
+}
+.calc-box.pd-instrument-panel>.notice,
+.calc-box.pd-instrument-panel>.safety-warning,
+.calc-box.pd-instrument-panel>.calc-actions,
+.calc-box.pd-instrument-panel>.pd-workbench-actions{
+  grid-column:1/-1;
+}
+.calc-btn{
+  min-height:38px!important;
+  padding:0 13px!important;
+  border:1px solid #52525b!important;
+  border-radius:3px!important;
+  background:#1b1c21!important;
+  color:var(--text-readout)!important;
+  box-shadow:none!important;
+  font:700 9px/36px var(--pd-mono)!important;
+  letter-spacing:.11em!important;
+  text-transform:uppercase!important;
+}
+.calc-btn:hover,.calc-btn:focus-visible{background:#23242a!important;border-color:#71717a!important;filter:none!important}
+
+/* =========================================================
+   FLIGHT COMPUTER OUTPUT DISPLAY
+   ========================================================= */
+.results.pd-output-console{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:0!important;
+  overflow:hidden;
+  border:1px solid #303036;
+  border-radius:3px!important;
+  background:var(--bg-recessed);
+}
+.results.pd-output-console:before{
+  content:attr(data-panel-title);
+  display:block;
+  padding:9px 11px 8px;
+  border-bottom:1px solid var(--border-hairline);
+  color:var(--text-dim);
+  font:700 8px/1 var(--pd-mono);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.results.pd-output-console .result{
+  min-height:67px;
+  padding:11px 12px!important;
+  border:0!important;
+  border-bottom:1px solid var(--border-hairline)!important;
+  border-radius:0!important;
+  background:var(--bg-recessed)!important;
+}
+.results.pd-output-console .result:last-of-type{border-bottom:0!important}
+.results.pd-output-console .result:before{display:none!important}
+.results.pd-output-console .result.primary{
+  min-height:84px;
+  background:#101115!important;
+}
+.result small{
+  display:block!important;
+  margin:0 0 5px!important;
+  color:var(--text-dim)!important;
+  font:700 8px/1.2 var(--pd-mono)!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+.result strong,.result.primary strong{
+  display:block;
+  color:var(--text-readout)!important;
+  background:none!important;
+  -webkit-text-fill-color:initial!important;
+  font:600 18px/1.08 var(--pd-mono)!important;
+  font-feature-settings:"tnum" 1,"zero" 1!important;
+  font-variant-numeric:tabular-nums slashed-zero!important;
+  letter-spacing:-.035em!important;
+}
+.result.primary strong{font-size:27px!important}
+.pd-output-method{
+  padding:10px 11px 11px;
+  border-top:1px solid var(--border-hairline);
+  background:#0a0b0d;
+}
+.pd-output-method small{
+  display:block;
+  margin-bottom:5px;
+  color:var(--text-dim);
+  font:700 7px/1 var(--pd-mono);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.pd-output-method code{
+  display:block;
+  overflow:hidden;
+  color:#b8b8c0;
+  font:500 9px/1.45 var(--pd-mono);
+  white-space:normal;
+  text-overflow:ellipsis;
+}
+
+/* Copy/export rail */
+.pd-workbench-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:0!important;
+  padding-top:1px;
+}
+.pd-copy-summary{
+  min-height:30px;
+  padding:0 10px;
+  border:1px solid var(--border-hairline);
+  border-radius:2px;
+  background:#0d0e11;
+  color:var(--text-label);
+  font-size:8px!important;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+.pd-copy-summary:hover,.pd-copy-summary:focus-visible{
+  border-color:#52525b;
+  color:var(--text-readout);
+}
+.pd-copy-summary[data-state="copied"]{border-color:#52525b;color:#fafafa}
+
+/* =========================================================
+   TOOL HUB / ENGINEERED GRID
+   ========================================================= */
+.grid{gap:12px!important}
+.tool-card{
+  min-height:118px!important;
+  padding:37px 15px 15px!important;
+  overflow:hidden!important;
+  transition:border-color .12s ease,background-color .12s ease!important;
+}
+.tool-card:before{
+  content:''!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  right:0!important;
+  width:auto!important;
+  height:28px!important;
+  border-bottom:1px solid var(--border-hairline)!important;
+  background:#101115!important;
+  opacity:1!important;
+}
+.tool-card:after{display:none!important}
+.tool-card:hover,.tool-card:focus-visible{
+  transform:none!important;
+  border-color:#52525b!important;
+  background:#141519!important;
+  box-shadow:none!important;
+}
+.pd-tool-code{
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:2;
+  height:28px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:0 10px;
+  color:var(--text-dim);
+  font-size:8px!important;
+  font-weight:700;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  pointer-events:none;
+}
+.pd-tool-code:before{
+  content:'';
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--status-ready);
+}
+.tool-card b{display:block;color:var(--text-readout)!important;font-size:14px!important;font-weight:650!important}
+.tool-card p{margin:7px 0 0!important;color:#8b8b94!important;font-size:11px!important;line-height:1.45!important}
+.category-head{
+  align-items:center!important;
+  padding-bottom:8px!important;
+  border-bottom:1px solid var(--border-hairline)!important;
+}
+.category-head h2{font-size:15px!important;font-weight:650!important;letter-spacing:-.015em!important}
+.category-head span{
+  color:var(--text-dim)!important;
+  font:700 8px/1 var(--pd-mono)!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+
+/* Reference/support modules remain dense, not promotional. */
+.info-card,.side-card{
+  background:#101115!important;
+  border-color:var(--border-hairline)!important;
+}
+.info-card h2,.side-card h3{
+  color:#e4e4e7!important;
+  font-weight:650!important;
+}
+.formula{
+  border:1px solid var(--border-hairline)!important;
+  border-radius:3px!important;
+  background:var(--bg-recessed)!important;
+  color:#d4d4d8!important;
+  font-family:var(--pd-mono)!important;
+}
+
+/* Home command center: preserve technical SVGs but use the same panel grammar. */
+.pd-home-command-center #pdQuickStart .pd-task-card{
+  border:1px solid var(--border-hairline)!important;
+  border-radius:4px!important;
+  background:var(--bg-surface)!important;
+  box-shadow:none!important;
+}
+.pd-home-command-center #pdQuickStart .pd-task-card:hover,
+.pd-home-command-center #pdQuickStart .pd-task-card:focus-visible{
+  border-color:#52525b!important;
+  background:#141519!important;
+}
+.pd-home-command-center .pd-context-widget{
+  border:1px solid var(--border-hairline)!important;
+  border-radius:4px!important;
+  background:var(--bg-surface)!important;
+  box-shadow:none!important;
+}
+
+/* Keyboard focus is crisp and instrument-like. */
+:focus-visible{
+  outline:1px solid #fafafa!important;
+  outline-offset:2px!important;
+}
+
+/* Tablet/mobile: stack the workbench while retaining cockpit density. */
+@media(max-width:980px){
+  .topbar nav,.topbar .pd-global-nav{gap:9px!important}
+  .pd-ops-cluster{padding-left:8px}
+  .pd-zulu-clock{min-width:70px}
+  .calc-box.pd-instrument-panel{
+    grid-template-columns:1fr!important;
+  }
+  .calc-box.pd-instrument-panel>.fields,
+  .calc-box.pd-instrument-panel>.calc-btn,
+  .calc-box.pd-instrument-panel>.results,
+  .calc-box.pd-instrument-panel>.notice,
+  .calc-box.pd-instrument-panel>.safety-warning,
+  .calc-box.pd-instrument-panel>.calc-actions,
+  .calc-box.pd-instrument-panel>.pd-workbench-actions{
+    grid-column:1!important;
+    grid-row:auto!important;
+  }
+  .calc-box.pd-instrument-panel>.results{position:static!important}
+}
+@media(max-width:820px){
+  .topbar,.pd-home-command-center .topbar{padding-left:12px!important;padding-right:12px!important}
+  .topbar .menu-btn{
+    width:32px!important;height:30px!important;padding:0!important;
+    border:1px solid var(--border-hairline)!important;
+    border-radius:2px!important;
+    background:var(--bg-surface)!important;
+    color:var(--text-label)!important;
+    font-size:15px!important;
+  }
+  .topbar .pd-global-nav{
+    top:51px!important;
+    left:8px!important;
+    right:8px!important;
+    padding:8px!important;
+    border:1px solid var(--border-hairline)!important;
+    border-radius:3px!important;
+    background:#0c0d0f!important;
+    box-shadow:none!important;
+  }
+  .topbar .pd-global-nav a{padding:10px!important;border-bottom:1px solid #202024!important}
+  .pd-ops-cluster{margin-left:auto;border-left:0;padding-left:0}
+}
+@media(max-width:600px){
+  .brand small{display:none!important}
+  .pd-density-toggle{display:none}
+  .pd-zulu-clock{font-size:8px!important;min-width:66px}
+  .calc-box.pd-instrument-panel{padding:16px!important}
+  .pd-panel-header{margin:-16px -16px 15px}
+  .fields{grid-template-columns:1fr!important}
+  .input-wrap{height:44px!important;min-height:44px!important}
+  .input-wrap input,.input-wrap span{height:42px!important}
+  .input-wrap input{line-height:42px!important;font-size:16px!important}
+  .result.primary strong{font-size:24px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;transition-duration:.001ms!important;animation-duration:.001ms!important;animation-iteration-count:1!important}
+}

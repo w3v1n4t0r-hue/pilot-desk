@@ -48,6 +48,7 @@ function updateSubmitState(){if(state.submitted||state.data?.completion){$('#pdD
 function lockAnswers(review){
  review?.forEach((r,idx)=>{const group=document.querySelectorAll(`input[name="q${idx}"]`);group.forEach((input,i)=>{input.disabled=true;const label=input.closest('.pd-daily-option');if(i===r.correctIndex)label.dataset.state='correct';else if(r.selected===i&&!r.correct)label.dataset.state='wrong'});const wrap=group[0]?.closest('.pd-daily-options');if(wrap)wrap.setAttribute('aria-disabled','true')});
 }
+function lockWithoutReveal(){document.querySelectorAll('#pdDailyQuestions input').forEach(input=>{input.disabled=true});document.querySelectorAll('.pd-daily-options').forEach(wrap=>wrap.setAttribute('aria-disabled','true'))}
 function reviewHtml(result){
  const questions=state.data?.challenge?.questions||[];
  return (result.review||[]).map((r,i)=>`<div class="pd-daily-review-item"><strong>${r.correct?'✓':'Review'} Question ${i+1}: ${escapeHtml(questions[i]?.options?.[r.correctIndex]||'')}</strong><span>${escapeHtml(r.explanation||'')}</span></div>`).join('');
@@ -56,7 +57,7 @@ function renderResult(result,saved){
  state.submitted=true;lockAnswers(result.review);$('#pdDailySubmit').disabled=true;$('#pdDailySubmit').textContent='Completed';setText('#pdDailyFormNote',saved?'Saved to your PilotDesk account.':'Guest score — sign in to save future streaks.');
  $('#pdDailyScoreChip').hidden=false;setText('#pdDailyScore',`${result.score}/${result.maxScore}`);
  const box=$('#pdDailyResult');box.hidden=false;const perfect=result.score===result.maxScore;
- const headline=perfect?'Perfect score.':result.score>0?'Challenge complete.':'Challenge complete — review it below.';
+ const headline=perfect?'Perfect score.':(result.review||[]).length?(result.score>0?'Challenge complete.':'Challenge complete — review it below.'):'Challenge complete.';
  const reward=saved?`+${result.xpAwarded||0} XP${result.streak?` · 🔥 ${result.streak}`:''}`:'Guest score';
  box.innerHTML=`<div class="pd-daily-result-head"><div><h3>${headline}</h3><p>${saved?'Your score, XP and streak are saved.':'Create a free account to save XP and build a daily streak.'}</p></div><div class="pd-daily-reward">${escapeHtml(reward)}</div></div><div class="pd-daily-review">${reviewHtml(result)}</div><div class="pd-daily-result-actions"><button type="button" id="pdDailyShare">Share result</button>${saved?'<a href="/account.html">View account →</a>':'<a href="/account.html?next=%2Fdaily%2F">Create account →</a>'}</div>`;
  $('#pdDailyShare')?.addEventListener('click',()=>shareResult(result));
@@ -64,7 +65,7 @@ function renderResult(result,saved){
  window.pdTrack?.('PilotDesk Daily Completed',{saved:Boolean(saved),score:result.score,max:result.maxScore});
 }
 function renderSavedCompletion(data){
- const c=data.completion,review=data.review||[];renderResult({score:c.score,maxScore:c.max_score,xpAwarded:c.xp_awarded,perfect:c.perfect,review,streak:state.profile?.current_streak,xp:state.profile?.xp,level:state.profile?.level},true);setText('#pdDailyFormNote','Already completed today. New challenge at 00:00 UTC.');
+ const c=data.completion;renderResult({score:c.score,maxScore:c.max_score,xpAwarded:c.xp_awarded,perfect:c.perfect,review:[],streak:state.profile?.current_streak,xp:state.profile?.xp,level:state.profile?.level},true);lockWithoutReveal();setText('#pdDailyFormNote','Already completed today. New challenge at 00:00 UTC.');
 }
 async function shareResult(result){
  const streak=result.streak?` · 🔥 ${result.streak}-day streak`:'';const text=`PilotDesk Daily ${result.score}/${result.maxScore}${streak}\nhttps://www.pilot-desk.com/daily/`;

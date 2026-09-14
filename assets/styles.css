@@ -1,7 +1,9 @@
 /* PilotDesk canonical stylesheet entry.
    1) legacy layout compatibility
    2) one component system
-   3) one macro page chassis */
+   3) one macro page chassis
+   4) homepage visual language everywhere */
 @import url("/assets/styles-legacy.css");
 @import url("/assets/unified-ui.css");
 @import url("/assets/site-chassis.css");
+@import url("/assets/home-visual-system.css");

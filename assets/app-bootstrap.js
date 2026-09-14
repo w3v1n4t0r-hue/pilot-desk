@@ -38,9 +38,10 @@ loadStyle('/assets/avionics-architecture.css','pd-avionics-architecture-css');
 loadStyle('/assets/avionics-ops.css','pd-avionics-ops-css');
 loadStyle('/assets/product-clarity.css','pd-product-clarity-css');
 if(isHome){loadStyle('/assets/home-task-polish.css','pd-home-task-polish');loadStyle('/assets/home-command-center.css','pd-home-command-css');loadStyle('/assets/home-avionics-final.css','pd-home-avionics-final')}
-/* Component authority first, then the macro page chassis last. */
+/* Component authority, macro chassis, then the homepage visual language as the final look. */
 loadStyle('/assets/unified-ui.css','pd-unified-ui');
 loadStyle('/assets/site-chassis.css','pd-site-chassis');
+loadStyle('/assets/home-visual-system.css','pd-home-visual-system');
 
 /* Anything that can add, move, restyle, or replace visible UI settles before reveal. */
 for(const [src,key] of [

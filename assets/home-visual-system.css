@@ -1,0 +1,400 @@
+/* PilotDesk homepage visual language, promoted to the whole product.
+   The homepage established the look: black avionics canvas, compact rails, precise
+   mono labels, silver borders, subtle fastener details and dense task-first panels.
+   This file is deliberately the final visual layer. */
+
+:root{
+  --pd-home-canvas:#09090b;
+  --pd-home-panel:#101114;
+  --pd-home-panel-deep:#0b0c0e;
+  --pd-home-panel-raised:#141519;
+  --pd-home-rail:#0d0e11;
+  --pd-home-line:#34343a;
+  --pd-home-line-soft:#29292e;
+  --pd-home-line-hi:#62626b;
+  --pd-home-text:#fafafa;
+  --pd-home-soft:#a1a1aa;
+  --pd-home-dim:#71717a;
+  --pd-home-topline:#3f5655;
+}
+
+html,body{background:var(--pd-home-canvas)!important}
+body{background-image:none!important}
+
+/* Global chrome should feel identical no matter which page the user enters. */
+.topbar{
+  height:58px!important;
+  min-height:58px!important;
+  background:#0a0b0d!important;
+  border-top:1px solid var(--pd-home-topline)!important;
+  border-bottom:1px solid #27272a!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.brand{gap:9px!important}
+.brandmark{
+  width:32px!important;
+  height:32px!important;
+  border:1px solid #34383f!important;
+  border-radius:4px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.brand b{font-size:15px!important;font-style:normal!important;font-weight:760!important;letter-spacing:.03em!important}
+.brand small{color:#777780!important;font:700 7px/1.1 var(--pd-ui-mono)!important;letter-spacing:.17em!important}
+
+/* Generic nav inherits the same thin-tab treatment used by the homepage utility nav. */
+.topbar nav a,.topbar .pd-global-nav a{
+  min-height:38px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 1px!important;
+  border:0!important;
+  border-bottom:1px solid transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#92929b!important;
+  box-shadow:none!important;
+  font:700 9px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.08em!important;
+}
+.topbar nav a:hover,.topbar nav a[aria-current="page"],
+.topbar .pd-global-nav a:hover,.topbar .pd-global-nav a[aria-current="page"]{
+  color:#fafafa!important;
+  border-bottom-color:#d4d4d8!important;
+  background:transparent!important;
+}
+
+/* Homepage-like section rails everywhere. */
+.category-head,
+.pd-quick-head,
+.pd-home-personal-head,
+.pd-card-head,
+.pd-owner-head,
+.wx-block>header,
+.pd-proc-group>header{
+  min-height:38px!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin:0 0 10px!important;
+  padding:0 0 9px!important;
+  border:0!important;
+  border-bottom:1px solid #2b2b30!important;
+  background:transparent!important;
+}
+.category-head h2,
+.pd-quick-head h2,
+.pd-home-personal-head h2,
+.pd-card-head h2,
+.pd-owner-head h2,
+.wx-block>header h2,
+.pd-proc-group>header h3{
+  margin:0!important;
+  color:#fafafa!important;
+  font-size:14px!important;
+  line-height:1.2!important;
+  font-weight:700!important;
+  letter-spacing:-.02em!important;
+}
+.category-head>span,
+.pd-quick-head>span,
+.pd-home-personal-head>span{
+  color:#71717a!important;
+  font:700 7px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+
+/* Shared MFD chassis. This mirrors the homepage task-card construction without
+   turning every page into a decorative mock instrument. */
+.info-card,
+.side-card,
+.calc-box,
+.pd-panel,
+.pd-dashboard-block,
+.pd-airport-hero,
+.pd-flight-card,
+.pd-brief-hero,
+.pd-account-card,
+.pd-account-promise,
+.wx-summary,
+.wx-block,
+.pd-proc-panel,
+.pd-proc-group,
+.ct-panel,
+.pd-modal,
+dialog{
+  border:1px solid var(--pd-home-line)!important;
+  border-radius:5px!important;
+  background:
+    radial-gradient(circle at 7px 7px,#4f4f57 0 1px,transparent 1.6px),
+    radial-gradient(circle at calc(100% - 7px) 7px,#4f4f57 0 1px,transparent 1.6px),
+    var(--pd-home-panel)!important;
+  background-image:
+    radial-gradient(circle at 7px 7px,#4f4f57 0 1px,transparent 1.6px),
+    radial-gradient(circle at calc(100% - 7px) 7px,#4f4f57 0 1px,transparent 1.6px)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)!important;
+}
+.info-card:hover,.side-card:hover,.pd-dashboard-block:hover,.pd-flight-card:hover{
+  transform:none!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+
+/* Application pages get the homepage's actual visual density. */
+html.pd-streamlined-app .pd-streamlined-shell,
+html.pd-streamlined-app .pd-account-shell{
+  background:transparent!important;
+}
+html.pd-streamlined-app .pd-page-hero{
+  position:relative!important;
+  min-height:190px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:34px 0 28px!important;
+  border-bottom:1px solid #242428!important;
+}
+html.pd-streamlined-app .pd-page-hero:after{
+  content:'PILOTDESK // FLIGHT TOOLS'!important;
+  position:absolute!important;
+  top:17px!important;
+  right:0!important;
+  color:#55555d!important;
+  font:700 7px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.16em!important;
+}
+html.pd-streamlined-app .pd-page-hero>.badge,
+html.pd-streamlined-app .pd-page-hero>.eyebrow{
+  width:max-content!important;
+  min-height:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#8b8b94!important;
+  font:700 8px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.14em!important;
+}
+html.pd-streamlined-app .pd-page-hero>.badge:before,
+html.pd-streamlined-app .pd-page-hero>.eyebrow:before{
+  content:''!important;
+  width:5px!important;
+  height:5px!important;
+  display:inline-block!important;
+  margin-right:8px!important;
+  border:1px solid #71717a!important;
+  background:#e4e4e7!important;
+  vertical-align:1px!important;
+}
+html.pd-streamlined-app .pd-page-hero h1{
+  margin:10px 0 12px!important;
+  max-width:900px!important;
+  color:#fafafa!important;
+  font-size:clamp(40px,5vw,64px)!important;
+  line-height:.98!important;
+  font-weight:740!important;
+  letter-spacing:-.045em!important;
+}
+html.pd-streamlined-app .pd-page-hero p{
+  max-width:760px!important;
+  color:#9a9aa3!important;
+  font-size:13px!important;
+  line-height:1.65!important;
+}
+
+/* Hub launchers now use the same MFD task-card visual language as the homepage. */
+html.pd-streamlined-app .pd-hub-grid{gap:8px!important}
+html.pd-streamlined-app .pd-hub-card{
+  min-height:186px!important;
+  padding:42px 16px 15px!important;
+  border:1px solid var(--pd-home-line)!important;
+  border-radius:5px!important;
+  background:
+    radial-gradient(circle at 7px 7px,#55555d 0 1px,transparent 1.55px),
+    radial-gradient(circle at calc(100% - 7px) 7px,#55555d 0 1px,transparent 1.55px),
+    radial-gradient(circle at 7px calc(100% - 7px),#55555d 0 1px,transparent 1.55px),
+    radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#55555d 0 1px,transparent 1.55px),
+    linear-gradient(to bottom,var(--pd-home-rail) 0 29px,var(--pd-home-panel) 29px 100%)!important;
+  box-shadow:inset 0 0 0 3px var(--pd-home-panel),inset 0 0 0 4px rgba(161,161,170,.07)!important;
+}
+html.pd-streamlined-app .pd-hub-card:before{
+  height:29px!important;
+  border-bottom:1px solid #303036!important;
+  background:transparent!important;
+}
+html.pd-streamlined-app .pd-hub-card>small{
+  left:13px!important;
+  top:0!important;
+  height:29px!important;
+  padding-left:12px!important;
+  color:#8b8b94!important;
+  font:700 7px/29px var(--pd-ui-mono)!important;
+  letter-spacing:.16em!important;
+}
+html.pd-streamlined-app .pd-hub-card>small:before{
+  content:'+'!important;
+  position:absolute!important;
+  left:0!important;
+  color:#62626b!important;
+  font-size:9px!important;
+}
+html.pd-streamlined-app .pd-hub-card h2,
+html.pd-streamlined-app .pd-hub-card h3{
+  margin:0 0 9px!important;
+  color:#fafafa!important;
+  font-size:18px!important;
+  line-height:1.15!important;
+  font-weight:700!important;
+  letter-spacing:-.025em!important;
+}
+html.pd-streamlined-app .pd-hub-card p{
+  color:#9a9aa3!important;
+  font-size:11px!important;
+  line-height:1.55!important;
+}
+html.pd-streamlined-app .pd-hub-card .pd-arrow{
+  margin-top:auto!important;
+  padding-top:15px!important;
+  border-top:1px solid #303036!important;
+  color:#d4d4d8!important;
+  font:700 8px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+html.pd-streamlined-app .pd-hub-card .pd-arrow:after{content:'  +'!important;color:#62626b!important}
+html.pd-streamlined-app .pd-hub-card:hover,
+html.pd-streamlined-app .pd-hub-card:focus-visible{
+  border-color:#62626b!important;
+  background:
+    radial-gradient(circle at 7px 7px,#71717a 0 1px,transparent 1.55px),
+    radial-gradient(circle at calc(100% - 7px) 7px,#71717a 0 1px,transparent 1.55px),
+    radial-gradient(circle at 7px calc(100% - 7px),#71717a 0 1px,transparent 1.55px),
+    radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#71717a 0 1px,transparent 1.55px),
+    linear-gradient(to bottom,#101115 0 29px,#141519 29px 100%)!important;
+  transform:none!important;
+}
+
+/* Working panels use the same inset framing and rails as the homepage widgets. */
+html.pd-streamlined-app .pd-panel,
+html.pd-streamlined-app .pd-dashboard-block,
+html.pd-streamlined-app .ct-panel,
+html.pd-streamlined-app .wx-summary,
+html.pd-streamlined-app .wx-block,
+html.pd-streamlined-app .pd-proc-panel,
+html.pd-streamlined-app .pd-proc-group,
+html.pd-streamlined-app .pd-airport-hero{
+  position:relative!important;
+  border-color:#34343a!important;
+  background-color:#101114!important;
+  box-shadow:inset 0 0 0 3px #101114,inset 0 0 0 4px rgba(161,161,170,.055)!important;
+}
+html.pd-streamlined-app .pd-panel:before,
+html.pd-streamlined-app .pd-dashboard-block:before,
+html.pd-streamlined-app .ct-panel:before,
+html.pd-streamlined-app .wx-summary:before,
+html.pd-streamlined-app .wx-block:before,
+html.pd-streamlined-app .pd-proc-panel:before,
+html.pd-streamlined-app .pd-airport-hero:before{
+  content:''!important;
+  position:absolute!important;
+  left:12px!important;
+  right:12px!important;
+  top:0!important;
+  height:2px!important;
+  background:#52525b!important;
+  opacity:.45!important;
+  pointer-events:none!important;
+}
+
+/* Inputs and actions already share one component system; give them the exact
+   homepage contrast so forms no longer look like a separate app. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]),
+select,textarea,.input-wrap{
+  border-color:#303036!important;
+  background-color:#0d0e11!important;
+}
+input:focus,select:focus,textarea:focus,.input-wrap:focus-within{border-color:#71717a!important}
+button,.pd-btn,.calc-btn,.utility-btn,.pd-auth-btn{
+  border-color:#3f3f46!important;
+  background:#15161a!important;
+  color:#d4d4d8!important;
+}
+button:hover,.pd-btn:hover,.calc-btn:hover,.utility-btn:hover,.pd-auth-btn:hover{
+  border-color:#71717a!important;
+  background:#1a1b20!important;
+  color:#fafafa!important;
+}
+
+/* KPI/readout tiles match the homepage context widget instead of generic cards. */
+.pd-kpi,.pd-brief-item,.pd-user-stat,.pd-owner-stat,.result,.pd-widget-result{
+  border:1px solid #29292e!important;
+  border-radius:3px!important;
+  background:#0b0c0e!important;
+  box-shadow:none!important;
+}
+.pd-kpi small,.pd-brief-item small,.pd-user-stat span,.pd-owner-stat span,.result small,.pd-widget-result small{
+  color:#71717a!important;
+  font:700 7px/1.2 var(--pd-ui-mono)!important;
+  letter-spacing:.11em!important;
+  text-transform:uppercase!important;
+}
+
+/* Secondary reading surfaces stay visually connected but quieter. */
+.pd-reference-panel,
+.pd-learn-panel,
+details.pd-home-library{
+  border:1px solid #29292e!important;
+  border-radius:4px!important;
+  background:#0c0d0f!important;
+  box-shadow:none!important;
+}
+.pd-reference-panel>summary,.pd-learn-panel>summary,details.pd-home-library>summary{
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+  padding:0 12px!important;
+  background:#101114!important;
+  color:#a1a1aa!important;
+  font:700 8px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.09em!important;
+  text-transform:uppercase!important;
+}
+
+/* Footer follows the exact page frame and visual quietness of the homepage. */
+footer{
+  border-top:1px solid #242428!important;
+  background:#09090b!important;
+  color:#71717a!important;
+}
+footer b{color:#d4d4d8!important}
+footer a{color:#8b8b94!important}
+footer a:hover{color:#fafafa!important}
+
+@media(max-width:820px){
+  .topbar{height:58px!important;min-height:58px!important}
+  .topbar .pd-global-nav{
+    border:1px solid #34343a!important;
+    border-radius:5px!important;
+    background:#101114!important;
+    box-shadow:0 18px 45px rgba(0,0,0,.55)!important;
+  }
+  .topbar .pd-global-nav a{
+    min-height:38px!important;
+    padding:0 10px!important;
+    border:1px solid transparent!important;
+    border-radius:3px!important;
+  }
+  .topbar .pd-global-nav a:hover,.topbar .pd-global-nav a[aria-current="page"]{
+    border-color:#34343a!important;
+    background:#18191d!important;
+  }
+  html.pd-streamlined-app .pd-page-hero{min-height:165px!important;padding:28px 0 24px!important}
+  html.pd-streamlined-app .pd-page-hero:after{display:none!important}
+}
+
+@media(max-width:620px){
+  html.pd-streamlined-app .pd-hub-card{min-height:158px!important}
+  html.pd-streamlined-app .pd-page-hero h1{font-size:clamp(34px,11vw,48px)!important}
+}

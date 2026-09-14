@@ -156,7 +156,7 @@ function bind(){
   $('#pdSignOut')?.addEventListener('click',signOut);
   $('#pdDeleteAccount')?.addEventListener('click',deleteAccount);
   $('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);
-  $('#pdOwnerClaimForm')?.addEventListener('submit',claimOwnerAccess);
+  $('#pdOwnerClaim')?.addEventListener('submit',claimOwnerAccess);
   $('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)});
 }
 

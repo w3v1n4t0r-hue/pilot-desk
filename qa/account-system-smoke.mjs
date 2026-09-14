@@ -7,7 +7,7 @@ const checks=[
   ['Google auth is available when provider is enabled',/signInWithOAuth\(\{provider:'google'/.test(client)&&/auth\/v1\/settings/.test(client)],
   ['magic-link auth is available',/signInWithOtp/.test(client)],
   ['owner metrics use authenticated edge function',/functions\/v1\/owner-metrics/.test(client)&&/auth\/v1\/user/.test(ownerFn)&&/admin_users/.test(ownerFn)],
-  ['owner access uses one-time claim flow',/claimToken/.test(client)&&/claim_token: crypto\.randomUUID\(\)/.test(ownerFn)&&/claim_token uuid not null default gen_random_uuid\(\)/.test(ownerSql)],
+  ['owner access uses one-time claim flow',/claimToken/.test(client)&&/claim_token\s*:\s*crypto\.randomUUID\(\)/.test(ownerFn)&&/claim_token uuid not null default gen_random_uuid\(\)/.test(ownerSql)],
   ['owner tables deny direct client access',/admin_users_deny_all/.test(edgeSql)&&/admin_claim_config_deny_all/.test(edgeSql)],
   ['account deletion uses authenticated edge function',/functions\/v1\/delete-account/.test(client)&&/auth\/v1\/user/.test(deleteFn)&&/auth\/v1\/admin\/users/.test(deleteFn)],
   ['profile RLS is enabled',/alter table public\.profiles enable row level security/i.test(sql)],

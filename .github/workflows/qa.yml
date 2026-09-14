@@ -45,6 +45,8 @@ jobs:
         run: node qa/performance-budget.mjs
       - name: Run sticky app release checks
         run: node qa/sticky-app-smoke.mjs
+      - name: Run account system checks
+        run: node qa/account-system-smoke.mjs
       - name: Run flight workspace checks
         run: node qa/flight-workspace-smoke.mjs
       - name: Run PilotDesk v2 master checks

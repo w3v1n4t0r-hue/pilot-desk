@@ -16,9 +16,10 @@ assert(safety.includes('more than 90 minutes old')&&safety.includes('official or
 assert(safety.includes('Advertising is isolated')&&safety.includes('Advertising content does not change calculator formulas'),'Ad independence statement missing');
 assert(safety.includes('secondary cross-check')&&safety.includes('/sources.html'),'Source hierarchy guidance missing');
 
-assert(privacy.includes('Effective September 11, 2026'),'Privacy policy effective date not updated');
+assert(privacy.includes('Effective September 14, 2026'),'Privacy policy effective date not updated');
 assert(privacy.includes('search text')&&privacy.includes('Weight &amp; Balance entries'),'Sensitive analytics exclusions missing');
-assert(privacy.includes('does not sell aircraft-profile data or calculator-input data'),'Data sale statement missing');
+assert(privacy.includes('does not sell aircraft-profile data, calculator-input data, or PilotDesk account data'),'Data sale statement missing');
+assert(privacy.includes('Core tools do not require an account')&&privacy.includes('Supabase'),'Account privacy disclosures missing');
 assert(privacy.includes('Blocking advertising is not intended to disable'),'Ad/privacy independence statement missing');
 
 assert(feedback.includes('Safety-critical issue'),'Safety-critical feedback option missing');
@@ -34,4 +35,4 @@ assert(weather.includes("warnState?'warn':'live'"),'Stale/partial weather status
 assert(disclaimer.includes('Do not use PilotDesk as your sole source'),'Primary aviation disclaimer missing');
 assert(calcSafety.includes('outside the supported range')&&calcSafety.includes('clearOutputs()'),'Calculator fail-closed validation missing');
 
-console.log('PilotDesk trust and safety checks passed: aviation limits, privacy minimization, safety reporting, stale-weather warnings, and calculator validation verified.');
+console.log('PilotDesk trust and safety checks passed: aviation limits, account privacy, safety reporting, stale-weather warnings, and calculator validation verified.');

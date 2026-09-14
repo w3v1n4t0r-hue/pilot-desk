@@ -1,9 +1,10 @@
 const cleanBase=v=>String(v||'').trim().replace(/\/+$/,'');
 const bearer=req=>String(req.headers.authorization||'').replace(/^Bearer\s+/i,'').trim();
 const adminEmails=()=>String(process.env.PILOTDESK_ADMIN_EMAILS||process.env.PILOTDESK_ADMIN_EMAIL||'').split(',').map(x=>x.trim().toLowerCase()).filter(Boolean);
+const publicKey=()=>String(process.env.SUPABASE_PUBLISHABLE_KEY||process.env.SUPABASE_ANON_KEY||'').trim();
 
 async function authenticatedAdmin(req){
-  const base=cleanBase(process.env.SUPABASE_URL),anon=String(process.env.SUPABASE_ANON_KEY||'').trim(),token=bearer(req);
+  const base=cleanBase(process.env.SUPABASE_URL),anon=publicKey(),token=bearer(req);
   if(!base||!anon||!token)return null;
   const r=await fetch(`${base}/auth/v1/user`,{headers:{apikey:anon,Authorization:`Bearer ${token}`}});
   if(!r.ok)return null;

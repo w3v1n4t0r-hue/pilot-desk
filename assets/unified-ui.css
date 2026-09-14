@@ -1,0 +1,563 @@
+/* PilotDesk unified UI authority layer.
+   This file is intentionally loaded LAST. Page CSS may own layout, but it no longer
+   owns the visual format of controls, buttons, cards, chips, tables, or panels. */
+
+:root{
+  --pd-ui-bg:#09090b;
+  --pd-ui-bg-recessed:#0c0d0f;
+  --pd-ui-surface:#121316;
+  --pd-ui-surface-raised:#18191e;
+  --pd-ui-line:#2d3035;
+  --pd-ui-line-active:#52525b;
+  --pd-ui-text:#f4f4f5;
+  --pd-ui-muted:#a1a1aa;
+  --pd-ui-dim:#71717a;
+  --pd-ui-ready:#10b981;
+  --pd-ui-danger:#c77b82;
+  --pd-ui-danger-line:#6a3e42;
+  --pd-ui-warning:#d2b47a;
+  --pd-ui-radius:4px;
+  --pd-ui-radius-sm:3px;
+  --pd-ui-control-height:42px;
+  --pd-ui-button-height:38px;
+  --pd-ui-font:Inter,Geist,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --pd-ui-mono:ui-monospace,"SF Mono","JetBrains Mono","Fira Code",Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+
+  /* Compatibility tokens used by older PilotDesk page layers. */
+  --bg:var(--pd-ui-bg)!important;
+  --bg2:var(--pd-ui-bg-recessed)!important;
+  --panel:var(--pd-ui-surface)!important;
+  --panel2:var(--pd-ui-surface-raised)!important;
+  --panel3:#1d1e23!important;
+  --text:var(--pd-ui-text)!important;
+  --muted:var(--pd-ui-muted)!important;
+  --muted2:var(--pd-ui-dim)!important;
+  --line:var(--pd-ui-line)!important;
+  --line-hi:var(--pd-ui-line-active)!important;
+  --silver:#e4e4e7!important;
+  --silver2:var(--pd-ui-muted)!important;
+  --shadow:none!important;
+  --pd-panel:var(--pd-ui-surface)!important;
+  --pd-panel2:var(--pd-ui-surface-raised)!important;
+  --pd-line:var(--pd-ui-line)!important;
+  --pd-soft:var(--pd-ui-muted)!important;
+  --pd-text:var(--pd-ui-text)!important;
+  --pd-accent:#e4e4e7!important;
+}
+
+html[data-pd-theme="light"]{
+  --pd-ui-bg:#f4f4f5;
+  --pd-ui-bg-recessed:#ececee;
+  --pd-ui-surface:#ffffff;
+  --pd-ui-surface-raised:#f7f7f8;
+  --pd-ui-line:#d4d4d8;
+  --pd-ui-line-active:#8b8b94;
+  --pd-ui-text:#18181b;
+  --pd-ui-muted:#52525b;
+  --pd-ui-dim:#71717a;
+}
+html[data-pd-theme="night-red"]{
+  --pd-ui-text:#ffd7d4;
+  --pd-ui-muted:#c99793;
+  --pd-ui-dim:#936965;
+  --pd-ui-line:#4c2f30;
+  --pd-ui-line-active:#8a5555;
+}
+
+*{box-sizing:border-box}
+html,body{background:var(--pd-ui-bg)!important}
+body{
+  color:var(--pd-ui-text)!important;
+  background-image:none!important;
+  font-family:var(--pd-ui-font)!important;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+body:before{content:none!important;display:none!important}
+
+/* =========================================================
+   ONE FIELD FORMAT
+   ========================================================= */
+label,
+.field label,
+.pd-field label,
+.pd-account-field label,
+.pd-widget-field label,
+.wb-head{
+  color:var(--pd-ui-muted)!important;
+  font:700 9px/1.2 var(--pd-ui-mono)!important;
+  letter-spacing:.1em!important;
+  text-transform:uppercase!important;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]),
+select,
+textarea,
+.pd-search-shell input,
+.pd-account-field input,
+.pd-account-field select,
+.pd-widget-field input,
+.wb-row input,
+.wx-search input,
+.search input,
+.pd-top-search input,
+.pd-hero-search input{
+  width:100%;
+  min-width:0;
+  height:var(--pd-ui-control-height)!important;
+  min-height:var(--pd-ui-control-height)!important;
+  padding:0 11px!important;
+  border:1px solid var(--pd-ui-line)!important;
+  border-radius:var(--pd-ui-radius-sm)!important;
+  outline:0!important;
+  background:var(--pd-ui-surface-raised)!important;
+  background-image:none!important;
+  color:var(--pd-ui-text)!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.28)!important;
+  font:500 13px/40px var(--pd-ui-mono)!important;
+  font-feature-settings:"tnum" 1,"zero" 1!important;
+  font-variant-numeric:tabular-nums slashed-zero!important;
+  letter-spacing:-.01em!important;
+  transition:border-color .12s ease,background-color .12s ease!important;
+}
+textarea{
+  height:auto!important;
+  min-height:96px!important;
+  padding:10px 11px!important;
+  line-height:1.5!important;
+  resize:vertical;
+}
+input::placeholder,textarea::placeholder{color:var(--pd-ui-dim)!important;opacity:1}
+input:focus,select:focus,textarea:focus,
+.pd-search-shell input:focus,
+.pd-account-field input:focus,.pd-account-field select:focus,
+.wb-row input:focus,.search input:focus,.pd-top-search input:focus,.pd-hero-search input:focus{
+  border-color:var(--pd-ui-line-active)!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.24),0 0 0 2px rgba(228,228,231,.05)!important;
+}
+input:disabled,select:disabled,textarea:disabled{opacity:.55!important;cursor:not-allowed!important}
+
+/* Unit-bearing calculator fields use the exact same cell as every other field. */
+.input-wrap{
+  width:100%!important;
+  min-height:var(--pd-ui-control-height)!important;
+  display:flex!important;
+  align-items:stretch!important;
+  overflow:hidden!important;
+  border:1px solid var(--pd-ui-line)!important;
+  border-radius:var(--pd-ui-radius-sm)!important;
+  background:var(--pd-ui-surface-raised)!important;
+  background-image:none!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.28)!important;
+}
+.input-wrap:focus-within{
+  border-color:var(--pd-ui-line-active)!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.24),0 0 0 2px rgba(228,228,231,.05)!important;
+}
+.input-wrap input,
+.input-wrap select{
+  height:40px!important;
+  min-height:40px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.input-wrap span{
+  min-width:44px!important;
+  height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-left:1px solid var(--pd-ui-line)!important;
+  border-radius:0!important;
+  background:var(--pd-ui-surface)!important;
+  color:var(--pd-ui-dim)!important;
+  font:700 9px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+}
+
+/* Homepage search is no longer a separate white/SaaS component. */
+html.pd-home-command-center body .pd-hero-search input,
+html.pd-home-command-center body .pd-top-search input{
+  height:var(--pd-ui-control-height)!important;
+  min-height:var(--pd-ui-control-height)!important;
+  padding:0 11px!important;
+  border:1px solid var(--pd-ui-line)!important;
+  border-radius:var(--pd-ui-radius-sm)!important;
+  background:var(--pd-ui-surface-raised)!important;
+  color:var(--pd-ui-text)!important;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.28)!important;
+  transform:none!important;
+}
+html.pd-home-command-center body .pd-hero-search:before,
+html.pd-home-command-center body .pd-top-search:before{display:none!important}
+html.pd-home-command-center body .pd-hero-search input{padding-right:104px!important}
+
+/* =========================================================
+   ONE BUTTON FORMAT
+   ========================================================= */
+button,
+.pd-btn,
+.calc-btn,
+.utility-btn,
+.pd-auth-btn,
+.pd-copy-summary,
+.pd-install-button,
+.calc-actions button,
+.calc-actions a,
+.pd-account-actions button,
+.pd-account-actions a,
+.pd-owner-head button,
+.wb-row button,
+.pd-hero-search button{
+  min-height:var(--pd-ui-button-height)!important;
+  height:var(--pd-ui-button-height)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:0 12px!important;
+  border:1px solid var(--pd-ui-line-active)!important;
+  border-radius:var(--pd-ui-radius-sm)!important;
+  background:var(--pd-ui-surface-raised)!important;
+  background-image:none!important;
+  color:var(--pd-ui-text)!important;
+  box-shadow:none!important;
+  filter:none!important;
+  font:700 9px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.09em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap;
+  cursor:pointer!important;
+  transform:none!important;
+  transition:border-color .12s ease,background-color .12s ease,color .12s ease!important;
+}
+button:hover,button:focus-visible,
+.pd-btn:hover,.pd-btn:focus-visible,
+.calc-btn:hover,.calc-btn:focus-visible,
+.utility-btn:hover,.utility-btn:focus-visible,
+.pd-auth-btn:hover,.pd-auth-btn:focus-visible,
+.pd-copy-summary:hover,.pd-copy-summary:focus-visible,
+.calc-actions button:hover,.calc-actions a:hover,
+.pd-account-actions button:hover,.pd-account-actions a:hover,
+.pd-owner-head button:hover,.wb-row button:hover,
+.pd-hero-search button:hover{
+  border-color:#71717a!important;
+  background:#202126!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  filter:none!important;
+  transform:none!important;
+}
+button:disabled,.pd-btn:disabled,.calc-btn:disabled,.pd-auth-btn:disabled{opacity:.45!important;cursor:not-allowed!important}
+button.danger,.danger,.pd-account-actions .danger{
+  border-color:var(--pd-ui-danger-line)!important;
+  color:#e3b8bc!important;
+  background:#181113!important;
+}
+button.danger:hover,.danger:hover,.pd-account-actions .danger:hover{border-color:#8b5158!important;background:#211619!important}
+
+html.pd-home-command-center body .pd-hero-search button{
+  top:2px!important;
+  right:2px!important;
+  height:38px!important;
+  min-height:38px!important;
+  border-radius:2px!important;
+}
+
+/* =========================================================
+   ONE SURFACE / CARD FORMAT
+   ========================================================= */
+.info-card,
+.side-card,
+.pd-card,
+.pd-panel,
+.calc-box,
+.tool-card,
+.trust-row,
+.trust-card,
+.pd-hub-card,
+.pd-airport-result,
+.pd-airport-hero,
+.pd-kpi,
+.pd-dashboard-block,
+.pd-flight-card,
+.pd-empty-state,
+.pd-brief-hero,
+.pd-brief-item,
+.pd-official-links a,
+.pd-token-row,
+.pd-modal,
+.wx-skeleton,
+.wx-error,
+.wx-summary,
+.wx-block,
+.wx-kpis>div,
+.pd-account-card,
+.pd-account-promise,
+.pd-account-benefit,
+.pd-user-stat,
+.pd-owner,
+.pd-owner-stat,
+.pd-account-roadmap-grid>div,
+.pd-resume,
+.pd-context-widget{
+  border:1px solid var(--pd-ui-line)!important;
+  border-radius:var(--pd-ui-radius)!important;
+  background:var(--pd-ui-surface)!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+
+/* Keep data/readout cells visually related, but recessed. */
+.result,
+.pd-raw-report,
+.formula,
+.pd-output-console,
+.pd-output-console .result,
+.pd-account-status,
+.pd-progress-track{
+  border-color:var(--pd-ui-line)!important;
+  border-radius:var(--pd-ui-radius-sm)!important;
+  background:var(--pd-ui-bg-recessed)!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+.result.primary,.pd-output-console .result.primary{background:#101115!important;border-color:var(--pd-ui-line-active)!important}
+.result strong,.result.primary strong,.pd-user-stat strong,.pd-owner-stat strong{
+  color:var(--pd-ui-text)!important;
+  background:none!important;
+  -webkit-text-fill-color:initial!important;
+}
+
+/* Tool library cards use one permanent header rail, with content below it. */
+.tool-card{
+  position:relative!important;
+  min-height:138px!important;
+  padding:42px 18px 18px!important;
+  overflow:hidden!important;
+  transition:border-color .12s ease,background-color .12s ease!important;
+}
+.tool-card:before{
+  content:''!important;
+  position:absolute!important;
+  inset:0 0 auto 0!important;
+  width:auto!important;
+  height:29px!important;
+  border:0!important;
+  border-bottom:1px solid var(--pd-ui-line)!important;
+  background:#101115!important;
+  opacity:1!important;
+}
+.tool-card:after{display:none!important;content:none!important}
+.tool-card:hover,.tool-card:focus-visible{
+  transform:none!important;
+  border-color:var(--pd-ui-line-active)!important;
+  background:#141519!important;
+  box-shadow:none!important;
+}
+.pd-tool-code{
+  height:29px!important;
+  padding:0 12px!important;
+  color:var(--pd-ui-dim)!important;
+  font:700 8px/29px var(--pd-ui-mono)!important;
+  letter-spacing:.12em!important;
+}
+.pd-tool-code:before{background:var(--pd-ui-ready)!important;box-shadow:none!important}
+.tool-card>b{position:relative!important;z-index:2!important;color:var(--pd-ui-text)!important;font-size:15px!important;line-height:1.3!important}
+.tool-card>p{position:relative!important;z-index:2!important;margin:8px 0 0!important;color:var(--pd-ui-muted)!important;font-size:12px!important;line-height:1.5!important}
+
+/* Homepage primary cards use the same chassis as the tool library. */
+html.pd-home-command-center body #pdQuickStart .pd-task-card{
+  border:1px solid var(--pd-ui-line)!important;
+  border-radius:var(--pd-ui-radius)!important;
+  background:var(--pd-ui-surface)!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+html.pd-home-command-center body #pdQuickStart .pd-task-card:before,
+html.pd-home-command-center body #pdQuickStart .pd-task-card:after{content:none!important;display:none!important}
+html.pd-home-command-center body #pdQuickStart .pd-task-card:hover,
+html.pd-home-command-center body #pdQuickStart .pd-task-card:focus-visible,
+html.pd-home-command-center body #pdQuickStart .pd-task-card.is-active{
+  border-color:var(--pd-ui-line-active)!important;
+  background:#141519!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+
+/* =========================================================
+   ONE CHIP / BADGE FORMAT
+   ========================================================= */
+.badge,
+.recent-chip,
+.pd-chip,
+.pd-flightcat-pill,
+.source-links a,
+.category-head span,
+.pd-all-count,
+.pd-context-tabs button,
+.pd-widget-status,
+.pd-code-token,
+.pd-flight-subnav a,
+.pd-product-nav a,
+.pd-product-nav button{
+  min-height:28px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  padding:0 8px!important;
+  border:1px solid var(--pd-ui-line)!important;
+  border-radius:var(--pd-ui-radius-sm)!important;
+  background:var(--pd-ui-surface)!important;
+  background-image:none!important;
+  color:var(--pd-ui-muted)!important;
+  box-shadow:none!important;
+  font:700 8px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.09em!important;
+  text-transform:uppercase!important;
+  text-decoration:none!important;
+  white-space:nowrap;
+}
+.badge:hover,.recent-chip:hover,.pd-chip:hover,.source-links a:hover,
+.pd-flight-subnav a:hover,.pd-product-nav a:hover,.pd-product-nav button:hover{
+  border-color:var(--pd-ui-line-active)!important;
+  background:var(--pd-ui-surface-raised)!important;
+  color:var(--pd-ui-text)!important;
+}
+.pd-flightcat-pill[data-cat="VFR"]{color:#85c99c!important;border-color:#3d6f4c!important}
+.pd-flightcat-pill[data-cat="MVFR"]{color:#88b5dc!important;border-color:#42617d!important}
+.pd-flightcat-pill[data-cat="IFR"],.pd-flightcat-pill[data-cat="LIFR"]{color:#d69aa0!important;border-color:#70484e!important}
+
+/* =========================================================
+   CONSISTENT LABELS, HEADERS, NAV, TABLES
+   ========================================================= */
+.eyebrow,
+.pd-section-kicker,
+.pd-account-kicker,
+.pd-panel-title,
+.pd-panel-id,
+.pd-widget-result small,
+.result small,
+.wx-kpis small,
+.wx-runway small,
+.pd-user-stat span,
+.pd-owner-stat span{
+  color:var(--pd-ui-dim)!important;
+  font-family:var(--pd-ui-mono)!important;
+  font-weight:700!important;
+  letter-spacing:.11em!important;
+  text-transform:uppercase!important;
+}
+
+.topbar,
+.pd-home-command-center .topbar{
+  height:52px!important;
+  min-height:52px!important;
+  background:var(--pd-ui-bg)!important;
+  background-image:none!important;
+  border-bottom:1px solid var(--pd-ui-line)!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.topbar nav a,.topbar .pd-global-nav a{
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.topbar nav a[href="/account.html"],.topbar .pd-global-nav a[href="/account.html"]{
+  border:0!important;
+  border-radius:0!important;
+  padding:5px 0!important;
+  background:transparent!important;
+}
+
+.category-head,
+.pd-quick-head,
+.pd-home-personal-head{
+  border-bottom:1px solid var(--pd-ui-line)!important;
+}
+
+.table-wrap,table{border-color:var(--pd-ui-line)!important}
+table{width:100%;border-collapse:collapse;background:transparent!important}
+th,td{
+  border-bottom:1px solid var(--pd-ui-line)!important;
+  background:transparent!important;
+  color:var(--pd-ui-muted)!important;
+}
+th{
+  color:var(--pd-ui-text)!important;
+  font:700 9px/1.2 var(--pd-ui-mono)!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+
+/* Row-style UI receives the same surface language. */
+.pd-runway-row,
+.wx-runway,
+.wb-row,
+.pd-taf-segment{
+  border-color:var(--pd-ui-line)!important;
+  border-radius:var(--pd-ui-radius-sm)!important;
+  background:var(--pd-ui-bg-recessed)!important;
+  box-shadow:none!important;
+}
+
+/* Dialogs/sheets must not introduce a second visual system. */
+dialog,.pd-modal,.pd-app-sheet{
+  border:1px solid var(--pd-ui-line-active)!important;
+  border-radius:var(--pd-ui-radius)!important;
+  background:var(--pd-ui-surface)!important;
+  background-image:none!important;
+  color:var(--pd-ui-text)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.52)!important;
+}
+
+/* Remove page-specific decorative motion/glow from interface primitives. */
+.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.info-card,.side-card,
+.pd-account-card,.pd-task-card,button,.pd-btn,.calc-btn,input,select,textarea{
+  animation:none!important;
+}
+
+:focus-visible{outline:2px solid #a1a1aa!important;outline-offset:2px!important}
+
+@media(max-width:820px){
+  .topbar .pd-global-nav{
+    border:1px solid var(--pd-ui-line)!important;
+    border-radius:var(--pd-ui-radius)!important;
+    background:var(--pd-ui-surface)!important;
+    box-shadow:0 18px 45px rgba(0,0,0,.5)!important;
+  }
+  .topbar .pd-global-nav a{
+    min-height:36px!important;
+    display:flex!important;
+    align-items:center!important;
+    padding:0 10px!important;
+    border:1px solid transparent!important;
+    border-radius:var(--pd-ui-radius-sm)!important;
+  }
+  .topbar .pd-global-nav a:hover,.topbar .pd-global-nav a[aria-current="page"]{
+    border-color:var(--pd-ui-line)!important;
+    background:var(--pd-ui-surface-raised)!important;
+  }
+}
+
+@media(max-width:600px){
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]):not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]),select{
+    font-size:16px!important; /* prevents iOS form zoom without changing the chassis */
+  }
+  .tool-card{min-height:132px!important;padding:40px 17px 17px!important}
+  html.pd-home-command-center body .pd-hero-search input{padding-right:48px!important}
+  html.pd-home-command-center body .pd-hero-search button{width:38px!important;padding:0!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}

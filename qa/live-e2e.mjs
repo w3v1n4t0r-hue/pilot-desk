@@ -2,8 +2,10 @@ import { chromium } from 'playwright';
 
 const base=(process.env.PILOTDESK_BASE_URL||'https://www.pilot-desk.com').replace(/\/$/,'');
 const browser=await chromium.launch({headless:true});
-const desktop=await browser.newPage({viewport:{width:1365,height:900}});
+const makeDesktop=async()=>{const p=await browser.newPage({viewport:{width:1365,height:900}});p.setDefaultTimeout(15000);p.setDefaultNavigationTimeout(30000);return p};
+let desktop=await makeDesktop();
 const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
+mobile.setDefaultTimeout(15000);mobile.setDefaultNavigationTimeout(30000);
 const failures=[];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const check=async(name,fn)=>{try{await fn();console.log('PASS',name)}catch(e){failures.push(`${name}: ${e.message}`);console.error('FAIL',name,e.message)}};
@@ -34,13 +36,13 @@ async function requestRetry(path,{attempts=2,timeout=15000,maxRedirects=20}={}){
   throw last||new Error(`Request failed for ${path}`);
 }
 
-await check('homepage loads and growth search is usable',async()=>{
+await check('homepage loads and command-center search is usable',async()=>{
   await gotoRetry(desktop,'/');
   await desktop.waitForSelector('.brand',{state:'visible',timeout:12000});
-  await desktop.waitForSelector('#pdUniversalSearch',{state:'visible',timeout:15000});
-  await desktop.waitForSelector('[data-pd-global-search]',{state:'visible',timeout:15000});
+  await desktop.waitForSelector('.pd-hero-search input',{state:'visible',timeout:15000});
+  await desktop.waitForSelector('[data-pd-global-search]',{state:'attached',timeout:15000});
   if(!(await desktop.locator('a[href="/weather.html"]').count()))throw new Error('Weather link missing');
-  const input=desktop.locator('#pdUniversalSearch input');
+  const input=desktop.locator('.pd-hero-search input');
   await input.fill('private pilot');
   await input.press('Enter');
   await desktop.waitForSelector('#pdSearchDialog[open]',{timeout:10000});
@@ -88,6 +90,10 @@ await check('weather API and UI both return a usable KGFK result',async()=>{
   const text=(await desktop.locator('#weatherStatus').innerText())+' '+(await desktop.locator('#weatherOutput').innerText());
   if(/Weather retrieval failed|Weather could not be loaded/i.test(text))throw new Error(text.slice(0,400));
 });
+
+// Start the persistence checks on a fresh renderer so a third-party/live-weather
+// browser failure cannot poison the rest of the production run.
+desktop=await makeDesktop();
 
 await check('aircraft profile saves locally',async()=>{
   await gotoRetry(desktop,'/aircraft.html');

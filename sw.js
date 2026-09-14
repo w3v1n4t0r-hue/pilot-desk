@@ -1,4 +1,4 @@
-const CACHE='pilotdesk-v33';
+const CACHE='pilotdesk-v34';
 const CORE=[
   '/','/index.html','/offline.html','/404.html','/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html','/flight-training.html',
   '/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html',
@@ -23,7 +23,9 @@ async function trim(cache){const keys=await cache.keys();const runtime=keys.filt
 async function put(cache,req,res){if(cacheable(res)){await cache.put(keyFor(req),res.clone());if(!CORE_PATHS.has(pathOf(req)))trim(cache).catch(()=>{})}return res}
 async function match(cache,req){return (await cache.match(keyFor(req)))||(await cache.match(pathOf(req)))}
 async function precache(){const cache=await caches.open(CACHE);await Promise.allSettled(CORE.map(async url=>{try{const res=await fetch(url,{cache:'reload'});if(cacheable(res))await cache.put(url,res)}catch{}}))}
-self.addEventListener('install',e=>e.waitUntil((async()=>{await precache();await self.skipWaiting()})()));
+/* New workers wait. PilotDesk only switches versions after the user explicitly accepts the update,
+   so an open page can never jump into a new shell halfway through a session. */
+self.addEventListener('install',e=>e.waitUntil(precache()));
 self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING')self.skipWaiting()});
 self.addEventListener('activate',e=>e.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('pilotdesk-')&&k!==CACHE).map(k=>caches.delete(k)));if(self.registration.navigationPreload)await self.registration.navigationPreload.enable().catch(()=>{});await self.clients.claim()})()));
 async function networkFirst(req,preloadPromise){const cache=await caches.open(CACHE);try{if(preloadPromise){const pre=await preloadPromise.catch(()=>null);if(cacheable(pre))return put(cache,req,pre)}const res=await fetch(req,{cache:'no-store'});return put(cache,req,res)}catch{return (await match(cache,req))||(await cache.match('/offline.html'))||(await cache.match('/index.html'))}}

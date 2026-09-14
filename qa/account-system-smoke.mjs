@@ -11,6 +11,8 @@ const checks=[
   ['account deletion verifies current user',/auth\/v1\/user/.test(del)&&/auth\/v1\/admin\/users/.test(del)],
   ['profile RLS is enabled',/alter table public\.profiles enable row level security/i.test(sql)],
   ['saved data is scoped to auth.uid',/auth\.uid\(\) = user_id/.test(sql)],
+  ['client profile updates are column-limited',/grant update \(display_name, avatar_url, pilot_stage, home_airport, last_seen_at\) on public\.profiles/i.test(sql)],
+  ['clients cannot award daily XP',/grant select on public\.daily_progress to authenticated/i.test(sql)&&!/grant select, insert, update on public\.daily_progress/i.test(sql)],
   ['new auth users get profiles',/on_auth_user_created/.test(sql)&&/handle_new_user/.test(sql)],
   ['account is in global navigation',/\/account\.html','Account'/.test(nav)]
 ];

@@ -1,0 +1,403 @@
+/* PilotDesk site chassis
+   Macro-level authority: page width, hierarchy, spacing, hero treatment, contextual
+   navigation, app workspaces and card geometry. Component primitives still live in
+   unified-ui.css. This file is intentionally the LAST visual layer. */
+
+:root{
+  --pd-chassis-max:1380px;
+  --pd-chassis-reading:920px;
+  --pd-chassis-gutter:22px;
+  --pd-chassis-gap:12px;
+  --pd-chassis-section:28px;
+  --pd-chassis-rail:29px;
+}
+
+/* The whole product uses one frame. Reading pages stay intentionally narrower. */
+.shell{
+  width:min(100%,var(--pd-chassis-max))!important;
+  max-width:var(--pd-chassis-max)!important;
+  margin-inline:auto!important;
+  padding:28px var(--pd-chassis-gutter) 72px!important;
+}
+.content-page:not(.pd-streamlined-shell){max-width:var(--pd-chassis-reading)!important}
+html.pd-streamlined-app .pd-streamlined-shell,
+html.pd-streamlined-app .pd-streamlined-shell.content-page,
+html.pd-streamlined-app .pd-account-shell{
+  width:min(100%,var(--pd-chassis-max))!important;
+  max-width:var(--pd-chassis-max)!important;
+  margin-inline:auto!important;
+  padding:24px var(--pd-chassis-gutter) 72px!important;
+}
+
+/* One compact global chrome. Do not let interior pages grow a different header. */
+html.pd-streamlined-app .topbar{
+  height:58px!important;
+  min-height:58px!important;
+  padding-inline:max(18px,calc((100vw - var(--pd-chassis-max))/2))!important;
+  gap:16px!important;
+  background:#0a0b0d!important;
+  border-top:1px solid #3f5655!important;
+  border-bottom:1px solid #27272a!important;
+}
+html.pd-streamlined-app .brand{gap:9px!important;flex:0 0 auto!important}
+html.pd-streamlined-app .brandmark{width:32px!important;height:32px!important;border-radius:4px!important}
+html.pd-streamlined-app .brand b{
+  font-size:15px!important;
+  font-style:normal!important;
+  font-weight:760!important;
+  letter-spacing:.03em!important;
+}
+html.pd-streamlined-app .brand small{
+  margin-top:1px!important;
+  color:#777780!important;
+  font:700 7px/1.1 var(--pd-ui-mono)!important;
+  letter-spacing:.17em!important;
+}
+html.pd-streamlined-app .pd-utility-nav{gap:16px!important;margin-left:auto!important}
+html.pd-streamlined-app .pd-utility-nav a{
+  min-height:38px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 1px!important;
+  border:0!important;
+  border-bottom:1px solid transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#92929b!important;
+  font:700 9px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.1em!important;
+}
+html.pd-streamlined-app .pd-utility-nav a:hover,
+html.pd-streamlined-app .pd-utility-nav a[aria-current="page"]{
+  color:#fafafa!important;
+  border-bottom-color:#d4d4d8!important;
+}
+
+/* On application pages the header is the global nav. The extra product chip row
+   was a second navigation language and is deliberately removed. */
+html.pd-streamlined-app .pd-streamlined-shell>.pd-product-nav{display:none!important}
+
+/* One page-introduction format for Planner, Weather, Hangar, Procedures, Account,
+   E6B, W&B and the rest of the interactive product. */
+html.pd-streamlined-app .pd-page-hero{
+  width:100%!important;
+  max-width:none!important;
+  margin:0 0 16px!important;
+  padding:24px 0 22px!important;
+  border:0!important;
+  border-bottom:1px solid var(--pd-ui-line)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html.pd-streamlined-app .pd-page-hero>.badge,
+html.pd-streamlined-app .pd-page-hero>.eyebrow{margin-bottom:10px!important}
+html.pd-streamlined-app .pd-page-hero h1{
+  max-width:920px!important;
+  margin:0 0 10px!important;
+  color:var(--pd-ui-text)!important;
+  font-size:clamp(34px,4.5vw,56px)!important;
+  line-height:1!important;
+  font-weight:760!important;
+  letter-spacing:-.045em!important;
+}
+html.pd-streamlined-app .pd-page-hero p{
+  max-width:780px!important;
+  margin:0!important;
+  color:var(--pd-ui-muted)!important;
+  font-size:14px!important;
+  line-height:1.65!important;
+}
+
+/* Context navigation is one flat rail, not another family of pills. */
+html.pd-streamlined-app .pd-flight-subnav{
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:2px!important;
+  margin:0 0 16px!important;
+  padding:0 0 9px!important;
+  border-bottom:1px solid var(--pd-ui-line)!important;
+  overflow-x:auto!important;
+  scrollbar-width:thin!important;
+}
+html.pd-streamlined-app .pd-flight-subnav a{
+  min-height:32px!important;
+  height:32px!important;
+  flex:0 0 auto!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-bottom:1px solid transparent!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--pd-ui-dim)!important;
+  font:700 8px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+html.pd-streamlined-app .pd-flight-subnav a:hover,
+html.pd-streamlined-app .pd-flight-subnav a[aria-current="page"]{
+  color:var(--pd-ui-text)!important;
+  border-bottom-color:#a1a1aa!important;
+  background:transparent!important;
+}
+
+/* The operational warning follows the intro immediately and uses the same rail
+   geometry everywhere. */
+html.pd-streamlined-app .safety-strip{
+  width:100%!important;
+  margin:0 0 16px!important;
+  padding:10px 12px!important;
+  border:1px solid #34343a!important;
+  border-left:2px solid #8b8b94!important;
+  border-radius:3px!important;
+  background:#0d0e11!important;
+  color:#94949d!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+html.pd-streamlined-app .safety-strip strong{color:#d4d4d8!important}
+
+/* Hub / launcher pages now use the same proportions as the homepage tool system. */
+html.pd-streamlined-app .pd-hub-grid{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin:0!important;
+}
+html.pd-streamlined-app .pd-hub-card{
+  grid-column:span 4!important;
+  min-width:0!important;
+  min-height:170px!important;
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  padding:42px 16px 14px!important;
+  overflow:hidden!important;
+  border:1px solid #34343a!important;
+  border-radius:4px!important;
+  background:#101114!important;
+  color:var(--pd-ui-text)!important;
+  transition:border-color .12s ease,background-color .12s ease!important;
+}
+html.pd-streamlined-app .pd-hub-card.wide{grid-column:span 6!important}
+html.pd-streamlined-app .pd-hub-card.full{grid-column:1/-1!important}
+html.pd-streamlined-app .pd-hub-card:before{
+  content:''!important;
+  display:block!important;
+  position:absolute!important;
+  inset:0 0 auto 0!important;
+  height:var(--pd-chassis-rail)!important;
+  border:0!important;
+  border-bottom:1px solid #303036!important;
+  background:#0d0e11!important;
+  opacity:1!important;
+}
+html.pd-streamlined-app .pd-hub-card:after{content:none!important;display:none!important}
+html.pd-streamlined-app .pd-hub-card>small{
+  position:absolute!important;
+  z-index:2!important;
+  left:12px!important;
+  right:12px!important;
+  top:0!important;
+  height:var(--pd-chassis-rail)!important;
+  display:flex!important;
+  align-items:center!important;
+  margin:0!important;
+  color:#8b8b94!important;
+  font:700 8px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+html.pd-streamlined-app .pd-hub-card h2,
+html.pd-streamlined-app .pd-hub-card h3{
+  margin:0 0 8px!important;
+  color:#fafafa!important;
+  font-size:17px!important;
+  line-height:1.2!important;
+  font-weight:720!important;
+  letter-spacing:-.02em!important;
+}
+html.pd-streamlined-app .pd-hub-card p{
+  max-width:38em!important;
+  margin:0!important;
+  color:#a1a1aa!important;
+  font-size:12px!important;
+  line-height:1.55!important;
+}
+html.pd-streamlined-app .pd-hub-card .pd-arrow{
+  margin-top:auto!important;
+  padding-top:13px!important;
+  color:#d4d4d8!important;
+  font:700 9px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.04em!important;
+}
+html.pd-streamlined-app .pd-hub-card:hover,
+html.pd-streamlined-app .pd-hub-card:focus-visible{
+  transform:none!important;
+  border-color:#62626b!important;
+  background:#141519!important;
+  box-shadow:none!important;
+}
+
+/* Primary work surfaces share one density and one heading hierarchy. */
+html.pd-streamlined-app .pd-panel,
+html.pd-streamlined-app .pd-dashboard-block,
+html.pd-streamlined-app .pd-proc-browser,
+html.pd-streamlined-app .pd-plate-viewer,
+html.pd-streamlined-app .pd-proc-pack-panel,
+html.pd-streamlined-app .ct-panel,
+html.pd-streamlined-app .wx-block,
+html.pd-streamlined-app .wx-summary,
+html.pd-streamlined-app .pd-airport-hero{
+  border:1px solid #303036!important;
+  border-radius:4px!important;
+  background:#101114!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+html.pd-streamlined-app .pd-panel,
+html.pd-streamlined-app .pd-dashboard-block,
+html.pd-streamlined-app .ct-panel{padding:16px!important}
+html.pd-streamlined-app .pd-card-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  margin:0 0 14px!important;
+  padding:0 0 10px!important;
+  border-bottom:1px solid var(--pd-ui-line)!important;
+}
+html.pd-streamlined-app .pd-card-head h2,
+html.pd-streamlined-app .pd-panel>h2{
+  margin:0!important;
+  font-size:16px!important;
+  line-height:1.25!important;
+  font-weight:720!important;
+}
+html.pd-streamlined-app .pd-card-head p{
+  margin:4px 0 0!important;
+  color:var(--pd-ui-muted)!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+}
+
+/* Grid/list density is now consistent across workspaces. */
+html.pd-streamlined-app .pd-dashboard-grid,
+html.pd-streamlined-app .pd-flight-grid,
+html.pd-streamlined-app .pd-kpi-grid,
+html.pd-streamlined-app .pd-brief-grid{
+  gap:10px!important;
+}
+html.pd-streamlined-app .pd-flight-card{
+  min-height:170px!important;
+  padding:15px!important;
+  border-radius:4px!important;
+  background:#101114!important;
+}
+html.pd-streamlined-app .pd-kpi,
+html.pd-streamlined-app .pd-brief-item{
+  border-radius:3px!important;
+  background:#0d0e11!important;
+}
+
+/* Search/input rows line up to the same baseline on every tool. */
+html.pd-streamlined-app .pd-search-shell,
+html.pd-streamlined-app .wx-search,
+html.pd-streamlined-app .pd-proc-searchbar{
+  gap:8px!important;
+  align-items:end!important;
+}
+
+/* Background/SEO/training copy on interactive pages is important, but it no
+   longer sits between the user and the actual tool. It is a single secondary
+   disclosure after the primary interface. */
+html.pd-streamlined-app .pd-reference-panel{
+  width:min(100%,var(--pd-chassis-reading))!important;
+  margin:26px 0 0!important;
+  border:1px solid #29292e!important;
+  border-radius:4px!important;
+  background:#0c0d0f!important;
+  overflow:hidden!important;
+}
+html.pd-streamlined-app .pd-reference-panel>summary{
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+  padding:0 12px!important;
+  border:0!important;
+  background:#101114!important;
+  color:#a1a1aa!important;
+  cursor:pointer!important;
+  list-style:none!important;
+  font:700 9px/1 var(--pd-ui-mono)!important;
+  letter-spacing:.09em!important;
+  text-transform:uppercase!important;
+}
+html.pd-streamlined-app .pd-reference-panel>summary::-webkit-details-marker{display:none!important}
+html.pd-streamlined-app .pd-reference-panel>summary:after{
+  content:'+'!important;
+  margin-left:auto!important;
+  color:#71717a!important;
+  font:700 12px/1 var(--pd-ui-mono)!important;
+}
+html.pd-streamlined-app .pd-reference-panel[open]>summary:after{content:'−'!important}
+html.pd-streamlined-app .pd-reference-panel>.info-card{
+  width:100%!important;
+  margin:0!important;
+  padding:18px!important;
+  border:0!important;
+  border-top:1px solid #29292e!important;
+  border-radius:0!important;
+  background:#0b0c0e!important;
+}
+html.pd-streamlined-app .pd-reference-panel>.info-card h2{font-size:17px!important;margin:22px 0 8px!important}
+html.pd-streamlined-app .pd-reference-panel>.info-card h2:first-child{margin-top:0!important}
+html.pd-streamlined-app .pd-reference-panel>.info-card p,
+html.pd-streamlined-app .pd-reference-panel>.info-card li{font-size:13px!important;line-height:1.65!important}
+
+/* Regular lower-page reference sections keep a quieter reading treatment so they
+   do not compete with the primary tool. */
+html.pd-streamlined-app .pd-streamlined-shell>.info-card:not([data-pd-core-depth]){
+  width:min(100%,var(--pd-chassis-reading))!important;
+  margin:24px 0 0!important;
+  padding:18px!important;
+}
+html.pd-streamlined-app .pd-streamlined-shell>.info-card:not([data-pd-core-depth]) h2{
+  margin:0 0 8px!important;
+  font-size:17px!important;
+}
+html.pd-streamlined-app .pd-streamlined-shell>.info-card:not([data-pd-core-depth]) p,
+html.pd-streamlined-app .pd-streamlined-shell>.info-card:not([data-pd-core-depth]) li{
+  font-size:13px!important;
+  line-height:1.65!important;
+}
+
+/* Keep ads and footer aligned to the same page frame instead of creating visual
+   jumps in width. */
+html.pd-streamlined-app .pd-streamlined-shell>.ad-wrap{width:100%!important;margin:24px 0!important}
+footer{
+  width:min(100%,var(--pd-chassis-max))!important;
+  max-width:var(--pd-chassis-max)!important;
+  margin-inline:auto!important;
+  padding-inline:var(--pd-chassis-gutter)!important;
+}
+
+@media(max-width:1100px){
+  html.pd-streamlined-app .pd-hub-card,
+  html.pd-streamlined-app .pd-hub-card.wide{grid-column:span 6!important}
+}
+@media(max-width:820px){
+  :root{--pd-chassis-gutter:16px}
+  html.pd-streamlined-app .topbar{height:58px!important;padding-inline:12px!important}
+  html.pd-streamlined-app .pd-utility-nav{display:none!important}
+  html.pd-streamlined-app .pd-page-hero{padding:20px 0 18px!important}
+  html.pd-streamlined-app .pd-page-hero h1{font-size:clamp(32px,9vw,46px)!important}
+  html.pd-streamlined-app .pd-flight-subnav{margin-bottom:14px!important}
+}
+@media(max-width:620px){
+  html.pd-streamlined-app .pd-hub-card,
+  html.pd-streamlined-app .pd-hub-card.wide{grid-column:1/-1!important;min-height:148px!important}
+  html.pd-streamlined-app .pd-card-head{flex-direction:column!important}
+  html.pd-streamlined-app .pd-reference-panel{width:100%!important}
+}

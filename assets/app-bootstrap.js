@@ -2,104 +2,62 @@
 'use strict';
 if(window.__pilotDeskAppBootstrap)return;
 window.__pilotDeskAppBootstrap=true;
-
 const path=location.pathname;
 const isHome=path==='/'||path==='/index.html';
 const isCalculator=path.startsWith('/calculators/')&&!path.includes('weight-balance-builder');
 const isGuide=path.startsWith('/guides/');
-const isMobile=matchMedia('(max-width:760px)').matches;
-const isStandalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+const root=document.documentElement;
+if(isHome)root.classList.add('pd-home-command-center');
 
-try{
-  const saved=localStorage.getItem('pd-theme');
-  const valid=new Set(['system','light','dark','night-red']);
-  const mode=valid.has(saved)?saved:'dark';
-  const resolved=mode==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):mode;
-  document.documentElement.dataset.pdTheme=resolved;
-  document.documentElement.style.colorScheme=resolved==='light'?'light':'dark';
-}catch{}
+/* One visual boot state: never show base CSS, then polish, then avionics as separate phases. */
+root.classList.add('pd-ui-booting');
+const gate=document.createElement('style');
+gate.id='pdBootGate';
+gate.textContent='html.pd-ui-booting body{visibility:hidden!important}';
+document.head.appendChild(gate);
+let opened=false;
+const openGate=()=>{if(opened)return;opened=true;const show=()=>requestAnimationFrame(()=>{root.classList.remove('pd-ui-booting');root.classList.add('pd-ui-ready');gate.remove()});document.readyState==='loading'?document.addEventListener('DOMContentLoaded',show,{once:true}):show()};
+const failOpen=setTimeout(openGate,1600);
 
+try{const saved=localStorage.getItem('pd-theme'),valid=new Set(['system','light','dark','night-red']),mode=valid.has(saved)?saved:'dark',resolved=mode==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):mode;root.dataset.pdTheme=resolved;root.style.colorScheme=resolved==='light'?'light':'dark'}catch{}
 window.__pdTrackQueue=Array.isArray(window.__pdTrackQueue)?window.__pdTrackQueue:[];
 if(!window.pdTrack)window.pdTrack=(name,data={})=>window.__pdTrackQueue.push([name,data]);
 
-const loadStyle=(href,key)=>{
-  if(document.querySelector(`link[data-${key}]`)||[...document.styleSheets].some(s=>{try{return new URL(s.href,location.href).pathname===href}catch{return false}}))return;
-  const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.setAttribute(`data-${key}`,'1');document.head.appendChild(l);
-};
-const load=(src,key)=>{
-  if(document.querySelector(`script[data-${key}]`)||[...document.scripts].some(s=>{try{return new URL(s.src,location.href).pathname===src}catch{return false}}))return;
-  const s=document.createElement('script');s.src=src;s.async=false;s.setAttribute(`data-${key}`,'1');document.head.appendChild(s);
-};
+const jobs=[];
+const stylePath=href=>[...document.querySelectorAll('link[rel="stylesheet"]')].find(l=>{try{return new URL(l.href,location.href).pathname===href}catch{return false}});
+const loadStyle=(href,key)=>{const old=document.querySelector(`link[data-${key}]`)||stylePath(href);if(old)return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.setAttribute(`data-${key}`,'1');jobs.push(new Promise(r=>{const done=()=>r();l.addEventListener('load',done,{once:true});l.addEventListener('error',done,{once:true});setTimeout(done,900)}));document.head.appendChild(l)};
+const scriptPath=src=>[...document.scripts].find(s=>{try{return new URL(s.src,location.href).pathname===src}catch{return false}});
+const load=(src,key,critical=false)=>{if(document.querySelector(`script[data-${key}]`)||scriptPath(src))return;const s=document.createElement('script');s.src=src;s.async=false;s.setAttribute(`data-${key}`,'1');if(critical)jobs.push(new Promise(r=>{const done=()=>r();s.addEventListener('load',done,{once:true});s.addEventListener('error',done,{once:true});setTimeout(done,1000)}));document.head.appendChild(s)};
 const ready=fn=>document.readyState==='loading'?document.addEventListener('DOMContentLoaded',fn,{once:true}):fn();
-const idle=(fn,timeout=1400)=>'requestIdleCallback'in window?requestIdleCallback(fn,{timeout}):setTimeout(fn,Math.min(timeout,700));
-const afterPaint=fn=>requestAnimationFrame(()=>requestAnimationFrame(fn));
-const deferLoad=(src,key,timeout=1400)=>ready(()=>afterPaint(()=>idle(()=>load(src,key),timeout)));
+const deferLoad=(src,key,ms=900)=>ready(()=>setTimeout(()=>load(src,key),ms));
 
 loadStyle('/assets/professional-polish.css','pd-professional-polish');
 loadStyle('/assets/performance.css','pd-performance-css');
 loadStyle('/assets/avionics-ui.css','pd-avionics-ui');
+loadStyle('/assets/avionics-architecture.css','pd-avionics-architecture-css');
+loadStyle('/assets/avionics-ops.css','pd-avionics-ops-css');
+if(isHome){loadStyle('/assets/home-task-polish.css','pd-home-task-polish');loadStyle('/assets/home-command-center.css','pd-home-command-css');loadStyle('/assets/home-avionics-final.css','pd-home-avionics-final')}
 
-// Keep only visible shell and input-performance behavior on the first-paint path.
-load('/assets/global-nav.js','pd-global-nav');
-load('/assets/brand.js','pd-brand');
-load('/assets/theme.js','pd-theme');
-load('/assets/performance.js','pd-performance');
-load('/assets/tool-first-layout.js','pd-tool-first');
+for(const [src,key] of [
+ ['/assets/global-nav.js','pd-global-nav'],['/assets/brand.js','pd-brand'],['/assets/theme.js','pd-theme'],['/assets/performance.js','pd-performance'],['/assets/tool-first-layout.js','pd-tool-first'],['/assets/avionics-architecture.js','pd-avionics-architecture-js'],['/assets/avionics-command.js','pd-avionics-command-js'],['/assets/flight-strip-export.js','pd-flight-strip-export-js'],['/assets/crosswind-mfd.js','pd-crosswind-mfd-js'],['/assets/context-widget.js','pd-context-widget'],['/assets/product-polish.js','pd-polish'],['/assets/runtime-qol.js','pd-qol']
+])load(src,key,true);
+if(isHome)load('/assets/home-command-center.js','pd-home-command',true);
+if(isCalculator){load('/assets/features.js','pd-features',true);load('/assets/share-enhance.js','pd-share',true);load('/assets/calculator-ux.js','pd-calc-ux',true)}
+if(isCalculator||isGuide)load('/assets/preview-harvest.js','pd-preview-harvest',true);
+if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline',true);
+if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export',true);
+if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js','pd-aircraft-transfer',true);load('/assets/aircraft-training.js','pd-aircraft-training',true)}
+Promise.allSettled(jobs).then(()=>{clearTimeout(failOpen);openGate()});
 
-if(isCalculator){
-  load('/assets/features.js','pd-features');
-  load('/assets/share-enhance.js','pd-share');
-  load('/assets/calculator-ux.js','pd-calc-ux');
-}
-if(path==='/aircraft.html'){
-  load('/assets/aircraft-transfer.js','pd-aircraft-transfer');
-  load('/assets/aircraft-training.js','pd-aircraft-training');
-}
-if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline');
-if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export');
-
-// Unique, compatible capabilities recovered from older Preview branches. They are deliberately
-// isolated from calculator formulas and loaded after the primary interface is usable.
-if(path==='/route-planner.html'){
-  deferLoad('/assets/planner-pro.js','pd-planner-pro',500);
-  deferLoad('/assets/flight-library.js','pd-flight-library',700);
-}
+/* Non-visual/heavier helpers stay off the first paint path. */
+if(path==='/route-planner.html'){deferLoad('/assets/planner-pro.js','pd-planner-pro',500);deferLoad('/assets/flight-library.js','pd-flight-library',700)}
 if(path==='/procedures.html')deferLoad('/assets/procedure-pro.js','pd-procedure-pro',600);
 if(path==='/checklist-trainer.html')deferLoad('/assets/trainer-pro.js','pd-trainer-pro',600);
-if(isCalculator||isGuide)deferLoad('/assets/preview-harvest.js','pd-preview-harvest',1200);
-
-// Static HTML already contains canonical/structured SEO data and core safety copy, so these
-// enhancement/error modules can load after first paint without changing indexability or math.
-deferLoad('/assets/seo.js','pd-seo',350);
-deferLoad('/assets/errors.js','pd-errors',450);
-deferLoad('/assets/analytics.js','pd-analytics',650);
-deferLoad('/assets/product-polish.js','pd-polish',900);
-deferLoad('/assets/runtime-qol.js','pd-qol',1000);
-if(isMobile||isStandalone)ready(()=>afterPaint(()=>load('/assets/sticky-app.js','pd-sticky-app')));
-else deferLoad('/assets/sticky-app.js','pd-sticky-app',1800);
-deferLoad('/assets/pilotdesk-plus.js','pd-plus',isHome||path==='/history.html'||isCalculator?1100:2600);
-deferLoad('/assets/update.js','pd-update',3000);
+deferLoad('/assets/seo.js','pd-seo',350);deferLoad('/assets/errors.js','pd-errors',450);deferLoad('/assets/analytics.js','pd-analytics',650);deferLoad('/assets/sticky-app.js','pd-sticky-app',1100);deferLoad('/assets/pilotdesk-plus.js','pd-plus',1400);deferLoad('/assets/update.js','pd-update',2200);
 
 const canonicalWeightBalance='/weight-balance.html';
-function repairLegacyLinks(root=document){root.querySelectorAll?.('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]').forEach(a=>a.setAttribute('href',canonicalWeightBalance))}
-function addQuickStart(){
-  if(!isHome||document.getElementById('pdQuickStart'))return;
-  const hero=document.querySelector('.hero');if(!hero)return;
-  const section=document.createElement('section');section.id='pdQuickStart';section.className='pd-quick-start';
-  section.innerHTML=`<div class="pd-quick-head"><div><span class="eyebrow">QUICK START</span><h2>What are you doing today?</h2></div><span>Jump straight into the flight tool you need.</span></div><div class="pd-quick-grid"><a href="/airport.html" data-pd-launch="airport"><b>Airport search</b><span>Runways, weather and procedures</span></a><a href="/route-planner.html" data-pd-launch="route"><b>Plan a route</b><span>Route, navlog and saved flights</span></a><a href="/flight-planning-workspace.html" data-pd-launch="flight-workspace"><b>Flight math</b><span>Wind, time, fuel and descent in one flow</span></a><a href="/weather.html" data-pd-launch="weather"><b>Live weather</b><span>METAR, TAF and nearby stations</span></a><a href="/weight-balance.html" data-pd-launch="weight-balance"><b>Weight &amp; balance</b><span>Build and save a loading scenario</span></a></div>`;
-  hero.insertAdjacentElement('afterend',section)
-}
-function injectStyle(){
-  if(document.getElementById('pdBootstrapCss'))return;
-  const s=document.createElement('style');s.id='pdBootstrapCss';
-  s.textContent=`.pd-quick-start{margin:16px 0 20px;padding:18px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.008))}.pd-quick-head{display:flex;justify-content:space-between;gap:18px;align-items:end;margin-bottom:12px}.pd-quick-head h2{margin:4px 0 0;font-size:18px}.pd-quick-head>span{color:var(--muted);font-size:11px}.pd-quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px}.pd-quick-grid a{display:flex;min-height:74px;flex-direction:column;justify-content:center;gap:4px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);transition:border-color .15s ease,transform .15s ease}.pd-quick-grid a:hover,.pd-quick-grid a:focus-visible{border-color:var(--silver2);transform:translateY(-1px);outline:none}.pd-quick-grid b{font-size:12px}.pd-quick-grid span{color:var(--muted);font-size:10px;line-height:1.35}@media(max-width:760px){.pd-quick-head{display:block}.pd-quick-head>span{display:block;margin-top:5px}.pd-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pd-quick-grid a{min-height:68px}}@media(max-width:420px){.pd-quick-grid{grid-template-columns:1fr}}`;
-  document.head.appendChild(s)
-}
-let searchTracked=false;
-function analyticsHooks(){
-  document.addEventListener('click',e=>{const launch=e.target.closest('[data-pd-launch]');if(launch)window.pdTrack?.('Quick Start',{target:launch.dataset.pdLaunch||'unknown'});const favorite=e.target.closest('.pd-star');if(favorite)window.pdTrack?.('Favorite Toggle',{tool:document.body.dataset.calc||'unknown'});const legacy=e.target.closest('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]');if(legacy)legacy.setAttribute('href',canonicalWeightBalance)},true);
-  const search=document.getElementById('toolSearch');if(search)search.addEventListener('input',()=>{if(searchTracked||search.value.trim().length<2)return;searchTracked=true;window.pdTrack?.('Homepage Search',{page:'home'})},{passive:true})
-}
-function init(){injectStyle();repairLegacyLinks();addQuickStart();analyticsHooks()}
+function repairLegacyLinks(){document.querySelectorAll('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]').forEach(a=>a.href=canonicalWeightBalance)}
+function addQuickStart(){if(!isHome||document.getElementById('pdQuickStart'))return;const hero=document.querySelector('.hero');if(!hero)return;const s=document.createElement('section');s.id='pdQuickStart';s.className='pd-quick-start';s.innerHTML='<div class="pd-quick-head"><div><span class="eyebrow">QUICK START</span><h2>What are you doing today?</h2></div><span>Jump straight into the flight tool you need.</span></div><div class="pd-quick-grid"><a href="/airport.html" data-pd-launch="airport"><b>Airport search</b><span>Runways, weather and procedures</span></a><a href="/route-planner.html" data-pd-launch="route"><b>Plan a route</b><span>Route, navlog and saved flights</span></a><a href="/flight-planning-workspace.html" data-pd-launch="flight-workspace"><b>Flight math</b><span>Wind, time, fuel and descent</span></a><a href="/weather.html" data-pd-launch="weather"><b>Live weather</b><span>METAR and TAF</span></a><a href="/weight-balance.html" data-pd-launch="weight-balance"><b>Weight &amp; balance</b><span>Build a loading scenario</span></a></div>';hero.insertAdjacentElement('afterend',s)}
+function init(){repairLegacyLinks();addQuickStart();document.addEventListener('click',e=>{const a=e.target.closest('[data-pd-launch]');if(a)window.pdTrack?.('Quick Start',{target:a.dataset.pdLaunch||'unknown'})},true)}
 ready(init);
 })();

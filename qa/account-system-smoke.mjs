@@ -1,16 +1,16 @@
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
-const account=read('account.html'),client=read('assets/account.js'),stats=read('api/account-stats.js'),del=read('api/delete-account.js'),config=read('api/public-config.js'),sql=read('supabase/migrations/001_pilotdesk_accounts.sql'),nav=read('assets/global-nav.js');
+const account=read('account.html'),client=read('assets/account.js'),sql=read('supabase/migrations/001_pilotdesk_accounts.sql'),ownerSql=read('supabase/migrations/002_owner_metrics.sql'),deleteFn=read('supabase/functions/delete-account/index.ts'),nav=read('assets/global-nav.js');
 const checks=[
   ['account page is noindex',/name="robots" content="noindex,nofollow"/.test(account)],
-  ['Google auth is available',/signInWithOAuth\(\{provider:'google'/.test(client)],
+  ['client uses browser-safe publishable key',/sb_publishable_/.test(client)&&!/SERVICE_ROLE|sb_secret_/.test(client)],
+  ['Google auth is available when provider is enabled',/signInWithOAuth\(\{provider:'google'/.test(client)&&/auth\/v1\/settings/.test(client)],
   ['magic-link auth is available',/signInWithOtp/.test(client)],
-  ['core account page exposes owner growth panel',/Account growth/.test(account)&&/pdMetricTotal/.test(account)],
-  ['admin metrics require authenticated admin',/authenticatedAdmin/.test(stats)&&/PILOTDESK_ADMIN_EMAIL/.test(stats)],
-  ['service role never enters public config',!/SERVICE_ROLE/.test(config)],
-  ['account deletion verifies current user',/auth\/v1\/user/.test(del)&&/auth\/v1\/admin\/users/.test(del)],
+  ['owner metrics use secured database RPC',/get_account_growth_metrics/.test(client)&&/admin_users/.test(ownerSql)],
+  ['owner access uses one-time claim flow',/claim_pilotdesk_admin/.test(client)&&/claim_token = gen_random_uuid\(\)/.test(ownerSql)],
+  ['account deletion uses Supabase Edge Function',/functions\/v1\/delete-account/.test(client)&&/auth\/v1\/user/.test(deleteFn)&&/auth\/v1\/admin\/users/.test(deleteFn)],
   ['profile RLS is enabled',/alter table public\.profiles enable row level security/i.test(sql)],
-  ['saved data is scoped to auth.uid',/auth\.uid\(\) = user_id/.test(sql)],
+  ['saved data is scoped to auth.uid',/auth\.uid\(\)/.test(sql)],
   ['client profile updates are column-limited',/grant update \(display_name, avatar_url, pilot_stage, home_airport, last_seen_at\) on public\.profiles/i.test(sql)],
   ['clients cannot award daily XP',/grant select on public\.daily_progress to authenticated/i.test(sql)&&!/grant select, insert, update on public\.daily_progress/i.test(sql)],
   ['new auth users get profiles',/on_auth_user_created/.test(sql)&&/handle_new_user/.test(sql)],

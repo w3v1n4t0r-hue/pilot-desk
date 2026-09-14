@@ -13,7 +13,10 @@ const features=read('assets/features.js');ok(features.includes('Pin to dashboard
 const ads=read('assets/ads.js');ok(ads.includes("!isCalc")&&ads.includes("pilotdesk:calculated"),'ad loading does not protect calculator-first UX');
 const adcfg=read('assets/ad-config.js');ok(adcfg.includes("pathname==='/assets/brand.js'"),'brand loader duplicate-request guard missing');
 const brand=read('assets/brand.js');ok(brand.includes('/assets/growth-suite.js'),'growth suite is not globally loaded');
-for(const s of ['/assets/avionics-ui.css','/assets/home-task-polish.css','/assets/home-command-center.css','/assets/home-avionics-final.css','/assets/home-command-center.js','/assets/context-widget.js','pd-home-command-center'])ok(brand.includes(s),`brand.js missing ${s}`);
+ok(!brand.includes('addStyle('),'brand.js must not reintroduce late visual stylesheet loading');
+const bootstrap=read('assets/app-bootstrap.js');
+for(const s of ['/assets/avionics-ui.css','/assets/home-task-polish.css','/assets/home-command-center.css','/assets/home-avionics-final.css','/assets/home-command-center.js','/assets/context-widget.js','pd-home-command-center'])ok(bootstrap.includes(s),`app bootstrap missing visual ownership for ${s}`);
+ok(bootstrap.includes('pd-ui-booting')&&bootstrap.includes('Promise.allSettled(jobs)'),'growth visual stack must settle behind the first-paint gate');
 const home=read('assets/home-command-center.js');
 for(const s of ['pd-top-search','pd-hero-search','pdHeroWidget','PRIMARY FUNCTIONS','Flight tools','SELECT TASK','LOCAL DATA','Recent activity','Stored in this browser','All aviation calculators','pd-section-kicker'])ok(home.includes(s),`home command center missing ${s}`);
 ok(!home.includes('What are you doing today?')&&!home.includes('Pick up where you left off'),'homepage must avoid retired generic SaaS copy');
@@ -40,7 +43,7 @@ for(const p of sourcePages){const h=read(p);ok((h.match(/<h1\b/g)||[]).length===
 const c172=read('guides/cessna-172-glide-distance.html');ok(c172.includes('not</strong> a published Cessna 172 performance claim'),'C172 guide must label generic example as non-aircraft-specific');
 const avgas=read('guides/avgas-weight-per-gallon.html');ok(avgas.includes('6.01 lb per U.S. gallon at 59°F'),'Avgas guide standard value/source note missing');
 const descent=read('guides/three-degree-descent-rate-chart.html');ok(descent.includes('120 kt')&&descent.includes('637 fpm')&&descent.includes('600 fpm'),'3-degree chart regression value missing');
-const sw=read('sw.js');ok(sw.includes("pilotdesk-v33")&&sw.includes("'/assets/growth-suite.js'")&&sw.includes("'/assets/avionics-ui.css'")&&sw.includes("'/assets/home-avionics-final.css'"),'service worker not updated for avionics UI and growth suite');
+const sw=read('sw.js');ok(sw.includes("pilotdesk-v34")&&sw.includes("'/assets/growth-suite.js'")&&sw.includes("'/assets/avionics-ui.css'")&&sw.includes("'/assets/home-avionics-final.css'"),'service worker not updated for stable-boot avionics UI and growth suite');
 for(const s of ['/assets/avionics-ui.css','/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-avionics-final.css','/assets/home-command-center.js','/assets/context-widget.js'])ok(sw.includes(s),`service worker missing ${s}`);
 if(failures.length){console.error(`Growth + retention check failed (${failures.length})`);for(const x of failures)console.error(' - '+x);process.exit(1)}
-console.log('Growth + retention smoke check passed: search, precision avionics homepage, technical aviation task panels, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA and indexing hooks are present.');
+console.log('Growth + retention smoke check passed: search, flash-free precision avionics homepage, technical aviation task panels, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA and indexing hooks are present.');

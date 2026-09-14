@@ -38,8 +38,9 @@ loadStyle('/assets/avionics-architecture.css','pd-avionics-architecture-css');
 loadStyle('/assets/avionics-ops.css','pd-avionics-ops-css');
 loadStyle('/assets/product-clarity.css','pd-product-clarity-css');
 if(isHome){loadStyle('/assets/home-task-polish.css','pd-home-task-polish');loadStyle('/assets/home-command-center.css','pd-home-command-css');loadStyle('/assets/home-avionics-final.css','pd-home-avionics-final')}
-/* One authority layer owns the final visual format across every page. */
+/* Component authority first, then the macro page chassis last. */
 loadStyle('/assets/unified-ui.css','pd-unified-ui');
+loadStyle('/assets/site-chassis.css','pd-site-chassis');
 
 /* Anything that can add, move, restyle, or replace visible UI settles before reveal. */
 for(const [src,key] of [

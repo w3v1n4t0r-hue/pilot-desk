@@ -2,7 +2,7 @@ import fs from 'node:fs';
 const read=p=>fs.readFileSync(p,'utf8');
 const failures=[];const ok=(c,m)=>{if(!c)failures.push(m)};
 const must=[
-'assets/growth-suite.js','assets/share-enhance.js','assets/home-command-center.css','assets/home-task-polish.css','assets/home-command-center.js','assets/context-widget.js','training/private-pilot.html','training/instrument-rating.html','training/commercial-pilot.html','training/multiengine.html','training/cfi.html','guides/crosswind-component-chart.html','guides/avgas-weight-per-gallon.html','guides/three-degree-descent-rate-chart.html','guides/cessna-172-glide-distance.html','guides/seminole-vmc-study.html','sitemap-retention.xml'
+'assets/growth-suite.js','assets/share-enhance.js','assets/avionics-ui.css','assets/home-command-center.css','assets/home-task-polish.css','assets/home-avionics-final.css','assets/home-command-center.js','assets/context-widget.js','training/private-pilot.html','training/instrument-rating.html','training/commercial-pilot.html','training/multiengine.html','training/cfi.html','guides/crosswind-component-chart.html','guides/avgas-weight-per-gallon.html','guides/three-degree-descent-rate-chart.html','guides/cessna-172-glide-distance.html','guides/seminole-vmc-study.html','sitemap-retention.xml'
 ];
 for(const p of must)ok(fs.existsSync(p),`Missing ${p}`);
 const growth=read('assets/growth-suite.js');
@@ -13,17 +13,21 @@ const features=read('assets/features.js');ok(features.includes('Pin to dashboard
 const ads=read('assets/ads.js');ok(ads.includes("!isCalc")&&ads.includes("pilotdesk:calculated"),'ad loading does not protect calculator-first UX');
 const adcfg=read('assets/ad-config.js');ok(adcfg.includes("pathname==='/assets/brand.js'"),'brand loader duplicate-request guard missing');
 const brand=read('assets/brand.js');ok(brand.includes('/assets/growth-suite.js'),'growth suite is not globally loaded');
-for(const s of ['/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-command-center.js','/assets/context-widget.js','pd-home-command-center'])ok(brand.includes(s),`brand.js missing ${s}`);
+for(const s of ['/assets/avionics-ui.css','/assets/home-task-polish.css','/assets/home-command-center.css','/assets/home-avionics-final.css','/assets/home-command-center.js','/assets/context-widget.js','pd-home-command-center'])ok(brand.includes(s),`brand.js missing ${s}`);
 const home=read('assets/home-command-center.js');
-for(const s of ['pd-top-search','pd-hero-search','pdHeroWidget','What are you doing today?','Pick up where you left off','All aviation calculators','pd-section-kicker'])ok(home.includes(s),`home command center missing ${s}`);
+for(const s of ['pd-top-search','pd-hero-search','pdHeroWidget','PRIMARY FUNCTIONS','Flight tools','SELECT TASK','LOCAL DATA','Recent activity','Stored in this browser','All aviation calculators','pd-section-kicker'])ok(home.includes(s),`home command center missing ${s}`);
+ok(!home.includes('What are you doing today?')&&!home.includes('Pick up where you left off'),'homepage must avoid retired generic SaaS copy');
+for(const s of ["code:'APT'","code:'ROUTE'","code:'PERF'","code:'WX'","code:'W&B'",'pd-task-icon-window'])ok(home.includes(s),`home avionics task treatment missing ${s}`);
 for(const href of ['/airport.html','/route-planner.html','/flight-planning-workspace.html','/weather.html','/weight-balance.html'])ok(home.includes(href),`home task card missing ${href}`);
 ok(home.includes('openGlobalSearch'),'homepage must route hero/topbar search into universal search');
 ok(!home.includes('installCardPolish'),'homepage visual polish must not be injected at runtime');
 const homeCss=read('assets/home-command-center.css');ok(homeCss.includes('grid-auto-flow:column')&&homeCss.includes('scroll-snap-type:x mandatory'),'mobile task cards must swipe horizontally');
-const polish=read('assets/home-task-polish.css');
-ok(polish.includes('grid-template-rows:76px auto auto')&&polish.includes('mask-image:url('),'task cards must use the premium centered aviation icon layout');
-ok(polish.includes('--pd-home-max:1380px')&&polish.includes('backdrop-filter:blur(18px)'),'premium homepage shell/header treatment missing');
-ok(polish.includes('.tool-card:hover'),'calculator library polish missing');
+ok(homeCss.includes('.pd-task-icon-window')&&homeCss.includes('background-size:14px 14px'),'homepage task cards must use technical instrument windows');
+const avionics=read('assets/avionics-ui.css');
+for(const s of ['--pd-mono:','font-variant-numeric:tabular-nums','border-radius:4px','.input-wrap span','.result.primary strong'])ok(avionics.includes(s),`global avionics visual system missing ${s}`);
+ok(!/box-shadow:\s*0\s+\d+px\s+\d+px/i.test(avionics),'global avionics layer should not introduce soft promotional drop shadows');
+const finalHome=read('assets/home-avionics-final.css');
+for(const s of ['#pdQuickStart .pd-task-icon svg','#pdQuickStart .pd-task-icon:before','#pdQuickStart .pd-task-card:before','body:before'])ok(finalHome.includes(s),`final homepage avionics override missing ${s}`);
 const widget=read('assets/context-widget.js');
 for(const s of ['crosswindBody','densityBody','weatherBody','wbBody','descentBody','fuelBody','/api/weather?station=','pd-last-context-widget'])ok(widget.includes(s),`context widget missing ${s}`);
 ok(widget.includes('Math.sin(rel)')&&widget.includes('Math.cos(rel)'),'crosswind quick-widget math missing');
@@ -36,7 +40,7 @@ for(const p of sourcePages){const h=read(p);ok((h.match(/<h1\b/g)||[]).length===
 const c172=read('guides/cessna-172-glide-distance.html');ok(c172.includes('not</strong> a published Cessna 172 performance claim'),'C172 guide must label generic example as non-aircraft-specific');
 const avgas=read('guides/avgas-weight-per-gallon.html');ok(avgas.includes('6.01 lb per U.S. gallon at 59°F'),'Avgas guide standard value/source note missing');
 const descent=read('guides/three-degree-descent-rate-chart.html');ok(descent.includes('120 kt')&&descent.includes('637 fpm')&&descent.includes('600 fpm'),'3-degree chart regression value missing');
-const sw=read('sw.js');ok(sw.includes("pilotdesk-v32")&&sw.includes("'/assets/growth-suite.js'")&&sw.includes("'/assets/home-task-polish.css'"),'service worker not updated for growth suite and homepage refresh');
-for(const s of ['/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-command-center.js','/assets/context-widget.js'])ok(sw.includes(s),`service worker missing ${s}`);
+const sw=read('sw.js');ok(sw.includes("pilotdesk-v33")&&sw.includes("'/assets/growth-suite.js'")&&sw.includes("'/assets/avionics-ui.css'")&&sw.includes("'/assets/home-avionics-final.css'"),'service worker not updated for avionics UI and growth suite');
+for(const s of ['/assets/avionics-ui.css','/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-avionics-final.css','/assets/home-command-center.js','/assets/context-widget.js'])ok(sw.includes(s),`service worker missing ${s}`);
 if(failures.length){console.error(`Growth + retention check failed (${failures.length})`);for(const x of failures)console.error(' - '+x);process.exit(1)}
-console.log('Growth + retention smoke check passed: search, premium command-center homepage, aviation task cards, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA and indexing hooks are present.');
+console.log('Growth + retention smoke check passed: search, precision avionics homepage, technical aviation task panels, context widgets, dashboard, sharing, training hubs, source checks, smarter ads, analytics, PWA and indexing hooks are present.');

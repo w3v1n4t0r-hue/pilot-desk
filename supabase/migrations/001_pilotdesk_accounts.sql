@@ -95,15 +95,15 @@ $$;
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
-for each row execute procedure public.handle_new_user();
+for each row execute function public.handle_new_user();
 
 drop trigger if exists profiles_updated_at on public.profiles;
 create trigger profiles_updated_at before update on public.profiles
-for each row execute procedure public.set_updated_at();
+for each row execute function public.set_updated_at();
 
 drop trigger if exists aircraft_profiles_updated_at on public.aircraft_profiles;
 create trigger aircraft_profiles_updated_at before update on public.aircraft_profiles
-for each row execute procedure public.set_updated_at();
+for each row execute function public.set_updated_at();
 
 alter table public.profiles enable row level security;
 alter table public.saved_airports enable row level security;
@@ -111,7 +111,22 @@ alter table public.aircraft_profiles enable row level security;
 alter table public.saved_calculations enable row level security;
 alter table public.daily_progress enable row level security;
 
--- Profiles
+drop policy if exists "profiles_select_own" on public.profiles;
+drop policy if exists "profiles_update_own" on public.profiles;
+drop policy if exists "saved_airports_select_own" on public.saved_airports;
+drop policy if exists "saved_airports_insert_own" on public.saved_airports;
+drop policy if exists "saved_airports_update_own" on public.saved_airports;
+drop policy if exists "saved_airports_delete_own" on public.saved_airports;
+drop policy if exists "aircraft_profiles_select_own" on public.aircraft_profiles;
+drop policy if exists "aircraft_profiles_insert_own" on public.aircraft_profiles;
+drop policy if exists "aircraft_profiles_update_own" on public.aircraft_profiles;
+drop policy if exists "aircraft_profiles_delete_own" on public.aircraft_profiles;
+drop policy if exists "saved_calculations_select_own" on public.saved_calculations;
+drop policy if exists "saved_calculations_insert_own" on public.saved_calculations;
+drop policy if exists "saved_calculations_delete_own" on public.saved_calculations;
+drop policy if exists "daily_progress_select_own" on public.daily_progress;
+
+-- Profiles. Users may read their profile and edit only non-progression columns.
 create policy "profiles_select_own" on public.profiles for select to authenticated using (auth.uid() = id);
 create policy "profiles_update_own" on public.profiles for update to authenticated using (auth.uid() = id) with check (auth.uid() = id);
 
@@ -132,15 +147,21 @@ create policy "saved_calculations_select_own" on public.saved_calculations for s
 create policy "saved_calculations_insert_own" on public.saved_calculations for insert to authenticated with check (auth.uid() = user_id);
 create policy "saved_calculations_delete_own" on public.saved_calculations for delete to authenticated using (auth.uid() = user_id);
 
--- Daily challenge progress
+-- Daily progression is readable by its owner. Writes are reserved for trusted server logic so clients cannot award themselves XP.
 create policy "daily_progress_select_own" on public.daily_progress for select to authenticated using (auth.uid() = user_id);
-create policy "daily_progress_insert_own" on public.daily_progress for insert to authenticated with check (auth.uid() = user_id);
-create policy "daily_progress_update_own" on public.daily_progress for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+revoke all on public.profiles from authenticated;
+revoke all on public.saved_airports from authenticated;
+revoke all on public.aircraft_profiles from authenticated;
+revoke all on public.saved_calculations from authenticated;
+revoke all on public.daily_progress from authenticated;
 
 grant usage on schema public to authenticated;
-grant select, update on public.profiles to authenticated;
+grant select on public.profiles to authenticated;
+grant update (display_name, avatar_url, pilot_stage, home_airport, last_seen_at) on public.profiles to authenticated;
 grant select, insert, update, delete on public.saved_airports to authenticated;
 grant select, insert, update, delete on public.aircraft_profiles to authenticated;
 grant select, insert, delete on public.saved_calculations to authenticated;
-grant select, insert, update on public.daily_progress to authenticated;
-grant usage, select on all sequences in schema public to authenticated;
+grant select on public.daily_progress to authenticated;
+grant usage, select on sequence public.saved_airports_id_seq to authenticated;
+grant usage, select on sequence public.daily_progress_id_seq to authenticated;

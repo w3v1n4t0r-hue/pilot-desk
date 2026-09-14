@@ -17,7 +17,7 @@ for(const s of ["['GET','HEAD']",'safeRange','content-range','Readable.fromWeb',
 for(const a of ['planner-pro.js','flight-library.js','procedure-pro.js','trainer-pro.js','preview-harvest.js']){ok(bootstrap.includes(`/assets/${a}`),`Bootstrap does not wire ${a}`);ok(sw.includes(`/assets/${a}`),`Service worker does not cache ${a}`)}
 ok(procedures.includes('/assets/app-bootstrap.js'),'Procedures page logic must reach consolidated enhancements without depending on ads');
 ok(checklist.includes('/assets/app-bootstrap.js'),'Training page logic must reach consolidated enhancements without depending on ads');
-ok(sw.includes("CACHE='pilotdesk-v33'"),'Current avionics-interface release must use service worker v33');
+ok(sw.includes("CACHE='pilotdesk-v34'"),'Stable-boot avionics release must use service worker v34');
 for(const a of ['social-crosswind.svg','social-density-altitude.svg','social-e6b.svg','social-pilot-math.svg','social-route-planner.svg','social-weather.svg'])ok(fs.existsSync('assets/'+a),`Missing harvested social asset ${a}`);
 if(failures.length){console.error(`Preview consolidation checks failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
 console.log('Preview consolidation checks passed: unique preview capabilities were harvested, wired ad-independently where needed, and kept clear of superseded navigation/install UI and calculator formulas.');

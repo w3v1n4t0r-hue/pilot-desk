@@ -36,6 +36,7 @@ loadStyle('/assets/performance.css','pd-performance-css');
 loadStyle('/assets/avionics-ui.css','pd-avionics-ui');
 loadStyle('/assets/avionics-architecture.css','pd-avionics-architecture-css');
 loadStyle('/assets/avionics-ops.css','pd-avionics-ops-css');
+loadStyle('/assets/product-clarity.css','pd-product-clarity-css');
 if(isHome){loadStyle('/assets/home-task-polish.css','pd-home-task-polish');loadStyle('/assets/home-command-center.css','pd-home-command-css');loadStyle('/assets/home-avionics-final.css','pd-home-avionics-final')}
 
 /* Anything that can add, move, restyle, or replace visible UI settles before reveal. */
@@ -51,6 +52,8 @@ if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js','pd-aircraft-tra
 if(path==='/route-planner.html'){load('/assets/planner-pro.js','pd-planner-pro',true);load('/assets/flight-library.js','pd-flight-library',true)}
 if(path==='/procedures.html')load('/assets/procedure-pro.js','pd-procedure-pro',true);
 if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js','pd-trainer-pro',true);
+/* Product clarity runs after page-specific visible modules so it can simplify the final DOM before reveal. */
+load('/assets/product-clarity.js','pd-product-clarity-js',true);
 
 /* Give critical modules one short event-loop turn to finish their own tiny UI timers. */
 Promise.allSettled(jobs).then(()=>setTimeout(()=>{clearTimeout(failOpen);openGate()},120));
@@ -63,7 +66,7 @@ deferLoad('/assets/update.js','pd-update',2200);
 
 const canonicalWeightBalance='/weight-balance.html';
 function repairLegacyLinks(){document.querySelectorAll('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]').forEach(a=>a.href=canonicalWeightBalance)}
-function addQuickStart(){if(!isHome||document.getElementById('pdQuickStart'))return;const hero=document.querySelector('.hero');if(!hero)return;const s=document.createElement('section');s.id='pdQuickStart';s.className='pd-quick-start';s.innerHTML='<div class="pd-quick-head"><div><span class="eyebrow">QUICK START</span><h2>What are you doing today?</h2></div><span>Jump straight into the flight tool you need.</span></div><div class="pd-quick-grid"><a href="/airport.html" data-pd-launch="airport"><b>Airport search</b><span>Runways, weather and procedures</span></a><a href="/route-planner.html" data-pd-launch="route"><b>Plan a route</b><span>Route, navlog and saved flights</span></a><a href="/flight-planning-workspace.html" data-pd-launch="flight-workspace"><b>Flight math</b><span>Wind, time, fuel and descent</span></a><a href="/weather.html" data-pd-launch="weather"><b>Live weather</b><span>METAR and TAF</span></a><a href="/weight-balance.html" data-pd-launch="weight-balance"><b>Weight &amp; balance</b><span>Build a loading scenario</span></a></div>';hero.insertAdjacentElement('afterend',s)}
+function addQuickStart(){if(!isHome||document.getElementById('pdQuickStart'))return;const hero=document.querySelector('.hero');if(!hero)return;const s=document.createElement('section');s.id='pdQuickStart';s.className='pd-quick-start';s.innerHTML='<div class="pd-quick-head"><div><span class="eyebrow">PRIMARY FUNCTIONS</span><h2>Flight tools</h2></div><span>Select the task you need.</span></div><div class="pd-quick-grid"><a href="/airport.html" data-pd-launch="airport"><b>Airport search</b><span>Runways, weather and procedures</span></a><a href="/route-planner.html" data-pd-launch="route"><b>Plan a route</b><span>Route, navlog and saved flights</span></a><a href="/flight-planning-workspace.html" data-pd-launch="flight-workspace"><b>Flight math</b><span>Wind, time, fuel and descent</span></a><a href="/weather.html" data-pd-launch="weather"><b>Live weather</b><span>METAR and TAF</span></a><a href="/weight-balance.html" data-pd-launch="weight-balance"><b>Weight &amp; balance</b><span>Build a loading scenario</span></a></div>';hero.insertAdjacentElement('afterend',s)}
 function init(){repairLegacyLinks();addQuickStart();document.addEventListener('click',e=>{const a=e.target.closest('[data-pd-launch]');if(a)window.pdTrack?.('Quick Start',{target:a.dataset.pdLaunch||'unknown'})},true)}
 ready(init);
 })();

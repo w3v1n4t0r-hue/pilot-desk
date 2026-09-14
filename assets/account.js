@@ -14,6 +14,10 @@ const ownerView=()=>new URL(location.href).searchParams.get('owner')==='1';
 async function loadSupabase(){
   const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
   state.client=mod.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  try{
+    const r=await fetch(`${SUPABASE_URL}/auth/v1/settings`,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});
+    if(r.ok){const d=await r.json();show('#pdGoogleSignIn',d?.external?.google===true)}
+  }catch{}
 }
 
 function renderSignedOut(){
@@ -40,26 +44,43 @@ async function fetchProfile(user){
   return data;
 }
 
+function renderMetrics(d){
+  const box=$('#pdOwnerMetrics');if(!box)return;
+  show('#pdOwnerClaim',false);box.classList.remove('pd-account-hidden');
+  $('#pdMetricTotal').textContent=String(d.total??0);
+  $('#pdMetricToday').textContent=String(d.today??0);
+  $('#pdMetric7').textContent=String(d.last_7_days??0);
+  $('#pdMetric30').textContent=String(d.last_30_days??0);
+  const total=Number(d.total||0),milestones=[10,25,50,100,250,500,1000,2500,5000,10000];
+  const target=milestones.find(x=>x>total)||Math.ceil((total+1)/10000)*10000;
+  $('#pdAccountMilestone').textContent=`${total} / ${target} accounts`;
+  $('#pdAccountProgress').style.width=`${Math.min(100,Math.round((total/target)*100))}%`;
+  $('#pdAccountGenerated').textContent=`Updated ${new Date(d.generated_at||Date.now()).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
+}
+
 async function loadOwnerMetrics(){
   const box=$('#pdOwnerMetrics');if(!box||!ownerView()||!state.session){box?.classList.add('pd-account-hidden');return}
-  box.classList.add('pd-account-hidden');
+  box.classList.remove('pd-account-hidden');
   try{
     const {data,error}=await state.client.rpc('get_account_growth_metrics');
     if(error)throw error;
     const d=Array.isArray(data)?data[0]:data;
-    if(!d)return;
-    box.classList.remove('pd-account-hidden');
-    $('#pdMetricTotal').textContent=String(d.total??0);
-    $('#pdMetricToday').textContent=String(d.today??0);
-    $('#pdMetric7').textContent=String(d.last_7_days??0);
-    $('#pdMetric30').textContent=String(d.last_30_days??0);
-    const total=Number(d.total||0),milestones=[10,25,50,100,250,500,1000,2500,5000,10000];
-    const target=milestones.find(x=>x>total)||Math.ceil((total+1)/10000)*10000;
-    const pct=Math.min(100,Math.round((total/target)*100));
-    $('#pdAccountMilestone').textContent=`${total} / ${target} accounts`;
-    $('#pdAccountProgress').style.width=`${pct}%`;
-    $('#pdAccountGenerated').textContent=`Updated ${new Date(d.generated_at||Date.now()).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}`;
-  }catch(e){console.warn('[PilotDesk owner metrics]',e)}
+    if(d)renderMetrics(d);
+  }catch(e){
+    show('#pdOwnerClaim',true);
+    $('#pdAccountGenerated').textContent='Owner access required';
+    console.warn('[PilotDesk owner metrics]',e);
+  }
+}
+
+async function claimOwnerAccess(e){
+  e?.preventDefault();if(!state.session)return;
+  const token=$('#pdOwnerToken')?.value.trim();
+  if(!token)return;
+  const note=$('#pdOwnerClaimStatus');note.textContent='Checking owner key…';
+  const {data,error}=await state.client.rpc('claim_pilotdesk_admin',{p_token:token});
+  if(error||data!==true){note.textContent='That owner key was not accepted.';return}
+  note.textContent='Owner access confirmed.';$('#pdOwnerToken').value='';await loadOwnerMetrics();
 }
 
 async function renderSignedIn(session){
@@ -135,11 +156,12 @@ function bind(){
   $('#pdSignOut')?.addEventListener('click',signOut);
   $('#pdDeleteAccount')?.addEventListener('click',deleteAccount);
   $('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);
+  $('#pdOwnerClaimForm')?.addEventListener('submit',claimOwnerAccess);
   $('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)});
 }
 
 async function init(){
-  bind();$('#pdAccountRoot')?.classList.add('pd-account-disabled');status('Loading secure account services…');
+  bind();show('#pdGoogleSignIn',false);$('#pdAccountRoot')?.classList.add('pd-account-disabled');status('Loading secure account services…');
   try{
     await loadSupabase();
     const {data:{session},error}=await state.client.auth.getSession();if(error)throw error;

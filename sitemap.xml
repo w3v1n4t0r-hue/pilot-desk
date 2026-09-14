@@ -9,8 +9,8 @@
 <url><loc>https://www.pilot-desk.com/calculators/ballast/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/climb-gradient/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/cloud-base/</loc><lastmod>2026-09-11</lastmod></url>
-<url><loc>https://www.pilot-desk.com/calculators/crosswind/</loc><lastmod>2026-09-11</lastmod></url>
-<url><loc>https://www.pilot-desk.com/calculators/density-altitude/</loc><lastmod>2026-09-11</lastmod></url>
+<url><loc>https://www.pilot-desk.com/calculators/crosswind/</loc><lastmod>2026-09-13</lastmod></url>
+<url><loc>https://www.pilot-desk.com/calculators/density-altitude/</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/distance-conversion/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/dms-decimal/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/endurance-range/</loc><lastmod>2026-09-11</lastmod></url>
@@ -30,7 +30,7 @@
 <url><loc>https://www.pilot-desk.com/calculators/nm-per-minute/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/obstacle-gradient/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/percent-mac/</loc><lastmod>2026-09-11</lastmod></url>
-<url><loc>https://www.pilot-desk.com/calculators/pivotal-altitude/</loc><lastmod>2026-09-11</lastmod></url>
+<url><loc>https://www.pilot-desk.com/calculators/pivotal-altitude/</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/power-loading/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/pressure-altitude/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/pressure-conversion/</loc><lastmod>2026-09-11</lastmod></url>
@@ -40,7 +40,7 @@
 <url><loc>https://www.pilot-desk.com/calculators/speed-of-sound/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/standard-rate-bank/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/temperature-conversion/</loc><lastmod>2026-09-11</lastmod></url>
-<url><loc>https://www.pilot-desk.com/calculators/three-degree-descent/</loc><lastmod>2026-09-11</lastmod></url>
+<url><loc>https://www.pilot-desk.com/calculators/three-degree-descent/</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/time-speed-distance/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/top-of-descent/</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/true-airspeed/</loc><lastmod>2026-09-11</lastmod></url>
@@ -58,7 +58,7 @@
 <url><loc>https://www.pilot-desk.com/flight-planning-workspace.html</loc><lastmod>2026-09-11</lastmod></url>
 <url><loc>https://www.pilot-desk.com/flight-training.html</loc><lastmod>2026-09-12</lastmod></url>
 <url><loc>https://www.pilot-desk.com/for-flight-schools.html</loc><lastmod>2026-09-12</lastmod></url>
-<url><loc>https://www.pilot-desk.com/guides.html</loc><lastmod>2026-09-11</lastmod></url>
+<url><loc>https://www.pilot-desk.com/guides.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/accelerate-stop-accelerate-go.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/accelerated-stall-load-factor.html</loc><lastmod>2026-09-12</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/aircraft-performance-reference.html</loc><lastmod>2026-09-12</lastmod></url>
@@ -84,8 +84,8 @@
 <url><loc>https://www.pilot-desk.com/guides/course-heading-track.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/critical-engine-multiengine.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/crosswind-component-chart.html</loc><lastmod>2026-09-13</lastmod></url>
-<url><loc>https://www.pilot-desk.com/guides/crosswind-component.html</loc><lastmod>2026-09-12</lastmod></url>
-<url><loc>https://www.pilot-desk.com/guides/density-altitude.html</loc><lastmod>2026-09-12</lastmod></url>
+<url><loc>https://www.pilot-desk.com/guides/crosswind-component.html</loc><lastmod>2026-09-13</lastmod></url>
+<url><loc>https://www.pilot-desk.com/guides/density-altitude.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/dew-point-spread.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/dme-arc-distance.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/dms-coordinates.html</loc><lastmod>2026-09-13</lastmod></url>
@@ -123,7 +123,7 @@
 <url><loc>https://www.pilot-desk.com/guides/percent-mac.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/pilot-checkride-math.html</loc><lastmod>2026-09-12</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/pilot-math-formulas.html</loc><lastmod>2026-09-11</lastmod></url>
-<url><loc>https://www.pilot-desk.com/guides/pivotal-altitude.html</loc><lastmod>2026-09-12</lastmod></url>
+<url><loc>https://www.pilot-desk.com/guides/pivotal-altitude.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/poh-performance-chart-interpolation.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/popular-aviation-tools.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/power-loading.html</loc><lastmod>2026-09-13</lastmod></url>
@@ -136,7 +136,7 @@
 <url><loc>https://www.pilot-desk.com/guides/standard-rate-turn.html</loc><lastmod>2026-09-12</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/taf-change-groups.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/three-degree-descent-rate-chart.html</loc><lastmod>2026-09-13</lastmod></url>
-<url><loc>https://www.pilot-desk.com/guides/three-degree-descent.html</loc><lastmod>2026-09-12</lastmod></url>
+<url><loc>https://www.pilot-desk.com/guides/three-degree-descent.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/time-speed-distance.html</loc><lastmod>2026-09-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/top-of-descent.html</loc><lastmod>2026-09-12</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/true-airspeed-rule.html</loc><lastmod>2026-09-12</lastmod></url>

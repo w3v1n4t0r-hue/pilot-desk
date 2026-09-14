@@ -37,6 +37,8 @@ jobs:
         run: node qa/professional-polish-smoke.mjs
       - name: Run unified UI checks
         run: node qa/unified-ui-smoke.mjs
+      - name: Run site chassis checks
+        run: node qa/site-chassis-smoke.mjs
       - name: Check homepage card visibility and icons
         run: node scripts/check-home-card-regression.js
       - name: Run tool-first optimization checks

@@ -26,10 +26,15 @@ function renderSignedOut(){
   $('#pdAccountRoot')?.classList.remove('pd-account-disabled');
 }
 
+function safeAvatarUrl(value){
+  try{const u=new URL(String(value||''),location.origin);return u.protocol==='https:'||u.protocol==='http:'?u.href:''}catch{return ''}
+}
 function renderAvatar(user,profile){
   const host=$('#pdUserAvatar');if(!host)return;
-  const src=profile?.avatar_url||user?.user_metadata?.avatar_url||'';
-  host.innerHTML=src?`<img alt="" src="${String(src).replace(/"/g,'&quot;')}">`:initials(profile?.display_name||user?.user_metadata?.full_name||user?.email);
+  const src=safeAvatarUrl(profile?.avatar_url||user?.user_metadata?.avatar_url||'');
+  host.replaceChildren();
+  if(src){const img=document.createElement('img');img.alt='';img.src=src;img.referrerPolicy='no-referrer';host.appendChild(img)}
+  else host.textContent=initials(profile?.display_name||user?.user_metadata?.full_name||user?.email);
 }
 
 async function fetchProfile(user){

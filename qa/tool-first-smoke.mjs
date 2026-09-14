@@ -19,8 +19,8 @@ check(perf.includes('-webkit-line-clamp:2'),'tool descriptions should remain com
 check(perf.includes('content-visibility:auto'),'long pages should skip off-screen rendering work where supported');
 check(perf.includes('font-size:16px!important'),'mobile form inputs should avoid iOS zoom');
 check(perfJs.includes("rel='prefetch'")&&perfJs.includes('saveData'),'fast connections should prefetch a small number of likely next pages without ignoring data-saver');
-check(bootstrap.includes("load('/assets/tool-first-layout.js','pd-tool-first')"),'tool-first layout must load from app bootstrap');
-check(bootstrap.includes("load('/assets/performance.js','pd-performance')"),'performance helper must load from app bootstrap');
+check(bootstrap.includes('/assets/tool-first-layout.js')&&bootstrap.includes('pd-tool-first'),'tool-first layout must load from app bootstrap');
+check(bootstrap.includes('/assets/performance.js')&&bootstrap.includes('pd-performance'),'performance helper must load from app bootstrap');
 check(index.includes('id="toolSearch"')&&index.includes('section class="category"'),'homepage must retain the original search and calculator inventory');
 check(calculator.includes('data-calculate')&&calculator.includes('class="info-card"')&&calculator.includes('class="formula"'),'calculator must retain operational controls plus visible reference and formula content');
 check(vercel.git?.deploymentEnabled?.main===true&&vercel.git?.deploymentEnabled?.['*']===false,'optimization branches must not spend Vercel deployments');

@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pilot Skill Gap Test — PPL, CPL & ATP | PilotDesk</title>
-<meta name="description" content="Find weak FAA knowledge-test areas with a free ACS-mapped diagnostic for Private Pilot, Commercial Pilot, or ATP. Track your strongest and weakest subjects over time.">
+<meta name="description" content="Find weak FAA knowledge-test subjects with a free 12-question check for Private Pilot, Commercial Pilot, or ATP. Compare your strongest and weakest subjects over time.">
 <meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#09090b">
 <link rel="canonical" href="https://www.pilot-desk.com/skill-gap.html">
-<meta property="og:type" content="website"><meta property="og:title" content="Pilot Skill Gap — PPL, CPL & ATP"><meta property="og:description" content="A free ACS-mapped diagnostic that shows which pilot knowledge areas need work."><meta property="og:url" content="https://www.pilot-desk.com/skill-gap.html"><meta property="og:site_name" content="PilotDesk">
+<meta property="og:type" content="website"><meta property="og:title" content="Pilot Skill Gap — PPL, CPL & ATP"><meta property="og:description" content="A free FAA-based question set that shows which pilot knowledge subjects need more work."><meta property="og:url" content="https://www.pilot-desk.com/skill-gap.html"><meta property="og:site_name" content="PilotDesk">
 <link rel="stylesheet" href="/assets/styles.css"><link rel="stylesheet" href="/assets/skill-gap.css"><link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"PilotDesk Pilot Skill Gap","url":"https://www.pilot-desk.com/skill-gap.html","learningResourceType":"Practice test","educationalLevel":["Private Pilot","Commercial Pilot","Airline Transport Pilot"],"isAccessibleForFree":true,"provider":{"@type":"Organization","name":"PilotDesk","url":"https://www.pilot-desk.com/"}}</script>
 <script defer src="/assets/app-bootstrap.js"></script><script defer src="/assets/skill-gap.js"></script>
@@ -17,15 +17,15 @@
 
 <main class="shell pd-streamlined-shell pd-gap-shell" id="main-content">
 <section class="pd-page-hero pd-gap-hero">
- <div><span class="badge">PILOT KNOWLEDGE // SKILL GAP</span><h1>Find what you actually need to study.</h1><p>Pick your certificate level, take a 12-question diagnostic, and see your weakest knowledge areas instead of studying everything equally.</p></div>
- <div class="pd-gap-hero-readout"><span>TRACKS</span><strong>PPL · CPL · ATP</strong><small>ACS-mapped knowledge diagnostics</small></div>
+ <div><span class="badge">PILOT KNOWLEDGE · SKILL GAP</span><h1>Find what you actually need to study.</h1><p>Pick your certificate level, answer 12 questions, and see which subjects need the most work.</p></div>
+ <div class="pd-gap-hero-readout"><span>RATINGS</span><strong>PPL · CPL · ATP</strong><small>Questions tied to FAA standards</small></div>
 </section>
 
-<section class="pd-gap-source-note"><div><b>FAA grounded, not a leaked test bank.</b><span>The FAA does not publish its active knowledge-test question bank. PilotDesk uses paraphrases of FAA-published sample questions plus ACS-aligned practice questions. Every FAA-derived item shows its ACS code and source.</span></div><a href="https://www.faa.gov/training_testing/testing/test_questions" target="_blank" rel="noopener">FAA sample tests ↗</a></section>
+<section class="pd-gap-source-note"><div><b>Based on FAA sources, not a leaked test bank.</b><span>The FAA does not publish its active knowledge-test question bank. PilotDesk uses paraphrases of FAA-published sample questions plus FAA-aligned practice questions. FAA-derived items show the applicable ACS code and source.</span></div><a href="https://www.faa.gov/training_testing/testing/test_questions" target="_blank" rel="noopener">FAA sample tests ↗</a></section>
 
-<section class="pd-gap-track-panel" aria-label="Choose knowledge track">
- <div><span class="eyebrow">01 // CERTIFICATE TRACK</span><h2>What are you preparing for?</h2></div>
- <div class="pd-gap-tracks" role="group" aria-label="Pilot certificate track">
+<section class="pd-gap-track-panel" aria-label="Choose rating">
+ <div><span class="eyebrow">01 · RATING</span><h2>What are you preparing for?</h2></div>
+ <div class="pd-gap-tracks" role="group" aria-label="Pilot certificate rating">
   <button type="button" data-track="ppl" class="active"><strong>PPL</strong><span>Private Pilot</span></button>
   <button type="button" data-track="cpl"><strong>CPL</strong><span>Commercial Pilot</span></button>
   <button type="button" data-track="atp"><strong>ATP</strong><span>Airline Transport Pilot</span></button>
@@ -34,20 +34,20 @@
 
 <div class="pd-gap-layout">
 <section class="pd-gap-exam" aria-live="polite">
- <div class="pd-gap-exam-head"><div><span class="eyebrow" id="pdGapTrackLabel">PRIVATE PILOT // PPL</span><h2 id="pdGapTitle">Knowledge diagnostic</h2><p id="pdGapIntro">Loading the Private Pilot diagnostic…</p></div><div class="pd-gap-progress-ring"><strong id="pdGapAnswered">0/12</strong><span>ANSWERED</span></div></div>
+ <div class="pd-gap-exam-head"><div><span class="eyebrow" id="pdGapTrackLabel">PRIVATE PILOT · PPL</span><h2 id="pdGapTitle">Private Pilot skill check</h2><p id="pdGapIntro">Loading questions…</p></div><div class="pd-gap-progress-ring"><strong id="pdGapAnswered">0/12</strong><span>ANSWERED</span></div></div>
  <form id="pdGapForm"><div id="pdGapQuestions" class="pd-gap-questions"></div><div class="pd-gap-actions"><button type="submit" id="pdGapSubmit" disabled>Score my skill gap</button><span id="pdGapFormNote">Loading questions…</span></div></form>
  <div class="pd-gap-result" id="pdGapResult" hidden></div>
 </section>
 
 <aside class="pd-gap-sidebar">
- <section class="pd-gap-card pd-gap-map-card"><span class="eyebrow">YOUR KNOWLEDGE MAP</span><h2 id="pdGapMapTitle">No diagnostic yet</h2><p id="pdGapMapNote">Complete this track once to create a baseline. Signed-in pilots keep the map across devices and future attempts.</p><div id="pdGapMap" class="pd-gap-map"></div></section>
- <section class="pd-gap-card"><span class="eyebrow">HOW TO READ IT</span><div class="pd-gap-legend"><span><i data-band="strong"></i>80–100% strong</span><span><i data-band="developing"></i>60–79% developing</span><span><i data-band="gap"></i>Below 60% skill gap</span></div></section>
- <section class="pd-gap-card"><span class="eyebrow">SAVE THE TREND</span><h2 id="pdGapAccountTitle">Guest mode</h2><p id="pdGapAccountCopy">You can take the diagnostic without an account. Sign in to accumulate a real skill map across attempts.</p><a class="pd-gap-account" id="pdGapAccountLink" href="/account.html?next=%2Fskill-gap.html">Create a free account →</a></section>
- <section class="pd-gap-card"><span class="eyebrow">DAILY PRACTICE</span><h2>Keep the weak areas moving.</h2><p>PilotDesk Daily gives you a short aviation challenge every day. The long-term goal is to feed your weakest skill-gap areas back into daily practice.</p><a class="pd-gap-account secondary" href="/daily/">Play PilotDesk Daily →</a></section>
+ <section class="pd-gap-card pd-gap-map-card"><span class="eyebrow">RESULTS BY SUBJECT</span><h2 id="pdGapMapTitle">No score yet</h2><p id="pdGapMapNote">Answer all 12 questions to see which subjects are strongest and which need more study.</p><div id="pdGapMap" class="pd-gap-map"></div></section>
+ <section class="pd-gap-card"><span class="eyebrow">HOW TO READ IT</span><div class="pd-gap-legend"><span><i data-band="strong"></i>80–100% strong</span><span><i data-band="developing"></i>60–79% needs review</span><span><i data-band="gap"></i>Below 60% weak subject</span></div></section>
+ <section class="pd-gap-card"><span class="eyebrow">SAVE YOUR RESULTS</span><h2 id="pdGapAccountTitle">Guest mode</h2><p id="pdGapAccountCopy">You can take the 12-question check without an account. Sign in if you want to keep your scores and compare future attempts.</p><a class="pd-gap-account" id="pdGapAccountLink" href="/account.html?next=%2Fskill-gap.html">Create a free account →</a></section>
+ <section class="pd-gap-card"><span class="eyebrow">DAILY PRACTICE</span><h2>Keep working the weak subjects.</h2><p>PilotDesk Daily gives you a short aviation challenge every day. Use it to keep important knowledge fresh between longer study sessions.</p><a class="pd-gap-account secondary" href="/daily/">Play PilotDesk Daily →</a></section>
 </aside>
 </div>
 
-<section class="pd-gap-about"><span class="eyebrow">FAA FOUNDATION</span><h2>Built around the FAA's testing structure.</h2><div class="pd-gap-about-grid"><div><b>Private Pilot // PAR</b><p>Regulations and airspace, airport operations, weather, performance and weight & balance, systems/airworthiness, and ADM/human factors.</p><a href="https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/par_questions.pdf" target="_blank" rel="noopener">FAA PAR sample questions ↗</a></div><div><b>Commercial Pilot // CAX</b><p>Commercial privileges and regulations, weather, performance/aerodynamics, systems/airworthiness, navigation/airspace, and operational decision making.</p><a href="https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/cax_questions.pdf" target="_blank" rel="noopener">FAA CAX sample questions ↗</a></div><div><b>ATP // ATM</b><p>Air-carrier regulations, high-altitude performance, IFR procedures, systems/aerodynamics, human factors/CRM, and airport/weather operations.</p><a href="https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/atm_questions.pdf" target="_blank" rel="noopener">FAA ATM sample questions ↗</a></div></div><p class="fine">PilotDesk is an independent training tool and is not affiliated with or endorsed by the FAA. Always use current FAA regulations, ACS documents, handbooks, supplements, operator manuals, and approved aircraft information as controlling sources.</p></section>
+<section class="pd-gap-about"><span class="eyebrow">FAA SOURCES</span><h2>Questions are tied to the FAA standards for the rating.</h2><div class="pd-gap-about-grid"><div><b>Private Pilot · PAR</b><p>Regulations and airspace, airport operations, weather, performance and weight & balance, systems/airworthiness, and ADM/human factors.</p><a href="https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/par_questions.pdf" target="_blank" rel="noopener">FAA PAR sample questions ↗</a></div><div><b>Commercial Pilot · CAX</b><p>Commercial privileges and regulations, weather, performance/aerodynamics, systems/airworthiness, navigation/airspace, and operational decision making.</p><a href="https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/cax_questions.pdf" target="_blank" rel="noopener">FAA CAX sample questions ↗</a></div><div><b>ATP · ATM</b><p>Air-carrier regulations, high-altitude performance, IFR procedures, systems/aerodynamics, human factors/CRM, and airport/weather operations.</p><a href="https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/atm_questions.pdf" target="_blank" rel="noopener">FAA ATM sample questions ↗</a></div></div><p class="fine">PilotDesk is an independent training tool and is not affiliated with or endorsed by the FAA. Always use current FAA regulations, ACS documents, handbooks, supplements, operator manuals, and approved aircraft information as controlling sources.</p></section>
 </main>
 <footer><div><b>PilotDesk</b><p>Aviation calculators and training tools for pilots.</p></div><div class="footer-links"><a href="/daily/">Daily</a><a href="/skill-gap.html">Skill Gap</a><a href="/flight-training.html">Training</a><a href="/guides.html">Guides</a><a href="/legal/privacy.html">Privacy</a><a href="/legal/terms.html">Terms</a></div><p class="fine">For training and planning only. Verify operational information with current approved sources.</p></footer>
 </body></html>

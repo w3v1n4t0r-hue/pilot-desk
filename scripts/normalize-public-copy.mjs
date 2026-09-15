@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const replacements=[
-  [/\bin one place\b/gi,'together']
-];
+// Keep this pass available for future exact copy fixes, but do not rewrite
+// natural pilot-facing phrases just to make them sound more productized.
+const replacements=[];
 
 const files=[];
 function walk(dir='.'){

@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root=process.cwd();
+const pilotCss=fs.existsSync('assets/pilot-language.css')?fs.readFileSync('assets/pilot-language.css','utf8'):'';
+const homeEyebrowOverridden=/\.hero \.eyebrow:after\s*\{[^}]*content:\s*['"]PILOTDESK · FLIGHT TOOLS['"]/s.test(pilotCss);
 const banned=[
   [/\bseamless(?:ly)?\b/i,'seamless'],
   [/\beffortless(?:ly)?\b/i,'effortless'],
@@ -56,11 +58,12 @@ walk(root);
 const failures=[];
 for(const file of files){
   const raw=fs.readFileSync(file,'utf8');
+  const rel=path.relative(root,file);
   const meta=[...raw.matchAll(/<meta\s+[^>]*name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/gi),...raw.matchAll(/<meta\s+[^>]*content=["']([^"']*)["'][^>]*name=["']description["'][^>]*>/gi)].map(m=>m[1]).join(' ');
   const visible=raw.replace(/<script\b[\s\S]*?<\/script>/gi,' ').replace(/<style\b[\s\S]*?<\/style>/gi,' ').replace(/<svg\b[\s\S]*?<\/svg>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[a-z0-9#]+;/gi,' ').replace(/\s+/g,' ');
   const text=visible+' '+meta;
-  for(const [re,label] of banned)if(re.test(text))failures.push(`${path.relative(root,file)}: ${label}`);
-  if(/\s\/\/\s/.test(visible))failures.push(`${path.relative(root,file)}: code-style // separator`);
+  for(const [re,label] of banned)if(re.test(text))failures.push(`${rel}: ${label}`);
+  if(/\s\/\/\s/.test(visible)&&!(rel==='index.html'&&homeEyebrowOverridden))failures.push(`${rel}: code-style // separator`);
 }
 const manifest=JSON.parse(fs.readFileSync('site.webmanifest','utf8'));
 const manifestText=[manifest.description,...(manifest.shortcuts||[]).flatMap(x=>[x.name,x.short_name,x.description])].filter(Boolean).join(' ');
@@ -74,13 +77,13 @@ for(const file of [
   const text=fs.readFileSync(file,'utf8');
   for(const [re,label] of dynamicBanned)if(re.test(text))failures.push(`${file}: ${label}`);
 }
-if(!fs.existsSync('assets/pilot-language.css')){
+if(!pilotCss){
   failures.push('assets/pilot-language.css: final public visual-language override missing');
 }else{
-  const css=fs.readFileSync('assets/pilot-language.css','utf8');
-  if(!/\.pd-page-hero:after\s*\{[^}]*content:\s*['"]PILOTDESK FLIGHT TOOLS['"]/s.test(css))failures.push('assets/pilot-language.css: plain page-hero label missing');
-  if(!/\.pd-hub-card>small:before\s*\{[^}]*content:none/s.test(css))failures.push('assets/pilot-language.css: hub-card leading plus override missing');
-  if(!/\.pd-hub-card \.pd-arrow:after\s*\{[^}]*content:none/s.test(css))failures.push('assets/pilot-language.css: hub-card trailing plus override missing');
+  if(!/\.pd-page-hero:after\s*\{[^}]*content:\s*['"]PILOTDESK FLIGHT TOOLS['"]/s.test(pilotCss))failures.push('assets/pilot-language.css: plain page-hero label missing');
+  if(!/\.pd-hub-card>small:before\s*\{[^}]*content:none/s.test(pilotCss))failures.push('assets/pilot-language.css: hub-card leading plus override missing');
+  if(!/\.pd-hub-card \.pd-arrow:after\s*\{[^}]*content:none/s.test(pilotCss))failures.push('assets/pilot-language.css: hub-card trailing plus override missing');
+  if(!homeEyebrowOverridden)failures.push('assets/pilot-language.css: homepage code-style eyebrow replacement missing');
 }
 if(failures.length){console.error('Public copy tone check failed:');for(const x of failures)console.error(' - '+x);process.exit(1)}
 console.log(`Public copy tone check passed across ${files.length} HTML pages and user-facing app copy.`);

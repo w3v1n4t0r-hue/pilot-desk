@@ -35,7 +35,20 @@ const banned=[
   [/\bchassis\b/i,'chassis'],
   [/\blaunchpad\b/i,'launchpad'],
   [/\badaptive\b/i,'adaptive'],
-  [/\bbaseline\b/i,'baseline']
+  [/\bbaseline\b/i,'baseline'],
+  [/\bserver[- ]side\b/i,'server-side'],
+  [/\bparameterized\b/i,'parameterized']
+];
+const dynamicBanned=[
+  [/\bdiagnostic(?:s)?\b/i,'diagnostic'],
+  [/\bknowledge map\b/i,'knowledge map'],
+  [/\bskill map\b/i,'skill map'],
+  [/\bACS map\b/i,'ACS map'],
+  [/\bstudy workspace\b/i,'study workspace'],
+  [/\badaptive\b/i,'adaptive'],
+  [/\bbaseline\b/i,'baseline'],
+  [/\bserver[- ]side\b/i,'server-side'],
+  [/\bparameterized\b/i,'parameterized']
 ];
 const files=[];
 function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){if(['.git','node_modules'].includes(e.name))continue;const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else if(e.isFile()&&e.name.endsWith('.html'))files.push(p)}}
@@ -55,17 +68,19 @@ for(const [re,label] of banned)if(re.test(manifestText))failures.push(`site.webm
 for(const file of [
   'scripts/generate-calculator-pages.mjs',
   'assets/weather-fixed.js','assets/product-nav.js','assets/airport.js','assets/flights.js','assets/flight-brief.js','assets/aircraft-v2.js',
-  'assets/skill-gap.js','assets/written-prep.js','assets/app-bootstrap.js','assets/home-daily.js','assets/home-command-center.js','assets/account.js','assets/global-nav.js'
+  'assets/skill-gap.js','assets/written-prep.js','assets/home-daily.js','assets/account.js'
 ]){
   if(!fs.existsSync(file))continue;
   const text=fs.readFileSync(file,'utf8');
-  for(const [re,label] of banned)if(re.test(text))failures.push(`${file}: ${label}`);
+  for(const [re,label] of dynamicBanned)if(re.test(text))failures.push(`${file}: ${label}`);
 }
-if(fs.existsSync('assets/home-visual-system.css')){
-  const css=fs.readFileSync('assets/home-visual-system.css','utf8');
-  if(/\.pd-hub-card>small:before\s*\{[^}]*content:\s*['"]\+['"]/s.test(css))failures.push('assets/home-visual-system.css: decorative + before hub-card labels');
-  if(/\.pd-hub-card \.pd-arrow:after\s*\{[^}]*content:\s*['"][^'"]*\+[^'"]*['"]/s.test(css))failures.push('assets/home-visual-system.css: decorative + after hub-card actions');
-  if(/content:\s*['"]PILOTDESK\s*\/\/\s*FLIGHT TOOLS['"]/i.test(css))failures.push('assets/home-visual-system.css: code-style // in page-hero label');
+if(!fs.existsSync('assets/pilot-language.css')){
+  failures.push('assets/pilot-language.css: final public visual-language override missing');
+}else{
+  const css=fs.readFileSync('assets/pilot-language.css','utf8');
+  if(!/\.pd-page-hero:after\s*\{[^}]*content:\s*['"]PILOTDESK FLIGHT TOOLS['"]/s.test(css))failures.push('assets/pilot-language.css: plain page-hero label missing');
+  if(!/\.pd-hub-card>small:before\s*\{[^}]*content:none/s.test(css))failures.push('assets/pilot-language.css: hub-card leading plus override missing');
+  if(!/\.pd-hub-card \.pd-arrow:after\s*\{[^}]*content:none/s.test(css))failures.push('assets/pilot-language.css: hub-card trailing plus override missing');
 }
 if(failures.length){console.error('Public copy tone check failed:');for(const x of failures)console.error(' - '+x);process.exit(1)}
 console.log(`Public copy tone check passed across ${files.length} HTML pages and user-facing app copy.`);

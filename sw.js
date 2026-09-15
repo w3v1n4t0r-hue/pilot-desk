@@ -1,4 +1,4 @@
-const CACHE='pilotdesk-v36';
+const CACHE='pilotdesk-v37';
 const CORE=[
   '/','/index.html','/offline.html','/404.html','/tools.html','/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html','/flight-training.html',
   '/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html',
@@ -13,7 +13,7 @@ const CORE_PATHS=new Set(CORE);
 const MAX_RUNTIME_ENTRIES=140;
 const NETWORK_FIRST_ASSETS=new Set([
   '/assets/app-bootstrap.js','/assets/navigation-data.js','/assets/global-nav.js','/assets/home-architecture-2026.js','/assets/tools-directory.js','/assets/brand.js','/assets/icon.svg','/assets/hero-flightline.svg','/assets/styles.css','/assets/pilotdesk-architecture-2026.css','/assets/pilotdesk-navigation-2026.css','/assets/pilotdesk-workspaces-2026.css','/assets/avionics-ui.css','/assets/avionics-architecture.css','/assets/avionics-ops.css','/assets/product-clarity.css','/assets/avionics-architecture.js','/assets/avionics-command.js','/assets/flight-strip-export.js','/assets/crosswind-mfd.js','/assets/product-clarity.js','/assets/professional-polish.css','/assets/home-command-center.js','/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-avionics-final.css','/assets/context-widget.js','/assets/tool-first-layout.js','/assets/performance.js','/assets/sticky-app.js','/assets/growth-suite.js','/assets/weather-fixed.js','/assets/weather-extra.js','/assets/analytics.js','/assets/share-enhance.js',
-  '/assets/product-nav.js','/assets/airport.js','/assets/flights.js','/assets/flight-brief.js','/assets/route-save.js','/assets/aircraft-v2.js',
+  '/assets/product-nav.js','/assets/account.js','/assets/airport.js','/assets/flights.js','/assets/flight-brief.js','/assets/route-save.js','/assets/aircraft-v2.js',
   '/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js','/assets/poh-chart-studio.js'
 ]);
 const cacheable=r=>r&&r.ok&&(r.type==='basic'||r.type==='default');
@@ -32,3 +32,4 @@ async function networkFirst(req,preloadPromise){const cache=await caches.open(CA
 async function staleWhileRevalidate(event,req){const cache=await caches.open(CACHE),hit=await match(cache,req);const fresh=fetch(req).then(r=>put(cache,req,r)).catch(()=>null);if(hit){event.waitUntil(fresh.then(()=>{}));return hit}return (await fresh)||Response.error()}
 async function cacheFirst(req){const cache=await caches.open(CACHE),hit=await match(cache,req);if(hit)return hit;try{return put(cache,req,await fetch(req))}catch{return Response.error()}}
 self.addEventListener('fetch',event=>{const req=event.request;if(req.method!=='GET')return;const url=new URL(req.url);if(url.origin!==self.location.origin)return;if(url.pathname.startsWith('/api/')||url.pathname.startsWith('/_vercel/'))return;if(req.mode==='navigate'){event.respondWith(networkFirst(req,event.preloadResponse));return}if(NETWORK_FIRST_ASSETS.has(url.pathname)){event.respondWith(networkFirst(req));return}if(/\.(?:js|css|svg|png|jpg|jpeg|webp|woff2?)$/i.test(url.pathname)){event.respondWith(staleWhileRevalidate(event,req));return}event.respondWith(cacheFirst(req))});
+

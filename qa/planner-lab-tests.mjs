@@ -37,14 +37,17 @@ for(const s of ['d-tpp_Metafile.xml','airport_name','pdfName','viewUrl','DELETED
 if(!proxy.includes('aeronav.faa.gov/d-tpp/')||!proxy.includes('application/pdf'))throw new Error('Same-origin FAA PDF proxy missing');
 if(!procPage.includes('procViewer')||!procPage.includes('procFilters')||!procPage.includes('FAA d-TPP'))throw new Error('FAA plate viewer missing');
 
+const siteData=fs.readFileSync('src/data/site.mjs','utf8');
+const header=fs.readFileSync('src/components/Header.astro','utf8');
 const gn=fs.readFileSync('assets/global-nav.js','utf8');
-const order=['Calculators','Daily','Planner','Aircraft','Weather','Training','Guides','Account'];
+const navCss=fs.readFileSync('assets/pilotdesk-architecture-2026.css','utf8');
+const order=["label: 'Tools'","label: 'Plan'","label: 'Weather'","label: 'Learn'"];
 let pos=-1;
-for(const item of order){const next=gn.indexOf(`'${item}'`);if(next<0||next<=pos)throw new Error(`Top navigation order is wrong at ${item}`);pos=next}
-if((gn.match(/'Planner'/g)||[]).length!==1)throw new Error('Top navigation should contain Planner once');
-if((gn.match(/'Training'/g)||[]).length!==1)throw new Error('Top navigation should contain Training once');
-if((gn.match(/'Daily'/g)||[]).length!==1)throw new Error('Top navigation should contain Daily once');
-if(!gn.includes('pd-global-nav')||!gn.includes("max-width:820px"))throw new Error('Global navigation/mobile behavior missing');
+for(const item of order){const next=siteData.indexOf(item);if(next<0||next<=pos)throw new Error(`Top navigation order is wrong at ${item}`);pos=next}
+for(const target of ['/route-planner.html','/airport.html','/procedures.html','/aircraft.html','/flights.html'])if(!siteData.includes(`'${target}'`))throw new Error(`Plan navigation missing ${target}`);
+if(!header.includes('href="/daily/"'))throw new Error('Daily must remain a first-level navigation destination');
+if(!gn.includes('window.PILOTDESK_NAV')||!gn.includes('data-pd-account-link'))throw new Error('Shared navigation/account hydration missing');
+if(!navCss.includes('@media(max-width:860px)')||!navCss.includes('.pd-main-nav.open{display:grid}')||!navCss.includes('.menu-btn{display:grid!important'))throw new Error('Global navigation/mobile behavior missing');
 
 const wx=fs.readFileSync('api/weather.js','utf8');
 const wxClient=fs.readFileSync('assets/weather-fixed.js','utf8');

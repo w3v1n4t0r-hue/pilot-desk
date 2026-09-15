@@ -11,7 +11,9 @@ try{
   for(const route of ['/','/account.html','/learn/oral-exam/','/learn/oral-exam/private.html','/learn/oral-exam/instrument.html']){
    const response=await page.goto(base+route);assert.equal(response.status(),200,route);
    await page.locator('h1').waitFor();await page.waitForTimeout(600);
-   const size=await page.evaluate(()=>({page:document.documentElement.scrollWidth,view:innerWidth}));assert.ok(size.page<=size.view+1,`${route} overflows at ${width}: ${size.page}`);
+   const size=await page.evaluate(()=>({page:document.documentElement.scrollWidth,view:innerWidth,overflow:[...document.querySelectorAll('body *')].map(el=>({tag:el.tagName,class:el.className,left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,width:el.getBoundingClientRect().width})).filter(el=>el.right>innerWidth+1||el.left< -1)}));
+   if(size.page>size.view+1){console.error(JSON.stringify(size));await page.screenshot({path:`qa-output/overflow-${width}.png`,fullPage:true});}
+   assert.ok(size.page<=size.view+1,`${route} overflows at ${width}: ${size.page}`);
    if(route==='/')assert.equal(await page.locator('#pdHomeTitle span').count(),0,'Headline must use normal word wrapping');
    if(width===390||width===1280)await page.screenshot({path:`qa-output/${width}-${route.replace(/[^a-z]/g,'')||'home'}.png`});
   }

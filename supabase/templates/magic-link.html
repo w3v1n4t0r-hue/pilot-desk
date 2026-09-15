@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="supported-color-schemes" content="dark light">
+  <title>Sign in to PilotDesk</title>
+  <style>
+    @media only screen and (max-width: 620px) {
+      .pd-shell { width: 100% !important; }
+      .pd-card { padding: 28px 22px !important; }
+      .pd-button { display: block !important; width: auto !important; text-align: center !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#08090b;color:#f2f3f5;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
+    Your one-time PilotDesk sign-in link. If you did not request it, you can safely ignore this email.
+  </div>
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;background:#08090b;margin:0;padding:0;">
+    <tr>
+      <td align="center" style="padding:36px 16px;">
+        <table role="presentation" class="pd-shell" width="600" cellspacing="0" cellpadding="0" border="0" style="width:600px;max-width:600px;margin:0 auto;">
+          <tr>
+            <td style="padding:0 2px 16px;">
+              <div style="font-size:18px;line-height:1.1;font-weight:800;letter-spacing:-0.02em;color:#f4f5f6;">PilotDesk</div>
+              <div style="margin-top:4px;font-size:9px;line-height:1.2;font-weight:700;letter-spacing:0.18em;color:#9da3aa;text-transform:uppercase;">Flight Tools</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="pd-card" style="padding:38px 40px;background:#111317;border:1px solid #30343a;border-radius:14px;">
+              <div style="font-size:10px;line-height:1.4;font-weight:800;letter-spacing:0.18em;color:#aeb3b9;text-transform:uppercase;">Secure account access</div>
+
+              <h1 style="margin:12px 0 12px;font-size:30px;line-height:1.08;letter-spacing:-0.035em;color:#f5f6f7;font-weight:800;">Sign in to PilotDesk</h1>
+
+              <p style="margin:0 0 24px;font-size:15px;line-height:1.65;color:#c2c6cb;">
+                You requested a one-time sign-in link for <strong style="color:#f3f4f5;font-weight:700;">{{ .Email }}</strong>. Use the button below to securely continue to your PilotDesk account.
+              </p>
+
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px;">
+                <tr>
+                  <td bgcolor="#eceef0" style="border-radius:9px;">
+                    <a class="pd-button" href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 22px;border:1px solid #f5f6f7;border-radius:9px;background:#eceef0;color:#08090a;text-decoration:none;font-size:14px;line-height:1;font-weight:800;">Sign in to PilotDesk</a>
+                  </td>
+                </tr>
+              </table>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;margin:0 0 22px;">
+                <tr>
+                  <td style="padding:15px 16px;background:#0b0d10;border:1px solid #292d32;border-radius:10px;">
+                    <div style="font-size:10px;line-height:1.4;font-weight:800;letter-spacing:0.12em;color:#aeb3b9;text-transform:uppercase;">Security note</div>
+                    <div style="margin-top:6px;font-size:12px;line-height:1.6;color:#9da3aa;">This link is intended only for {{ .Email }}. It is one-time account access and expires automatically. Do not forward this email or share the sign-in link.</div>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0;font-size:12px;line-height:1.65;color:#8f959d;">
+                If you did not request this email, no action is needed. You can safely ignore it. PilotDesk will never ask you to reply with a password, verification code, payment information, or other credentials.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:18px 4px 0;color:#747b84;font-size:10px;line-height:1.6;">
+              <div style="margin-bottom:6px;">PilotDesk · Aviation calculators, training tools and pilot resources.</div>
+              <div>
+                <a href="{{ .SiteURL }}" style="color:#aeb3b9;text-decoration:underline;">pilot-desk.com</a>
+                <span style="color:#4d535a;"> · </span>
+                <a href="{{ .SiteURL }}/legal/privacy.html" style="color:#aeb3b9;text-decoration:underline;">Privacy</a>
+                <span style="color:#4d535a;"> · </span>
+                <a href="{{ .SiteURL }}/legal/terms.html" style="color:#aeb3b9;text-decoration:underline;">Terms</a>
+              </div>
+              <div style="margin-top:10px;color:#5f666e;">This is an automated account-access email sent because a sign-in link was requested on PilotDesk.</div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {createRequire} from 'node:module';
+import {navSections,searchable} from '../src/data/site.mjs';
+import inventory from '../src/data/inventory.json' with {type:'json'};
+import {sharedShell} from '../scripts/shared-shell.mjs';
+const require=createRequire(import.meta.url),nav=require('../assets/navlog-core.js');
+const near=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
+near(nav.windTriangle(0,120,0,20).gs,100);
+near(nav.windTriangle(0,120,180,20).gs,140);
+near(nav.windTriangle(90,120,90,30).gs,90);
+assert.equal(nav.windTriangle(0,100,0,120),null);
+for(const invalid of [NaN,Infinity,-Infinity]){assert.equal(nav.windTriangle(0,invalid,0,20),null);assert.throws(()=>nav.build([{lat:0,lon:0},{lat:1,lon:0}],{tas:120,burn:invalid}));}
+assert.throws(()=>nav.distanceCourse({lat:91,lon:0},{lat:0,lon:0}));
+assert.throws(()=>nav.distanceCourse({lat:0,lon:NaN},{lat:0,lon:0}));
+const route=nav.build([{id:'A',lat:0,lon:0},{id:'B',lat:1,lon:0},{id:'C',lat:2,lon:0}],{tas:120,burn:10,windFrom:0,windSpeed:20});
+near(route.totalHours,route.totalDistance/100);
+near(route.totalFuel,route.totalHours*10);
+assert.deepEqual(navSections.map(x=>x.label),['Plan','Calculators','Weather','Learn']);
+assert.ok(searchable.some(x=>x[1]==='/calculators/ballast/'));
+for(const x of inventory){assert.ok(searchable.some(s=>s[1]===x.href),`Not searchable: ${x.href}`);assert.ok(fs.existsSync('.'+x.href+(x.href.endsWith('/')?'index.html':'')),`Missing page: ${x.href}`)}
+// Migration merges by id, converts burn, retains backups and is idempotent.
+const data=new Map([['pd-saved-flights',JSON.stringify([{id:'new',route:'A B'}])],['pd-flights-v1',JSON.stringify([{id:'old',route:'C D',fuelBurn:12,procedures:[{name:'Plate'}]},{id:'new',route:'X Y'}])]]);
+const ctx={localStorage:{getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)},window:{},document:{dispatchEvent(){}},CustomEvent:class{},Date};
+const code=fs.readFileSync('assets/flight-store.js','utf8');vm.runInNewContext(code,ctx);vm.runInNewContext(code,ctx);
+assert.equal(ctx.window.PilotDeskFlights.list().length,2);
+assert.equal(ctx.window.PilotDeskFlights.get('old').burn,12);
+assert.equal(ctx.window.PilotDeskFlights.get('new').route,'A B');
+assert.equal(ctx.window.PilotDeskFlights.get('old').procedures.length,1);
+assert.ok(data.has('pd-flights-v1'));
+ctx.window.PilotDeskFlights.upsert({id:'old',name:'Updated'});
+assert.equal(ctx.window.PilotDeskFlights.list().length,2);
+assert.equal(ctx.window.PilotDeskFlights.get('old').procedures.length,1);
+const crosswind=sharedShell(fs.readFileSync('calculators/crosswind/index.html','utf8'));
+assert.equal((crosswind.match(/<header /g)||[]).length,1);
+assert.ok(crosswind.includes('href="/tools.html">Calculators'));
+const boot=fs.readFileSync('assets/app-bootstrap.js','utf8');
+assert.ok(!boot.includes('visibility:hidden'),'Content must remain visible when scripts fail');
+for(const retired of ['context-widget','flight-library','product-polish','avionics-command'])assert.ok(!boot.includes(`/assets/${retired}.js`),`Competing shell injector loaded: ${retired}`);
+assert.ok(fs.readFileSync('written-prep.html','utf8').includes('id="pdStudySample"'));
+assert.ok(fs.readFileSync('assets/route-save.js','utf8').includes('store().upsert'));
+console.log('Product experience checks passed: navigation coverage, headwind/tailwind arithmetic, flight migration, shared shell and sample entry.');

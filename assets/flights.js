@@ -2,8 +2,8 @@
 'use strict';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='pd-saved-flights',AC_KEY='pd-aircraft';
-function flights(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return[]}}
-function saveFlights(v){localStorage.setItem(KEY,JSON.stringify(v.slice(0,60)))}
+function flights(){return window.PilotDeskFlights?.list()||[]}
+function saveFlights(v){localStorage.setItem(KEY,JSON.stringify(v))}
 function aircraft(){try{return JSON.parse(localStorage.getItem(AC_KEY)||'[]')}catch{return[]}}
 function activeAircraft(){const a=aircraft(),id=localStorage.getItem('pd-aircraft-active');return a.find(x=>x.id===id)||a[0]||null}
 function uid(){return crypto?.randomUUID?.()||('fl'+Date.now().toString(36)+Math.random().toString(36).slice(2))}

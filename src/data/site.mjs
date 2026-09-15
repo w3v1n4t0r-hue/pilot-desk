@@ -1,6 +1,6 @@
-export const navSections = [
+const sectionDefinitions = [
   {
-    label: 'Tools',
+    label: 'Calculators',
     paths: ['/tools.html', '/calculators/', '/weight-balance.html', '/e6b-flight-computer.html', '/flight-planning-workspace.html', '/history.html'],
     items: [
       ['/tools.html', 'All calculators', 'Browse every PilotDesk calculator by subject'],
@@ -12,13 +12,15 @@ export const navSections = [
   },
   {
     label: 'Plan',
-    paths: ['/planner.html', '/route-planner.html', '/airport.html', '/procedures.html', '/flights.html', '/flight-brief.html', '/aircraft.html', '/poh-chart-studio.html', '/checklist-trainer.html'],
+    paths: ['/planner.html', '/route-planner.html', '/airport.html', '/procedures.html', '/flights.html', '/flight-brief.html', '/aircraft.html', '/poh-chart-studio.html'],
     items: [
       ['/route-planner.html', 'Route planner', 'Build a route and navlog'],
       ['/airport.html', 'Airport search', 'Runways, weather, and FAA procedures'],
       ['/procedures.html', 'Procedures', 'Find instrument procedures'],
       ['/aircraft.html', 'Aircraft', 'Your aircraft profiles and planning numbers'],
-      ['/flights.html', 'Saved flights', 'Return to flights you saved']
+      ['/flights.html', 'Saved flights', 'Return to flights you saved'],
+      ['/flight-brief.html', 'Flight brief', 'Review your current flight'],
+      ['/poh-chart-studio.html', 'Aircraft performance', 'Work with your approved chart data']
     ]
   },
   {
@@ -32,17 +34,19 @@ export const navSections = [
   },
   {
     label: 'Learn',
-    paths: ['/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/'],
+    paths: ['/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/', '/daily/', '/checklist-trainer.html'],
     items: [
       ['/written-prep.html', 'Written Prep', 'PPL through ATP written-test study'],
       ['/skill-gap.html', 'Weak subjects', 'Find subjects that need more work'],
       ['/flight-training.html', 'Flight training', 'Study material organized by certificate'],
-      ['/guides.html', 'Pilot guides', 'Checkride, systems, weather, and flight-planning guides']
+      ['/guides.html', 'Pilot guides', 'Checkride, systems, weather, and flight-planning guides'],
+      ['/daily/', 'Daily challenge', 'Three questions to keep learning'],
+      ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons']
     ]
   }
 ];
 
-export const searchable = [
+const featuredSearch = [
   ['All calculators', '/tools.html', 'calculator tools directory'],
   ['Crosswind calculator', '/calculators/crosswind/', 'calculator wind component runway'],
   ['Density altitude', '/calculators/density-altitude/', 'calculator performance weather'],
@@ -94,5 +98,12 @@ export const footerLinks = [
   ['/about.html', 'About'],
   ['/sources.html', 'Sources'],
   ['/legal/privacy.html', 'Privacy'],
-  ['/legal/terms.html', 'Terms']
+  ['/legal/terms.html', 'Terms'],
+  ['/feedback.html', 'Feedback'],
+  ['/legal/safety.html', 'Safety']
 ];
+
+import inventory from './inventory.json' with { type: 'json' };
+export const searchable = [...new Map([...featuredSearch, ...inventory.map(x => [x.title, x.href, `${x.type} ${x.group} ${x.title}`.toLowerCase()])].map(x => [x[1], x])).values()];
+
+export const navSections = ['Plan','Calculators','Weather','Learn'].map(label => sectionDefinitions.find(s => s.label === label));

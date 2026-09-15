@@ -1,3 +1,4 @@
+import { sharedShell } from './shared-shell.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -31,3 +32,6 @@ for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
 }
 
 console.log('Prepared Astro public passthrough while preserving legacy PilotDesk URLs.');
+
+function applyShell(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())applyShell(p);else if(e.name.endsWith('.html'))fs.writeFileSync(p,sharedShell(fs.readFileSync(p,'utf8')))}}
+applyShell(target);

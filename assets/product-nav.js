@@ -26,6 +26,6 @@ function addProductRow(){
 }
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;document.querySelectorAll('.pd-install-button').forEach(x=>x.hidden=false)});
 window.addEventListener('appinstalled',()=>{installPrompt=null;document.querySelectorAll('.pd-install-button').forEach(x=>x.hidden=true)});
-function init(){if(location.pathname==='/'||location.pathname==='/index.html')return;addNav();addProductRow()}
+function init(){/* Navigation is owned by the shared header. */}
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
 })();

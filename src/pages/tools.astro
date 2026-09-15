@@ -14,7 +14,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
   <section class="category">
     <div class="category-head"><h2>All calculators</h2><span id="pdToolCount">47 tools</span></div>
-    <div class="search"><input id="pdToolDirectorySearch" type="search" placeholder="Search calculators" autocomplete="off" /><span>Type a name or subject</span></div>
+    <div class="search"><input id="pdToolDirectorySearch" type="search" placeholder="Search calculators" autocomplete="off" /><label class="pd-filter-label" for="pdToolDirectoryGroup">Category</label><select id="pdToolDirectoryGroup"><option value="">All categories</option></select></div>
   </section>
   <div id="pdToolDirectory"></div>
   <script slot="scripts" is:inline defer src="/assets/tools-directory.js"></script>

@@ -1,34 +1,19 @@
 (()=>{
 'use strict';
-if(window.__pilotDeskAppBootstrap)return;
-window.__pilotDeskAppBootstrap=true;
-const path=location.pathname;
-const isHome=path==='/'||path==='/index.html';
-const isCalculator=path.startsWith('/calculators/')&&!path.includes('weight-balance-builder');
-const isGuide=path.startsWith('/guides/');
-const root=document.documentElement;
-const isAstroNative=root.hasAttribute('data-pd-astro-native');
-if(isHome)root.classList.add('pd-home-2026');
-root.classList.add('pd-ui-booting');
-const gate=document.createElement('style');gate.id='pdBootGate';gate.textContent='html.pd-ui-booting body{visibility:hidden!important}';document.head.appendChild(gate);
-let opened=false;const openGate=()=>{if(opened)return;opened=true;const show=()=>requestAnimationFrame(()=>{root.classList.remove('pd-ui-booting');root.classList.add('pd-ui-ready');gate.remove()});document.readyState==='loading'?document.addEventListener('DOMContentLoaded',show,{once:true}):show()};const failOpen=setTimeout(openGate,2000);
-try{const saved=localStorage.getItem('pd-theme'),valid=new Set(['system','light','dark','night-red']),mode=valid.has(saved)?saved:'dark',resolved=mode==='system'?(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):mode;root.dataset.pdTheme=resolved;root.style.colorScheme=resolved==='light'?'light':'dark'}catch{}
-window.__pdTrackQueue=Array.isArray(window.__pdTrackQueue)?window.__pdTrackQueue:[];if(!window.pdTrack)window.pdTrack=(name,data={})=>window.__pdTrackQueue.push([name,data]);
-const jobs=[];
-const stylePath=href=>[...document.querySelectorAll('link[rel="stylesheet"]')].find(l=>{try{return new URL(l.href,location.href).pathname===href}catch{return false}});
-const loadStyle=(href,key)=>{const old=document.querySelector(`link[data-${key}]`)||stylePath(href);if(old)return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.setAttribute(`data-${key}`,'1');jobs.push(new Promise(r=>{const done=()=>r();l.addEventListener('load',done,{once:true});l.addEventListener('error',done,{once:true});setTimeout(done,900)}));document.head.appendChild(l)};
-const scriptPath=src=>[...document.scripts].find(s=>{try{return new URL(s.src,location.href).pathname===src}catch{return false}});
-const load=(src,key,critical=false)=>{if(document.querySelector(`script[data-${key}]`)||scriptPath(src))return;const s=document.createElement('script');s.src=src;s.async=false;s.setAttribute(`data-${key}`,'1');if(critical)jobs.push(new Promise(r=>{const done=()=>r();s.addEventListener('load',done,{once:true});s.addEventListener('error',done,{once:true});setTimeout(done,1000)}));document.head.appendChild(s)};
-const ready=fn=>document.readyState==='loading'?document.addEventListener('DOMContentLoaded',fn,{once:true}):fn();const deferLoad=(src,key,ms=900)=>ready(()=>setTimeout(()=>load(src,key),ms));
-loadStyle('/assets/professional-polish.css','pd-professional-polish');loadStyle('/assets/performance.css','pd-performance-css');loadStyle('/assets/avionics-ui.css','pd-avionics-ui');loadStyle('/assets/avionics-architecture.css','pd-avionics-architecture-css');loadStyle('/assets/avionics-ops.css','pd-avionics-ops-css');loadStyle('/assets/product-clarity.css','pd-product-clarity-css');
-loadStyle('/assets/unified-ui.css','pd-unified-ui');loadStyle('/assets/site-chassis.css','pd-site-chassis');loadStyle('/assets/home-visual-system.css','pd-home-visual-system');loadStyle('/assets/pilot-language.css','pd-pilot-language');loadStyle('/assets/pilotdesk-architecture-2026.css','pd-architecture-2026');
-load('/assets/navigation-data.js','pd-navigation-data',true);
-for(const [src,key] of [['/assets/global-nav.js','pd-global-nav'],['/assets/brand.js','pd-brand'],['/assets/theme.js','pd-theme'],['/assets/performance.js','pd-performance'],['/assets/tool-first-layout.js','pd-tool-first'],['/assets/avionics-architecture.js','pd-avionics-architecture-js'],['/assets/avionics-command.js','pd-avionics-command-js'],['/assets/flight-strip-export.js','pd-flight-strip-export-js'],['/assets/crosswind-mfd.js','pd-crosswind-mfd-js'],['/assets/context-widget.js','pd-context-widget'],['/assets/product-polish.js','pd-polish'],['/assets/runtime-qol.js','pd-qol'],['/assets/growth-suite.js','pd-growth-suite'],['/assets/sticky-app.js','pd-sticky-app'],['/assets/pilotdesk-plus.js','pd-plus']])load(src,key,true);
-if(isHome&&!isAstroNative)load('/assets/home-architecture-2026.js','pd-home-architecture-2026',true);
-if(isCalculator){load('/assets/features.js','pd-features',true);load('/assets/share-enhance.js','pd-share',true);load('/assets/calculator-ux.js','pd-calc-ux',true)}
-if(isCalculator||isGuide)load('/assets/preview-harvest.js','pd-preview-harvest',true);if(path==='/weather.html')load('/assets/offline-weather.js','pd-weather-offline',true);if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js','pd-wb-export',true);if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js','pd-aircraft-transfer',true);load('/assets/aircraft-training.js','pd-aircraft-training',true)}if(path==='/route-planner.html'){load('/assets/planner-pro.js','pd-planner-pro',true);load('/assets/flight-library.js','pd-flight-library',true)}if(path==='/procedures.html')load('/assets/procedure-pro.js','pd-procedure-pro',true);if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js','pd-trainer-pro',true);load('/assets/product-clarity.js','pd-product-clarity-js',true);
-Promise.allSettled(jobs).then(()=>setTimeout(()=>{clearTimeout(failOpen);openGate()},120));
-deferLoad('/assets/seo.js','pd-seo',350);deferLoad('/assets/errors.js','pd-errors',450);deferLoad('/assets/analytics.js','pd-analytics',650);deferLoad('/assets/update.js','pd-update',2200);
-const canonicalWeightBalance='/weight-balance.html';function repairLegacyLinks(){document.querySelectorAll('a[href="/calculators/weight-balance-builder/"],a[href="/calculators/weight-balance-builder"]').forEach(a=>a.href=canonicalWeightBalance)}
-function init(){repairLegacyLinks();document.addEventListener('click',e=>{const a=e.target.closest('[data-pd-launch]');if(a)window.pdTrack?.('Quick Start',{target:a.dataset.pdLaunch||'unknown'})},true)}ready(init);
+if(window.__pilotDeskAppBootstrap)return;window.__pilotDeskAppBootstrap=true;
+const path=location.pathname,calc=path.startsWith('/calculators/')&&!path.includes('weight-balance-builder');
+// Static content stays visible even when optional enhancements fail.
+window.__pdTrackQueue=window.__pdTrackQueue||[];window.pdTrack=window.pdTrack||((name,data={})=>window.__pdTrackQueue.push([name,data]));
+function load(src){if([...document.scripts].some(s=>new URL(s.src||location.href).pathname===src))return;const s=document.createElement('script');s.src=src;s.async=false;document.head.append(s)}
+load('/assets/navigation-data.js');load('/assets/flight-store.js');load('/assets/global-nav.js');load('/assets/theme.js');
+if(calc){load('/assets/features.js');load('/assets/calculator-ux.js');load('/assets/crosswind-mfd.js');load('/assets/pilotdesk-plus.js')}
+if(path==='/history.html')load('/assets/pilotdesk-plus.js');
+if(path==='/weather.html')load('/assets/offline-weather.js');
+if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js');
+if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js');load('/assets/aircraft-training.js')}
+if(path==='/route-planner.html')load('/assets/planner-pro.js');
+if(path==='/procedures.html')load('/assets/procedure-pro.js');
+if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js');
+load('/assets/experience.js');
+for(const name of ['errors','analytics','update'])load('/assets/'+name+'.js');
 })();

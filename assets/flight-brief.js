@@ -2,7 +2,7 @@
 'use strict';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const FKEY='pd-saved-flights';
-function flights(){try{return JSON.parse(localStorage.getItem(FKEY)||'[]')}catch{return[]}}
+function flights(){return window.PilotDeskFlights?.list()||[]}
 function aircraft(){try{return JSON.parse(localStorage.getItem('pd-aircraft')||'[]')}catch{return[]}}
 function active(){const a=aircraft(),id=localStorage.getItem('pd-aircraft-active');return a.find(x=>x.id===id)||a[0]||null}
 async function json(url,timeout=12000){const c=new AbortController(),t=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(url,{headers:{Accept:'application/json'},signal:c.signal}),j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||`Request returned ${r.status}`);return j}finally{clearTimeout(t)}}

@@ -6,6 +6,7 @@ const assert=(ok,msg)=>{if(!ok)throw new Error(msg)};
 const html=read('flight-planning-workspace.html');
 const js=read('assets/flight-workspace.js');
 const bootstrap=read('assets/app-bootstrap.js');
+const siteData=read('src/data/site.mjs');
 const ads=read('assets/ads.js');
 
 assert(html.includes('<title>Flight Planning Workspace | PilotDesk</title>'),'Workspace title missing');
@@ -18,8 +19,8 @@ assert(js.includes('const ranges=')&&js.includes('outside the supported range'),
 assert(js.includes('function clear()')&&js.includes("textContent='—'"),'Workspace must fail closed by clearing stale outputs');
 assert(js.includes('crosswind component exceeds TAS')&&js.includes('groundspeed is zero or negative'),'Wind-triangle failure handling missing');
 assert(js.includes("localStorage.setItem('pd-flight-workspace'")&&js.includes("$('workspaceShare')")&&html.includes('Copy share link'),'Workspace save/share behavior missing');
-assert(bootstrap.includes('/flight-planning-workspace.html')&&bootstrap.includes('data-pd-launch="flight-workspace"'),'Homepage must expose the published workspace');
+assert(siteData.includes("['/flight-planning-workspace.html', 'Flight math'"),'Shared Tools navigation must expose the published flight-math workspace');
 assert(bootstrap.includes('/assets/brand.js')&&bootstrap.includes('pd-brand'),'Branding must load independently of advertising');
 assert(!ads.includes('/assets/brand.js'),'ads.js must not own branding');
 
-console.log('Flight Planning Workspace checks passed: publication, validation, fail-closed behavior, sharing, local save, discovery, and ad-independent branding verified.');
+console.log('Flight Planning Workspace checks passed: publication, validation, fail-closed behavior, sharing, local save, navigation discovery, and ad-independent branding verified.');

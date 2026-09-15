@@ -10,7 +10,14 @@ const groups={
  'Conversions':[['speed-conversion','Speed Conversion'],['distance-conversion','Distance Conversion'],['temperature-conversion','Temperature Conversion'],['weight-conversion','Weight Conversion'],['volume-conversion','Volume Conversion'],['pressure-conversion','Pressure Conversion'],['vertical-speed-conversion','Vertical Speed Conversion']]
 };
 const extra=[['/weight-balance.html','Weight & Balance Builder','Build a complete loading table and calculate CG.'],['/e6b-flight-computer.html','E6B Flight Computer','A consolidated flight-math tool for common planning calculations.']];
-const copy={crosswind:'Resolve wind into headwind, tailwind, and crosswind components.',density-altitude:'Estimate density altitude from pressure altitude and temperature.','glide-range':'Estimate no-wind glide distance from altitude and glide ratio.','fuel-required':'Calculate trip fuel, reserve, and fuel remaining.','top-of-descent':'Estimate descent distance, time, and vertical speed.','moment-cg':'Calculate moment and center of gravity from loading data.'};
+const copy={
+ crosswind:'Resolve wind into headwind, tailwind, and crosswind components.',
+ 'density-altitude':'Estimate density altitude from pressure altitude and temperature.',
+ 'glide-range':'Estimate no-wind glide distance from altitude and glide ratio.',
+ 'fuel-required':'Calculate trip fuel, reserve, and fuel remaining.',
+ 'top-of-descent':'Estimate descent distance, time, and vertical speed.',
+ 'moment-cg':'Calculate moment and center of gravity from loading data.'
+};
 function description(slug,name){return copy[slug]||`Open the ${name.toLowerCase()} calculator.`}
 function render(q=''){
  const host=document.getElementById('pdToolDirectory');if(!host)return;const query=String(q).trim().toLowerCase();let shown=0;host.innerHTML='';

@@ -22,7 +22,20 @@ const banned=[
   [/\bsource visibility\b/i,'source visibility'],
   [/\bmake the arithmetic visible\b/i,'make the arithmetic visible'],
   [/\bpractice setup\b/i,'practice setup'],
-  [/\bwhat this version can do\b/i,'what this version can do']
+  [/\bwhat this version can do\b/i,'what this version can do'],
+  [/\bdiagnostic(?:s)?\b/i,'diagnostic'],
+  [/\bknowledge map\b/i,'knowledge map'],
+  [/\bskill map\b/i,'skill map'],
+  [/\bACS map\b/i,'ACS map'],
+  [/\bstudy workspace\b/i,'study workspace'],
+  [/\bcommand center\b/i,'command center'],
+  [/\btelemetry\b/i,'telemetry'],
+  [/\bpipeline\b/i,'pipeline'],
+  [/\bruntime\b/i,'runtime'],
+  [/\bchassis\b/i,'chassis'],
+  [/\blaunchpad\b/i,'launchpad'],
+  [/\badaptive\b/i,'adaptive'],
+  [/\bbaseline\b/i,'baseline']
 ];
 const files=[];
 function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){if(['.git','node_modules'].includes(e.name))continue;const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else if(e.isFile()&&e.name.endsWith('.html'))files.push(p)}}
@@ -34,14 +47,25 @@ for(const file of files){
   const visible=raw.replace(/<script\b[\s\S]*?<\/script>/gi,' ').replace(/<style\b[\s\S]*?<\/style>/gi,' ').replace(/<svg\b[\s\S]*?<\/svg>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[a-z0-9#]+;/gi,' ').replace(/\s+/g,' ');
   const text=visible+' '+meta;
   for(const [re,label] of banned)if(re.test(text))failures.push(`${path.relative(root,file)}: ${label}`);
+  if(/\s\/\/\s/.test(visible))failures.push(`${path.relative(root,file)}: code-style // separator`);
 }
 const manifest=JSON.parse(fs.readFileSync('site.webmanifest','utf8'));
 const manifestText=[manifest.description,...(manifest.shortcuts||[]).flatMap(x=>[x.name,x.short_name,x.description])].filter(Boolean).join(' ');
 for(const [re,label] of banned)if(re.test(manifestText))failures.push(`site.webmanifest: ${label}`);
-for(const file of ['scripts/generate-calculator-pages.mjs','assets/weather-fixed.js','assets/product-nav.js','assets/airport.js','assets/flights.js','assets/flight-brief.js','assets/aircraft-v2.js']){
+for(const file of [
+  'scripts/generate-calculator-pages.mjs',
+  'assets/weather-fixed.js','assets/product-nav.js','assets/airport.js','assets/flights.js','assets/flight-brief.js','assets/aircraft-v2.js',
+  'assets/skill-gap.js','assets/written-prep.js','assets/app-bootstrap.js','assets/home-daily.js','assets/home-command-center.js','assets/account.js','assets/global-nav.js'
+]){
   if(!fs.existsSync(file))continue;
   const text=fs.readFileSync(file,'utf8');
   for(const [re,label] of banned)if(re.test(text))failures.push(`${file}: ${label}`);
+}
+if(fs.existsSync('assets/home-visual-system.css')){
+  const css=fs.readFileSync('assets/home-visual-system.css','utf8');
+  if(/\.pd-hub-card>small:before\s*\{[^}]*content:\s*['"]\+['"]/s.test(css))failures.push('assets/home-visual-system.css: decorative + before hub-card labels');
+  if(/\.pd-hub-card \.pd-arrow:after\s*\{[^}]*content:\s*['"][^'"]*\+[^'"]*['"]/s.test(css))failures.push('assets/home-visual-system.css: decorative + after hub-card actions');
+  if(/content:\s*['"]PILOTDESK\s*\/\/\s*FLIGHT TOOLS['"]/i.test(css))failures.push('assets/home-visual-system.css: code-style // in page-hero label');
 }
 if(failures.length){console.error('Public copy tone check failed:');for(const x of failures)console.error(' - '+x);process.exit(1)}
 console.log(`Public copy tone check passed across ${files.length} HTML pages and user-facing app copy.`);

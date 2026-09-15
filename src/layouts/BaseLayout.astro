@@ -10,7 +10,8 @@ const {
   ogTitle = title,
   ogDescription = description,
   schema = null,
-  bodyClass = ''
+  bodyClass = '',
+  mainClass = 'shell'
 } = Astro.props;
 
 const canonicalUrl = canonical.startsWith('http') ? canonical : new URL(canonical, Astro.site).href;
@@ -44,7 +45,7 @@ const schemas = !schema ? [] : Array.isArray(schema) ? schema : [schema];
   <body class={bodyClass}>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <Header />
-    <main class="shell" id="main-content">
+    <main class={mainClass} id="main-content">
       <slot />
     </main>
     <Footer />

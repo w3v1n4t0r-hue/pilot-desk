@@ -3,9 +3,13 @@
    2) one component system
    3) one macro page chassis
    4) homepage visual language everywhere
-   5) final pilot-facing wording and decoration cleanup */
+   5) final pilot-facing wording cleanup
+   6) 2026 site architecture authority */
 @import url("/assets/styles-legacy.css");
 @import url("/assets/unified-ui.css");
 @import url("/assets/site-chassis.css");
 @import url("/assets/home-visual-system.css");
 @import url("/assets/pilot-language.css");
+@import url("/assets/pilotdesk-architecture-2026.css");
+@import url("/assets/pilotdesk-navigation-2026.css");
+@import url("/assets/pilotdesk-workspaces-2026.css");

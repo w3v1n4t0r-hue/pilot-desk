@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 760" fill="none">
+  <defs>
+    <linearGradient id="sky" x1="800" y1="0" x2="800" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#15191f"/>
+      <stop offset="0.55" stop-color="#0b0e12"/>
+      <stop offset="1" stop-color="#07090c"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.48" stop-color="#dfe5eb" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wing" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#2a3038" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#0b0e12" stop-opacity="0.96"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="760" fill="url(#sky)"/>
+  <path d="M0 493C142 457 254 470 371 430C489 390 571 401 690 445C829 496 924 461 1024 406C1123 351 1240 348 1378 392C1463 419 1533 420 1600 401V760H0V493Z" fill="#0a0d11"/>
+  <path d="M0 505C142 469 254 482 371 442C489 402 571 413 690 457C829 508 924 473 1024 418C1123 363 1240 360 1378 404C1463 431 1533 432 1600 413" stroke="#6b727c" stroke-opacity="0.18" stroke-width="2"/>
+  <path d="M0 555C166 528 306 551 434 520C591 483 717 537 866 528C1046 516 1141 451 1301 456C1423 459 1510 490 1600 482" stroke="#aeb6c0" stroke-opacity="0.09" stroke-width="1.5"/>
+  <rect x="76" y="205" width="1030" height="2" fill="url(#glow)"/>
+  <path d="M1060 -18L1600 -18V258L1320 240L1217 211L1129 157L1060 -18Z" fill="url(#wing)"/>
+  <path d="M1114 15L1587 60" stroke="#c8ced5" stroke-opacity="0.10" stroke-width="2"/>
+  <path d="M1184 110L1597 176" stroke="#c8ced5" stroke-opacity="0.07" stroke-width="2"/>
+  <path d="M1318 237L1294 484" stroke="#1e232a" stroke-width="46" stroke-linecap="round"/>
+  <path d="M1297 258L1277 470" stroke="#d2d7dd" stroke-opacity="0.07" stroke-width="2"/>
+  <circle cx="1163" cy="326" r="2.5" fill="#d9dde2" fill-opacity="0.16"/>
+  <circle cx="1209" cy="308" r="2" fill="#d9dde2" fill-opacity="0.12"/>
+  <circle cx="1262" cy="298" r="1.5" fill="#d9dde2" fill-opacity="0.10"/>
+</svg>

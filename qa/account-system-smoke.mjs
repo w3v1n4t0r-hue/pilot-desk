@@ -15,6 +15,6 @@ const checks=[
   ['client profile updates are column-limited',/grant update \(display_name, avatar_url, pilot_stage, home_airport, last_seen_at\) on public\.profiles/i.test(sql)],
   ['clients cannot award daily XP',/grant select on public\.daily_progress to authenticated/i.test(sql)&&!/grant select, insert, update on public\.daily_progress/i.test(sql)],
   ['new auth users get profiles',/on_auth_user_created/.test(sql)&&/handle_new_user/.test(sql)],
-  ['account is in global navigation',/\/account\.html','Account'/.test(nav)]
+  ['account is always visible in the global header',nav.includes('data-pd-account-link')&&nav.includes('href="/account.html"')&&nav.includes("text.textContent='Sign in'")&&nav.includes("text.textContent='Account'")]
 ];
 let failed=0;for(const [name,ok] of checks){if(ok)console.log(`✓ ${name}`);else{failed++;console.error(`✗ ${name}`)}}if(failed)process.exit(1);console.log('Account system smoke checks passed.');

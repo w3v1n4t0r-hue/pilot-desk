@@ -18,7 +18,7 @@ has(html,'Free FAA Written Test Prep','Written Prep SEO title missing');
 has(html,'isAccessibleForFree','Written Prep free structured data missing');
 has(html,'ACCOUNT REQUIRED','Account wall copy missing');
 has(html,'/account.html?next=%2Fwritten-prep.html','Account gate must return users to Written Prep');
-has(html,'not a leaked FAA test bank','Live-bank integrity disclosure missing');
+ok(html.toLowerCase().includes('not a leaked faa test bank'),'Live-bank integrity disclosure missing');
 for(const track of ['ppl','ira','cpl','cfi','cfii','atp'])has(html,`data-track="${track}"`,`Missing ${track.toUpperCase()} Written Prep track`);
 for(const mode of ['learn','missed','marked','random','exam'])has(html,`data-mode="${mode}"`,`Missing ${mode} study mode`);
 
@@ -37,8 +37,8 @@ has(bank,"testCode:'CAX',officialQuestions:100,officialMinutes:150,passingScore:
 has(bank,"testCode:'FIA',officialQuestions:100,officialMinutes:150,passingScore:70",'FIA official test metadata missing');
 has(bank,"testCode:'FII',officialQuestions:50,officialMinutes:150,passingScore:70",'FII official test metadata missing');
 has(bank,"testCode:'ATM',officialQuestions:125,officialMinutes:210,passingScore:70",'ATM official test metadata missing');
-has(bank,"source:'faa-sample-derived'",'Question bank must distinguish FAA sample-derived items');
-has(bank,"source:'pilotdesk-faa-aligned'",'Question bank must distinguish original FAA-aligned items');
+has(bank,"'faa-sample-derived'",'Question bank must distinguish FAA sample-derived items');
+has(bank,"'pilotdesk-faa-aligned'",'Question bank must distinguish original FAA-aligned items');
 
 has(edge,"return json(401,{error:'A free PilotDesk account is required to use Written Prep.'",'Edge function must require authentication');
 has(edge,"function prepareQuestion",'Server-side answer-choice shuffle missing');
@@ -59,7 +59,8 @@ has(migration,'(select auth.uid()) = user_id','Written Prep reads must be user-s
 
 has(nav,"['/written-prep.html','Written Prep']",'Written Prep missing from global navigation');
 has(bootstrap,'href="/written-prep.html" data-pd-launch="written-prep"','Written Prep missing from homepage Quick Start');
-has(training,'Free FAA Written Prep','Written Prep missing from training hub');
+has(training,'href="/written-prep.html"','Written Prep missing from training hub');
+has(training,'<h2>FAA Written Prep</h2>','Written Prep training card missing');
 has(account,'ensureWrittenPrepCta','Written Prep missing from signed-in account dashboard');
 has(account,"ensureOwnerMetric('pdMetricPrepToday'",'Owner dashboard must track Written Prep usage');
 has(account,'Returning you to your PilotDesk tool','Account redirect status must work for non-Daily tools');

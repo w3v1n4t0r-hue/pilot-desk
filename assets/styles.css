@@ -2,8 +2,10 @@
    1) legacy layout compatibility
    2) one component system
    3) one macro page chassis
-   4) homepage visual language everywhere */
+   4) homepage visual language everywhere
+   5) final pilot-facing wording and decoration cleanup */
 @import url("/assets/styles-legacy.css");
 @import url("/assets/unified-ui.css");
 @import url("/assets/site-chassis.css");
 @import url("/assets/home-visual-system.css");
+@import url("/assets/pilot-language.css");

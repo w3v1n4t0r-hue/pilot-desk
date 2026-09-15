@@ -17,8 +17,8 @@
 <div class="pd-account-layout" id="pdAccountRoot">
 <section class="pd-account-card">
 <div id="pdSignedOut">
-<h2>Sign in or create an account</h2><p>Use an email sign-in link. Google sign-in appears when it is available.</p>
-<div class="pd-auth-choice"><button class="pd-auth-btn pd-account-hidden" id="pdGoogleSignIn" type="button">Continue with Google</button><div class="pd-auth-divider">email</div><form id="pdMagicForm"><div class="pd-account-field"><label for="pdEmail">Email</label><div class="pd-inline"><input id="pdEmail" type="email" autocomplete="email" placeholder="pilot@example.com" required><button class="pd-auth-btn secondary" type="submit">Email me a sign-in link</button></div></div></form><div class="pd-account-note">By continuing, you agree to the <a href="/legal/terms.html"><u>Terms</u></a> and acknowledge the <a href="/legal/privacy.html"><u>Privacy Policy</u></a>.</div></div>
+<h2>Sign in or create an account</h2><p>Returning pilots can sign in with their password. Use an email link when setting up a new account or recovering access.</p>
+<div class="pd-auth-choice"><button class="pd-auth-btn pd-account-hidden" id="pdGoogleSignIn" type="button">Continue with Google</button><div class="pd-auth-divider">password sign-in</div><form id="pdPasswordForm"><div class="pd-account-field"><label for="pdPasswordEmail">Email</label><input id="pdPasswordEmail" type="email" autocomplete="email" placeholder="pilot@example.com" required></div><div class="pd-account-field"><label for="pdPassword">Password</label><input id="pdPassword" type="password" autocomplete="current-password" minlength="6" required></div><button class="pd-auth-btn" type="submit">Sign in</button><button class="pd-text-button" id="pdForgotPassword" type="button">Forgot password?</button></form><div class="pd-auth-divider">or use a one-time email link</div><form id="pdMagicForm"><div class="pd-account-field"><label for="pdEmail">Email</label><div class="pd-inline"><input id="pdEmail" type="email" autocomplete="email" placeholder="pilot@example.com" required><button class="pd-auth-btn secondary" type="submit">Email me a sign-in link</button></div></div></form><div class="pd-account-note">By continuing, you agree to the <a href="/legal/terms.html"><u>Terms</u></a> and acknowledge the <a href="/legal/privacy.html"><u>Privacy Policy</u></a>.</div></div>
 </div>
 
 <div class="pd-account-hidden" id="pdSignedIn">
@@ -38,3 +38,4 @@
 </main>
 <footer><div><b>PilotDesk</b><p>Aviation calculators for planning and training.</p></div><div class="footer-links"><a href="/daily/">Daily</a><a href="/about.html">About</a><a href="/guides.html">Guides</a><a href="/sources.html">Sources</a><a href="/legal/privacy.html">Privacy</a><a href="/legal/terms.html">Terms</a></div><p class="fine">PilotDesk accounts are optional. Always verify operational information against current approved and official sources.</p></footer>
 </body></html>
+

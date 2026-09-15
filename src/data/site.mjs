@@ -43,7 +43,8 @@ const sectionDefinitions = [
       ['/daily/', 'Daily challenge', 'Three questions to keep learning'],
       ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons'],
       ['/training/acs-far-reference.html', 'ACS & FAR reference', 'Official FAA study sources by rating'],
-      ['/training/certificates-ratings.html', 'Certificates & ratings', 'See the FAA certificate path and ratings']
+      ['/training/certificates-ratings.html', 'Certificates & ratings', 'See the FAA certificate path and ratings'],
+      ['/learn/oral-exam/', 'FAA Oral Exam', 'Know it, say it, apply it, verify it']
     ]
   }
 ];

@@ -17,6 +17,13 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 .pd-home-hero{padding-top:54px}.pd-home-hero h1{letter-spacing:-.055em;text-shadow:0 4px 30px #0008}
 .pd-home-action{background:linear-gradient(145deg,#1a2a36,#101a23);border-color:#40576a;box-shadow:0 12px 32px #0004}.pd-home-action:hover{border-color:var(--accent);transform:translateY(-2px);transition:transform .2s ease,border-color .2s ease}
 .pd-popular-tool{background:#101a23aa}.pd-popular-tool:hover{background:var(--accent-soft);border-color:var(--accent);text-decoration:none}
+/* Motion is deliberately quiet: it reinforces hierarchy without distracting from flight data. */
+@keyframes pd-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pd-glow{0%,100%{box-shadow:0 10px 30px #0003}50%{box-shadow:0 14px 36px #0005}}
+.pd-home-hero-copy{animation:pd-enter .55s cubic-bezier(.2,.7,.2,1) both}.pd-home-actions{animation:pd-enter .55s .08s cubic-bezier(.2,.7,.2,1) both}.pd-home-section{animation:pd-enter .5s .12s cubic-bezier(.2,.7,.2,1) both}
+.tool-card,.pd-hub-card,.pd-card,.info-card,.side-card,.pd-panel,.rp-panel{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}.tool-card:hover,.pd-hub-card:hover,.pd-card:hover,.info-card:hover,.side-card:hover,.pd-panel:hover{transform:translateY(-2px);border-color:#526f82;box-shadow:0 16px 38px #0005}
+.pd-btn,.calc-btn,button.primary,.pd-nav-button{transition:transform .16s ease,filter .16s ease,background-color .16s ease}.pd-btn:hover,.calc-btn:hover,button.primary:hover{filter:brightness(1.08);transform:translateY(-1px)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 .search{flex-wrap:wrap}.pd-filter-label{font-size:13px;color:var(--muted2)}.pd-empty-state{padding:24px;border:1px dashed var(--line-hi);border-radius:12px;background:var(--panel);margin:24px 0}.pd-empty-state h2{margin-top:0}
 @media(max-width:800px){body{padding-bottom:72px}}
 

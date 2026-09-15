@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const schema={
+  '@context':'https://schema.org',
+  '@graph':[
+    {'@type':'AboutPage',name:'About PilotDesk',url:'https://www.pilot-desk.com/about.html',description:'About PilotDesk aviation calculators, weather, planning, aircraft, and training tools.'},
+    {'@type':'Organization',name:'PilotDesk',url:'https://www.pilot-desk.com/',logo:{'@type':'ImageObject',url:'https://www.pilot-desk.com/assets/icon.svg'},sameAs:['https://github.com/w3v1n4t0r-hue/pilot-desk'],knowsAbout:['aviation calculators','pilot training','flight planning','aviation weather','weight and balance','E6B flight computer']}
+  ]
+};
+---
+<BaseLayout
+  title="About PilotDesk | Free Aviation Calculators & Pilot Tools"
+  description="PilotDesk is a free aviation utility with pilot calculators, live METAR and TAF lookup, aircraft profiles, weight-and-balance tools, public methodology, and automated QA."
+  canonical="/about.html"
+  robots="index,follow"
+  schema={schema}
+  mainClass="shell content-page"
+>
+  <span class="badge">ABOUT</span>
+  <h1>PilotDesk</h1>
+  <p>PilotDesk is a free set of aviation tools for common pilot math, weather lookups, aircraft profiles, flight planning, and training. The project is designed around traceable formulas, primary aviation references, clear operating limits, and public technical review.</p>
+  <h2>Why it exists</h2>
+  <p>A lot of pilot math is repetitive. PilotDesk keeps common calculations easy to find and shows the relationship behind the answer so a pilot or student can check the work. No account is required for the calculators.</p>
+  <h2>Built for pilots and training</h2>
+  <p>PilotDesk focuses on the problems pilots actually work through: wind components, density altitude, time-speed-distance, fuel planning, descent math, navigation, weight and balance, METAR and TAF interpretation, E6B relationships, and related flight-planning tasks. Flight-school and CFI resources are available at <a href="/for-flight-schools.html">PilotDesk for Flight Schools</a>.</p>
+  <h2>How the tools are checked</h2>
+  <p>Calculator formulas are kept in testable source files and representative calculations are checked automatically before production changes are accepted. Site checks also cover calculator-page generation, local links, structured data, accessibility-related markup, search metadata, and regression cases. Formula explanations and source notes are shown on calculator and guide pages so results can be traced back to the relationship being used.</p>
+  <p>Read the <a href="/editorial-policy.html">Editorial, Testing &amp; Corrections Policy</a> and <a href="/sources.html">Sources &amp; Methods</a> for more detail.</p>
+  <h2>Public project trail</h2>
+  <p>PilotDesk maintains a public GitHub repository so the codebase, change history, and QA workflow can be inspected independently. <a href="https://github.com/w3v1n4t0r-hue/pilot-desk" rel="noopener" target="_blank">View PilotDesk on GitHub ↗</a>.</p>
+  <h2>Check the controlling source</h2>
+  <p>PilotDesk is a supplemental planning and training aid, not an approved source. Check aircraft limitations and performance against current approved data, and use current official sources for weather, regulations, procedures, NOTAMs, and flight information. If PilotDesk disagrees with a controlling source, use the controlling source.</p>
+  <h2>Corrections and feedback</h2>
+  <p>If something looks wrong, report it. Safety-related corrections take priority, and confirmed issues should be corrected in the source and covered by regression testing when practical. You can also suggest calculators, guides, or pilot tools that would be useful.</p>
+  <h2>Local data and ads</h2>
+  <p>The site is supported by advertising. Aircraft profiles and calculator convenience data are stored locally on the user's device rather than in a PilotDesk account database. Aggregate site analytics help identify what tools people use and which pages need improvement.</p>
+  <div class="pd-actions"><a class="pd-btn" href="/tools.html">Open calculators</a><a class="pd-btn secondary" href="/weather.html">Check airport weather</a><a class="pd-btn secondary" href="/guides.html">Read pilot math guides</a></div>
+</BaseLayout>

@@ -8,3 +8,4 @@ Sitemap: https://www.pilot-desk.com/sitemap-growth.xml
 Sitemap: https://www.pilot-desk.com/sitemap-retention.xml
 Sitemap: https://www.pilot-desk.com/sitemap-seo-expansion-2.xml
 Sitemap: https://www.pilot-desk.com/sitemap-seo-expansion.xml
+Sitemap: https://www.pilot-desk.com/sitemap-written-prep.xml

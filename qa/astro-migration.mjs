@@ -24,7 +24,7 @@ check(layout.includes('data-pd-astro-native="1"'),'native Astro pages must ident
 check(layout.includes('<Header />')&&layout.includes('<Footer />'),'BaseLayout must own shared site chrome');
 check(header.includes("import { navSections }"),'Astro header must use shared navigation data');
 check(data.includes("label: 'Tools'")&&data.includes("label: 'Plan'")&&data.includes("label: 'Weather'")&&data.includes("label: 'Learn'"),'shared navigation taxonomy is incomplete');
-check(home.includes('Plan a Flight')&&home.includes('Use a Calculator')&&home.includes('Study for a Written')&&home.includes('Play Daily'),'Astro homepage must preserve the four primary jobs');
+check(['Plan a Flight','Use a Calculator','Study for a Written','Play Daily'].every(x=>data.includes(`'${x}'`)),'shared homepage data must preserve the four primary jobs');
 check(home.includes('data-pd-home-account'),'Astro homepage must keep account discovery near the top');
 check(tools.includes('pdToolDirectorySearch')&&tools.includes('/assets/tools-directory.js'),'Astro calculator directory wiring is incomplete');
 check(bootstrap.includes('isAstroNative')&&bootstrap.includes("/assets/navigation-data.js"),'legacy bootstrap must respect native Astro structure and shared nav data');

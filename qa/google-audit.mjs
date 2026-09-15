@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 const fail=m=>{console.error('Google audit regression:',m);process.exitCode=1};
 const read=p=>fs.readFileSync(p,'utf8');
-const home=read('index.html'),ads=read('assets/ads.js'),theme=read('assets/theme.js'),site=read('assets/site.js'),product=read('assets/product-nav.js'),nav=read('assets/global-nav.js'),vercel=read('vercel.json');
+const home=read('index.html'),ads=read('assets/ads.js'),theme=read('assets/theme.js'),site=read('assets/site.js'),product=read('assets/product-nav.js'),nav=read('assets/global-nav.js'),siteData=read('src/data/site.mjs'),header=read('src/components/Header.astro'),syncNav=read('scripts/sync-navigation.mjs'),vercel=read('vercel.json');
 if(/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=/.test(home))fail('homepage eagerly loads AdSense');
 if(!ads.includes('scheduleAds()')||!ads.includes("isCalc?10000:7000")||!ads.includes("requestIdleCallback"))fail('AdSense lazy-start guard missing');
 if(!theme.includes("valid.has(saved)?saved:'dark'"))fail('dark default theme guard missing');
@@ -10,7 +10,8 @@ if(!site.includes("if(!['/','/index.html'].includes(location.pathname))loadWorks
 if(!site.includes('No recent tools yet.'))fail('recent-tools stable empty state missing');
 if(!site.includes('setTimeout(start,12000)'))fail('service worker should not take over the initial audit load');
 if(!product.includes("location.pathname==='/'||location.pathname==='/index.html'"))fail('product-nav homepage CLS guard missing');
-if(!nav.includes('current!==expected'))fail('stable canonical nav guard missing');
+const canonicalNav=header.includes("import { navSections }")&&syncNav.includes("from '../src/data/site.mjs'")&&nav.includes('window.PILOTDESK_NAV')&&nav.includes("data-pd-astro-shell")&&siteData.includes("label: 'Tools'")&&siteData.includes("label: 'Plan'")&&siteData.includes("label: 'Weather'")&&siteData.includes("label: 'Learn'");
+if(!canonicalNav)fail('stable canonical nav guard missing');
 if(!vercel.includes('includeSubDomains; preload'))fail('HSTS preload token missing');
 if(vercel.includes("https: http:;"))fail('HTTP scheme still allowed in script-src');
 const ratio=(a,b)=>{const lum=h=>{const v=h.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4);return .2126*v[0]+.7152*v[1]+.0722*v[2]};const [x,y]=[lum(a),lum(b)].sort((m,n)=>n-m);return (x+.05)/(y+.05)};

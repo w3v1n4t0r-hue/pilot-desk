@@ -41,7 +41,8 @@ const sectionDefinitions = [
       ['/flight-training.html', 'Flight training', 'Study material organized by certificate'],
       ['/guides.html', 'Pilot guides', 'Checkride, systems, weather, and flight-planning guides'],
       ['/daily/', 'Daily challenge', 'Three questions to keep learning'],
-      ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons']
+      ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons'],
+      ['/training/acs-far-reference.html', 'ACS & FAR reference', 'Official FAA study sources by rating']
     ]
   }
 ];
@@ -107,3 +108,4 @@ import inventory from './inventory.json' with { type: 'json' };
 export const searchable = [...new Map([...featuredSearch, ...inventory.map(x => [x.title, x.href, `${x.type} ${x.group} ${x.title}`.toLowerCase()])].map(x => [x[1], x])).values()];
 
 export const navSections = ['Plan','Calculators','Weather','Learn'].map(label => sectionDefinitions.find(s => s.label === label));
+

@@ -2,7 +2,7 @@
   "id":"/",
   "name":"PilotDesk",
   "short_name":"PilotDesk",
-  "description":"Pilot tools for calculators, airport search, aviation weather, route planning, saved flights, aircraft profiles, weight and balance, and flight training.",
+  "description":"Pilot tools for free FAA written prep, calculators, airport search, aviation weather, route planning, saved flights, aircraft profiles, weight and balance, and flight training.",
   "start_url":"/",
   "scope":"/",
   "display":"standalone",
@@ -15,6 +15,7 @@
   "categories":["navigation","utilities","education"],
   "icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
   "shortcuts":[
+    {"name":"Free FAA Written Prep","short_name":"Written Prep","description":"PPL, Instrument, CPL, CFI, CFII, and ATP adaptive written-test study.","url":"/written-prep.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Search PilotDesk","short_name":"Search","description":"Search calculators, guides, and flight-training pages.","url":"/?search=1","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Flight Training","short_name":"Training","description":"Private, instrument, commercial, multi-engine, and CFI study hubs.","url":"/flight-training.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
     {"name":"Airport Search","short_name":"Airports","description":"Search airports, weather, runways, nearby stations, and FAA procedures.","url":"/airport.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},

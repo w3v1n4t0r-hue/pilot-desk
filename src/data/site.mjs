@@ -34,7 +34,7 @@ const sectionDefinitions = [
   },
   {
     label: 'Learn',
-    paths: ['/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/', '/daily/', '/checklist-trainer.html'],
+    paths: ['/learn/', '/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/', '/daily/', '/checklist-trainer.html'],
     items: [
       ['/written-prep.html', 'Written Prep', 'PPL through ATP written-test study'],
       ['/skill-gap.html', 'Weak subjects', 'Find subjects that need more work'],
@@ -44,7 +44,7 @@ const sectionDefinitions = [
       ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons'],
       ['/training/acs-far-reference.html', 'ACS & FAR reference', 'Official FAA study sources by rating'],
       ['/training/certificates-ratings.html', 'Certificates & ratings', 'See the FAA certificate path and ratings'],
-      ['/learn/oral-exam/', 'FAA Oral Exam', 'Know it, say it, apply it, verify it']
+      ['/learn/oral-exam/', 'Oral exam study', 'Questions, scenarios, and regulatory references']
     ]
   }
 ];
@@ -110,4 +110,3 @@ import inventory from './inventory.json' with { type: 'json' };
 export const searchable = [...new Map([...featuredSearch, ...inventory.map(x => [x.title, x.href, `${x.type} ${x.group} ${x.title}`.toLowerCase()])].map(x => [x[1], x])).values()];
 
 export const navSections = ['Plan','Calculators','Weather','Learn'].map(label => sectionDefinitions.find(s => s.label === label));
-

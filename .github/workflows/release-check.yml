@@ -1,0 +1,28 @@
+name: Production build and core flows
+on:
+  push:
+    branches: [main, fix/core-release]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned dependencies
+        run: npx --yes pnpm@10.32.1 install --frozen-lockfile
+      - name: Account flow regressions
+        run: node qa/account-flow.mjs
+      - name: Formula and navigation regressions
+        run: node qa/formula-tests.mjs && node qa/product-experience.mjs
+      - name: Production build
+        env:
+          ASTRO_TELEMETRY_DISABLED: '1'
+        run: npm run build
+      - name: Links and SEO
+        run: node qa/site-integrity.mjs && node qa/seo-hardening.mjs

@@ -3,7 +3,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const SITE='https://www.pilot-desk.com';
-const skipDirs=new Set(['.git','node_modules','.github','api','assets','qa','scripts']);
+const skipDirs=new Set(['.git','.astro','.astro-public','dist','src','node_modules','.github','api','assets','qa','scripts']);
 const files=[];
 
 function walk(dir='.'){

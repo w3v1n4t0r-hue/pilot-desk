@@ -19,6 +19,9 @@ for(const file of ['guides.html','flight-training.html']){ const h=fs.readFileSy
 const map=new Map();
 function walk(dir='.') { for(const ent of fs.readdirSync(dir,{withFileTypes:true})) { if(['.git','node_modules','.github','api','assets','qa','scripts'].includes(ent.name)) continue; const p=path.join(dir,ent.name); if(ent.isDirectory()) walk(p); else if(ent.isFile()&&ent.name.endsWith('.html')&&ent.name!=='404.html'){ const f=p.replaceAll('\\','/').replace(/^\.\//,''),h=fs.readFileSync(p,'utf8'); const m=h.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)||h.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i); if(m) map.set(m[1].replace('https://pilot-desk.com','https://www.pilot-desk.com'),{f,h}); }} }
 walk();
+// Resolve each canonical to its actual file: redirect aliases and build copies
+// must not overwrite the indexability of the canonical destination.
+for(const [url] of map){const pathname=new URL(url).pathname;const file=pathname==='/'?'index.html':pathname.endsWith('/')?pathname.slice(1)+'index.html':pathname.slice(1);if(fs.existsSync(file))map.set(url,{f:file,h:fs.readFileSync(file,'utf8')});}
 const rootSitemap=fs.readFileSync('sitemap.xml','utf8');
 const childFiles=[...rootSitemap.matchAll(/<loc>https:\/\/www\.pilot-desk\.com\/([^<]+\.xml)<\/loc>/g)].map(x=>x[1]).filter(f=>fs.existsSync(f));
 const sitemapBodies=childFiles.length?childFiles.map(f=>fs.readFileSync(f,'utf8')):[rootSitemap];

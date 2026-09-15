@@ -5,8 +5,8 @@
   "description": "PilotDesk aviation calculators, planning tools, weather, and training",
   "scripts": {
     "dev": "npm run astro:prepare && astro dev",
-    "astro:prepare": "node scripts/sync-navigation.mjs && node scripts/prepare-astro-public.mjs",
-    "build": "npm run astro:prepare && astro build && node scripts/verify-astro-build.mjs",
+    "astro:prepare": "node scripts/sync-navigation.mjs && node scripts/build-oral-study.mjs && node scripts/prepare-astro-public.mjs",
+    "build": "node scripts/sync-navigation.mjs && node scripts/build-oral-study.mjs && node scripts/prepare-astro-public.mjs && astro build && node scripts/verify-astro-build.mjs",
     "preview": "astro preview"
   },
   "dependencies": {

@@ -1,4 +1,4 @@
-const CACHE='pilotdesk-v37';
+const CACHE='pilotdesk-v38';
 const CORE=[
   '/','/index.html','/offline.html','/404.html','/tools.html','/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/airport.html','/weather.html','/flight-planning-workspace.html','/weight-balance.html','/history.html','/flight-training.html',
   '/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html',
@@ -32,4 +32,3 @@ async function networkFirst(req,preloadPromise){const cache=await caches.open(CA
 async function staleWhileRevalidate(event,req){const cache=await caches.open(CACHE),hit=await match(cache,req);const fresh=fetch(req).then(r=>put(cache,req,r)).catch(()=>null);if(hit){event.waitUntil(fresh.then(()=>{}));return hit}return (await fresh)||Response.error()}
 async function cacheFirst(req){const cache=await caches.open(CACHE),hit=await match(cache,req);if(hit)return hit;try{return put(cache,req,await fetch(req))}catch{return Response.error()}}
 self.addEventListener('fetch',event=>{const req=event.request;if(req.method!=='GET')return;const url=new URL(req.url);if(url.origin!==self.location.origin)return;if(url.pathname.startsWith('/api/')||url.pathname.startsWith('/_vercel/'))return;if(req.mode==='navigate'){event.respondWith(networkFirst(req,event.preloadResponse));return}if(NETWORK_FIRST_ASSETS.has(url.pathname)){event.respondWith(networkFirst(req));return}if(/\.(?:js|css|svg|png|jpg|jpeg|webp|woff2?)$/i.test(url.pathname)){event.respondWith(staleWhileRevalidate(event,req));return}event.respondWith(cacheFirst(req))});
-

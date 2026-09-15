@@ -3,8 +3,13 @@
 
 alter table public.written_prep_stats
   add column if not exists acs_code text,
+  add column if not exists standard_code text,
   add column if not exists standard_doc text,
   add column if not exists difficulty text;
+
+update public.written_prep_stats
+set standard_code = acs_code
+where standard_code is null and acs_code is not null;
 
 alter table public.written_prep_sessions
   add column if not exists difficulty text not null default 'all';
@@ -21,8 +26,8 @@ alter table public.written_prep_sessions
   add constraint written_prep_sessions_difficulty_check
   check (difficulty in ('all','foundation','applied','advanced'));
 
-create index if not exists written_prep_stats_user_track_acs_idx
-  on public.written_prep_stats(user_id, track, acs_code);
+create index if not exists written_prep_stats_user_track_standard_idx
+  on public.written_prep_stats(user_id, track, standard_code);
 create index if not exists written_prep_stats_user_track_difficulty_idx
   on public.written_prep_stats(user_id, track, difficulty);
 create index if not exists written_prep_sessions_user_track_difficulty_idx

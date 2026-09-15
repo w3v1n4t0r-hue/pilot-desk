@@ -1,4 +1,4 @@
-/* Final public-facing copy/decoration cleanup.
+/* Final public-facing wording and decoration cleanup.
    Keep the avionics look without code-comment separators or decorative plus signs. */
 html.pd-streamlined-app .pd-page-hero:after{
   content:'PILOTDESK FLIGHT TOOLS'!important;
@@ -13,4 +13,14 @@ html.pd-streamlined-app .pd-hub-card>small:before{
 html.pd-streamlined-app .pd-hub-card .pd-arrow:after{
   content:none!important;
   display:none!important;
+}
+/* The homepage still carries an older static eyebrow in its hand-edited HTML.
+   Replace the rendered label without changing its layout. */
+html:has(link[rel="canonical"][href="https://www.pilot-desk.com/"]) .hero .eyebrow{
+  font-size:0!important;
+}
+html:has(link[rel="canonical"][href="https://www.pilot-desk.com/"]) .hero .eyebrow:after{
+  content:'PILOTDESK · FLIGHT TOOLS'!important;
+  font:800 .68rem/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;
+  letter-spacing:.12em!important;
 }

@@ -14,7 +14,7 @@ function ensureNavigationData(){
  });
 }
 function ensureStyle(href,key){if([...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>{try{return new URL(l.href,location.href).pathname===href}catch{return false}}))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset[key]='1';document.head.appendChild(l)}
-function ensureUnifiedStyle(){ensureStyle('/assets/experience.css','pdExperience')}
+function ensureUnifiedStyle(){const base=[...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>new URL(l.href,location.href).pathname==='/assets/styles.css');if(!base)ensureStyle('/assets/experience.css','pdExperience')}
 function markStandaloneApp(){if(!APP_PATHS.has(location.pathname))return;document.documentElement.classList.add('pd-streamlined-app');const main=document.querySelector('main.shell,main.pd-account-shell');if(main){main.classList.add('pd-streamlined-shell');const hero=main.querySelector(':scope > .pd-flight-hero,:scope > .wx-hero,:scope > .pd-account-hero,:scope > .pd-page-hero,:scope > .pd-prep-hero');if(hero)hero.classList.add('pd-page-hero')}}
 function sectionCurrent(section,path){return section.paths.some(p=>p.endsWith('/')?path.startsWith(p):path===p)}
 function iconSearch(){return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'}

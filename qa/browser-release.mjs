@@ -6,7 +6,7 @@ const browser=await chromium.launch({headless:true});
 const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
 const base=process.env.PD_TEST_URL||'http://127.0.0.1:4173';fs.mkdirSync('qa-output',{recursive:true});
 try{
- for(const width of [320,360,390,430,768,1280]){
+ for(const width of [320,360,390,430,768,1024,1280]){
   await page.setViewportSize({width,height:900});
   for(const route of ['/','/account.html','/learn/oral-exam/','/learn/oral-exam/private.html','/learn/oral-exam/instrument.html','/tools.html','/calculators/density-altitude/','/weather.html','/daily/','/written-prep.html','/404.html']){
    const response=await page.goto(base+route);assert.equal(response.status(),200,route);
@@ -27,6 +27,11 @@ try{
    if(width===390||width===1280)await page.screenshot({path:`qa-output/${width}-${route.replace(/[^a-z]/g,'')||'home'}.png`});
   }
  }
+ await page.goto(base+'/calculators/density-altitude/');
+ await page.locator('#pa').fill('0');await page.locator('#oat').fill('15');await page.locator('[data-calculate]').click();assert.match(await page.locator('#out0').innerText(),/^[-−]?0 ft$/);
+ await page.locator('#oat').fill('30');await page.locator('#oat').press('Enter');assert.ok(Number((await page.locator('#out0').innerText()).replace(/[^0-9.-]/g,''))>1500);
+ await page.locator('#pa').fill('');await page.locator('[data-calculate]').click();assert.equal(await page.locator('.safety-warning.show').isVisible(),true);
+ await page.locator('#pa').fill('0');await page.locator('#oat').fill('15');await page.locator('[data-calculate]').click();assert.match(await page.locator('#out0').innerText(),/^[-−]?0 ft$/);
  await page.goto(base+'/account.html');await page.waitForFunction(()=>!document.querySelector('#pdAccountRoot').classList.contains('pd-account-disabled'));
  assert.equal(await page.locator('#pdAuthEmail').count(),1);
  await page.locator('[data-auth-mode=signup]').click();assert.equal(await page.locator('#pdAuthConfirm').isVisible(),true);
@@ -38,5 +43,5 @@ try{
  await page.locator('#oralSearch').fill('no-such-question');assert.equal(await page.locator('#oralEmpty').isVisible(),true);
  await page.locator('#oralSearch').fill('');await page.locator('#oralFilter').selectOption('understood');assert.equal(await page.locator('.oral-topic:visible').count(),1);
  assert.deepEqual(errors,[],'Uncaught browser exceptions');
- console.log('Browser release PASS: six viewport widths, five routes, account modes, study reveal/search/filter/persistence, zero uncaught exceptions. No signup emails or password changes sent.');
+ console.log('Browser release PASS: seven viewport widths, eleven routes, account modes, study reveal/search/filter/persistence, zero uncaught exceptions. No signup emails or password changes sent.');
 }finally{await browser.close()}

@@ -29,3 +29,12 @@ const event={preventDefault(){}};
 }
 const signedOutStart=html.indexOf('id="pdSignedOut"'),signedInStart=html.indexOf('id="pdSignedIn"');assert.ok(html.indexOf('id="pdAuthForm"')>signedOutStart&&html.indexOf('id="pdAuthForm"')<signedInStart);assert.ok(!html.includes('pdCreateAccountForm'));assert.ok(code.includes("event==='PASSWORD_RECOVERY'"));
 console.log('Account flow PASS: login does not send email; signup validation; existing-user magic link; recovery; password matching/update; signout errors; safe redirects; submission lock. Tests use mocked auth, not production accounts.');
+
+// Concurrent features must share one client, including its URL recovery handler.
+{
+ const sdk='data:text/javascript;base64,'+Buffer.from('let calls=0; export function createClient(url,key,options){return {instance:++calls,options}}').toString('base64');
+ const source=fs.readFileSync('assets/supabase-client.js','utf8').replace('https://esm.sh/@supabase/supabase-js@2.57.4',sdk);
+ const {getClient}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+ const [header,account]=await Promise.all([getClient(),getClient()]);assert.equal(header,account);assert.equal(account.instance,1);assert.equal(account.options.auth.detectSessionInUrl,true);
+ console.log('Shared auth client PASS: concurrent account and header initialization use one instance.');
+}

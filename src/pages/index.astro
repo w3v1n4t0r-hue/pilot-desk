@@ -16,6 +16,14 @@ const schema = {
       name: 'PilotDesk',
       url: 'https://www.pilot-desk.com/',
       logo: { '@type': 'ImageObject', url: 'https://www.pilot-desk.com/assets/icon.svg' }
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        ['What aviation tools does PilotDesk include?', 'PilotDesk brings together flight planning, aviation calculators, weather references, aircraft performance tools, and pilot study resources.'],
+        ['Are PilotDesk calculator results official operational data?', 'No. Results are planning aids based on the inputs and methods shown on each tool. Verify operational decisions with current approved aircraft, airport, weather, and regulatory sources.'],
+        ['Can I use PilotDesk for FAA written test preparation?', 'Yes. PilotDesk includes rating-focused practice for common FAA written-test subjects, with explanations and weak-area review.']
+      ].map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } }))
     }
   ]
 };
@@ -65,5 +73,7 @@ const schema = {
 
     <section class="pd-home-section pd-learning-promo"><div><div class="eyebrow">LEARN A LITTLE, EVERY DAY</div><h2>Make your next study session count.</h2><p>Choose your rating, try a sample, and build confidence with explanations and weak-area review.</p><a class="pd-btn" href="/flight-training.html">Find your study path</a> <a href="/daily/">Play Daily →</a></div></section>
     <section class="pd-home-section"><h2>Know where your numbers come from.</h2><p>Methods, assumptions, and source links accompany the tools. Use current approved information for operational decisions.</p><a href="/sources.html">Sources and methods →</a></section>
+    <section class="pd-home-section pd-home-faq" aria-labelledby="faq-title"><div class="pd-home-section-head"><div><h2 id="faq-title">PilotDesk questions</h2><p>Short answers before you start planning or studying.</p></div></div><div class="pd-faq-list"><details><summary>What aviation tools does PilotDesk include?</summary><p>Flight planning, aviation calculators, weather references, aircraft performance tools, and pilot study resources.</p></details><details><summary>Are calculator results official operational data?</summary><p>No. Results are planning aids based on the inputs and methods shown. Verify decisions with current approved aircraft, airport, weather, and regulatory sources.</p></details><details><summary>Can I use PilotDesk for FAA written test preparation?</summary><p>Yes. Rating-focused practice includes explanations and weak-area review.</p></details></div></section>
   </div>
 </BaseLayout>
+

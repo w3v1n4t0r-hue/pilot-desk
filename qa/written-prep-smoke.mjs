@@ -23,9 +23,9 @@ const prefixes={ppl:['PA.'],ira:['IR.'],cpl:['CA.'],cfi:['FI.','AI.'],atp:['AA.'
 const all=Object.values(banks).flat();
 const ids=new Set();
 
-ok(bankManifest.acsQuestionCount===5000,`Expected exactly 5,000 ACS-mapped items; got ${bankManifest.acsQuestionCount}`);
-for(const track of acsTracks)ok(banks[track]?.length===1000,`${track.toUpperCase()} must contain exactly 1,000 ACS-mapped items`);
-ok(banks.cfii?.length>=250,'CFII should keep at least 250 PTS-mapped supplemental items');
+ok(bankManifest.acsQuestionCount===5000,`Expected exactly 5,000 ACS-linked items; got ${bankManifest.acsQuestionCount}`);
+for(const track of acsTracks)ok(banks[track]?.length===1000,`${track.toUpperCase()} must contain exactly 1,000 ACS-linked items`);
+ok(banks.cfii?.length>=250,'CFII should keep at least 250 PTS-linked supplemental items');
 ok(bankManifest.totalQuestionCount>=5250,`Expected at least 5,250 total items including CFII PTS; got ${bankManifest.totalQuestionCount}`);
 
 for(const [track,items] of Object.entries(banks)){
@@ -42,16 +42,15 @@ for(const [track,items] of Object.entries(banks)){
   ok(/^https:\/\/www\.faa\.gov\//.test(q.sourceUrl||''),`${q.id} must link to an FAA standard source`);
   ok(!q.options.some(x=>/all of the above|none of the above|obviously|joke answer/i.test(x)),`${q.id} contains a low-quality test-taking shortcut`);
   if(acsTracks.includes(track)){
-   ok(q.standardType==='ACS',`${q.id} must be ACS-mapped`);
+   ok(q.standardType==='ACS',`${q.id} must be ACS-linked`);
    ok(q.standardDoc===expectedDocs[track],`${q.id} uses ${q.standardDoc}; expected ${expectedDocs[track]}`);
    ok(prefixes[track].some(p=>String(q.standardCode).startsWith(p)),`${q.id} has invalid ${track.toUpperCase()} ACS code ${q.standardCode}`);
   }else if(track==='cfii'){
-   ok(q.standardType==='PTS',`${q.id} must remain PTS-mapped until the FAA publishes a CFII ACS`);
+   ok(q.standardType==='PTS',`${q.id} must remain PTS-linked until the FAA publishes a CFII ACS`);
    ok(q.standardDoc==='FAA-S-8081-9E',`${q.id} must reference FAA-S-8081-9E`);
   }
  }
  if(acsTracks.includes(track)){
-  const counts=Object.groupBy?Object.groupBy(items,x=>x.difficulty):null;
   const foundation=items.filter(x=>x.difficulty==='foundation').length,applied=items.filter(x=>x.difficulty==='applied').length,advanced=items.filter(x=>x.difficulty==='advanced').length;
   ok(foundation>=200&&applied>=350&&advanced>=250,`${track.toUpperCase()} difficulty distribution is too narrow (${foundation}/${applied}/${advanced})`);
  }
@@ -60,7 +59,7 @@ ok(ids.size===all.length,'Question IDs must be globally unique');
 const uniquePrompts=new Set(all.map(q=>`${q.prompt}::${q.options.join('|')}`)).size;
 ok(uniquePrompts>=1400,`Question variants are not diverse enough (${uniquePrompts} unique prompt/choice sets)`);
 
-has(html,'5,000 ACS-mapped','Written Prep must advertise the 5,000-item ACS bank accurately');
+has(html,'5,000 ACS-linked','Written Prep must advertise the 5,000-item ACS question bank accurately');
 has(html,'exactly three answer choices','Three-choice exam format disclosure missing');
 has(html,'FAA-S-8081-9E','CFII PTS disclosure missing');
 has(html,'data-difficulty="foundation"','Foundation difficulty filter missing');
@@ -80,6 +79,7 @@ has(js,'pd-written-difficulty','Difficulty selection must persist');
 has(js,"difficulty:state.difficulty",'Study sessions must send selected difficulty');
 has(js,"text('#pdPrepStandard'",'Question UI must render the ACS/PTS element');
 has(js,"text('#pdPrepGrade'",'Dashboard must render practice grade');
+has(js,"modeNames={learn:'WEAK-AREA REVIEW'",'Weak-area review label missing');
 ok(!/correct\s*:\s*[0-9]/.test(js),'Client must not contain answer keys');
 
 has(bankWrapper,"standardCode:string",'Typed bank must expose standard code');
@@ -91,15 +91,15 @@ for(const [track,meta] of Object.entries({ppl:['PAR',60,120],ira:['IRA',60,120],
 }
 
 has(edge,"return json(401,{error:'A free PilotDesk account is required to use Written Prep.'",'Edge function must require authentication');
-has(edge,'function prepareQuestion','Server-side answer-choice shuffle missing');
-has(edge,'validDifficulty','Difficulty filter must be enforced server-side');
+has(edge,'function prepareQuestion','Server answer-choice shuffle missing');
+has(edge,'validDifficulty','Difficulty filter must be enforced by the grading service');
 has(edge,'standardCode:q.standardCode','Question payload must include standards element');
 has(edge,'standardBreakdown','Dashboard must grade by standards element');
 has(edge,'difficultyBreakdown','Dashboard must grade by difficulty');
 has(edge,'passingScore:trackMeta[track].passingScore','Session result must use track passing score');
 has(edge,"grade:grade(percent)",'Sessions must receive a letter grade');
 has(edge,"mode==='exam'&&!done?null",'Practice exam must suppress correctness feedback until completion');
-has(edge,'nextDue(streak,correct)','Spaced review scheduling missing');
+has(edge,'nextDue(streak,correct)','Review scheduling missing');
 has(edge,'mastery(corr,total,streak)','Mastery tracking missing');
 has(edge,'Math.min(60,pool.length)','Practice exam should support a 60-question simulation');
 
@@ -111,7 +111,7 @@ has(migration,'revoke insert, update, delete on public.written_prep_stats from a
 has(migration,'(select auth.uid()) = user_id','Written Prep reads must be user-scoped');
 has(gradingMigration,'standard_code text','Standards-element persistence migration missing');
 has(gradingMigration,'difficulty text','Difficulty persistence migration missing');
-has(gradingMigration,'revoke insert, update, delete on public.written_prep_sessions from anon, authenticated','Session mutation must remain server-owned');
+has(gradingMigration,'revoke insert, update, delete on public.written_prep_sessions from anon, authenticated','Session mutation must remain protected');
 
 has(nav,"['/written-prep.html','Written Prep']",'Written Prep missing from global navigation');
 has(bootstrap,'href="/written-prep.html" data-pd-launch="written-prep"','Written Prep missing from homepage Quick Start');
@@ -120,4 +120,4 @@ has(account,'ensureWrittenPrepCta','Written Prep missing from signed-in account 
 has(account,"ensureOwnerMetric('pdMetricPrepToday'",'Owner dashboard must track Written Prep usage');
 
 if(failures.length){console.error('Written Prep checks failed:\n- '+failures.join('\n- '));process.exit(1)}
-console.log(`Written Prep checks passed: ${bankManifest.acsQuestionCount.toLocaleString()} ACS-mapped practice items + ${bankManifest.supplementalPtsQuestionCount} CFII PTS items; three choices each, difficulty tiers, secure grading, standards mapping, adaptive review, and account persistence verified.`);
+console.log(`Written Prep checks passed: ${bankManifest.acsQuestionCount.toLocaleString()} ACS-linked practice items + ${bankManifest.supplementalPtsQuestionCount} CFII PTS items; three choices each, difficulty tiers, secure grading, standards links, weak-area review, and account persistence verified.`);

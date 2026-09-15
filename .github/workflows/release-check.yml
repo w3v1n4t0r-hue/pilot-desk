@@ -26,3 +26,18 @@ jobs:
         run: npm run build
       - name: Links and SEO
         run: node qa/site-integrity.mjs && node qa/seo-hardening.mjs
+      - name: Install browser test runtime
+        run: |
+          npm install --prefix /tmp/pilotdesk-browser --no-package-lock playwright@1.62.1
+          /tmp/pilotdesk-browser/node_modules/.bin/playwright install --with-deps chromium
+      - name: Responsive browser and interaction checks
+        env:
+          PD_PLAYWRIGHT_MODULE: /tmp/pilotdesk-browser/node_modules/playwright/index.mjs
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory dist > /tmp/pilotdesk-http.log 2>&1 &
+          node qa/browser-release.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: responsive-screenshots
+          path: qa-output/

@@ -39,8 +39,8 @@ for(const asset of ['/assets/avionics-architecture.css','/assets/avionics-archit
   check(sw.includes(`'${asset}'`),`service worker missing ${asset}`);
 }
 check(!brand.includes('addStyle('),'brand module must not inject a second visual stylesheet stack after boot');
-check(brand.includes("img.src='/assets/icon.svg'")&&brand.includes("word.textContent='PILOT DESK'"),'brand module must normalize one stable identity');
+check(brand.includes("img.src='/assets/icon.svg'")&&brand.includes("word.textContent='PilotDesk'")&&brand.includes("tag.textContent='FLIGHT TOOLS'"),'brand module must normalize the clean PilotDesk identity');
 check(bootstrap.includes('pd-ui-booting')&&bootstrap.includes('pd-ui-ready'),'avionics shell needs a guarded single-state reveal');
 
 if(failures.length){console.error(`Professional polish checks failed with ${failures.length} issue(s):`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log('Professional polish checks passed: the avionics UI has one boot owner, one stable brand, a guarded first reveal, and no late stylesheet restyling chain.');
+console.log('Professional polish checks passed: the avionics UI has one boot owner, one stable PilotDesk brand, a guarded first reveal, and no late stylesheet restyling chain.');

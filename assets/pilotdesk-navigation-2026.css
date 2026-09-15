@@ -1,0 +1,13 @@
+/* PilotDesk 2026 navigation details */
+.pd-search-wrap{position:relative}
+.pd-search-results{position:absolute;right:0;top:calc(100% + 8px);z-index:340;width:min(330px,80vw);padding:7px;border:1px solid #303a45;border-radius:10px;background:#0d1116;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.pd-search-results[hidden]{display:none!important}
+.pd-search-results a,.pd-search-results span{display:block;padding:10px 11px;border-radius:7px;color:#dfe4e9;font-size:12px;line-height:1.35}
+.pd-search-results a:hover{background:#171d25;color:#fff}
+#pdToolDirectory{display:grid;gap:18px;margin-top:18px}
+#pdToolDirectory .category{margin-top:0!important}
+#pdToolDirectory .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+#pdToolDirectorySearch{width:100%}
+@media(max-width:1040px){#pdToolDirectory .grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){#pdToolDirectory .grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pd-search-results{right:-52px}}
+@media(max-width:480px){#pdToolDirectory .grid{grid-template-columns:1fr}}

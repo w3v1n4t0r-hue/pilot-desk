@@ -25,8 +25,8 @@ check(analytics.includes('blockedKey')&&analytics.includes('query|search|term|te
 check(ads.includes('ensureManualPlaceholders')&&ads.includes("validSlot('top')")&&ads.includes("validSlot('sidebar')"),'manual AdSense placements are not config-ready');
 check(weather.includes('tafIssueAge')&&weather.includes('tafExpired')&&weather.includes('Check TAF currency.'),'TAF freshness/validity safeguards missing');
 check(weather.includes('pilotdesk:weatherloaded'),'weather analytics should expose only a coarse result event');
-check(sw.includes("CACHE='pilotdesk-v34'")&&sw.includes("'/offline.html'")&&sw.includes('Promise.allSettled'),'offline release hardening missing');
-check(sw.includes('MAX_RUNTIME_ENTRIES')&&sw.includes('event.preloadResponse'),'PWA cache should stay bounded and use navigation preload');
+check(sw.includes("CACHE='pilotdesk-v36'")&&sw.includes("'/offline.html'")&&sw.includes('Promise.allSettled'),'offline release hardening missing');
+check(sw.includes("'/assets/navigation-data.js'")&&sw.includes('MAX_RUNTIME_ENTRIES')&&sw.includes('event.preloadResponse'),'PWA cache should include shared navigation data, stay bounded and use navigation preload');
 check(offline.includes('Do not rely on cached operational data')&&offline.includes('Flight Planning Workspace'),'offline page needs safety boundary and useful cached tools');
 check(manifest.launch_handler?.client_mode==='navigate-existing','PWA launch handler missing');
 check((manifest.shortcuts||[]).some(x=>x.url==='/flight-planning-workspace.html'),'PWA shortcut for flight workspace missing');

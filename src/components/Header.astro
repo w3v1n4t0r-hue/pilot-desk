@@ -1,0 +1,30 @@
+---
+import { navSections } from '../data/site.mjs';
+const path = Astro.url.pathname;
+const sectionCurrent = (section) => section.paths.some((p) => p.endsWith('/') ? path.startsWith(p) : path === p);
+---
+<header class="topbar" data-pd-astro-shell>
+  <a class="brand" href="/" aria-label="PilotDesk home">
+    <span class="brandmark" aria-hidden="true">
+      <svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5v9"/><path d="M32 14c-4.8 0-8 3.8-8 8.5S27.2 31 32 31s8-3.8 8-8.5S36.8 14 32 14Z"/><path d="M25 19 8 15l2 5 14 3"/><path d="m39 23 15-3 2-5-17 4"/><path d="M28 18.5h8"/><path d="M29 18.5v3.5m6-3.5V22"/><circle cx="18" cy="30" r="3.5"/><circle cx="46" cy="30" r="3.5"/><path d="M21.5 27 25 24m21.5 3L39 24"/></g></svg>
+    </span>
+    <span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span>
+  </a>
+  <button aria-label="Open navigation" aria-expanded="false" class="menu-btn" data-menu type="button">☰</button>
+  <nav class="pd-main-nav" aria-label="Main navigation">
+    {navSections.map((section) => (
+      <div class="pd-nav-item" data-pd-nav-item>
+        <button class="pd-nav-button" type="button" aria-expanded="false" aria-current={sectionCurrent(section) ? 'page' : undefined}>
+          {section.label}<i class="pd-nav-caret" aria-hidden="true"></i>
+        </button>
+        <div class="pd-nav-menu">
+          {section.items.map(([href, title, copy]) => (
+            <a href={href}><b>{title}</b><span>{copy}</span></a>
+          ))}
+        </div>
+      </div>
+    ))}
+    <a class="pd-nav-link" href="/daily/" aria-current={path === '/daily/' || path === '/daily/index.html' ? 'page' : undefined}>Daily</a>
+  </nav>
+  <div class="pd-header-actions" aria-label="Search and account"></div>
+</header>

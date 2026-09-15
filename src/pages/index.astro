@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { homeActions, popularTools, homeCategories } from '../data/site.mjs';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'PilotDesk',
+      url: 'https://www.pilot-desk.com/',
+      description: 'Free aviation calculators, flight planning, weather tools, and pilot training.'
+    },
+    {
+      '@type': 'Organization',
+      name: 'PilotDesk',
+      url: 'https://www.pilot-desk.com/',
+      logo: { '@type': 'ImageObject', url: 'https://www.pilot-desk.com/assets/icon.svg' }
+    }
+  ]
+};
+---
+<BaseLayout
+  title="PilotDesk | Flight Planning, Aviation Calculators & Pilot Training"
+  description="Plan flights, run aviation calculations, check weather, study FAA written-test subjects, and play PilotDesk Daily."
+  canonical="/"
+  schema={schema}
+  bodyClass="pd-home-2026"
+>
+  <section class="pd-home-hero" aria-labelledby="pdHomeTitle">
+    <div class="pd-home-hero-inner">
+      <div class="pd-home-hero-copy">
+        <div class="eyebrow">PLAN · CALCULATE · LEARN · FLY</div>
+        <h1 id="pdHomeTitle">Built for the next leg.</h1>
+        <p>Flight planning, pilot math, weather, and written prep in one place. Pick what you need and get to it.</p>
+      </div>
+      <div class="pd-home-actions">
+        {homeActions.map(([href, title, copy, path], index) => (
+          <a class="pd-home-action" href={href} data-pd-launch={index === 2 ? 'written-prep' : undefined}>
+            <span class="pd-home-action-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg></span>
+            <b>{title}</b><span>{copy}</span><em aria-hidden="true">›</em>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <div class="pd-home-wrap">
+    <section class="pd-home-account-strip" data-pd-home-account>
+      <div class="pd-home-account-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM3 30c1-8 5-12 13-12s12 4 13 12" /></svg></div>
+      <div class="pd-home-account-copy">
+        <b data-pd-home-account-title>Sign in to save your progress</b>
+        <span data-pd-home-account-copy>Keep written-prep scores, streaks, aircraft, and other PilotDesk progress tied to your account.</span>
+      </div>
+      <div class="pd-home-account-actions" data-pd-home-account-actions>
+        <a class="primary" href="/account.html?next=%2F">Sign in</a>
+        <a href="/account.html?next=%2F">Create a free account</a>
+      </div>
+    </section>
+
+    <section class="pd-home-section" id="popular-tools">
+      <div class="pd-home-section-head">
+        <div><h2>Popular tools</h2><p>The things pilots reach for most.</p></div>
+        <a href="/tools.html">All calculators →</a>
+      </div>
+      <div class="pd-popular-grid">
+        {popularTools.map(([href, title, path]) => (
+          <a class="pd-popular-tool" href={href}>
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg><span>{title}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <div class="ad-wrap"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="top"><span>Ad space</span></div></div>
+
+    <section class="pd-home-section">
+      <div class="pd-feature-grid">
+        <article class="pd-feature-card">
+          <div class="eyebrow">WRITTEN PREP</div>
+          <h2>Know what you know before test day.</h2>
+          <p>5,000 ACS-linked practice questions across PPL, Instrument, CPL, CFI, and ATP, plus CFII PTS practice. Three choices per question, explanations, weak-subject review, and saved progress.</p>
+          <a href="/written-prep.html" data-pd-launch="written-prep">Start studying →</a>
+        </article>
+        <article class="pd-feature-card" id="pdHomeDaily">
+          <div class="eyebrow">PILOTDESK DAILY</div>
+          <h2>Keep aviation knowledge fresh.</h2>
+          <p>Three aviation questions each day. Save your score, build a streak, and keep a small amount of studying in your normal routine.</p>
+          <a href="/daily/">Play today →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="pd-home-section">
+      <div class="pd-home-section-head"><div><h2>Explore PilotDesk</h2><p>Everything is organized around four jobs.</p></div></div>
+      <div class="pd-category-grid">
+        {homeCategories.map(([href, title, copy, path]) => (
+          <a class="pd-category-card" href={href}>
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg>
+            <b>{title}</b><span>{copy}</span><em aria-hidden="true">›</em>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

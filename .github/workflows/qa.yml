@@ -22,6 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Build Astro migration output
+        run: npm run build
+      - name: Check Astro migration
+        run: node qa/astro-migration.mjs
       - name: Check JavaScript syntax
         run: |
           find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check

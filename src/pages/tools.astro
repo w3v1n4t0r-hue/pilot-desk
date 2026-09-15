@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Aviation Calculators | PilotDesk"
+  description="Browse PilotDesk aviation calculators for flight planning, performance, navigation, weather, weight and balance, and conversions."
+  canonical="/tools.html"
+  robots="noindex,follow"
+>
+  <section class="pd-page-hero">
+    <div class="eyebrow">AVIATION CALCULATORS</div>
+    <h1>Find the calculation you need.</h1>
+    <p>Flight planning, performance, navigation, weather, weight and balance, and conversions. Every calculator shows the math and assumptions.</p>
+  </section>
+  <section class="category">
+    <div class="category-head"><h2>All calculators</h2><span id="pdToolCount">47 tools</span></div>
+    <div class="search"><input id="pdToolDirectorySearch" type="search" placeholder="Search calculators" autocomplete="off" /><span>Type a name or subject</span></div>
+  </section>
+  <div id="pdToolDirectory"></div>
+  <script slot="scripts" is:inline defer src="/assets/tools-directory.js"></script>
+</BaseLayout>

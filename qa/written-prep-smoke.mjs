@@ -7,8 +7,8 @@ const bankSource=read('supabase/functions/written-prep/question-bank.js');
 const edge=read('supabase/functions/written-prep/index.ts');
 const migration=read('supabase/migrations/008_written_prep.sql');
 const gradingMigration=read('supabase/migrations/009_written_prep_acs_grading.sql');
-const nav=read('assets/global-nav.js');
-const bootstrap=read('assets/app-bootstrap.js');
+const siteData=read('src/data/site.mjs');
+const astroHome=read('src/pages/index.astro');
 const training=read('flight-training.html');
 const account=read('assets/account.js');
 const failures=[];
@@ -113,8 +113,8 @@ has(gradingMigration,'standard_code text','Standards-element persistence migrati
 has(gradingMigration,'difficulty text','Difficulty persistence migration missing');
 has(gradingMigration,'revoke insert, update, delete on public.written_prep_sessions from anon, authenticated','Session mutation must remain protected');
 
-has(nav,"['/written-prep.html','Written Prep']",'Written Prep missing from global navigation');
-has(bootstrap,'href="/written-prep.html" data-pd-launch="written-prep"','Written Prep missing from homepage Quick Start');
+has(siteData,"['/written-prep.html', 'Written Prep'",'Written Prep missing from shared global navigation');
+has(astroHome,'href="/written-prep.html" data-pd-launch="written-prep"','Written Prep missing from Astro homepage primary discovery');
 has(training,'href="/written-prep.html"','Written Prep missing from training hub');
 has(account,'ensureWrittenPrepCta','Written Prep missing from signed-in account dashboard');
 has(account,"ensureOwnerMetric('pdMetricPrepToday'",'Owner dashboard must track Written Prep usage');

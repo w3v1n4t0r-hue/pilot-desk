@@ -10,6 +10,9 @@ const clarityCss=read('assets/product-clarity.css');
 const architecture=read('assets/pilotdesk-architecture-2026.css');
 const navCss=read('assets/pilotdesk-navigation-2026.css');
 const home=read('assets/home-architecture-2026.js');
+const astroHome=read('src/pages/index.astro');
+const siteData=read('src/data/site.mjs');
+const astroHeader=read('src/components/Header.astro');
 const nav=read('assets/global-nav.js');
 const ads=read('assets/ads.js');
 const safety=read('assets/safety.js');
@@ -29,7 +32,8 @@ for(const asset of ['avionics-architecture.js','avionics-command.js','flight-str
 check(bootstrap.includes('pd-ui-booting')&&bootstrap.includes('pd-ui-ready'),'boot gate must hide intermediate visual states');
 check(bootstrap.includes('Promise.allSettled(jobs)'),'boot gate must wait for critical visual assets');
 check(bootstrap.includes("root.classList.add('pd-home-2026')"),'new homepage architecture class must exist before reveal');
-check(bootstrap.includes('/assets/home-architecture-2026.js'),'new homepage architecture must load through the canonical bootstrap');
+check(bootstrap.includes('/assets/home-architecture-2026.js')&&bootstrap.includes('!isAstroNative'),'legacy homepage renderer must remain available without replacing native Astro pages');
+check(bootstrap.includes('/assets/navigation-data.js'),'bootstrap must load the shared navigation payload');
 check(!bootstrap.includes('/assets/home-command-center.js'),'retired homepage command-center JS must not compete with the new homepage');
 check(!bootstrap.includes('/assets/home-daily.js'),'retired homepage Daily injection must not compete with the new homepage');
 check(bootstrap.includes('__pdTrackQueue'),'deferred analytics must preserve early product events');
@@ -45,17 +49,20 @@ check(clarityCss.includes('.pd-library-drawer')&&clarityCss.includes('.pd-planni
 
 for(const needle of ['--pd-shell:1360px','.pd-main-nav','.pd-site-search','.pd-home-actions','.pd-home-account-strip','.pd-popular-grid','.pd-feature-grid','.pd-category-grid'])check(architecture.includes(needle),`2026 architecture CSS missing ${needle}`);
 check(navCss.includes('.pd-search-results'),'new global search results need a stable shell');
-for(const needle of ['Plan a Flight','Use a Calculator','Study for a Written','Play Daily','Popular tools','WRITTEN PREP','PILOTDESK DAILY','Explore PilotDesk'])check(home.includes(needle),`new homepage is missing ${needle}`);
-for(const needle of ["label:'Tools'","label:'Plan'","label:'Weather'","label:'Learn'",'href="/daily/"','data-pd-account-link','Sign in'])check(nav.includes(needle),`new global navigation is missing ${needle}`);
-check(nav.includes("['/tools.html','All calculators'"),'Tools navigation must expose the calculator directory');
+for(const needle of ['Plan a Flight','Use a Calculator','Study for a Written','Play Daily'])check(siteData.includes(needle),`shared homepage data is missing ${needle}`);
+for(const needle of ['Popular tools','WRITTEN PREP','PILOTDESK DAILY','Explore PilotDesk'])check(astroHome.includes(needle)||home.includes(needle),`homepage is missing ${needle}`);
+for(const needle of ["label: 'Tools'","label: 'Plan'","label: 'Weather'","label: 'Learn'"])check(siteData.includes(needle),`shared global navigation is missing ${needle}`);
+check(siteData.includes("['/tools.html', 'All calculators'"),'Tools navigation must expose the calculator directory');
+check(astroHeader.includes('navSections')&&astroHeader.includes('href="/daily/"'),'Astro header must render shared navigation and Daily');
+for(const needle of ['window.PILOTDESK_NAV','data-pd-account-link','Sign in'])check(nav.includes(needle),`global navigation runtime is missing ${needle}`);
 
 const wb=(manifest.shortcuts||[]).find(x=>x.short_name==='W&B'||x.name==='Weight & Balance');
 const flightMath=(manifest.shortcuts||[]).find(x=>x.short_name==='Flight Math');
 check(wb?.url==='/weight-balance.html','installed-app Weight & Balance shortcut must use the canonical tool URL');
 check(flightMath?.url==='/flight-planning-workspace.html','installed app must expose the connected flight-planning workspace');
 check(manifest.launch_handler?.client_mode==='navigate-existing','installed app should reuse an existing app window where supported');
-for(const asset of ['/assets/app-bootstrap.js','/assets/sticky-app.js','/assets/professional-polish.css','/assets/avionics-ui.css','/assets/avionics-architecture.css','/assets/avionics-ops.css','/assets/product-clarity.css','/assets/pilotdesk-architecture-2026.css','/assets/pilotdesk-navigation-2026.css','/assets/home-architecture-2026.js','/assets/hero-flightline.svg','/assets/performance.css','/assets/performance.js','/assets/tool-first-layout.js','/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js'])check(sw.includes(`'${asset}'`),`service worker must cache ${asset}`);
-check(sw.includes("CACHE='pilotdesk-v35'"),'service worker cache version should match the architecture release');
+for(const asset of ['/assets/app-bootstrap.js','/assets/navigation-data.js','/assets/sticky-app.js','/assets/professional-polish.css','/assets/avionics-ui.css','/assets/avionics-architecture.css','/assets/avionics-ops.css','/assets/product-clarity.css','/assets/pilotdesk-architecture-2026.css','/assets/pilotdesk-navigation-2026.css','/assets/home-architecture-2026.js','/assets/hero-flightline.svg','/assets/performance.css','/assets/performance.js','/assets/tool-first-layout.js','/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js'])check(sw.includes(`'${asset}'`),`service worker must cache ${asset}`);
+check(sw.includes("CACHE='pilotdesk-v36'"),'service worker cache version should match the Astro architecture release');
 check(sw.includes("if(e.data?.type==='SKIP_WAITING')"),'service worker must still support explicit user-approved updates');
 check(!sw.includes('await self.skipWaiting()'),'service worker install must not force a mid-session version switch');
 check(update.includes('userRequestedRefresh')&&update.includes("if(!userRequestedRefresh)return"),'controller changes must not force an unsolicited reload');

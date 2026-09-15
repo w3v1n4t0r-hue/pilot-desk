@@ -55,6 +55,8 @@ jobs:
         run: node qa/account-system-smoke.mjs
       - name: Run Daily retention checks
         run: node qa/daily-retention-smoke.mjs
+      - name: Run Pilot Skill Gap checks
+        run: node qa/skill-gap-smoke.mjs
       - name: Run flight workspace checks
         run: node qa/flight-workspace-smoke.mjs
       - name: Run PilotDesk v2 master checks

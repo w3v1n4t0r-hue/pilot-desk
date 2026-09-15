@@ -21,6 +21,7 @@ const event={preventDefault(){}};
  api.setAuthMode('recover');await api.submitAuth(event);assert.equal(calls[3][0],'recover');
  api.state.session={user:{id:'test'}};api.state.recovery=true;e('#pdNewPassword').value='test-password-long';e('#pdConfirmPassword').value='wrong';await api.setPassword(event);assert.equal(calls.length,4);e('#pdConfirmPassword').value='test-password-long';await api.setPassword(event);assert.equal(calls[4][0],'password');assert.equal(api.state.recovery,false);
  await api.signOut();assert.match(e('#pdAccountStatus').textContent,/Network unavailable/);assert.ok(api.state.session);
+ api.state.client.auth.signOut=async()=>({error:null});api.state.mode='recover';await api.signOut();assert.equal(api.state.session,null);assert.equal(api.state.mode,'login');
  api.state.recovery=true;api.returnToTool();assert.equal(calls.length,5);api.state.recovery=false;api.returnToTool();assert.equal(calls[5][0],'redirect');
 }
 {

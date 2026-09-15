@@ -17,8 +17,7 @@ function countdown(){
 function formatDate(date){try{return new Date(`${date}T12:00:00Z`).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase()}catch{return date}}
 
 async function loadSupabase(){
- const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
- state.client=mod.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+ const {getClient}=await import('/assets/supabase-client.js');state.client=await getClient();
  const {data:{session}}=await state.client.auth.getSession();state.session=session||null;
  state.client.auth.onAuthStateChange((_e,next)=>{state.session=next||null;setTimeout(()=>refreshIdentity(),0)});
 }

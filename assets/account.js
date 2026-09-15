@@ -14,11 +14,10 @@ const ownerView=()=>new URL(location.href).searchParams.get('owner')==='1';
 const edgeHeaders=()=>({apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${state.session?.access_token||''}`});
 
 async function loadSupabase(){
-  const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
-  state.client=window.__pilotDeskSupabase||mod.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__pilotDeskSupabase=state.client;
+  const {getClient}=await import('/assets/supabase-client.js');state.client=await getClient();
   try{const r=await fetch(`${SUPABASE_URL}/auth/v1/settings`,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});if(r.ok){const d=await r.json();show('#pdGoogleSignIn',d?.external?.google===true);show('#pdGithubSignIn',d?.external?.github===true)}}catch{}
 }
-function renderSignedOut(){state.profile=null;setAuthMode('login');show('#pdSignedOut',true);show('#pdSignedIn',false);show('#pdOwnerMetrics',false);$('#pdAccountRoot')?.classList.remove('pd-account-disabled')}
+function renderSignedOut(){state.profile=null;setAuthMode('login',true);show('#pdSignedOut',true);show('#pdSignedIn',false);show('#pdOwnerMetrics',false);$('#pdAccountRoot')?.classList.remove('pd-account-disabled')}
 function safeAvatarUrl(value){try{const u=new URL(String(value||''),location.origin);return u.protocol==='https:'||u.protocol==='http:'?u.href:''}catch{return ''}}
 function renderAvatar(user,profile){const host=$('#pdUserAvatar');if(!host)return;const src=safeAvatarUrl(profile?.avatar_url||user?.user_metadata?.avatar_url||'');host.replaceChildren();if(src){const img=document.createElement('img');img.alt='';img.src=src;img.referrerPolicy='no-referrer';host.appendChild(img)}else host.textContent=initials(profile?.display_name||user?.user_metadata?.full_name||user?.email)}
 async function fetchProfile(user){const {data,error}=await state.client.from('profiles').select('id,display_name,avatar_url,pilot_stage,home_airport,xp,level,current_streak,longest_streak,daily_completions,last_challenge_date,created_at').eq('id',user.id).maybeSingle();if(error)throw error;state.profile=data||null;if(data)state.client.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',user.id).then(()=>{});return data}
@@ -56,8 +55,8 @@ async function renderSignedIn(session){
  if(state.recovery){$('#pdPasswordSettings')?.scrollIntoView({block:'center'});$('#pdNewPassword')?.focus();}
 }
 async function renderSession(session){state.session=session||null;state.revision++;if(session)await renderSignedIn(session);else renderSignedOut()}
-function setAuthMode(mode){
- if(state.busy)return;state.mode=mode;
+function setAuthMode(mode,force=false){
+ if(state.busy&&!force)return;state.mode=mode;
  const words={login:['Sign in','Use your email and password to return to your saved work.','Sign in'],signup:['Create account','Choose a password. Email confirmation may be required once.','Create account'],recover:['Reset password','We will email a link so you can choose a new password.','Send reset link'],magic:['Email sign-in','Use a one-time link to access your existing account.','Send sign-in link']};
  const [title,intro,button]=words[mode];$('#pdAuthHeading').textContent=title;$('#pdAuthIntro').textContent=intro;$('#pdAuthSubmit').textContent=button;
  const password=mode==='login'||mode==='signup';$('#pdAuthPasswordField').hidden=!password;$('#pdAuthPassword').required=password;$('#pdAuthPassword').minLength=mode==='signup'?12:1;$('#pdAuthPassword').autocomplete=mode==='signup'?'new-password':'current-password';$('#pdAuthPassword').value='';
@@ -98,7 +97,7 @@ async function setPassword(e){
 async function signInGoogle(){status('Opening Google sign-in…');const {error}=await state.client.auth.signInWithOAuth({provider:'google',options:{redirectTo:redirectUrl()}});if(error)status(error.message,'bad');else window.pdTrack?.('Account Google Sign In')}
 async function signInGithub(){status('Opening GitHub sign-in…');const {error}=await state.client.auth.signInWithOAuth({provider:'github',options:{redirectTo:redirectUrl()}});if(error)status(error.message,'bad');else window.pdTrack?.('Account GitHub Sign In')}
 async function saveProfile(e){e.preventDefault();if(!state.session)return;const updates={display_name:$('#pdDisplayName').value.trim().slice(0,80)||null,pilot_stage:$('#pdPilotStage').value||null,home_airport:cleanAirport($('#pdHomeAirport').value)||null};status('Saving your profile…');const {error}=await state.client.from('profiles').update(updates).eq('id',state.session.user.id);if(error)return status(error.message,'bad');status('Profile saved.','good');window.pdTrack?.('Account Profile Saved');await renderSignedIn(state.session)}
-async function signOut(){await runAuth(async()=>{const {error}=await state.client.auth.signOut();if(error)throw error;state.recovery=false;await renderSession(null);status('Signed out. You can sign back in below.','good')})}
+async function signOut(){await runAuth(async()=>{const {error}=await state.client.auth.signOut();if(error)throw error;state.recovery=false;try{sessionStorage.removeItem('pd-password-recovery')}catch{}await renderSession(null);status('Signed out. You can sign back in below.','good')})}
 async function deleteAccount(){if(!state.session)return;const answer=prompt('This permanently deletes your PilotDesk account and saved account data. Type DELETE to continue.');if(answer!=='DELETE')return;if(!confirm('Delete this PilotDesk account permanently? This cannot be undone.'))return;status('Deleting your account…');try{const r=await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:edgeHeaders()});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||'Unable to delete your account.','bad');await state.client.auth.signOut({scope:'local'}).catch(()=>{});state.session=null;state.profile=null;renderSignedOut();status('Your PilotDesk account was deleted.','good')}catch{status('Unable to delete your account right now.','bad')}}
 function bind(){
  $('#pdAuthForm')?.addEventListener('submit',submitAuth);

@@ -8,13 +8,22 @@ const base=process.env.PD_TEST_URL||'http://127.0.0.1:4173';fs.mkdirSync('qa-out
 try{
  for(const width of [320,360,390,430,768,1280]){
   await page.setViewportSize({width,height:900});
-  for(const route of ['/','/account.html','/learn/oral-exam/','/learn/oral-exam/private.html','/learn/oral-exam/instrument.html']){
+  for(const route of ['/','/account.html','/learn/oral-exam/','/learn/oral-exam/private.html','/learn/oral-exam/instrument.html','/tools.html','/calculators/density-altitude/','/weather.html','/daily/','/written-prep.html','/404.html']){
    const response=await page.goto(base+route);assert.equal(response.status(),200,route);
    await page.locator('h1').waitFor();await page.waitForTimeout(600);
    const size=await page.evaluate(()=>({page:document.documentElement.scrollWidth,view:innerWidth,overflow:[...document.querySelectorAll('body *')].map(el=>({tag:el.tagName,class:el.className,left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right,width:el.getBoundingClientRect().width})).filter(el=>el.right>innerWidth+1||el.left< -1)}));
    if(size.page>size.view+1){console.error(JSON.stringify(size));await page.screenshot({path:`qa-output/overflow-${width}.png`,fullPage:true});}
    assert.ok(size.page<=size.view+1,`${route} overflows at ${width}: ${size.page}`);
-   if(route==='/')assert.equal(await page.locator('#pdHomeTitle span').count(),0,'Headline must use normal word wrapping');
+   if(route==='/'){
+    assert.equal(await page.locator('#pdHomeTitle span').count(),0,'Headline must use normal word wrapping');
+    if(width<=800){
+     assert.equal(await page.locator('.pd-main-nav').isVisible(),false,'Mobile menu starts closed');
+     await page.locator('[data-menu]').click();assert.equal(await page.locator('.pd-main-nav').isVisible(),true);
+     await page.locator('.pd-nav-button').first().click();assert.equal(await page.locator('.pd-nav-menu').first().isVisible(),true);
+     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Open mobile menu must fit');
+     await page.keyboard.press('Escape');assert.equal(await page.locator('.pd-main-nav').isVisible(),false);
+    }
+   }
    if(width===390||width===1280)await page.screenshot({path:`qa-output/${width}-${route.replace(/[^a-z]/g,'')||'home'}.png`});
   }
  }

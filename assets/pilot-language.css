@@ -1,0 +1,16 @@
+/* Final public-facing copy/decoration cleanup.
+   Keep the avionics look without code-comment separators or decorative plus signs. */
+html.pd-streamlined-app .pd-page-hero:after{
+  content:'PILOTDESK FLIGHT TOOLS'!important;
+}
+html.pd-streamlined-app .pd-hub-card>small{
+  padding-left:0!important;
+}
+html.pd-streamlined-app .pd-hub-card>small:before{
+  content:none!important;
+  display:none!important;
+}
+html.pd-streamlined-app .pd-hub-card .pd-arrow:after{
+  content:none!important;
+  display:none!important;
+}

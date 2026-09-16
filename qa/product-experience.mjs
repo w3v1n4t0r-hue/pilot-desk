@@ -17,7 +17,7 @@ assert.throws(()=>nav.distanceCourse({lat:0,lon:NaN},{lat:0,lon:0}));
 const route=nav.build([{id:'A',lat:0,lon:0},{id:'B',lat:1,lon:0},{id:'C',lat:2,lon:0}],{tas:120,burn:10,windFrom:0,windSpeed:20});
 near(route.totalHours,route.totalDistance/100);
 near(route.totalFuel,route.totalHours*10);
-assert.deepEqual(navSections.map(x=>x.label),['Plan','Calculators','Weather','Learn']);
+assert.deepEqual(navSections.map(x=>x.label),['Tools','Plan','Weather','Learn']);
 assert.ok(searchable.some(x=>x[1]==='/calculators/ballast/'));
 for(const x of inventory){assert.ok(searchable.some(s=>s[1]===x.href),`Not searchable: ${x.href}`);assert.ok(fs.existsSync('.'+x.href+(x.href.endsWith('/')?'index.html':'')),`Missing page: ${x.href}`)}
 // Migration merges by id, converts burn, retains backups and is idempotent.

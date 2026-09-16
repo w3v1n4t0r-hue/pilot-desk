@@ -8,6 +8,7 @@ const experience=read('assets/experience.css');
 const tokens=read('assets/design-tokens.css');
 const bootstrap=read('assets/app-bootstrap.js');
 const nav=read('assets/global-nav.js');
+const sw=read('sw.js');
 const failures=[];
 const need=(text,needle,label)=>{if(!text.includes(needle))failures.push(`${label}: missing ${needle}`)};
 
@@ -31,6 +32,11 @@ for(const retired of ['unified-ui.css','site-chassis.css','home-visual-system.cs
 for(const page of ['calculators/crosswind/index.html','weather.html','account.html','written-prep.html','route-planner.html','weight-balance.html']){
   const html=read(page);
   need(html,'/assets/styles.css',page);
+  if(html.includes('<link rel="stylesheet" href="/assets/hub.css">'))failures.push(`${page}: must not reload hub.css after the canonical stylesheet entrypoint`);
+}
+
+for(const retired of ['pilotdesk-architecture-2026.css','pilotdesk-navigation-2026.css','professional-polish.css','home-command-center.css','avionics-command.js','tool-first-layout.js']){
+  if(sw.includes(`/assets/${retired}`))failures.push(`sw.js: retired visual asset remains in the release cache: ${retired}`);
 }
 
 if(failures.length){console.error('Unified UI checks failed:\n- '+failures.join('\n- '));process.exit(1)}

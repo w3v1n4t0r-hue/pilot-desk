@@ -38,7 +38,7 @@ check(generatedRoutes.length===expectedRoutes.length,`offline manifest has ${gen
 for(const route of expectedRoutes) check(generatedRoutes.includes(route),`offline manifest missing ${route}`);
 for(const route of generatedRoutes) check(fs.existsSync(path.join('dist',route.slice(1),'index.html')),`built offline calculator route missing from dist: ${route}`);
 
-for(const asset of ['/assets/styles.css','/assets/hub.css','/assets/site.js','/assets/safety.js','/assets/app-bootstrap.js']){
+for(const asset of ['/assets/styles.css','/assets/site.js','/assets/safety.js','/assets/app-bootstrap.js']){
   check(generatedAssets.includes(asset),`generated calculator asset manifest missing ${asset}`);
 }
 

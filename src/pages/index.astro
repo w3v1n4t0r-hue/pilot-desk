@@ -54,6 +54,22 @@ const schema = {
   </section>
 
   <div class="pd-home-wrap">
+    <section class="pd-home-section" aria-labelledby="pdHomeProofTitle">
+      <div class="pd-home-section-head">
+        <div><div class="eyebrow">ONE WORKSPACE · CLEAR NEXT STEP</div><h2 id="pdHomeProofTitle">From first number to final cross-check.</h2><p>Keep planning, calculations, weather context, and training close without turning the screen into a cockpit imitation.</p></div>
+      </div>
+      <div class="pd-home-proof" aria-label="PilotDesk planning workspace preview">
+        <div class="pd-home-proof-main">
+          <div class="eyebrow">ROUTE · SAMPLE</div><h3>KMSN → KOSH</h3><p class="fine">A restrained planning view keeps the route readable and the source context close.</p>
+          <svg viewBox="0 0 420 190" aria-hidden="true"><path d="M18 154C92 142 122 70 196 94s105-52 206-61"/><path class="pd-route-line" d="M18 154 196 94 402 33"/><circle cx="18" cy="154" r="5"/><circle cx="196" cy="94" r="5"/><circle cx="402" cy="33" r="5"/></svg>
+        </div>
+        <div class="pd-home-proof-side">
+          <div class="eyebrow">PLANNING SNAPSHOT</div><h3>Useful numbers, not decoration.</h3>
+          <div class="pd-home-proof-kpis"><div><strong>243°</strong><span>True course</span></div><div><strong>01:08</strong><span>Estimated time</span></div><div><strong>8.6 gal</strong><span>Trip fuel</span></div><div><strong>12 kt</strong><span>Crosswind</span></div></div>
+        </div>
+      </div>
+    </section>
+
     <section class="pd-home-section pd-learning-promo" data-pd-home-account aria-label="PilotDesk account">
       <div>
         <div class="eyebrow">YOUR PILOTDESK</div>
@@ -77,6 +93,15 @@ const schema = {
           <a class="pd-popular-tool" href={href}>
             <svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg><span>{title}</span>
           </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="pd-home-section" aria-labelledby="pdHomeExploreTitle">
+      <div class="pd-home-section-head"><div><h2 id="pdHomeExploreTitle">Four ways into PilotDesk.</h2><p>Start with the job in front of you.</p></div></div>
+      <div class="pd-popular-grid">
+        {homeCategories.map(([href, title, copy, path]) => (
+          <a class="pd-popular-tool" href={href}><svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg><span><b>{title}</b><small>{copy}</small></span></a>
         ))}
       </div>
     </section>

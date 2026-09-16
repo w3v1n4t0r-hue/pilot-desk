@@ -1,6 +1,6 @@
 importScripts('/assets/offline-precache.js');
 
-const CACHE='pilotdesk-v39';
+const CACHE='pilotdesk-v40';
 const GENERATED_CALCULATORS=Array.isArray(self.PILOTDESK_OFFLINE_CALCULATORS)?self.PILOTDESK_OFFLINE_CALCULATORS:[];
 const GENERATED_ASSETS=Array.isArray(self.PILOTDESK_OFFLINE_ASSETS)?self.PILOTDESK_OFFLINE_ASSETS:[];
 const CORE=[...new Set([
@@ -8,9 +8,9 @@ const CORE=[...new Set([
   '/training/private-pilot.html','/training/instrument-rating.html','/training/commercial-pilot.html','/training/multiengine.html','/training/cfi.html',
   ...GENERATED_CALCULATORS,
   '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/design-tokens.css',
-  '/assets/pilotdesk-architecture-2026.css','/assets/pilotdesk-navigation-2026.css','/assets/pilotdesk-workspaces-2026.css','/assets/avionics-ui.css','/assets/avionics-architecture.css','/assets/avionics-ops.css','/assets/product-clarity.css','/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-avionics-final.css','/assets/professional-polish.css','/assets/performance.css','/assets/weather.css','/assets/wb-v2.css','/assets/planner-suite.css','/assets/route-planner.css','/assets/procedure-viewer.css','/assets/checklist-trainer.css',
+  '/assets/weather.css','/assets/wb-v2.css','/assets/wb-cabin.css','/assets/planner-suite.css','/assets/route-planner.css','/assets/procedure-viewer.css','/assets/checklist-trainer.css','/assets/daily.css','/assets/account.css','/assets/written-prep.css',
   '/assets/site.js','/assets/safety.js','/assets/app-bootstrap.js','/assets/navigation-data.js','/assets/flight-store.js','/assets/global-nav.js','/assets/theme.js','/assets/features.js','/assets/calculator-ux.js','/assets/crosswind-mfd.js','/assets/pilotdesk-plus.js','/assets/experience.js','/assets/errors.js','/assets/analytics.js','/assets/update.js','/assets/ad-config.js','/assets/ads.js',
-  '/assets/home-architecture-2026.js','/assets/tools-directory.js','/assets/avionics-architecture.js','/assets/avionics-command.js','/assets/flight-strip-export.js','/assets/product-clarity.js','/assets/home-command-center.js','/assets/context-widget.js','/assets/performance.js','/assets/tool-first-layout.js','/assets/sticky-app.js','/assets/growth-suite.js','/assets/flight-workspace.js','/assets/product-nav.js','/assets/navlog-core.js','/assets/procedures.js','/assets/route-planner.js','/assets/poh-chart-studio.js','/assets/checklist-trainer.js',
+  '/assets/tools-directory.js','/assets/flight-strip-export.js','/assets/context-widget.js','/assets/flight-workspace.js','/assets/product-nav.js','/assets/navlog-core.js','/assets/procedures.js','/assets/route-planner.js','/assets/poh-chart-studio.js','/assets/checklist-trainer.js',
   '/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js',
   '/assets/brand.js','/assets/share-enhance.js','/assets/offline-weather.js','/assets/runtime-qol.js','/assets/aircraft-training.js','/assets/aircraft-transfer.js',
   ...GENERATED_ASSETS,
@@ -19,7 +19,7 @@ const CORE=[...new Set([
 const CORE_PATHS=new Set(CORE);
 const MAX_RUNTIME_ENTRIES=140;
 const NETWORK_FIRST_ASSETS=new Set([
-  '/assets/app-bootstrap.js','/assets/navigation-data.js','/assets/global-nav.js','/assets/home-architecture-2026.js','/assets/tools-directory.js','/assets/brand.js','/assets/icon.svg','/assets/hero-flightline.svg','/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/design-tokens.css','/assets/pilotdesk-architecture-2026.css','/assets/pilotdesk-navigation-2026.css','/assets/pilotdesk-workspaces-2026.css','/assets/avionics-ui.css','/assets/avionics-architecture.css','/assets/avionics-ops.css','/assets/product-clarity.css','/assets/avionics-architecture.js','/assets/avionics-command.js','/assets/flight-strip-export.js','/assets/crosswind-mfd.js','/assets/product-clarity.js','/assets/professional-polish.css','/assets/home-command-center.js','/assets/home-command-center.css','/assets/home-task-polish.css','/assets/home-avionics-final.css','/assets/context-widget.js','/assets/tool-first-layout.js','/assets/performance.js','/assets/sticky-app.js','/assets/growth-suite.js','/assets/weather-fixed.js','/assets/weather-extra.js','/assets/analytics.js','/assets/share-enhance.js',
+  '/assets/app-bootstrap.js','/assets/navigation-data.js','/assets/global-nav.js','/assets/tools-directory.js','/assets/brand.js','/assets/icon.svg','/assets/hero-flightline.svg','/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/design-tokens.css','/assets/flight-strip-export.js','/assets/crosswind-mfd.js','/assets/context-widget.js','/assets/weather-fixed.js','/assets/weather-extra.js','/assets/analytics.js','/assets/share-enhance.js',
   '/assets/product-nav.js','/assets/account.js','/assets/airport.js','/assets/flights.js','/assets/flight-brief.js','/assets/route-save.js','/assets/aircraft-v2.js','/assets/planner-pro.js','/assets/flight-library.js','/assets/procedure-pro.js','/assets/trainer-pro.js','/assets/preview-harvest.js','/assets/poh-chart-studio.js'
 ]);
 const cacheable=r=>r&&r.ok&&(r.type==='basic'||r.type==='default');

@@ -3,3 +3,16 @@
 @media(max-width:760px){.wb-toolbar{grid-template-columns:1fr}.wb-toolbar-actions{grid-column:auto}.wb-side{grid-template-columns:1fr}.wb-section-head{display:block}.wb-section-head .calc-btn{margin-top:12px}.wb-table{overflow:visible}.wb-head{display:none}.wb-row{min-width:0;grid-template-columns:1fr 1fr;gap:8px;border:1px solid #292c31;border-radius:10px;padding:10px;margin:9px 0;background:#090b0d}.wb-name{grid-column:1/-1}.wb-cell{min-width:0}.wb-mobile-label{display:block;color:#777b82;font-size:8px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}.wb-number{text-align:left;border:1px solid #24272c;border-radius:7px;padding:8px;background:#0d0f12}.wb-row-actions{grid-column:1/-1;justify-content:flex-end}.wb-total-grid{grid-template-columns:1fr}.wb-results{grid-template-columns:1fr 1fr}.wb-results .result.primary{grid-column:1/-1}.wb-two{grid-template-columns:1fr 1fr}}
 @media(max-width:420px){.wb-toolbar-actions .utility-btn{flex:1 1 42%}.wb-results{grid-template-columns:1fr}.wb-results .result.primary{grid-column:auto}.wb-two{grid-template-columns:1fr}}
 @media print{.topbar,.breadcrumbs,.wb-toolbar,.wb-side,.ad-wrap,footer,.calc-btn,.wb-row-actions,.source-links{display:none!important}body{background:#fff!important;color:#111!important}.wb-shell{max-width:none;padding:0}.safety-strip,.calc-box,.wb-phase,.info-card{background:#fff!important;color:#111!important;border-color:#bbb!important;box-shadow:none!important}.calc-hero h1,.calc-hero p,.wb-section-head p,.notice,.fine,.result small,.wb-envelope-state{color:#222!important}.wb-grid-layout{display:block}.wb-table{overflow:visible}.wb-head,.wb-row{min-width:0;color:#111}.wb-cell input{border:0;background:transparent;color:#111;padding:2px}.wb-number,.result{background:#fff!important;color:#111!important;border-color:#ccc!important}.result strong,.result.primary strong{color:#111!important;background:none!important;-webkit-text-fill-color:#111}.wb-reference{page-break-before:always}}
+
+/* Canonical W&B application surfaces. */
+.wb-toolbar,.wb-phase{border-color:var(--line);border-radius:var(--pd-radius-panel);background:var(--panel)}
+.wb-field label{color:var(--muted)}
+.wb-field input,.wb-field select,.wb-envelope-input,.wb-cell input{border-color:var(--line-hi);border-radius:var(--pd-radius-control);background:var(--bg2);color:var(--text)}
+.wb-field input:focus,.wb-field select:focus,.wb-envelope-input:focus,.wb-cell input:focus{border-color:var(--accent);box-shadow:var(--pd-shadow-focus)}
+.wb-row{border-color:var(--line)}.wb-head,.wb-mobile-label{color:var(--muted2)}.wb-number{color:var(--silver)}
+.wb-row-actions button,.wb-chip-row button{border-color:var(--line);background:var(--panel2);color:var(--muted)}
+.wb-envelope-state{border-color:var(--line);color:var(--muted)}
+.wb-envelope-state[data-state="inside"]{border-color:color-mix(in srgb,var(--pd-color-success) 40%,var(--line));color:var(--pd-color-success)}
+.wb-envelope-state[data-state="outside"]{border-color:color-mix(in srgb,var(--pd-color-danger) 40%,var(--line));color:var(--pd-color-danger)}
+#wbChart{border-color:var(--line);background:var(--bg2)}
+.wb-dialog{border-color:var(--line-hi);border-radius:var(--pd-radius-panel);background:var(--panel);box-shadow:var(--pd-shadow-overlay)}

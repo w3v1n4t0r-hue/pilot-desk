@@ -11,7 +11,7 @@
   --pd-ui-line-active:#52525b;
   --pd-ui-text:#f4f4f5;
   --pd-ui-muted:#a1a1aa;
-  --pd-ui-dim:#71717a;
+  --pd-ui-dim:#9696a0;
   --pd-ui-ready:#10b981;
   --pd-ui-danger:#c77b82;
   --pd-ui-danger-line:#6a3e42;
@@ -59,7 +59,7 @@ html[data-pd-theme="light"]{
 html[data-pd-theme="night-red"]{
   --pd-ui-text:#ffd7d4;
   --pd-ui-muted:#c99793;
-  --pd-ui-dim:#936965;
+  --pd-ui-dim:#ae7f7a;
   --pd-ui-line:#4c2f30;
   --pd-ui-line-active:#8a5555;
 }

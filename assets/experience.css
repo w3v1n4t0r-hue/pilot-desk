@@ -63,6 +63,7 @@ small,.fine{color:var(--muted2);font-size:.78rem!important;line-height:1.55}
 .pd-account-avatar{display:grid;width:24px;height:24px;place-items:center;border:1px solid var(--line-hi);border-radius:50%;background:var(--panel2);font-size:.58rem;font-weight:760}
 .menu-btn{display:none}
 .breadcrumbs{margin-bottom:22px;color:var(--muted2);font-size:.75rem}
+.breadcrumbs a,p a,.fine a,.rp-chart-note a,.leaflet-control-attribution a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 .hero,.calc-hero,.pd-flight-hero,.wx-hero,.pd-page-hero,.pd-prep-hero{display:block;min-height:0;margin:0 0 34px;padding:0;border:0;background:none;box-shadow:none}
 .hero p,.calc-hero p,.pd-flight-hero p,.wx-hero p,.pd-page-hero p,.pd-prep-hero p{max-width:68ch;font-size:1rem}
 .calc-hero h1,.pd-flight-hero h1,.wx-hero h1,.pd-page-hero h1{max-width:22ch;font-size:clamp(2.15rem,4vw,3.55rem)}

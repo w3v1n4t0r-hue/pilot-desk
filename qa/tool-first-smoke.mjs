@@ -12,7 +12,8 @@ const vercel=JSON.parse(read('vercel.json'));
 const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 
-for(const task of ['Plan a Flight','Use a Calculator','Study for a Written'])check(home.includes(task),`Astro homepage missing primary task ${task}`);
+for(const task of ['Plan a Flight','Use a Calculator','Study for a Written'])check(data.includes(task),`shared homepage data missing primary task ${task}`);
+check(home.includes('homeActions.slice(0,3).map'),'Astro homepage must render its primary task cards from shared data');
 check(home.includes('data-pd-home-account'),'homepage must keep account discovery near primary tasks');
 check(home.includes('Popular tools')&&home.includes('Explore PilotDesk'),'homepage must preserve fast tool discovery without dumping the full inventory');
 check(data.includes("['/daily/', 'Play Daily'"),'shared homepage model must retain Daily as a fourth task');

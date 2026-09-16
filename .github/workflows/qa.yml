@@ -57,6 +57,8 @@ jobs:
         run: node qa/performance-budget.mjs
       - name: Run sticky app release checks
         run: node qa/sticky-app-smoke.mjs
+      - name: Run offline calculator cache checks
+        run: node qa/offline-cache-smoke.mjs
       - name: Run account system checks
         run: node qa/account-system-smoke.mjs
       - name: Run Daily retention checks

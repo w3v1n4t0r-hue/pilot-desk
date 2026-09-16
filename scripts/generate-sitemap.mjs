@@ -57,7 +57,8 @@ const esc=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&g
 const xml=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',...unique.map(({url,lastmod})=>`<url><loc>${esc(url)}</loc><lastmod>${lastmod}</lastmod></url>`),'</urlset>'].join('\n');
 fs.writeFileSync('sitemap.xml',xml+'\n');
 
-const sitemapFiles=fs.readdirSync('.').filter(name=>/^sitemap(?:-[a-z0-9-]+)?\.xml$/i.test(name)).sort((a,b)=>a==='sitemap.xml'?-1:b==='sitemap.xml'?1:a.localeCompare(b));
-const sitemapLines=sitemapFiles.map(name=>`Sitemap: ${SITE}/${name}`).join('\n');
-fs.writeFileSync('robots.txt',`User-agent: *\nAllow: /\nDisallow: /api/\n${sitemapLines}\n`);
-console.log(`Generated one canonical sitemap with ${unique.length} indexable URLs and advertised ${sitemapFiles.length} sitemap files in robots.txt.`);
+// Advertise only the canonical sitemap. Legacy split sitemaps are retained in the
+// repository for compatibility/history, but exposing all of them in robots.txt
+// causes Google to rediscover overlapping/stale URLs (including redirects).
+fs.writeFileSync('robots.txt',`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${SITE}/sitemap.xml\n`);
+console.log(`Generated canonical sitemap with ${unique.length} indexable URLs and advertised only sitemap.xml in robots.txt.`);

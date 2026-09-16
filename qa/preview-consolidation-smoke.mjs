@@ -4,7 +4,8 @@ const failures=[];const ok=(v,m)=>{if(!v)failures.push(m)};
 const required=['assets/flight-store.js','assets/planner-pro.js','assets/procedure-pro.js','assets/trainer-pro.js','assets/poh-chart-studio.js','assets/aircraft-transfer.js','assets/aircraft-training.js','api/procedure-pdf.js'];
 for(const p of required)ok(fs.existsSync(p),`Missing consolidated feature ${p}`);
 const flightStore=read('assets/flight-store.js'),planner=read('assets/planner-pro.js'),proc=read('assets/procedure-pro.js'),trainer=read('assets/trainer-pro.js'),poh=read('assets/poh-chart-studio.js'),air=read('assets/aircraft-transfer.js'),airTraining=read('assets/aircraft-training.js'),pdf=read('api/procedure-pdf.js'),bootstrap=read('assets/app-bootstrap.js'),procedures=read('assets/procedures.js'),checklist=read('assets/checklist-trainer.js'),sw=read('sw.js');
-for(const s of ['pd-saved-flights','pd-flights-v1','upsert','procedures'])ok(flightStore.includes(s),`Shared flight store missing ${s}`);
+for(const s of ['pd-saved-flights','pd-flights-v1','upsert'])ok(flightStore.includes(s),`Shared flight store missing ${s}`);
+ok(flightStore.includes('current.push({...f,')&&flightStore.includes('write([{...old,...f}'),'Shared flight store must preserve arbitrary legacy/current flight fields during migration and upsert');
 for(const s of ['rpAircraft','CSV','navigator.clipboard','ctrlKey','navlog'])ok(planner.includes(s),`Planner enhancement missing ${s}`);
 for(const s of ['Open preview','Reload','Escape','pd-plate-focus'])ok(proc.includes(s),`Procedure enhancement missing ${s}`);
 for(const s of ['Export','Import','keydown','ArrowLeft','ArrowRight'])ok(trainer.includes(s),`Training enhancement missing ${s}`);
@@ -22,4 +23,4 @@ ok(checklist.includes('/assets/app-bootstrap.js'),'Training page logic must reac
 ok(/const CACHE='pilotdesk-v\d+'/.test(sw)&&Number(sw.match(/pilotdesk-v(\d+)/)?.[1]||0)>=38,'offline reliability release must use a current versioned service-worker cache');
 for(const a of ['social-crosswind.svg','social-density-altitude.svg','social-e6b.svg','social-pilot-math.svg','social-route-planner.svg','social-weather.svg'])ok(fs.existsSync('assets/'+a),`Missing social asset ${a}`);
 if(failures.length){console.error(`Feature consolidation checks failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log('Feature consolidation checks passed: shared flight storage and route-scoped planner/procedure/trainer enhancements remain wired without retired preview-shell layers.');
+console.log('Feature consolidation checks passed: shared flight storage preserves record fields and route-scoped planner/procedure/trainer enhancements remain wired without retired preview-shell layers.');

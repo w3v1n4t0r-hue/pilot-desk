@@ -1,29 +1,32 @@
 import fs from 'node:fs';
 
 const read=p=>fs.readFileSync(p,'utf8');
-const layout=read('assets/tool-first-layout.js');
-const perf=read('assets/performance.css');
-const perfJs=read('assets/performance.js');
+const home=read('src/pages/index.astro');
+const tools=read('src/pages/tools.astro');
+const data=read('src/data/site.mjs');
+const experience=read('assets/experience.css');
 const bootstrap=read('assets/app-bootstrap.js');
-const index=read('index.html');
 const calculator=read('calculators/crosswind/index.html');
+const sw=read('sw.js');
 const vercel=JSON.parse(read('vercel.json'));
 const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 
-for(const needle of ['Popular tools','Your saved tools &amp; history','Formula, method &amp; examples','pd-home-library','pd-learn-panel'])check(layout.includes(needle),`tool-first layout missing ${needle}`);
-check(layout.includes("insertAdjacentElement('afterend',search)"),'homepage search should move directly behind quick start/hero');
-check(layout.includes("href==='/sources.html'")&&layout.includes("href==='/legal/privacy.html'"),'homepage utility nav should move secondary links out of the primary navigation');
-check(layout.includes('seen.has(href)'),'related-tool duplicates should be removed');
-check(perf.includes('-webkit-line-clamp:2'),'tool descriptions should remain compact');
-check(perf.includes('content-visibility:auto'),'long pages should skip off-screen rendering work where supported');
-check(perf.includes('font-size:16px!important'),'mobile form inputs should avoid iOS zoom');
-check(perfJs.includes("rel='prefetch'")&&perfJs.includes('saveData'),'fast connections should prefetch a small number of likely next pages without ignoring data-saver');
-check(bootstrap.includes('/assets/tool-first-layout.js')&&bootstrap.includes('pd-tool-first'),'tool-first layout must load from app bootstrap');
-check(bootstrap.includes('/assets/performance.js')&&bootstrap.includes('pd-performance'),'performance helper must load from app bootstrap');
-check(index.includes('id="toolSearch"')&&index.includes('section class="category"'),'homepage must retain the original search and calculator inventory');
+for(const task of ['Plan a Flight','Use a Calculator','Study for a Written'])check(data.includes(task),`shared homepage data missing primary task ${task}`);
+check(home.includes('homeActions.slice(0,3).map'),'Astro homepage must render its primary task cards from shared data');
+check(home.includes('data-pd-home-account'),'homepage must keep account discovery near primary tasks');
+check(home.includes('Popular tools')&&home.includes('Explore PilotDesk'),'homepage must preserve fast tool discovery without dumping the full inventory');
+check(data.includes("['/daily/', 'Play Daily'"),'shared homepage model must retain Daily as a fourth task');
+check(tools.includes('pdToolDirectorySearch')&&tools.includes('pdToolDirectoryGroup')&&tools.includes('/assets/tools-directory.js'),'calculator directory must remain searchable/filterable');
+check(tools.includes('47 tools'),'calculator directory count must match the standard calculator inventory');
+
+for(const responsive of ['.pd-home-actions{','@media(max-width:800px)','@media(max-width:480px)','min-height:44px'])check(experience.includes(responsive),`current experience layer missing task-first/mobile safeguard ${responsive}`);
+for(const retired of ['tool-first-layout.js','performance.js','home-command-center.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired runtime layout optimizer returned: ${retired}`);
+check(bootstrap.includes('/assets/calculator-ux.js'),'calculator-specific QoL must remain route-scoped in the streamlined bootstrap');
+
 check(calculator.includes('data-calculate')&&calculator.includes('class="info-card"')&&calculator.includes('class="formula"'),'calculator must retain operational controls plus visible reference and formula content');
-check(vercel.git?.deploymentEnabled?.main===true&&vercel.git?.deploymentEnabled?.['*']===false,'optimization branches must not spend Vercel deployments');
+check(sw.includes('...GENERATED_CALCULATORS'),'all calculators must be deterministically available to the offline worker');
+check(vercel.git?.deploymentEnabled?.main===true&&vercel.git?.deploymentEnabled?.['*']===false,'non-production branches must not spend Vercel deployments');
 
 if(failures.length){console.error(`Tool-first optimization checks failed with ${failures.length} issue(s):`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log('Tool-first optimization checks passed: calculators stay primary, supporting content is progressive, mobile inputs are stable, performance helpers are bounded, and previews remain disabled.');
+console.log('Tool-first optimization checks passed: Astro keeps primary tasks concise, calculator discovery searchable, mobile controls usable, and retired runtime layout stacks out.');

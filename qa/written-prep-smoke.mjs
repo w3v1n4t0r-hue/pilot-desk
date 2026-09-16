@@ -114,7 +114,9 @@ has(gradingMigration,'difficulty text','Difficulty persistence migration missing
 has(gradingMigration,'revoke insert, update, delete on public.written_prep_sessions from anon, authenticated','Session mutation must remain protected');
 
 has(siteData,"['/written-prep.html', 'Written Prep'",'Written Prep missing from shared global navigation');
-has(astroHome,'href="/written-prep.html" data-pd-launch="written-prep"','Written Prep missing from Astro homepage primary discovery');
+has(siteData,"['/written-prep.html', 'Study for a Written'",'Written Prep missing from shared homepage primary actions');
+has(astroHome,'homeActions.slice(0,3).map','Astro homepage must render the shared primary action model');
+has(astroHome,"data-pd-launch={index === 2 ? 'written-prep' : undefined}",'Written Prep primary action marker missing from Astro homepage renderer');
 has(training,'href="/written-prep.html"','Written Prep missing from training hub');
 has(account,'ensureWrittenPrepCta','Written Prep missing from signed-in account dashboard');
 has(account,"ensureOwnerMetric('pdMetricPrepToday'",'Owner dashboard must track Written Prep usage');

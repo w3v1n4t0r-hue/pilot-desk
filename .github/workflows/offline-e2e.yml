@@ -1,0 +1,73 @@
+name: PilotDesk Offline E2E
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'sw.js'
+      - 'assets/app-bootstrap.js'
+      - 'assets/styles.css'
+      - 'assets/styles-legacy.css'
+      - 'assets/hub.css'
+      - 'assets/experience.css'
+      - 'assets/design-tokens.css'
+      - 'calculators/**'
+      - 'scripts/prepare-astro-public.mjs'
+      - 'qa/offline-cache-smoke.mjs'
+      - 'qa/offline-e2e.mjs'
+      - '.github/workflows/offline-e2e.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sw.js'
+      - 'assets/app-bootstrap.js'
+      - 'assets/styles.css'
+      - 'assets/styles-legacy.css'
+      - 'assets/hub.css'
+      - 'assets/experience.css'
+      - 'assets/design-tokens.css'
+      - 'calculators/**'
+      - 'scripts/prepare-astro-public.mjs'
+      - 'qa/offline-cache-smoke.mjs'
+      - 'qa/offline-e2e.mjs'
+      - '.github/workflows/offline-e2e.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pilotdesk-offline-e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cold-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install build dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Build PilotDesk
+        run: npm run build
+      - name: Verify generated offline manifest
+        run: node qa/offline-cache-smoke.mjs
+      - name: Install browser test dependency
+        run: npm install --no-save --ignore-scripts playwright@1.55.0
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test a never-visited calculator offline
+        env:
+          PILOTDESK_BASE_URL: http://127.0.0.1:4173
+        run: |
+          python3 -m http.server 4173 --directory dist >/tmp/pilotdesk-offline-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid' EXIT
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 0.5
+          done
+          node qa/offline-e2e.mjs

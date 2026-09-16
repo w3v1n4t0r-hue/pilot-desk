@@ -6,15 +6,14 @@ const size=p=>fs.statSync(p).size;
 const kb=n=>`${(n/1024).toFixed(1)} KB`;
 
 const budgets={
-  'assets/app-bootstrap.js':12*1024,
-  'assets/performance.js':6*1024,
-  'assets/tool-first-layout.js':16*1024,
-  'assets/sticky-app.js':30*1024,
+  'assets/app-bootstrap.js':8*1024,
+  'assets/experience.js':24*1024,
+  'assets/experience.css':40*1024,
+  'assets/design-tokens.css':8*1024,
   'assets/pilotdesk-plus.js':40*1024,
-  'assets/professional-polish.css':40*1024,
-  'assets/performance.css':12*1024,
-  'assets/styles.css':70*1024,
-  'index.html':80*1024,
+  'sw.js':24*1024,
+  'scripts/prepare-astro-public.mjs':12*1024,
+  'src/pages/index.astro':16*1024,
   'calculators/crosswind/index.html':60*1024
 };
 
@@ -26,18 +25,13 @@ for(const [file,max] of Object.entries(budgets)){
 }
 
 const bootstrap=fs.readFileSync('assets/app-bootstrap.js','utf8');
-/* Only work that cannot change the rendered shell is allowed after first reveal. */
-for(const deferred of ['seo.js','errors.js','analytics.js','update.js']){
-  check(bootstrap.includes(`deferLoad('/assets/${deferred}'`),`${deferred} should stay off the first-paint path`);
-}
-/* Anything that adds, moves, restyles, or replaces visible UI must settle behind the gate.
-   That costs a little startup work, but prevents PilotDesk from visibly cycling through versions. */
-for(const eager of ['global-nav.js','brand.js','theme.js','performance.js','tool-first-layout.js','product-polish.js','runtime-qol.js','growth-suite.js','sticky-app.js','pilotdesk-plus.js']){
-  check(bootstrap.includes(`/assets/${eager}`),`${eager} should be owned by the guarded visible-shell boot`);
-  check(!bootstrap.includes(`deferLoad('/assets/${eager}'`),`${eager} must not mutate the interface after reveal`);
-}
-check(bootstrap.includes('pd-ui-booting')&&bootstrap.includes('Promise.allSettled(jobs)'),'visible-shell work must remain behind the flash-prevention boot gate');
-check(bootstrap.includes('setTimeout(()=>{clearTimeout(failOpen);openGate()},120)'),'visible modules need the short stabilization turn before reveal');
+check(!bootstrap.includes('visibility:hidden')&&!bootstrap.includes('pd-ui-booting'),'static content must not wait behind a JavaScript boot gate');
+for(const eager of ['navigation-data.js','flight-store.js','global-nav.js','theme.js','errors.js','analytics.js','update.js'])check(bootstrap.includes(`/assets/${eager}`),`${eager} must remain in the small shared enhancement bootstrap`);
+for(const conditional of [
+  ["if(calc)",'features.js'],["if(calc)",'calculator-ux.js'],["path==='/weather.html'",'offline-weather.js'],["path==='/route-planner.html'",'planner-pro.js'],["path==='/procedures.html'",'procedure-pro.js'],["path==='/checklist-trainer.html'",'trainer-pro.js']
+])check(bootstrap.includes(conditional[0])&&bootstrap.includes(`/assets/${conditional[1]}`),`${conditional[1]} should remain route-scoped`);
+for(const retired of ['professional-polish.css','tool-first-layout.js','product-polish.js','sticky-app.js','avionics-command.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired visible-shell layer returned: ${retired}`);
+check(bootstrap.includes('requestIdleCallback')&&bootstrap.includes('timeout:1500'),'service-worker registration should happen after load/idle without a 12-second delay');
 
 const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
 check(vercel.ignoreCommand==='bash scripts/vercel-ignore-build.sh','Vercel ignored-build step must protect deployment quota');
@@ -49,4 +43,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Performance budget passed: assets stay bounded, nonvisual work stays deferred, every visible mutation settles before reveal, HTML revalidates, and deployment quota protection is configured.');
+console.log('Performance budget passed: the shared runtime stays small, expensive modules remain route-scoped, static content is immediately visible, and deployment/cache discipline is intact.');

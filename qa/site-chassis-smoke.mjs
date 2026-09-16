@@ -18,7 +18,7 @@ need(header,'data-pd-astro-shell','Header.astro');need(header,'navSections.map',
 need(footer,'footerLinks.map','Footer.astro');need(footer,'Planning aid only. Verify operational information with current approved sources.','Footer.astro');
 
 for(const selector of ['.shell{','.topbar{','.pd-main-nav{','.pd-nav-menu{','.pd-header-actions{','.hero,','.pd-hub-grid{','.pd-hub-card','.pd-panel','footer{'])need(experience,selector,'experience.css');
-for(const responsive of ['@media(max-width:800px)','@media(max-width:480px)','.pd-main-nav.open'])need(experience,responsive,'experience.css');
+for(const responsive of ['@media(max-width:800px)','@media(max-width:480px)','.topbar .pd-main-nav{display:none','.topbar .pd-main-nav.open{display:flex'])need(experience,responsive,'experience.css');
 
 need(bootstrap,'isAstroNative','app-bootstrap.js');need(bootstrap,"/assets/global-nav.js",'app-bootstrap.js');
 for(const retired of ['site-chassis.css','home-visual-system.css','tool-first-layout.js'])if(bootstrap.includes(retired))failures.push(`app-bootstrap.js: retired chassis layer returned: ${retired}`);

@@ -1,69 +1,120 @@
-/*
-  PilotDesk shared design-token migration layer.
-
-  This file is intentionally loaded last by assets/styles.css while the legacy
-  CSS layers are consolidated. Phase 1 preserves the values that currently win
-  in the cascade so adding a single source of truth does not silently recolor
-  the product. Legacy token names remain available at their current values
-  until their call sites are migrated deliberately.
-*/
 :root{
-  /* Current effective shared palette (experience.css). */
-  --bg:#080d13;
-  --bg2:#0d151e;
-  --panel:#111b25;
-  --panel2:#172531;
-  --panel3:#18222d;
-  --text:#f4f7fa;
-  --muted:#aebdca;
-  --muted2:#8293a3;
-  --line:#263746;
-  --line-hi:#40576a;
-  --silver:#c9d7e2;
-  --silver2:#e8f0f5;
-  --accent:#9adcf0;
-  --accent-soft:#9adcf01f;
-  --shadow:0 18px 50px #0008;
+  color-scheme:dark;
+  --pd-color-canvas:#050506;
+  --pd-color-canvas-raised:#09090b;
+  --pd-color-surface-1:#0c0c0e;
+  --pd-color-surface-2:#111114;
+  --pd-color-surface-3:#17171b;
+  --pd-color-text:#f5f5f5;
+  --pd-color-text-secondary:#a1a1aa;
+  --pd-color-text-tertiary:#71717a;
+  --pd-color-line:rgba(255,255,255,.08);
+  --pd-color-line-strong:rgba(255,255,255,.14);
+  --pd-color-silver:#d4d4d8;
+  --pd-color-silver-bright:#f4f4f5;
+  --pd-color-accent:#8ed8f8;
+  --pd-color-accent-soft:rgba(142,216,248,.1);
+  --pd-color-success:#5fd18b;
+  --pd-color-warning:#e6bd62;
+  --pd-color-danger:#e87c7c;
 
-  /* Existing Flight Deck structural and interaction tokens. */
-  --pd-blue:#8dd3ff;
-  --pd-blue-soft:rgba(141,211,255,.12);
-  --pd-radius-sm:10px;
-  --pd-radius:16px;
-  --pd-radius-lg:22px;
-  --pd-shadow:0 26px 80px rgba(0,0,0,.42);
-  --pd-shadow-soft:0 14px 38px rgba(0,0,0,.24);
+  --pd-font-sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --pd-space-1:4px;
+  --pd-space-2:8px;
+  --pd-space-3:12px;
+  --pd-space-4:16px;
+  --pd-space-5:20px;
+  --pd-space-6:24px;
+  --pd-space-8:32px;
+  --pd-space-10:40px;
+  --pd-space-12:48px;
+  --pd-space-16:64px;
+  --pd-radius-control:8px;
+  --pd-radius-panel:12px;
+  --pd-radius-overlay:14px;
+  --pd-shadow-overlay:0 18px 48px rgba(0,0,0,.42);
+  --pd-shadow-focus:0 0 0 3px rgba(142,216,248,.18);
+  --pd-motion-immediate:110ms;
+  --pd-motion-hover:160ms;
+  --pd-motion-control:200ms;
+  --pd-motion-panel:280ms;
+  --pd-motion-reveal:380ms;
+  --pd-ease-standard:cubic-bezier(.2,.8,.2,1);
+  --pd-ease-emphasized:cubic-bezier(.16,1,.3,1);
 
-  /* Status tokens. Keep old names at their current values during migration. */
-  --pd-good:#5ecf89;
-  --pd-warn:#e2bd63;
-  --pd-bad:#e47a7a;
-  --pd-amber:#f2c879;
-  --pd-danger:#ff8a86;
-
-  /* Hub namespace retained unchanged until call sites move to shared tokens. */
-  --pd-panel:#101216;
-  --pd-panel2:#15181d;
-  --pd-line:#30343b;
-  --pd-soft:#9da3ad;
-  --pd-text:#eef1f4;
-  --pd-accent:#d8dde4;
+  --bg:var(--pd-color-canvas);
+  --bg2:var(--pd-color-canvas-raised);
+  --panel:var(--pd-color-surface-1);
+  --panel2:var(--pd-color-surface-2);
+  --panel3:var(--pd-color-surface-3);
+  --text:var(--pd-color-text);
+  --muted:var(--pd-color-text-secondary);
+  --muted2:var(--pd-color-text-tertiary);
+  --line:var(--pd-color-line);
+  --line-hi:var(--pd-color-line-strong);
+  --silver:var(--pd-color-silver);
+  --silver2:var(--pd-color-silver-bright);
+  --accent:var(--pd-color-accent);
+  --accent-soft:var(--pd-color-accent-soft);
+  --shadow:var(--pd-shadow-overlay);
+  --pd-blue:var(--pd-color-accent);
+  --pd-blue-soft:var(--pd-color-accent-soft);
+  --pd-radius-sm:var(--pd-radius-control);
+  --pd-radius:var(--pd-radius-panel);
+  --pd-radius-lg:var(--pd-radius-overlay);
+  --pd-shadow:var(--pd-shadow-overlay);
+  --pd-shadow-soft:none;
+  --pd-good:var(--pd-color-success);
+  --pd-warn:var(--pd-color-warning);
+  --pd-bad:var(--pd-color-danger);
+  --pd-amber:var(--pd-color-warning);
+  --pd-danger:var(--pd-color-danger);
+  --pd-panel:var(--pd-color-surface-1);
+  --pd-panel2:var(--pd-color-surface-2);
+  --pd-line:var(--pd-color-line);
+  --pd-soft:var(--pd-color-text-secondary);
+  --pd-text:var(--pd-color-text);
+  --pd-accent:var(--pd-color-silver);
 }
 
-/* Persistent decorative motion should not run without user/data meaning. */
-body:before{animation:none}
-.hero-stat:after{animation:none;display:none}
-.badge:before,.eyebrow:before{animation:none}
+html{background:var(--pd-color-canvas);font-family:var(--pd-font-sans)}
+body{background:var(--pd-color-canvas);color:var(--pd-color-text);font-family:var(--pd-font-sans)}
+h1,h2,h3{color:var(--pd-color-text);text-wrap:balance}
+h1{letter-spacing:-.04em}
+p,li{color:var(--pd-color-text-secondary)}
+.result strong,.hero-stat strong,.pd-flight-value,.pd-kpi strong,.formula,.pd-raw-report{font-variant-numeric:tabular-nums}
 
-/* Opt in only where the underlying data is genuinely live. */
-.pd-live-dot{
-  display:inline-block;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:var(--pd-good);
-  box-shadow:0 0 12px rgba(94,207,137,.6);
-}
-@media (prefers-reduced-motion:no-preference){
-  .pd-live-dot{animation:pd-beacon 2.4s ease-in-out infinite}
-}
+:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{outline:2px solid var(--pd-color-accent);outline-offset:3px}
+.input-wrap:focus-within{border-color:var(--pd-color-accent)!important;box-shadow:var(--pd-shadow-focus)!important}
+
+:is(.pd-btn,.calc-btn,button.primary){display:inline-flex;min-height:44px;align-items:center;justify-content:center;gap:var(--pd-space-2);padding:0 var(--pd-space-4)!important;border:1px solid var(--pd-color-silver-bright)!important;border-radius:var(--pd-radius-control)!important;background:var(--pd-color-silver-bright)!important;color:#09090b!important;box-shadow:none!important;font:650 .875rem/1 var(--pd-font-sans)!important;letter-spacing:0!important;text-transform:none!important;cursor:pointer;transition:background-color var(--pd-motion-hover) var(--pd-ease-standard),border-color var(--pd-motion-hover) var(--pd-ease-standard),color var(--pd-motion-hover) var(--pd-ease-standard),transform var(--pd-motion-immediate) var(--pd-ease-standard)!important}
+:is(.pd-btn,.calc-btn,button.primary):hover{background:#fff!important;transform:translateY(-1px);filter:none!important}
+:is(.pd-btn,.calc-btn,button.primary):active{transform:translateY(1px)}
+:is(.pd-btn.secondary,.pd-btn.quiet,.utility-btn,.calc-actions button,.calc-actions a){border:1px solid var(--pd-color-line-strong)!important;background:var(--pd-color-surface-2)!important;color:var(--pd-color-text)!important;box-shadow:none!important}
+.pd-btn.quiet{background:transparent!important;border-color:transparent!important;color:var(--pd-color-text-secondary)!important}
+.pd-btn.destructive{background:transparent!important;border-color:color-mix(in srgb,var(--pd-color-danger) 45%,transparent)!important;color:var(--pd-color-danger)!important}
+.pd-btn.icon{width:44px;padding:0!important}
+:is(button,.pd-btn,.calc-btn)[disabled],:is(button,.pd-btn,.calc-btn)[aria-disabled="true"]{cursor:not-allowed;opacity:.48;transform:none!important}
+:is(button,.pd-btn,.calc-btn)[aria-busy="true"]{cursor:progress}
+
+input,select,textarea{min-height:44px;border:1px solid var(--pd-color-line-strong);border-radius:var(--pd-radius-control);background:var(--pd-color-canvas-raised);color:var(--pd-color-text);accent-color:var(--pd-color-accent);transition:border-color var(--pd-motion-hover) var(--pd-ease-standard),box-shadow var(--pd-motion-hover) var(--pd-ease-standard)}
+input::placeholder,textarea::placeholder{color:var(--pd-color-text-tertiary)}
+input:disabled,select:disabled,textarea:disabled{cursor:not-allowed;opacity:.55}
+.field label,.pd-field label,.pd-field>span{color:var(--pd-color-text-secondary);font-size:.8125rem;font-weight:650}
+.input-wrap{min-height:46px;border:1px solid var(--pd-color-line-strong)!important;border-radius:var(--pd-radius-control)!important;background:var(--pd-color-canvas-raised)!important;box-shadow:none!important}
+.input-wrap>span{border-color:var(--pd-color-line)!important;background:var(--pd-color-surface-1)!important;color:var(--pd-color-text-tertiary)!important}
+
+:is(.tool-card,.pd-hub-card,.pd-card,.info-card,.side-card,.pd-panel,.rp-panel,.calc-box){border-color:var(--pd-color-line)!important;border-radius:var(--pd-radius-panel)!important;background:var(--pd-color-surface-1)!important;box-shadow:none!important}
+:is(.tool-card,.pd-hub-card,.pd-card)[href]{transition:border-color var(--pd-motion-hover) var(--pd-ease-standard),background-color var(--pd-motion-hover) var(--pd-ease-standard),transform var(--pd-motion-hover) var(--pd-ease-standard)}
+:is(.tool-card,.pd-hub-card,.pd-card)[href]:hover{border-color:var(--pd-color-line-strong)!important;background:var(--pd-color-surface-2)!important;transform:translateY(-1px)}
+.result{border-color:var(--pd-color-line)!important;border-radius:var(--pd-radius-control)!important;background:var(--pd-color-canvas-raised)!important}
+.result.primary{border-color:var(--pd-color-line-strong)!important;background:var(--pd-color-surface-2)!important}
+
+body:before,body:after,.hero-stat:after,.badge:before,.eyebrow:before{content:none!important;animation:none!important}
+.pd-live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--pd-color-success);box-shadow:0 0 10px color-mix(in srgb,var(--pd-color-success) 45%,transparent)}
+@media (prefers-reduced-motion:no-preference){.pd-live-dot{animation:pd-beacon 2.4s var(--pd-ease-standard) infinite}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+html[data-pd-theme="light"]{color-scheme:light;--pd-color-canvas:#f4f4f5;--pd-color-canvas-raised:#ececee;--pd-color-surface-1:#fff;--pd-color-surface-2:#f7f7f8;--pd-color-surface-3:#e4e4e7;--pd-color-text:#18181b;--pd-color-text-secondary:#52525b;--pd-color-text-tertiary:#71717a;--pd-color-line:#d4d4d8;--pd-color-line-strong:#a1a1aa;--pd-color-accent:#0c6079;--accent:var(--pd-color-accent);--silver:var(--pd-color-text);--pd-blue:var(--pd-color-accent)}
+html[data-pd-theme="light"] :is(.pd-btn,.calc-btn,button.primary){border-color:#18181b!important;background:#18181b!important;color:#fff!important}
+html[data-pd-theme="night-red"]{--pd-color-accent:#ff766e;--accent:var(--pd-color-accent);--pd-blue:var(--pd-color-accent)}

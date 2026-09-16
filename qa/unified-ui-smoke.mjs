@@ -7,6 +7,7 @@ const hub=read('assets/hub.css');
 const experience=read('assets/experience.css');
 const tokens=read('assets/design-tokens.css');
 const bootstrap=read('assets/app-bootstrap.js');
+const nav=read('assets/global-nav.js');
 const failures=[];
 const need=(text,needle,label)=>{if(!text.includes(needle))failures.push(`${label}: missing ${needle}`)};
 
@@ -17,12 +18,14 @@ if(!entry.trim().endsWith('@import url("/assets/design-tokens.css");'))failures.
 for(const retired of ['unified-ui.css','site-chassis.css','home-visual-system.css','professional-polish.css','avionics-ui.css'])if(entry.includes(retired))failures.push(`styles.css: retired authority layer returned: ${retired}`);
 
 if(legacy.length<10000)failures.push('styles-legacy.css: legacy compatibility payload looks unexpectedly short');
+need(legacy,'nav:not(.pd-global-nav):not(.pd-main-nav)','styles-legacy.css mobile nav isolation');
 for(const selector of ['.tool-card','.pd-hub-card','.pd-card','.input-wrap','.result','.pd-account-link','.pd-site-search','.pd-home-action'])need(experience,selector,'experience.css');
 for(const accessibility of [':focus-visible','min-height:44px','@media(max-width:800px)','@media(max-width:480px)','@media(prefers-reduced-motion:reduce)'])need(experience,accessibility,'experience.css');
-for(const namespace of ['--pd-panel','--pd-line','--pd-text','--pd-accent','--pd-good','--pd-warn'])need(tokens,namespace,'design-tokens.css');
-need(hub,'--pd-panel','hub.css');
+for(const namespace of ['--pd-color-canvas','--pd-color-surface-1','--pd-color-text','--pd-color-line','--pd-color-accent','--pd-color-success','--pd-panel','--pd-good'])need(tokens,namespace,'design-tokens.css');
+if(/:root\s*\{/.test(legacy)||/:root\s*\{/.test(hub)||/:root\s*\{/.test(experience))failures.push('shared legacy layers must not redeclare the canonical root token palette');
 
 if(bootstrap.includes('loadStyle('))failures.push('app-bootstrap.js: streamlined bootstrap should not rebuild stylesheet precedence at runtime');
+if(nav.includes('ensureStyle(')||nav.includes('data-pd-experience'))failures.push('global-nav.js: navigation must not append a stylesheet after design-tokens.css');
 for(const retired of ['unified-ui.css','site-chassis.css','home-visual-system.css'])if(bootstrap.includes(retired))failures.push(`app-bootstrap.js: retired CSS finalizer returned: ${retired}`);
 
 for(const page of ['calculators/crosswind/index.html','weather.html','account.html','written-prep.html','route-planner.html','weight-balance.html']){

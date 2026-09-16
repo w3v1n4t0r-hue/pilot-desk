@@ -39,6 +39,7 @@ check(siteData.includes("['/daily/', 'Daily challenge'"),'Learn navigation must 
 check(astroHome.includes('data-pd-home-account'),'homepage must preserve account discovery markup');
 check(astroHeader.includes('navSections')&&astroHeader.includes('section.items.map'),'Astro header must render the shared navigation model');
 for(const needle of ['window.PILOTDESK_NAV','data-pd-account-link','Sign in'])check(nav.includes(needle),`global navigation runtime is missing ${needle}`);
+check(!nav.includes('ensureStyle(')&&!nav.includes('data-pd-experience'),'global navigation must not append a stylesheet after the canonical cascade authority');
 
 check(safety.includes('/assets/app-bootstrap.js'),'calculator/home path must load app bootstrap without ads.js');
 check(productNav.includes('/assets/app-bootstrap.js'),'workspace path must load app bootstrap without ads.js');

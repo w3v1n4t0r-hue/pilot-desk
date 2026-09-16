@@ -14,6 +14,24 @@ Eliminate broken functionality, dead buttons, unfinished UI, visual inconsistenc
 
 Do not stop after finding the first few problems. Perform a complete quality pass.
 
+## PilotDesk visual and UX direction
+
+Before making any user-facing design, layout, animation, component, CSS, icon, or interaction changes, read:
+
+`PILOTDESK-DESIGN.md`
+
+That document is the canonical PilotDesk product-design direction and replaces the older embedded visual-design guidance that previously lived in this file.
+
+All new UI work must follow it.
+
+Do not introduce a competing design system, palette, CSS override layer, navigation model, animation language, or visual direction.
+
+The product should converge toward the black-first, minimal, precise, motion-rich design system documented there while preserving aviation trust, usability, performance, accessibility, SEO, authentication, offline behavior, and working functionality.
+
+Resend is a quality/reference point for restraint, typography, spacing, interaction polish, and black-first design—not a layout, branding, asset, or code source to copy.
+
+If the current implementation differs from the design direction, migrate toward it deliberately. The current repository remains the source of truth for implementation details.
+
 ## Understand the repository first
 
 Before changing anything significant, inspect and understand the framework, app structure, routes, layouts, shared components, API routes, server actions, client components, aviation calculators, weather tools, metadata, sitemap, robots.txt, structured data, authentication, account-related code, database integrations, environment variables, assets, logos, icon system, styles, fonts, animations, Vercel configuration, GitHub Actions, tests, package scripts, and dependencies.
@@ -65,78 +83,6 @@ PilotDesk should have one coherent visual identity.
 There has previously been behavior where an old or alternate PilotDesk logo briefly appeared. Find the actual root cause. Search for old logo assets, duplicate imports, unused logos, conditional/fallback logos, favicon files, manifest icons, Open Graph images, metadata icons, image preload behavior, CSS background assets, loading-state assets, hydration differences, server/client rendering differences, component duplication, and stale icon references.
 
 Do not merely hide the flashing logo with CSS. Determine why the incorrect asset is being rendered. Create one canonical branding implementation wherever practical and remove obsolete branding references when safe.
-
-## Visual design direction
-
-PilotDesk should feel premium, technical, modern, aviation-focused, precise, trustworthy, and clean.
-
-Continue the dark/silver PilotDesk design direction. Do not redesign the entire brand unless necessary. Improve what already exists.
-
-Use dark charcoal, black, silver, white, restrained metallic tones, and occasional purposeful aviation accent colors.
-
-Avoid random bright gradients, neon SaaS aesthetics, excessive glassmorphism, giant glowing elements, generic startup illustrations, cartoon aircraft, and unnecessary clutter.
-
-The interface should feel closer to professional flight software, modern cockpit tools, high-end aviation services, and premium technical applications than a children’s aviation game, an AI website template, a crypto dashboard, or generic SaaS landing page.
-
-## Build a consistent design system
-
-Standardize buttons, inputs, cards, modals, dropdowns, badges, tooltips, headings, body text, spacing, borders, shadows, hover states, focus states, icon sizing/positioning, containers, and section spacing.
-
-Avoid every page inventing its own design rules. Where reasonable, use shared reusable primitives such as Button, Card, Input, Select, Modal, Tooltip, DataCard, ToolCard, CalculatorLayout, PageHeader, SectionHeader, AviationMetric, EmptyState, and ErrorState.
-
-Do not over-engineer if simple shared components already exist.
-
-## Aviation icons, illustrations, and visual language
-
-For aviation-related icons, decorative graphics, tool illustrations, empty states, and supporting interface artwork, use the broad visual language of this aviation collection as reference material:
-
-https://www.istockphoto.com/photos/aviation
-
-Study recognizable aviation imagery including aircraft silhouettes, airliners, general aviation aircraft, airports, runways, pilots, cockpit instruments, navigation, compasses, charts, flight planning, weather, wind, clouds, fuel, altitude, speed, maintenance, ground operations, and aviation infrastructure.
-
-IMPORTANT: Do not directly copy a specific iStock photo, vector, icon, illustration, composition, or graphic. Do not scrape iStock assets, save preview images into the repository, use watermarked images, bypass licensing, or recreate one particular copyrighted illustration almost exactly.
-
-Treat the site as visual reference material. Study the forms and concepts, then design original PilotDesk artwork.
-
-## PilotDesk icon system
-
-PilotDesk should have a recognizable icon family.
-
-Use a reputable open-source icon library for common interface concepts when appropriate, including search, settings, user, menu, close, edit, save, delete, arrows, and external links.
-
-For specialized aviation concepts that generic libraries represent poorly, create original SVG icons. Potential custom concepts include airplane, general aviation airplane, runway, airport, METAR, TAF, weather, wind, crosswind, headwind, tailwind, density altitude, pressure altitude, true airspeed, ground speed, fuel, endurance, range, weight and balance, center of gravity, climb, descent, altitude, heading, course, compass, VOR, GPS, RNAV, flight plan, route, logbook, checklist, performance, takeoff, landing, runway distance, risk assessment, aircraft loading, and maintenance.
-
-Icons should share similar stroke weight, corner style, visual mass, internal spacing, and sizing. Prefer icons that remain clear at 16px, 20px, 24px, 32px, and 48px. Use currentColor where appropriate. Favor SVG over raster assets.
-
-Avoid AI-looking aircraft, fake aircraft geometry, unnecessary wings around every symbol, random stars, cartoon icons, glossy 3D icons, clip art, excessive details, inconsistent stroke widths, and mixing unrelated icon styles.
-
-## Aviation accuracy in visuals
-
-Visual accuracy matters. Aircraft should have plausible fuselage, wings, stabilizers, orientation, and proportions. A runway should read as a runway rather than a road. A heading indicator should not resemble an unrelated flight instrument. Wind graphics should communicate actual direction/speed concepts clearly. Weight-and-balance graphics should communicate loading/CG/balance rather than a random scale. A route icon should communicate origin, destination, and navigation path.
-
-Use aviation knowledge when designing aviation visuals. The site should look like it was built by people who know what these concepts mean.
-
-## Original SVG implementation
-
-For custom PilotDesk icons, use clean SVGs with proper viewBox values, correct scaling, limited path complexity, minimal metadata, currentColor where appropriate, sensible accessibility behavior, and reusable components rather than duplicated SVG markup.
-
-## Contextual aviation graphics
-
-Major tools may use slightly richer illustrations, such as aircraft + cloud + wind for weather, aircraft side profile + CG marker for weight and balance, route line between airport/runway symbols for flight planning, aircraft + simplified performance chart for performance, and airport-weather motifs for METAR tools.
-
-Keep them restrained. They should improve recognition, not overwhelm the UI.
-
-## No generic AI slop
-
-Actively identify UI elements that look randomly generated, overly decorative, fake, inconsistent, generic, poorly aligned, or unnecessary. Replace them with intentional design.
-
-Avoid adding visual complexity simply because it looks impressive in isolation. Every icon, animation, or graphic should have a reason to exist.
-
-## Animation
-
-Use animation only when it improves polish and clarity, such as smooth menu transitions, card hover feedback, subtle section entrance, number/result transitions, tool-state transitions, skeleton loaders, and button feedback.
-
-Avoid excessive floating graphics, constant distracting movement, overdone parallax, endless glowing effects, or animations that delay interaction. Respect prefers-reduced-motion.
 
 ## Navigation
 
@@ -330,7 +276,7 @@ After the build passes, open the website and actually test it. Interact with nav
 
 ## Visual quality review
 
-After functionality is stable, perform a deliberate visual pass. Ask whether the product looks professionally designed, whether components belong together, whether spacing is consistent, hierarchy is obvious, icons are aligned, borders are appropriate, anything looks generic/AI-generated, and aviation is represented accurately. Fix obvious visual quality problems.
+After functionality is stable, perform a deliberate visual pass against `PILOTDESK-DESIGN.md`. Ask whether the product looks professionally designed, whether components belong together, whether spacing is consistent, hierarchy is obvious, icons are aligned, borders are appropriate, anything looks generic/AI-generated, motion is meaningful, and aviation is represented accurately. Fix obvious visual quality problems.
 
 ## User trust
 
@@ -344,9 +290,7 @@ PilotDesk copy should be concise, useful, pilot-friendly, professional, and conf
 
 ## Keep PilotDesk distinctive
 
-Do not make PilotDesk look like every other dashboard. Use subtle recurring aviation motifs such as runway geometry, route lines, heading marks, aviation-instrument-inspired details, navigation symbols, and restrained map-grid textures.
-
-Do not turn the interface into a fake cockpit.
+Follow `PILOTDESK-DESIGN.md`: PilotDesk should be visually distinctive through precision, black-first restraint, typography, spacing, useful aviation-specific product demonstrations, and meaningful motion—not fake-cockpit decoration or generic SaaS styling.
 
 ## Future accounts / rewards readiness
 

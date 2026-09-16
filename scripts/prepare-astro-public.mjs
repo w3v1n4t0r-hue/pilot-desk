@@ -9,7 +9,10 @@ const excludedDirs = new Set([
   '.git', '.github', '.astro', '.astro-public', 'dist', 'node_modules',
   'api', 'supabase', 'scripts', 'qa', 'src'
 ]);
-const publicRootNames = new Set(['robots.txt', 'ads.txt', 'sw.js', 'site.webmanifest']);
+const publicRootNames = new Set([
+  'robots.txt', 'ads.txt', 'sw.js', 'site.webmanifest',
+  'c731d63e44f2d52fcd122041601cfb22.txt'
+]);
 
 fs.rmSync(target, { recursive: true, force: true });
 fs.mkdirSync(target, { recursive: true });

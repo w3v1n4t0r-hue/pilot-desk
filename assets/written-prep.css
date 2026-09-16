@@ -23,4 +23,4 @@
 .pd-prep-option[data-state="correct"]{border-color:color-mix(in srgb,var(--pd-color-success) 45%,var(--line));background:color-mix(in srgb,var(--pd-color-success) 8%,var(--panel))}.pd-prep-option[data-state="wrong"]{border-color:color-mix(in srgb,var(--pd-color-danger) 45%,var(--line));background:color-mix(in srgb,var(--pd-color-danger) 8%,var(--panel))}
 .pd-prep-feedback[data-kind="correct"]{border-left-color:var(--pd-color-success)}.pd-prep-feedback[data-kind="wrong"]{border-left-color:var(--pd-color-danger)}
 .pd-prep-notice{border-color:var(--line-hi);border-radius:var(--pd-radius-control);background:var(--panel);box-shadow:var(--pd-shadow-overlay)}
-@media(max-width:680px){.pd-prep-instrument{display:none}.pd-prep-hero{margin-bottom:12px}.pd-prep-hero-copy{padding:16px}.pd-prep-hero h1{margin-bottom:10px}.pd-prep-hero-actions{margin-top:16px}}
+@media(max-width:680px){.pd-prep-instrument,.pd-prep-hero p,.pd-prep-hero-actions{display:none}.pd-prep-hero{margin-bottom:12px}.pd-prep-hero-copy{padding:16px}.pd-prep-hero h1{margin-bottom:0}}

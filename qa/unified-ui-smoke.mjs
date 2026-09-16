@@ -8,6 +8,8 @@ const experience=read('assets/experience.css');
 const tokens=read('assets/design-tokens.css');
 const bootstrap=read('assets/app-bootstrap.js');
 const nav=read('assets/global-nav.js');
+const sw=read('sw.js');
+const calculatorGenerator=read('scripts/generate-calculator-pages.mjs');
 const failures=[];
 const need=(text,needle,label)=>{if(!text.includes(needle))failures.push(`${label}: missing ${needle}`)};
 
@@ -20,6 +22,7 @@ for(const retired of ['unified-ui.css','site-chassis.css','home-visual-system.cs
 if(legacy.length<10000)failures.push('styles-legacy.css: legacy compatibility payload looks unexpectedly short');
 need(legacy,'nav:not(.pd-global-nav):not(.pd-main-nav)','styles-legacy.css mobile nav isolation');
 for(const selector of ['.tool-card','.pd-hub-card','.pd-card','.input-wrap','.result','.pd-account-link','.pd-site-search','.pd-home-action'])need(experience,selector,'experience.css');
+need(experience,'.topbar nav.pd-main-nav .pd-nav-menu a{display:grid;grid-template-columns:1fr','experience.css canonical single-column dropdown item rule');
 for(const accessibility of [':focus-visible','min-height:44px','@media(max-width:800px)','@media(max-width:480px)','@media(prefers-reduced-motion:reduce)'])need(experience,accessibility,'experience.css');
 for(const namespace of ['--pd-color-canvas','--pd-color-surface-1','--pd-color-text','--pd-color-line','--pd-color-accent','--pd-color-success','--pd-panel','--pd-good'])need(tokens,namespace,'design-tokens.css');
 if(/:root\s*\{/.test(legacy)||/:root\s*\{/.test(hub)||/:root\s*\{/.test(experience))failures.push('shared legacy layers must not redeclare the canonical root token palette');
@@ -31,6 +34,17 @@ for(const retired of ['unified-ui.css','site-chassis.css','home-visual-system.cs
 for(const page of ['calculators/crosswind/index.html','weather.html','account.html','written-prep.html','route-planner.html','weight-balance.html']){
   const html=read(page);
   need(html,'/assets/styles.css',page);
+  if(html.includes('<link rel="stylesheet" href="/assets/hub.css">'))failures.push(`${page}: must not reload hub.css after the canonical stylesheet entrypoint`);
+}
+
+for(const retired of ['pilotdesk-architecture-2026.css','pilotdesk-navigation-2026.css','professional-polish.css','home-command-center.css','avionics-command.js','tool-first-layout.js']){
+  if(sw.includes(`/assets/${retired}`))failures.push(`sw.js: retired visual asset remains in the release cache: ${retired}`);
+}
+
+if(calculatorGenerator.includes('Free browser-based aviation calculator for pilots, flight students and instructors.'))failures.push('calculator generator: redundant generic hero paragraph returned');
+for(const page of ['aircraft.html','airport.html','weather.html','metar-decoder.html','planner.html','route-planner.html','procedures.html','poh-chart-studio.html','checklist-trainer.html']){
+  const html=read(page);
+  if(!/<section class="info-card" data-pd-core-depth="1">[\s\S]*?<\/section><\/main>/.test(html))failures.push(`${page}: long-form core guidance must follow the working tool surface`);
 }
 
 if(failures.length){console.error('Unified UI checks failed:\n- '+failures.join('\n- '));process.exit(1)}

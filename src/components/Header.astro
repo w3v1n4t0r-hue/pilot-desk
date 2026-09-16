@@ -12,12 +12,12 @@ const sectionCurrent = (section) => section.paths.some((p) => p.endsWith('/') ? 
   </a>
   <button aria-label="Open navigation" aria-expanded="false" class="menu-btn" data-menu type="button">☰</button>
   <nav class="pd-main-nav" aria-label="Main navigation">
-    {navSections.map((section) => (
+    {navSections.map((section, index) => (
       <div class="pd-nav-item" data-pd-nav-item>
-        <button class="pd-nav-button" type="button" aria-expanded="false" aria-current={sectionCurrent(section) ? 'page' : undefined}>
+        <button class="pd-nav-button" type="button" aria-expanded="false" aria-haspopup="true" aria-controls={`pdNavMenu${index}`} aria-current={sectionCurrent(section) ? 'page' : undefined}>
           {section.label}<i class="pd-nav-caret" aria-hidden="true"></i>
         </button>
-        <div class="pd-nav-menu">
+        <div class="pd-nav-menu" id={`pdNavMenu${index}`}>
           {section.items.map(([href, title, copy]) => (
             <a href={href}><b>{title}</b><span>{copy}</span></a>
           ))}

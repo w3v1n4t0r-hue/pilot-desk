@@ -7,7 +7,8 @@ const isAstroNative=document.documentElement.dataset.pdAstroNative==='1';
 window.__pdTrackQueue=window.__pdTrackQueue||[];window.pdTrack=window.pdTrack||((name,data={})=>window.__pdTrackQueue.push([name,data]));
 function load(src){if([...document.scripts].some(s=>new URL(s.src||location.href).pathname===src))return;const s=document.createElement('script');s.src=src;s.async=false;document.head.append(s)}
 function registerServiceWorkerEarly(){
- if(!('serviceWorker'in navigator)||location.protocol!=='https:')return;
+ const localSecure=['localhost','127.0.0.1','::1'].includes(location.hostname);
+ if(!('serviceWorker'in navigator)||(location.protocol!=='https:'&&!localSecure))return;
  const start=()=>navigator.serviceWorker.register('/sw.js').catch(()=>{});
  const schedule=()=>{'requestIdleCallback'in window?requestIdleCallback(start,{timeout:1500}):setTimeout(start,500)};
  if(document.readyState==='complete')schedule();else addEventListener('load',schedule,{once:true});

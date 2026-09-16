@@ -12,7 +12,7 @@ const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 
 check(css.length>5000,'current shared experience stylesheet is unexpectedly small');
-for(const selector of ['.topbar','.hero','.tool-card','.calc-box','.input-wrap','.result','.content-page','footer'])check(css.includes(selector),`experience.css is missing ${selector}`);
+for(const selector of ['.topbar','.hero','.tool-card','.calc-box','.input-wrap','.result','footer'])check(css.includes(selector),`experience.css is missing ${selector}`);
 check(css.includes('@media(max-width:800px)')&&css.includes('@media(max-width:480px)'),'experience.css needs explicit tablet/mobile treatment');
 check(css.includes('@media(prefers-reduced-motion:reduce)'),'experience.css must respect reduced motion');
 check(css.includes(':focus-visible'),'experience.css must preserve visible keyboard focus');

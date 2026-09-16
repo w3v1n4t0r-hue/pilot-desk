@@ -1,6 +1,6 @@
 const sectionDefinitions = [
   {
-    label: 'Calculators',
+    label: 'Tools',
     paths: ['/tools.html', '/calculators/', '/weight-balance.html', '/e6b-flight-computer.html', '/flight-planning-workspace.html', '/history.html'],
     items: [
       ['/tools.html', 'All calculators', 'Browse every PilotDesk calculator by subject'],
@@ -109,5 +109,4 @@ export const footerLinks = [
 import inventory from './inventory.json' with { type: 'json' };
 export const searchable = [...new Map([...featuredSearch, ...inventory.map(x => [x.title, x.href, `${x.type} ${x.group} ${x.title}`.toLowerCase()])].map(x => [x[1], x])).values()];
 
-export const navSections = ['Plan','Calculators','Weather','Learn'].map(label => sectionDefinitions.find(s => s.label === label));
-
+export const navSections = ['Tools','Plan','Weather','Learn'].map(label => sectionDefinitions.find(s => s.label === label));

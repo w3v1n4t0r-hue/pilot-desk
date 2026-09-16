@@ -9,6 +9,7 @@ const tokens=read('assets/design-tokens.css');
 const bootstrap=read('assets/app-bootstrap.js');
 const nav=read('assets/global-nav.js');
 const sw=read('sw.js');
+const calculatorGenerator=read('scripts/generate-calculator-pages.mjs');
 const failures=[];
 const need=(text,needle,label)=>{if(!text.includes(needle))failures.push(`${label}: missing ${needle}`)};
 
@@ -38,6 +39,12 @@ for(const page of ['calculators/crosswind/index.html','weather.html','account.ht
 
 for(const retired of ['pilotdesk-architecture-2026.css','pilotdesk-navigation-2026.css','professional-polish.css','home-command-center.css','avionics-command.js','tool-first-layout.js']){
   if(sw.includes(`/assets/${retired}`))failures.push(`sw.js: retired visual asset remains in the release cache: ${retired}`);
+}
+
+if(calculatorGenerator.includes('Free browser-based aviation calculator for pilots, flight students and instructors.'))failures.push('calculator generator: redundant generic hero paragraph returned');
+for(const page of ['aircraft.html','airport.html','weather.html','metar-decoder.html','planner.html','route-planner.html','procedures.html','poh-chart-studio.html','checklist-trainer.html']){
+  const html=read(page);
+  if(!/<section class="info-card" data-pd-core-depth="1">[\s\S]*?<\/section><\/main>/.test(html))failures.push(`${page}: long-form core guidance must follow the working tool surface`);
 }
 
 if(failures.length){console.error('Unified UI checks failed:\n- '+failures.join('\n- '));process.exit(1)}

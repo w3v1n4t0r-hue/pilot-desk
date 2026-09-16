@@ -167,6 +167,40 @@ footer p{margin:4px 0 0;font-size:.78rem}
 .footer-links{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:16px}
 .pd-settings{grid-column:1/-1;margin-top:6px}
 .pd-theme-control{position:static!important;box-shadow:none!important}
+/* Tool-first viewport: keep useful context, but put the working surface above long-form guidance. */
+body[data-calc] .shell{padding-top:20px}
+body[data-calc] .breadcrumbs{margin-bottom:10px}
+body[data-calc] .safety-strip{margin:0 0 12px;padding:9px 12px;font-size:.72rem;line-height:1.45}
+body[data-calc] .calc-hero{margin-bottom:12px}
+body[data-calc] .calc-hero .badge{margin-bottom:7px}
+body[data-calc] .calc-hero h1{margin:0 0 6px;max-width:none;font-size:clamp(1.85rem,3.6vw,2.8rem)}
+body[data-calc] .calc-hero p{margin:0;max-width:74ch;font-size:.9rem;line-height:1.5}
+body[data-calc] .calc-hero .fine{display:none}
+body[data-calc] .calc-box{padding:18px}
+[data-pd-core-depth]{margin-top:36px}
+.content-page>.pd-flight-hero,.content-page>.wx-hero{margin-bottom:18px}
+.content-page>.pd-flight-hero h1,.content-page>.wx-hero h1{margin-bottom:8px;font-size:clamp(2rem,3.8vw,3rem)}
+.content-page>.pd-flight-hero p,.content-page>.wx-hero p{margin:0;max-width:78ch;font-size:.92rem;line-height:1.55}
+.content-page>.safety-strip{margin:0 0 14px;padding:10px 12px;font-size:.74rem;line-height:1.45}
+.wx-shell,.rp-shell{padding-top:20px}
+.rp-shell>.breadcrumbs{margin-bottom:10px}
+.wx-shell>.pd-flight-subnav,.rp-shell>.pd-flight-subnav{margin-bottom:14px}
+.wx-shell>.pd-panel{padding:18px}
+.rp-shell>.safety-strip{margin:0 0 14px;padding:10px 12px;font-size:.74rem;line-height:1.45}
+.wb-shell{padding-top:20px}
+.wb-shell>.breadcrumbs{margin-bottom:10px}
+.wb-shell>.safety-strip{margin:0 0 12px;padding:9px 12px;font-size:.72rem;line-height:1.45}
+.wb-shell>.wb-hero{margin-bottom:14px}
+.wb-shell>.wb-hero .badge{margin-bottom:7px}
+.wb-shell>.wb-hero h1{margin:0 0 6px;font-size:clamp(2rem,3.8vw,3rem)}
+.wb-shell>.wb-hero p{margin:0;font-size:.92rem;line-height:1.5}
+main.shell:has(#pdWorkspace){padding-top:20px}
+main.shell:has(#pdWorkspace)>.breadcrumbs{margin-bottom:10px}
+main.shell:has(#pdWorkspace)>.safety-strip{margin:0 0 12px;padding:9px 12px;font-size:.72rem;line-height:1.45}
+main.shell:has(#pdWorkspace)>.calc-hero{margin-bottom:14px}
+main.shell:has(#pdWorkspace)>.calc-hero .badge{margin-bottom:7px}
+main.shell:has(#pdWorkspace)>.calc-hero h1{margin:0 0 6px;font-size:clamp(2rem,3.8vw,3rem)}
+main.shell:has(#pdWorkspace)>.calc-hero p{margin:0;font-size:.92rem;line-height:1.5}
 @keyframes pd-menu-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
 @keyframes pd-skeleton{to{translate:100% 0}}
 @media(max-width:1050px){.topbar{gap:10px;padding-inline:18px}.pd-site-search input{width:90px}.pd-site-search input:focus{width:140px}.pd-nav-button{padding-inline:9px}.pd-home-hero-inner{grid-template-columns:1fr 380px}.pd-popular-grid{grid-template-columns:repeat(2,1fr)}}

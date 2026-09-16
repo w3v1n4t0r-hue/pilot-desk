@@ -56,3 +56,10 @@ Canonical direction: `PILOTDESK-DESIGN.md`. Preserve working aviation logic, URL
 - Corrected a legacy cascade collision that forced desktop dropdown titles and descriptions into cramped rows.
 - Corrected a legacy small-screen selector that hid E6B and Weight & Balance from the mobile Tools menu.
 - Added a focused UI regression assertion for the canonical dropdown-item layout.
+
+### Tool-first viewport pass
+
+- Tightened calculator and tool-page introductions so the working inputs and primary action appear in the first screen on desktop and mobile.
+- Moved long-form supporting and search content below each working tool instead of placing it between the page title and the interface.
+- Removed the redundant generated calculator introduction while preserving page-specific safety guidance, metadata, canonical URLs, formulas, and offline behavior.
+- Added regression coverage that keeps generated supporting guidance after the tool surface and prevents the generic introduction from returning.

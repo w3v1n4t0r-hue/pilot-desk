@@ -119,13 +119,6 @@ const corePages={
     checks:['Practice from the checklist that applies to the exact aircraft and training program.','Use flows for organization, then verify with the written checklist.','Say or identify what each item accomplishes instead of memorizing words only.','Treat emergency-memory items separately from normal checklist flows and follow the approved procedure.'],
     training:'A useful study method is recall, verify, correct. Attempt the sequence from memory, compare it with the source, identify exactly where the order or wording changed, and immediately repeat the corrected section. Randomized recall is especially useful once the basic sequence is solid because it tests whether you know the procedure itself rather than only the rhythm of reciting the whole list.',
     links:'<a href="/guides/flows-vs-checklists.html">Flows vs. checklists</a> · <a href="/flight-training.html">Flight-training tools</a> · <a href="/guides.html">Aviation guides</a>'
-  },
-  'flight-training.html':{
-    heading:'Connect PilotDesk tools to a complete lesson',
-    intro:'Flight training becomes more useful when calculations, weather, aircraft knowledge and procedures are connected instead of studied as separate boxes. Use PilotDesk to set up a realistic scenario, make a prediction, work the problem, and then explain why the result matters to the flight. That sequence supports both practical planning and oral-exam preparation.',
-    checks:['Start with a specific aircraft, route or airport so the exercise has context.','Use current approved sources when the exercise crosses from study into an actual flight.','Explain the reason behind each formula or checklist item rather than memorizing the output.','Finish with a reasonableness check and identify what change in conditions would alter the decision.'],
-    training:'A single cross-country scenario can cover weather decoding, airport review, wind correction, groundspeed, time, fuel, density altitude, weight and balance, procedures and checklist practice. Reusing the same scenario across several tools helps show how aviation knowledge fits together and exposes inconsistencies between assumptions before they become habits.',
-    links:'<a href="/e6b-flight-computer.html">Online E6B</a> · <a href="/guides/pilot-math-formulas.html">Pilot math formulas</a> · <a href="/checklist-trainer.html">Checklist trainer</a>'
   }
 };
 
@@ -133,15 +126,16 @@ for(const [file,data] of Object.entries(corePages)){
   if(!fs.existsSync(file)) continue;
   let html=fs.readFileSync(file,'utf8');
   const before=html;
-  if(file==='flight-training.html'){
-    html=html.replace(/<meta name="description" content="[^"]*">/i,'<meta name="description" content="Free aviation tools for flight students and CFIs: calculators, weather, E6B, checklist practice, POH chart training and planning references.">');
-  }
   if(!html.includes('data-pd-core-depth')){
     const checkList=data.checks.map(x=>`<li>${esc(x)}</li>`).join('');
     const block=`<section class="info-card" data-pd-core-depth="1"><h2>${esc(data.heading)}</h2><p>${esc(data.intro)}</p><h2>A practical verification flow</h2><ul>${checkList}</ul><p>Before accepting any output, ask three questions: Is the source current? Are the units and reference systems correct? Does the result make sense for the aircraft, airport, weather and phase of flight? Those checks catch many planning errors before a more detailed calculation is even needed.</p><h2>Use it for training</h2><p>${esc(data.training)}</p><p>PilotDesk is designed as a supplemental planning and training workspace. It does not replace approved aircraft documents, official weather, current charts, ATC instructions, NOTAMs, regulations or operator procedures. When a result affects an actual flight, verify it with the controlling source.</p><h2>Related PilotDesk resources</h2><p>${data.links} · <a href="/guides.html">All aviation guides</a> · <a href="/">All calculators</a></p></section>`;
-    const marker='<div class="safety-strip">';
-    if(html.includes(marker)) html=html.replace(marker,`${block}${marker}`);
-    else html=html.replace('</main>',`${block}</main>`);
+    html=html.replace('</main>',`${block}</main>`);
+  }else{
+    const match=html.match(/<section class="info-card" data-pd-core-depth="1">[\s\S]*?<\/section>/);
+    if(match){
+      html=html.replace(match[0],'');
+      html=html.replace('</main>',`${match[0]}</main>`);
+    }
   }
   if(before!==html) fs.writeFileSync(file,html);
 }

@@ -41,6 +41,11 @@ Canonical direction: `PILOTDESK-DESIGN.md`. Preserve working aviation logic, URL
    - Kept the system dependency-light, reduced redundant direct stylesheet loading, retained static output and offline support, and passed the repository performance budget.
 16. **COMPLETE — Legacy CSS cleanup**
    - Removed redundant direct `hub.css` links from source pages, made `styles.css` the canonical shared entry, retired obsolete visual assets from service-worker release sets, and avoided adding another override layer.
+17. **COMPLETE — Interaction and accessibility safety net**
+   - Added production-browser coverage for all 47 calculator interfaces, shared keyboard flows, URL state, resets, responsive fit, first-action visibility, and representative WCAG A/AA checks.
+   - Added a focused pull-request workflow so interaction regressions fail before merge.
+   - Fixed issues exposed by the new suite in optional Crosswind gust handling, Written Prep first-screen hierarchy, search semantics, inline-link affordance, Route Planner attribution, and canonical tertiary-text contrast.
+   - Preserved calculator formulas, authentication behavior, SEO URLs, and service-worker behavior.
 
 ## Phase 2–16 verification
 
@@ -63,3 +68,11 @@ Canonical direction: `PILOTDESK-DESIGN.md`. Preserve working aviation logic, URL
 - Moved long-form supporting and search content below each working tool instead of placing it between the page title and the interface.
 - Removed the redundant generated calculator introduction while preserving page-specific safety guidance, metadata, canonical URLs, formulas, and offline behavior.
 - Added regression coverage that keeps generated supporting guidance after the tool surface and prevents the generic introduction from returning.
+
+### Interaction and accessibility regression pass
+
+- All 47 standard calculators calculate from their defaults, reject missing required values with actionable feedback, recalculate from the keyboard, reset safely, expose visible labels and numeric mobile keyboards, and fit a 390×844 viewport without horizontal overflow.
+- Crosswind query-string prefills, URL updates, reload persistence, optional gust input, and reset behavior are covered end to end.
+- Homepage search, mobile navigation, and the first useful action on major product surfaces are covered in a production browser.
+- Automated Axe checks cover representative homepage, calculator, planning, Weight & Balance, Written Prep, Daily, account, and learning surfaces, failing on serious or critical WCAG A/AA violations.
+- Production build, repository smoke/integrity/formula/SEO/offline/performance/copy checks, and changed-JavaScript syntax checks pass alongside the new browser suite.

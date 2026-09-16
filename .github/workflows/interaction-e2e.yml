@@ -1,0 +1,51 @@
+name: PilotDesk Interaction E2E
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pilotdesk-interaction-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Build PilotDesk
+        run: pnpm run build
+      - name: Start production preview
+        run: pnpm exec astro preview --host 127.0.0.1 --port 4321 > /tmp/pilotdesk-preview.log 2>&1 &
+      - name: Wait for preview
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4321/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/pilotdesk-preview.log
+          exit 1
+      - name: Run interaction and accessibility regression suite
+        env:
+          PILOTDESK_BASE_URL: http://127.0.0.1:4321
+        run: node qa/interaction-e2e.mjs
+      - name: Show preview log after failure
+        if: failure()
+        run: cat /tmp/pilotdesk-preview.log

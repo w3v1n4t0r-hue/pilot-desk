@@ -20,7 +20,7 @@ assert(js.includes('function clear()')&&js.includes("textContent='—'"),'Worksp
 assert(js.includes('crosswind component exceeds TAS')&&js.includes('groundspeed is zero or negative'),'Wind-triangle failure handling missing');
 assert(js.includes("localStorage.setItem('pd-flight-workspace'")&&js.includes("$('workspaceShare')")&&html.includes('Copy share link'),'Workspace save/share behavior missing');
 assert(siteData.includes("['/flight-planning-workspace.html', 'Flight math'"),'Shared Tools navigation must expose the published flight-math workspace');
-assert(bootstrap.includes('/assets/brand.js')&&bootstrap.includes('pd-brand'),'Branding must load independently of advertising');
+assert(!bootstrap.includes('/assets/brand.js'),'Retired runtime brand normalizer must not return to the streamlined bootstrap');
 assert(!ads.includes('/assets/brand.js'),'ads.js must not own branding');
 
-console.log('Flight Planning Workspace checks passed: publication, validation, fail-closed behavior, sharing, local save, navigation discovery, and ad-independent branding verified.');
+console.log('Flight Planning Workspace checks passed: publication, validation, fail-closed behavior, sharing, local save, navigation discovery, and streamlined shell ownership verified.');

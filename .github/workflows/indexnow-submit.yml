@@ -20,6 +20,7 @@ on:
       - assets/share-enhance.js
       - assets/analytics.js
       - scripts/submit-indexnow.py
+      - scripts/prepare-astro-public.mjs
       - c731d63e44f2d52fcd122041601cfb22.txt
       - .github/workflows/indexnow-submit.yml
   schedule:

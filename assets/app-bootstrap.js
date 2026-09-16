@@ -23,5 +23,5 @@ if(path==='/route-planner.html')load('/assets/planner-pro.js');
 if(path==='/procedures.html')load('/assets/procedure-pro.js');
 if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js');
 if(!isAstroNative)load('/assets/experience.js');
-for(const name of ['errors','analytics','update'])load('/assets/'+name+'.js');
+load('/assets/errors.js');load('/assets/analytics.js');load('/assets/update.js');
 })();

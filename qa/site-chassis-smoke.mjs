@@ -7,9 +7,9 @@ const footer=read('src/components/Footer.astro');
 const experience=read('assets/experience.css');
 const bootstrap=read('assets/app-bootstrap.js');
 const nav=read('assets/global-nav.js');
-const planner=read('planner.html');
-const weather=read('weather.html');
-const aircraft=read('aircraft.html');
+const planner=read('dist/planner.html');
+const weather=read('dist/weather.html');
+const aircraft=read('dist/aircraft.html');
 const failures=[];
 const need=(text,needle,label)=>{if(!text.includes(needle))failures.push(`${label}: missing ${needle}`)};
 
@@ -24,10 +24,10 @@ need(bootstrap,'isAstroNative','app-bootstrap.js');need(bootstrap,"/assets/globa
 for(const retired of ['site-chassis.css','home-visual-system.css','tool-first-layout.js'])if(bootstrap.includes(retired))failures.push(`app-bootstrap.js: retired chassis layer returned: ${retired}`);
 need(nav,'data-pd-astro-shell','global-nav.js');need(nav,'window.PILOTDESK_NAV','global-nav.js');
 
-for(const [name,html] of [['planner.html',planner],['weather.html',weather],['aircraft.html',aircraft]]){
+for(const [name,html] of [['dist/planner.html',planner],['dist/weather.html',weather],['dist/aircraft.html',aircraft]]){
   need(html,'/assets/styles.css',name);
   need(html,'/assets/app-bootstrap.js',name);
 }
 
 if(failures.length){console.error('Site chassis checks failed:\n- '+failures.join('\n- '));process.exit(1)}
-console.log('Site chassis checks passed: native Astro pages and legacy workspaces share one header/footer/navigation contract, responsive shell styling, and the streamlined bootstrap.');
+console.log('Site chassis checks passed: native Astro pages and built legacy workspaces share one header/footer/navigation contract, responsive shell styling, and the streamlined bootstrap.');

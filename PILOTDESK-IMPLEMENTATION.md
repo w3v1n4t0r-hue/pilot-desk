@@ -49,3 +49,10 @@ Canonical direction: `PILOTDESK-DESIGN.md`. Preserve working aviation logic, URL
 - JavaScript syntax verification passes for 148 files.
 - Browser review passes on desktop and a phone viewport for homepage, density altitude, weather, route planning, Weight & Balance, Written Prep, Daily, account, and flight training; no horizontal overflow or application errors were found. Existing duplicate Supabase-client warnings remain outside the visual scope.
 - Density-altitude interaction was exercised end to end. Aviation formulas, auth flows, SEO URLs, and service-worker algorithms were not changed.
+
+### Follow-up interaction pass
+
+- Verified dark, light, and night-red display themes; global search; desktop dropdowns; and every nested mobile navigation section against the production build.
+- Corrected a legacy cascade collision that forced desktop dropdown titles and descriptions into cramped rows.
+- Corrected a legacy small-screen selector that hid E6B and Weight & Balance from the mobile Tools menu.
+- Added a focused UI regression assertion for the canonical dropdown-item layout.

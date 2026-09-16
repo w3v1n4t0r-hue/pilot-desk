@@ -21,6 +21,7 @@ for(const retired of ['unified-ui.css','site-chassis.css','home-visual-system.cs
 if(legacy.length<10000)failures.push('styles-legacy.css: legacy compatibility payload looks unexpectedly short');
 need(legacy,'nav:not(.pd-global-nav):not(.pd-main-nav)','styles-legacy.css mobile nav isolation');
 for(const selector of ['.tool-card','.pd-hub-card','.pd-card','.input-wrap','.result','.pd-account-link','.pd-site-search','.pd-home-action'])need(experience,selector,'experience.css');
+need(experience,'.topbar nav.pd-main-nav .pd-nav-menu a{display:grid;grid-template-columns:1fr','experience.css canonical single-column dropdown item rule');
 for(const accessibility of [':focus-visible','min-height:44px','@media(max-width:800px)','@media(max-width:480px)','@media(prefers-reduced-motion:reduce)'])need(experience,accessibility,'experience.css');
 for(const namespace of ['--pd-color-canvas','--pd-color-surface-1','--pd-color-text','--pd-color-line','--pd-color-accent','--pd-color-success','--pd-panel','--pd-good'])need(tokens,namespace,'design-tokens.css');
 if(/:root\s*\{/.test(legacy)||/:root\s*\{/.test(hub)||/:root\s*\{/.test(experience))failures.push('shared legacy layers must not redeclare the canonical root token palette');

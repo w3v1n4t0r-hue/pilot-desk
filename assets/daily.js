@@ -15,6 +15,13 @@ function countdown(){
  setText('#pdDailyCountdown',`${h}:${m}:${s}`);
 }
 function formatDate(date){try{return new Date(`${date}T12:00:00Z`).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase()}catch{return date}}
+function applyIncomingChallenge(){
+ const raw=new URLSearchParams(location.search).get('challenge'),score=Number(raw);
+ if(!Number.isInteger(score)||score<0||score>3)return;
+ const hero=$('.pd-daily-hero'),intro=hero?.querySelector('p');
+ if(intro){const target=score>=3?'match their 3/3':`beat their ${score}/3`;intro.textContent=`Another pilot challenged you to ${target}. Answer the same three daily questions, then send your score back.`}
+ window.pdTrack?.('PilotDesk Daily Referral Landed',{challengeScore:score});
+}
 
 async function loadSupabase(){
  const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
@@ -59,11 +66,13 @@ function scoreGrid(result){
  return `${'🟩'.repeat(score)}${'⬛'.repeat(Math.max(0,max-score))}`;
 }
 function referralUrl(result){
+ const score=Math.max(0,Math.min(Number(result.maxScore)||3,Number(result.score)||0));
  const url=new URL('/daily/',location.origin);
+ url.searchParams.set('challenge',String(score));
  url.searchParams.set('utm_source','pilotdesk_daily_share');
  url.searchParams.set('utm_medium','referral');
  url.searchParams.set('utm_campaign','daily_challenge');
- url.searchParams.set('utm_content',`${Number(result.score)||0}-of-${Number(result.maxScore)||3}`);
+ url.searchParams.set('utm_content',`${score}-of-${Number(result.maxScore)||3}`);
  return url.toString();
 }
 function renderResult(result,saved){
@@ -99,7 +108,7 @@ async function loadChallenge(){
  try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{headers:edgeHeaders()});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load today’s challenge.');renderChallenge(d)}catch(err){$('#pdDailyQuestions').innerHTML=`<div class="pd-daily-error">${escapeHtml(err.message||'PilotDesk Daily is temporarily unavailable.')}</div>`;setText('#pdDailyFormNote','Try again shortly.')}
 }
 async function init(){
- countdown();setInterval(countdown,1000);$('#pdDailyForm')?.addEventListener('submit',submit);
+ countdown();setInterval(countdown,1000);$('#pdDailyForm')?.addEventListener('submit',submit);applyIncomingChallenge();
  await loadSupabase();await refreshIdentity();await loadChallenge();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();

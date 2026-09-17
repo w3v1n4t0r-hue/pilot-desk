@@ -30,6 +30,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
+      - name: Validate OpenFOAM preparation and viewer contract
+        run: node qa/openfoam-foundation.mjs
       - name: Build PilotDesk
         run: pnpm run build
       - name: Start production preview

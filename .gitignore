@@ -3,3 +3,6 @@ dist/
 .astro/
 .astro-public/
 .DS_Store
+scripts/openfoam/runs/
+scripts/openfoam/.venv/
+scripts/openfoam/__pycache__/

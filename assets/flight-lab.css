@@ -1,0 +1,29 @@
+/* Component-owned Flight Lab; no global overrides or competing token layer. */
+.pd-flight-lab{margin:24px 0;border:1px solid var(--pd-color-line-strong);border-radius:var(--pd-radius-panel);background:var(--pd-color-surface-1);overflow:hidden}
+.pd-flight-lab [hidden]{display:none!important}
+.pd-lab-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px}
+.pd-lab-eyebrow{font-size:.75rem;font-weight:600;color:var(--pd-color-text-secondary);letter-spacing:.08em;text-transform:uppercase}
+.pd-lab-header h2{margin:4px 0 0;font-size:clamp(1.1rem,2vw,1.4rem);letter-spacing:-.025em}
+.pd-lab-header button{flex-shrink:0}
+.pd-lab-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 24px}
+.pd-lab-toolbar button{width:auto;min-width:44px;min-height:44px}
+.pd-lab-zoom{display:flex;gap:8px}
+.pd-lab-scene{position:relative;background:var(--pd-color-canvas-raised);border-block:1px solid var(--pd-color-line)}
+.pd-lab-scene canvas{display:block;width:100%;height:clamp(300px,42vw,480px);touch-action:pan-y;cursor:grab}
+.pd-lab-scene canvas:active{cursor:grabbing}
+.pd-lab-scene canvas:focus-visible{outline:2px solid var(--pd-color-accent);outline-offset:-3px}
+.pd-lab-view{position:absolute;bottom:12px;left:16px;max-width:calc(100% - 32px);color:var(--pd-color-text-secondary);font-size:.75rem;background:var(--pd-color-canvas-raised);padding:4px 8px;border-radius:4px;pointer-events:none}
+.pd-lab-hint{margin:12px 24px 0;font-size:.75rem;color:var(--pd-color-text-secondary)}
+.pd-lab-file{display:flex;flex-direction:column;gap:8px;font-size:.75rem;flex:1;min-width:0}
+.pd-lab-file input{max-width:100%;width:100%;min-height:44px;font-size:.75rem}
+.pd-lab-reading{padding:12px 24px}
+.pd-lab-reading p{margin:0;line-height:1.6;font-size:.875rem}
+.pd-lab-reading [data-lab-status]{font-weight:600;margin-bottom:6px;color:var(--pd-color-text)}
+.pd-lab-reading [data-lab-detail]{color:var(--pd-color-text-secondary)}
+.pd-lab-method{padding:0 24px 20px;font-size:.75rem;color:var(--pd-color-text-secondary);overflow-wrap:anywhere}
+.pd-lab-method summary{cursor:pointer;min-height:44px;display:flex;align-items:center;text-decoration:underline;text-underline-offset:3px}
+.pd-lab-method p{font-size:inherit;line-height:1.6}
+.pd-lab-calculation{margin:0;padding:0 24px 20px;font-size:.75rem;color:var(--pd-color-text-secondary);line-height:1.6}
+.pd-lab-legend{margin:8px 24px;padding-top:8px;border-top:4px solid var(--pd-color-accent);font-size:.75rem;color:var(--pd-color-text-secondary)}
+@media(max-width:600px){.pd-lab-header{align-items:flex-start;flex-direction:column;padding:16px}.pd-lab-toolbar{padding:12px 16px}.pd-lab-file{flex-basis:100%}.pd-lab-hint{margin:12px 16px 0}.pd-lab-reading{padding:12px 16px}.pd-lab-method{padding:0 16px 16px}.pd-lab-calculation{padding:0 16px 16px}.pd-lab-legend{margin:8px 16px}.pd-lab-scene canvas{height:300px}}
+@media print{.pd-flight-lab{display:none}}

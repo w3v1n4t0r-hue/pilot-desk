@@ -11,7 +11,7 @@ p,li{color:var(--pd-color-text-secondary)}
 .input-wrap:focus-within{border-color:var(--pd-color-accent)!important;box-shadow:var(--pd-shadow-focus)!important}
 
 :is(.pd-btn,.calc-btn,button.primary){display:inline-flex;min-height:44px;align-items:center;justify-content:center;gap:var(--pd-space-2);padding:0 var(--pd-space-4)!important;border:1px solid var(--pd-color-silver-bright)!important;border-radius:var(--pd-radius-control)!important;background:var(--pd-color-silver-bright)!important;color:#09090b!important;box-shadow:none!important;font:650 .875rem/1 var(--pd-font-sans)!important;letter-spacing:0!important;text-transform:none!important;cursor:pointer;transition:background-color var(--pd-motion-hover) var(--pd-ease-standard),border-color var(--pd-motion-hover) var(--pd-ease-standard),color var(--pd-motion-hover) var(--pd-ease-standard),transform var(--pd-motion-immediate) var(--pd-ease-standard)!important}
-:is(.pd-btn,.calc-btn,button.primary):hover{background:#fff!important;transform:translateY(-1px);filter:none!important}
+:is(.pd-btn,.calc-btn,button.primary):where(:not(.secondary,.quiet,.destructive)):hover{background:#fff!important;transform:translateY(-1px);filter:none!important}
 :is(.pd-btn,.calc-btn,button.primary):active{transform:translateY(1px)}
 :is(.pd-btn.secondary,.pd-btn.quiet,.utility-btn,.calc-actions button,.calc-actions a){border:1px solid var(--pd-color-line-strong)!important;background:var(--pd-color-surface-2)!important;color:var(--pd-color-text)!important;box-shadow:none!important}
 .pd-btn.quiet{background:transparent!important;border-color:transparent!important;color:var(--pd-color-text-secondary)!important}

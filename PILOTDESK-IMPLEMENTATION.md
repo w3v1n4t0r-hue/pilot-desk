@@ -47,6 +47,19 @@ Canonical direction: `PILOTDESK-DESIGN.md`. Preserve working aviation logic, URL
    - Fixed issues exposed by the new suite in optional Crosswind gust handling, Written Prep first-screen hierarchy, search semantics, inline-link affordance, Route Planner attribution, and canonical tertiary-text contrast.
    - Preserved calculator formulas, authentication behavior, SEO URLs, and service-worker behavior.
 
+## Phase 18 — User-asset 3D / OpenFOAM foundation (in progress)
+
+- Supersedes the earlier SVG trainer / qualitative particle implementation at the user's request. No decorative flow remains. The user-provided trainer now renders as a real 28,736-triangle WebGL mesh.
+- The lab remains after the working calculator, collapsed by default. The large mesh and renderer load only when opened. Top/side/orbit views and keyboard rotation/zoom work. Rendering stops while closed, offscreen or backgrounded; geometry-only views render on demand.
+- OpenFOAM exports can supply the actual solved surface, pressure in Pa and integrated velocity streamlines. Imported cases retain explicit fixed conditions, solver/version, dates, reviewer and content hashes. Calculator edits do not silently deform or relabel a solved case.
+- Added asset ingestion without executing supplied HTML, topology audit, deterministic OpenCFD v2312 case preparation, a guarded local runner, review-gated PyVista export and a shared browser/export data contract under `scripts/openfoam/`.
+- Inspected the linked Inductiva wind-tunnel project. Its road/floor placement, auto-scaling and remote job submission are not adopted unchanged for aircraft. No cloud account, API key, machine group or paid job has been created.
+- Both supplied meshes fail topology screening. The trainer needs separate CFD-surface cleanup, physical-unit/orientation confirmation and aerodynamic review. WSL, Docker and OpenFOAM are not currently installed here.
+- Production build, repository QA and all 47-calculator browser checks pass, including new lazy-load, import/rejection, keyboard, reset, stale-input, invalid-solution, reduced-motion, WebGL-unavailable, accessibility and 320–1920px layout checks. Test field fixtures are explicitly synthetic and excluded from publication.
+- **Not yet verified:** real meshing, solver execution, convergence, boundary-layer quality, mesh/domain independence and the PyVista export against actual OpenFOAM output. No real CFD dataset is shipped. Keep PR #54 in draft until runtime and clean simulation geometry are available.
+- Existing aviation formulas, authentication, SEO URLs and service-worker behavior remain unchanged. Full per-page simulations are future work after the solver path is validated. See `scripts/openfoam/README.md` for exact prerequisites and limitations.
+- Visual review caught a mobile camera-toolbar stacking problem and a shared secondary-button hover contrast collision. The component now wraps camera controls compactly; the canonical primary-hover rule excludes secondary/quiet/destructive variants rather than adding a new override layer. Both have browser regression coverage.
+
 ## Phase 2–16 verification
 
 - Production build and Astro passthrough verification pass.

@@ -1,0 +1,23 @@
+{
+  "aircraft_name": "PilotDesk Generic High-Wing GA Reference",
+  "mesh": "aircraft/pilotdesk-aircraft-cfd.stl",
+  "tas_kt": 90.0,
+  "aoa_deg": 4.0,
+  "beta_deg": 0.0,
+  "roll_geometry_deg": 0.0,
+  "density_kg_m3": 1.225,
+  "temperature_c": 15.0,
+  "turbulence_intensity": 0.01,
+  "turbulence_length_m": 0.5,
+  "wing_area_m2": 16.2,
+  "mean_aerodynamic_chord_m": 1.47,
+  "wingspan_m": 11.1,
+  "wing_mac_le_x_m": -2.25,
+  "cg_percent_mac": 28.0,
+  "weight_lb": 2350.0,
+  "bank_deg": 0.0,
+  "iterations": 500,
+  "write_interval": 250,
+  "quality": "preview",
+  "notes": "Initial real OpenFOAM proof solve on isolated branch. Reference geometry; not certified aircraft performance data."
+}

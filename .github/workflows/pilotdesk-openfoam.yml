@@ -13,9 +13,21 @@ permissions:
   contents: read
 
 jobs:
-  solve:
+  calibrate:
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - aoa: -4
+            tag: m4
+          - aoa: 0
+            tag: p0
+          - aoa: 4
+            tag: p4
+          - aoa: 8
+            tag: p8
     steps:
       - name: Checkout isolated solver branch
         uses: actions/checkout@v4
@@ -26,18 +38,21 @@ jobs:
           gunzip -c /tmp/aircraft.stl.gz > openfoam/aircraft/pilotdesk-aircraft-cfd.stl
           ls -lh openfoam/aircraft/pilotdesk-aircraft-cfd.stl
 
-      - name: Prepare aircraft case
+      - name: Prepare aircraft case at AoA ${{ matrix.aoa }}
         working-directory: openfoam
-        run: python3 tools/prepare_case.py --config config.json --case case
+        run: python3 tools/prepare_case.py --config config.json --case case-${{ matrix.tag }} --aoa ${{ matrix.aoa }}
 
-      - name: Add potentialFoam Phi solver
+      - name: Extend solve and add potentialFoam Phi solver
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p = Path('openfoam/case/system/fvSolution')
-          s = p.read_text()
-          needle = 'solvers\n{\n'
-          phi = '''solvers
+          import json
+          tag='${{ matrix.tag }}'
+          case=Path('openfoam')/f'case-{tag}'
+          p=case/'system/fvSolution'
+          s=p.read_text()
+          needle='solvers\n{\n'
+          phi='''solvers
           {
               Phi
               {
@@ -48,43 +63,46 @@ jobs:
               }
           '''
           if '    Phi\n' not in s and needle in s:
-              s = s.replace(needle, phi, 1)
+              s=s.replace(needle,phi,1)
           p.write_text(s)
+          c=case/'system/controlDict'
+          t=c.read_text().replace('endTime 500;','endTime 900;').replace('writeInterval 250;','writeInterval 450;')
+          c.write_text(t)
           PY
 
       - name: Make case writable by OpenFOAM container
-        run: chmod -R a+rwX openfoam/case
+        run: chmod -R a+rwX openfoam/case-${{ matrix.tag }}
 
       - name: Pull OpenFOAM 6 image
         run: docker pull openfoam/openfoam6-paraview56
 
-      - name: Run real OpenFOAM solve
+      - name: Run real OpenFOAM solve at AoA ${{ matrix.aoa }}
         run: |
           docker run --rm \
             --user 0:0 \
             --entrypoint /bin/bash \
             -v "$GITHUB_WORKSPACE/openfoam:/work" \
-            -w /work/case \
+            -w /work/case-${{ matrix.tag }} \
             openfoam/openfoam6-paraview56 \
             -lc 'source /opt/openfoam6/etc/bashrc && ./Allrun'
 
       - name: Extract solved coefficients
         if: always()
         run: |
-          if [ -d openfoam/case/postProcessing ]; then
-            python3 openfoam/tools/extract_results.py openfoam/case || true
+          if [ -d openfoam/case-${{ matrix.tag }}/postProcessing ]; then
+            python3 openfoam/tools/extract_results.py openfoam/case-${{ matrix.tag }} || true
           fi
 
-      - name: Upload OpenFOAM results
+      - name: Upload OpenFOAM calibration result
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pilotdesk-openfoam-result
+          name: pilotdesk-openfoam-aoa-${{ matrix.tag }}
           path: |
-            openfoam/case/openfoam-result.json
-            openfoam/case/pilotdesk-case.json
-            openfoam/case/VTK/**
-            openfoam/case/postProcessing/**
-            openfoam/case/log.*
+            openfoam/case-${{ matrix.tag }}/openfoam-result.json
+            openfoam/case-${{ matrix.tag }}/pilotdesk-case.json
+            openfoam/case-${{ matrix.tag }}/VTK/**
+            openfoam/case-${{ matrix.tag }}/postProcessing/**
+            openfoam/case-${{ matrix.tag }}/log.*
           if-no-files-found: warn
           retention-days: 7

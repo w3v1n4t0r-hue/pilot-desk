@@ -1,0 +1,60 @@
+name: PilotDesk OpenFOAM Solve v2
+
+on:
+  push:
+    branches:
+      - pilotdesk-openfoam-solve
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout isolated solver branch
+        uses: actions/checkout@v4
+
+      - name: Restore CFD aircraft mesh
+        run: |
+          base64 -d openfoam/aircraft/pilotdesk-aircraft-cfd.stl.gz.b64 > /tmp/aircraft.stl.gz
+          gunzip -c /tmp/aircraft.stl.gz > openfoam/aircraft/pilotdesk-aircraft-cfd.stl
+          ls -lh openfoam/aircraft/pilotdesk-aircraft-cfd.stl
+
+      - name: Prepare aircraft case
+        working-directory: openfoam
+        run: python3 tools/prepare_case.py --config config.json --case case
+
+      - name: Pull OpenFOAM 6 image
+        run: docker pull openfoam/openfoam6-paraview56
+
+      - name: Run real OpenFOAM solve
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE/openfoam:/work" \
+            -w /work/case \
+            openfoam/openfoam6-paraview56 \
+            /bin/bash -lc 'source /opt/openfoam6/etc/bashrc && ./Allrun'
+
+      - name: Extract solved coefficients
+        if: always()
+        run: |
+          if [ -d openfoam/case/postProcessing ]; then
+            python3 openfoam/tools/extract_results.py openfoam/case || true
+          fi
+
+      - name: Upload OpenFOAM results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pilotdesk-openfoam-result-v2
+          path: |
+            openfoam/case/openfoam-result.json
+            openfoam/case/pilotdesk-case.json
+            openfoam/case/VTK/**
+            openfoam/case/postProcessing/**
+            openfoam/case/log.*
+          if-no-files-found: warn
+          retention-days: 7

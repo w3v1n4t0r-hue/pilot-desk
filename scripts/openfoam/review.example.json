@@ -1,0 +1,13 @@
+{
+  "caseSha256": "COPY_FROM_THE_CASE_MANIFEST",
+  "reviewedBy": "",
+  "evidence": "",
+  "geometry": false,
+  "meshQuality": false,
+  "layerCoverage": false,
+  "yPlus": false,
+  "residuals": false,
+  "forceStability": false,
+  "meshIndependence": false,
+  "domainIndependence": false
+}

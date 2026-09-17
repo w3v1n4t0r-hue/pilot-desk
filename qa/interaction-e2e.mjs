@@ -161,69 +161,84 @@ await check('representative page families have no serious accessibility violatio
   await context.close();
 });
 
-await check('Flight Lab follows calculations, pauses, resets, and rejects invalid wind solutions',async()=>{
+await check('3D Flight Lab loads on demand and preserves calculator boundaries',async()=>{
+  const {fixture}=await import('./flight-lab-fixture.mjs');
   const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'no-preference'});
-  const page=await context.newPage();
-  const errors=monitor(page);
+  const page=await context.newPage(),errors=monitor(page);
   for(const slug of ['crosswind','wind-triangle','density-altitude']){
     await goto(page,`/calculators/${slug}/`);
     await page.locator('.pd-flight-lab').waitFor();
+    assert(!await page.locator('canvas').isVisible(),'3D lab should start collapsed');
+    assert(!await page.evaluate(()=>performance.getEntriesByType('resource').some(r=>r.name.endsWith('trainer.pdm'))),'large mesh loaded before user intent');
     await page.locator('[data-calculate]').click();
     await page.waitForFunction(()=>document.querySelector('.pd-flight-lab')?.dataset.state==='ready');
-    await page.locator('[data-lab-pause]').click();
-    assert(await page.locator('[data-lab-pause]').getAttribute('aria-pressed')==='true',`${slug}: pause did not engage`);
-    assert(await page.locator('.pd-lab-flow').first().evaluate(el=>getComputedStyle(el).animationPlayState)==='paused',`${slug}: flow continued while paused`);
-    await page.locator('[data-lab-pause]').press('Enter');
-    await page.waitForFunction(()=>document.querySelector('.pd-flight-lab')?.dataset.paused==='false');
+    await page.locator('[data-lab-open]').click();
+    await page.waitForFunction(()=>document.querySelector('[data-lab-status]')?.textContent.includes('Aircraft geometry loaded'));
+    assert(await page.locator('[data-lab-pause]').isDisabled(),'flow must be disabled without a solver field');
+    assert(await page.locator('[data-lab-pressure]').isDisabled(),'pressure must be disabled without a solver field');
+    await page.locator('[data-view="top"]').click();await page.locator('canvas').press('ArrowRight');
+    await page.locator('[data-view="top"]').hover();
+    const contrast=await page.locator('[data-view="top"]').evaluate(el=>{
+      const style=getComputedStyle(el),luminance=color=>{const c=color.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4});return c[0]*.2126+c[1]*.7152+c[2]*.0722};
+      const foreground=luminance(style.color),background=luminance(style.backgroundColor);return (Math.max(foreground,background)+.05)/(Math.min(foreground,background)+.05);
+    });assert(contrast>=4.5,'secondary camera button loses text contrast on hover');
+    await page.locator('[data-view="side"]').click();await page.locator('[data-zoom="-1"]').click();
     const field=page.locator(slug==='density-altitude'?'#oat':'#windDir');
     await field.fill(slug==='density-altitude'?'45':'270');
-    assert(await page.locator('.pd-flight-lab').getAttribute('data-state')==='stale',`${slug}: changed inputs displayed a stale result as current`);
+    assert(await page.locator('.pd-flight-lab').getAttribute('data-state')==='stale','stale calculation was presented as current');
     await page.locator('[data-calculate]').click();
     await page.waitForFunction(()=>document.querySelector('.pd-flight-lab')?.dataset.state==='ready');
-    assert((await page.locator('[data-lab-result]').innerText()).includes(await page.locator('#out0').innerText()),`${slug}: model did not use calculator output`);
+    assert((await page.locator('[data-lab-result]').innerText()).includes(await page.locator('#out0').innerText()),'calculator output was lost');
     await page.locator('[data-pd-reset]').click();
     await page.waitForFunction(()=>document.querySelector('.pd-flight-lab')?.dataset.state==='idle');
   }
+  // Synthetic fixture tests the import path only; it is never a production CFD dataset.
+  await page.locator('[data-lab-file]').setInputFiles({name:'contract-test.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture()))});
+  await page.waitForFunction(()=>document.querySelector('[data-lab-status]')?.textContent==='Reviewed solver export loaded');
+  await page.locator('[data-lab-pressure]').click();
+  assert(await page.locator('[data-lab-legend]').isVisible(),'pressure units/legend missing');
+  await page.locator('[data-lab-pause]').click();
+  assert(await page.locator('[data-lab-pause]').getAttribute('aria-pressed')==='false','flow did not play');
+  await page.locator('[data-lab-pause]').press('Enter');
+  assert(await page.locator('[data-lab-pause]').getAttribute('aria-pressed')==='true','flow did not pause');
+  await page.locator('[data-lab-file]').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{"solver":"fake"}')});
+  await page.waitForFunction(()=>document.querySelector('[data-lab-status]')?.textContent==='CFD import rejected');
+  assert((await page.locator('[data-lab-detail]').innerText()).includes('previous field'),'failed import discarded previous field');
+  await page.locator('#oat').fill('20');await page.locator('[data-calculate]').click();
+  assert((await page.locator('[data-lab-result]').innerText()).includes('conditions remain fixed'),'calculator silently changed the CFD case');
+  await page.locator('[data-lab-open]').click();
+  assert(!await page.locator('canvas').isVisible(),'closing viewer failed');
   await goto(page,'/calculators/wind-triangle/');
-  await page.locator('.pd-flight-lab').waitFor();
-  await page.locator('#course').fill('0');await page.locator('#windDir').fill('90');
-  await page.locator('#tas').fill('100');await page.locator('#windSpeed').fill('50');
-  await page.locator('[data-calculate]').click();
-  await page.waitForFunction(()=>document.querySelector('[data-aircraft]')?.getAttribute('transform')==='rotate(30)');
-  await page.locator('#windDir').fill('270');await page.locator('[data-calculate]').click();
-  await page.waitForFunction(()=>document.querySelector('[data-aircraft]')?.getAttribute('transform')==='rotate(-30)');
-  await page.locator('#windSpeed').fill('150');await page.locator('[data-calculate]').click();
+  await page.locator('#course').fill('0');await page.locator('#windDir').fill('90');await page.locator('#tas').fill('100');await page.locator('#windSpeed').fill('150');await page.locator('[data-calculate]').click();
   await page.waitForFunction(()=>document.querySelector('.pd-flight-lab')?.dataset.state==='invalid');
-  assert((await page.locator('[data-lab-explanation]').innerText()).includes('no steady'),'impossible wind solution was not explained');
-  await page.locator('#windSpeed').fill('0');await page.locator('[data-calculate]').click();
-  await page.waitForFunction(()=>document.querySelector('.pd-flight-lab')?.dataset.state==='ready');
-  assert(await page.locator('[data-flow]').evaluate(el=>getComputedStyle(el).display)==='none','calm wind still displayed moving wind');
-  assert(errors.length===0,errors.join(' | '));
-  await context.close();
+  assert(errors.length===0,errors.join(' | '));await context.close();
 });
 
-await check('Flight Lab density, locale, narrow screens, and reduced motion stay meaningful',async()=>{
+await check('3D Flight Lab fits narrow screens, handles reduced motion and graphics failure',async()=>{
+  const {fixture}=await import('./flight-lab-fixture.mjs');
   const context=await browser.newContext({locale:'de-DE',viewport:{width:390,height:844},reducedMotion:'reduce'});
   const page=await context.newPage();
   await goto(page,'/calculators/density-altitude/');
-  await page.locator('.pd-flight-lab').waitFor();
-  await page.locator('#pa').fill('5000');await page.locator('#oat').fill('-10');
-  await page.locator('[data-calculate]').click();
-  await page.waitForFunction(()=>document.querySelector('.pd-flight-lab')?.dataset.state==='ready');
-  const cold=await page.locator('.pd-flight-lab').evaluate(el=>parseFloat(el.style.getPropertyValue('--pd-lab-step')));
-  await page.locator('#oat').fill('40');await page.locator('[data-calculate]').click();
-  await page.waitForFunction(()=>document.querySelector('.pd-flight-lab')?.dataset.state==='ready');
-  const warm=await page.locator('.pd-flight-lab').evaluate(el=>parseFloat(el.style.getPropertyValue('--pd-lab-step')));
-  assert(warm>cold,'warmer air did not increase particle spacing');
-  assert((await page.locator('[data-lab-explanation]').innerText()).includes('Warmer'),'localized results were misread');
-  assert(await page.locator('.pd-lab-flow').first().evaluate(el=>getComputedStyle(el).animationName)==='none','reduced-motion preference still animated');
+  await page.locator('[data-lab-open]').click();
+  await page.waitForFunction(()=>document.querySelector('[data-lab-status]')?.textContent.includes('Aircraft geometry loaded'));
+  await page.locator('[data-lab-file]').setInputFiles({name:'contract-test.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture()))});
+  await page.waitForFunction(()=>document.querySelector('[data-lab-status]')?.textContent==='Reviewed solver export loaded');
+  assert(await page.locator('[data-lab-pause]').isDisabled(),'reduced motion should prevent automatic trace animation');
   for(const width of [320,360,375,390,414,430,768,1280,1920]){
     await page.setViewportSize({width,height:900});
-    assert(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),`Flight Lab overflows at ${width}px`);
-    const bounds=await page.locator('.pd-lab-scene').boundingBox();
-    assert(bounds&&bounds.width>200,`Flight Lab collapses at ${width}px`);
+    assert(!await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),`3D lab overflows at ${width}px`);
+    const bounds=await page.locator('canvas').boundingBox();assert(bounds&&bounds.width>200,'3D canvas collapsed');
+    const toolbar=await page.locator('[aria-label="Aircraft view"]').boundingBox();assert(toolbar&&toolbar.height<150,'camera toolbar takes over the mobile viewport');
   }
+  const axe=await new AxeBuilder({page}).include('.pd-flight-lab').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+  assert(!axe.violations.some(v=>['serious','critical'].includes(v.impact)),JSON.stringify(axe.violations));
   await context.close();
+  const fallback=await browser.newContext();
+  await fallback.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return type==='webgl2'?null:original.call(this,type,...args)}});
+  const p=await fallback.newPage();await goto(p,'/calculators/density-altitude/');await p.locator('[data-lab-open]').click();
+  await p.waitForFunction(()=>document.querySelector('[data-lab-status]')?.textContent==='3D viewer unavailable');
+  await p.locator('[data-calculate]').click();assert((await p.locator('#out0').innerText())!=='—','graphics failure broke calculator');
+  await fallback.close();
 });
 
 await browser.close();

@@ -1,0 +1,34 @@
+{
+  "source": "PilotDesk-Simulation-Showcase-Physics-v11-Coupled.html",
+  "mesh": "jet.pdm",
+  "sha256": "3828f43079b0452fa3216005867b7a14ff46008a09bf72ff0eefa62485064787",
+  "triangles": 60634,
+  "weldedVertices": 31312,
+  "bounds": {
+    "min": [
+      -3,
+      -0.9334108233451843,
+      -2.760072708129883
+    ],
+    "max": [
+      3,
+      0.9334108233451843,
+      2.760072708129883
+    ],
+    "extent": [
+      6,
+      1.8668216466903687,
+      5.520145416259766
+    ]
+  },
+  "weldTolerance": 6e-7,
+  "boundaryEdges": 2148,
+  "nonManifoldEdges": 0,
+  "inconsistentEdges": 0,
+  "degenerateFaces": 0,
+  "duplicateFaces": 0,
+  "connectedShells": 48,
+  "signedVolume": -1.8029153826183564,
+  "passesTopologyScreen": false,
+  "limitations": "Model units and aircraft identity are unverified. Intersections, nested shells and aerodynamic fidelity require separate inspection and surfaceCheck."
+}

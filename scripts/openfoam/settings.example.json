@@ -1,0 +1,13 @@
+{
+  "sourceMesh": "reviewed-aircraft.stl",
+  "geometryReviewed": false,
+  "metersPerUnit": null,
+  "downstreamSpanUpAxes": null,
+  "speedMs": 50,
+  "densityKgM3": 1.225,
+  "kinematicViscosityM2s": 0.0000146,
+  "aoaDeg": 0,
+  "sideslipDeg": 0,
+  "iterations": 2000,
+  "surfaceRefinement": 4
+}

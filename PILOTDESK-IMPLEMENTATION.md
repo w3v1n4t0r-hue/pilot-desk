@@ -47,6 +47,17 @@ Canonical direction: `PILOTDESK-DESIGN.md`. Preserve working aviation logic, URL
    - Fixed issues exposed by the new suite in optional Crosswind gust handling, Written Prep first-screen hierarchy, search semantics, inline-link affordance, Route Planner attribution, and canonical tertiary-text contrast.
    - Preserved calculator formulas, authentication behavior, SEO URLs, and service-worker behavior.
 
+## Phase 18 — Flight Lab foundation
+
+- Added an original SVG 172-class high-wing trainer in top and side views, with component-owned styles that consume the canonical tokens. Only Crosswind, Wind Triangle, and Density Altitude load this optional feature.
+- Crosswind illustrates ground-referenced steady wind across the runway; Wind Triangle rotates the trainer using the calculator's displayed wind-correction angle; Density Altitude varies qualitative particle spacing using the displayed density-altitude result.
+- The calculator remains above the teaching panel. Existing formula/validation code owns every result; the model waits for a completed calculation and suppresses stale or invalid states.
+- Pause/play works with the keyboard. Reduced motion gives a static illustration; offscreen and background-tab animation pauses. Text communicates the result without relying on motion or color.
+- This is an educational schematic, not a manufacturer-accurate 3D model, CFD simulation, control-technique demonstration, or aircraft-performance model. New Flight Lab assets use existing runtime caching when visited; they are not added to the service-worker precache.
+- Production build, the existing 47-calculator interaction/accessibility suite, dedicated Flight Lab checks, and repository QA pass. Responsive checks cover 320–1920px; localized numeric output is covered with a German browser locale.
+- Screenshot-based Product Design review covers the trainer, wind correction, and mobile crosswind. The review removed a misleading density reference legend and clarified zero-crab-angle wording.
+- Formula code, authentication, SEO URLs, service-worker behavior, and dependencies are unchanged. This branch is stacked on `qa/tool-interaction-safety-net` (PR #53).
+
 ## Phase 2–16 verification
 
 - Production build and Astro passthrough verification pass.

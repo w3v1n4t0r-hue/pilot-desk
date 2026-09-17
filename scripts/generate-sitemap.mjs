@@ -57,8 +57,10 @@ const esc=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&g
 const xml=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',...unique.map(({url,lastmod})=>`<url><loc>${esc(url)}</loc><lastmod>${lastmod}</lastmod></url>`),'</urlset>'].join('\n');
 fs.writeFileSync('sitemap.xml',xml+'\n');
 
-// Advertise only the canonical sitemap. Legacy split sitemaps are retained in the
-// repository for compatibility/history, but exposing all of them in robots.txt
-// causes Google to rediscover overlapping/stale URLs (including redirects).
-fs.writeFileSync('robots.txt',`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`Generated canonical sitemap with ${unique.length} indexable URLs and advertised only sitemap.xml in robots.txt.`);
+// Advertise the canonical sitemap plus purpose-built sitemaps that contain
+// unique, current discovery surfaces. Keep this generated so robots.txt cannot
+// drift from the files QA and search tooling expect to be discoverable.
+const advertised=['sitemap.xml','sitemap-daily.xml','sitemap-growth.xml'].filter(file=>fs.existsSync(file));
+const robots=['User-agent: *','Allow: /','Disallow: /api/',...advertised.map(file=>`Sitemap: ${SITE}/${file}`),''].join('\n');
+fs.writeFileSync('robots.txt',robots);
+console.log(`Generated canonical sitemap with ${unique.length} indexable URLs and advertised ${advertised.join(', ')} in robots.txt.`);

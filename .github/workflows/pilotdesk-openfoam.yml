@@ -27,8 +27,9 @@ jobs:
           ls -lh openfoam/aircraft/pilotdesk-aircraft-cfd.stl
 
       - name: Prepare aircraft case
+        working-directory: openfoam
         run: |
-          python3 openfoam/tools/prepare_case.py --config openfoam/config.json --case openfoam/case
+          python3 tools/prepare_case.py --config config.json --case case
 
       - name: Pull OpenFOAM 6 image
         run: docker pull openfoam/openfoam6-paraview56

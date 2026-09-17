@@ -1,0 +1,74 @@
+name: Temporary sync growth generated output
+
+on:
+  push:
+    branches: [growth-seo-2026-09-17]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: growth-seo-2026-09-17
+          fetch-depth: 0
+      - name: Regenerate canonical output
+        shell: bash
+        run: |
+          node scripts/generate-calculator-pages.mjs
+          node scripts/postprocess-site.mjs
+          node scripts/strengthen-guides.mjs
+          node scripts/normalize-guide-schema.mjs
+          node scripts/normalize-public-copy.mjs
+          git restore --source=HEAD -- \
+            calculators/glide-range/index.html \
+            calculators/crosswind/index.html \
+            calculators/density-altitude/index.html \
+            calculators/pivotal-altitude/index.html \
+            calculators/three-degree-descent/index.html \
+            flight-training.html \
+            guides/glide-range.html \
+            guides/how-far-can-an-airplane-glide.html \
+            guides/best-glide-speed-vs-glide-ratio.html \
+            guides/emergency-glide-planning.html \
+            guides/crosswind-component.html \
+            guides/density-altitude.html \
+            guides/pivotal-altitude.html \
+            guides/three-degree-descent.html \
+            guides/checkride-study-guides.html \
+            guides/pilot-checkride-math.html \
+            guides/multiengine-checkride-study-guide.html \
+            guides/critical-engine-multiengine.html \
+            guides/multiengine-vmc-factors.html \
+            guides/vmc-vs-vyse.html \
+            guides/accelerate-stop-accelerate-go.html \
+            guides/feathering-vs-windmilling-propeller.html \
+            guides/identify-verify-feather.html \
+            guides/past-critical-engine.html \
+            guides/single-engine-climb-performance.html \
+            guides/single-engine-service-ceiling.html \
+            guides/vmc-demonstration-explained.html \
+            guides/zero-sideslip-multiengine.html \
+            guides/avgas-weight-per-gallon.html \
+            guides/cessna-172-glide-distance.html \
+            guides/crosswind-component-chart.html \
+            guides/seminole-vmc-study.html \
+            guides/three-degree-descent-rate-chart.html
+          node scripts/clean-guide-boilerplate.mjs
+          node scripts/generate-sitemap.mjs
+      - name: Commit generated output
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "Generated output already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Sync generated growth output"
+          git push origin HEAD:growth-seo-2026-09-17

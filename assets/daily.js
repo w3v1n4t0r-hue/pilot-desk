@@ -53,13 +53,26 @@ function reviewHtml(result){
  const questions=state.data?.challenge?.questions||[];
  return (result.review||[]).map((r,i)=>`<div class="pd-daily-review-item"><strong>${r.correct?'✓':'Review'} Question ${i+1}: ${escapeHtml(questions[i]?.options?.[r.correctIndex]||'')}</strong><span>${escapeHtml(r.explanation||'')}</span></div>`).join('');
 }
+function scoreGrid(result){
+ const score=Math.max(0,Math.min(Number(result.maxScore)||0,Number(result.score)||0));
+ const max=Math.max(score,Number(result.maxScore)||3);
+ return `${'🟩'.repeat(score)}${'⬛'.repeat(Math.max(0,max-score))}`;
+}
+function referralUrl(result){
+ const url=new URL('/daily/',location.origin);
+ url.searchParams.set('utm_source','pilotdesk_daily_share');
+ url.searchParams.set('utm_medium','referral');
+ url.searchParams.set('utm_campaign','daily_challenge');
+ url.searchParams.set('utm_content',`${Number(result.score)||0}-of-${Number(result.maxScore)||3}`);
+ return url.toString();
+}
 function renderResult(result,saved){
  state.submitted=true;lockAnswers(result.review);$('#pdDailySubmit').disabled=true;$('#pdDailySubmit').textContent='Completed';setText('#pdDailyFormNote',saved?'Saved to your PilotDesk account.':'Guest score — sign in to save future streaks.');
  $('#pdDailyScoreChip').hidden=false;setText('#pdDailyScore',`${result.score}/${result.maxScore}`);
  const box=$('#pdDailyResult');box.hidden=false;const perfect=result.score===result.maxScore;
  const headline=perfect?'Perfect score.':(result.review||[]).length?(result.score>0?'Challenge complete.':'Challenge complete — review it below.'):'Challenge complete.';
  const reward=saved?`+${result.xpAwarded||0} XP${result.streak?` · 🔥 ${result.streak}`:''}`:'Guest score';
- box.innerHTML=`<div class="pd-daily-result-head"><div><h3>${headline}</h3><p>${saved?'Your score, XP and streak are saved.':'Create a free account to save XP and build a daily streak.'}</p></div><div class="pd-daily-reward">${escapeHtml(reward)}</div></div><div class="pd-daily-review">${reviewHtml(result)}</div><div class="pd-daily-result-actions"><button type="button" id="pdDailyShare">Share result</button>${saved?'<a href="/account.html">View account →</a>':'<a href="/account.html?next=%2Fdaily%2F">Create account →</a>'}</div>`;
+ box.innerHTML=`<div class="pd-daily-result-head"><div><h3>${headline}</h3><p>${saved?'Your score, XP and streak are saved.':'Create a free account to save XP and build a daily streak.'}</p></div><div class="pd-daily-reward">${escapeHtml(reward)}</div></div><div class="pd-daily-review">${reviewHtml(result)}</div><div class="pd-daily-result-actions"><button type="button" id="pdDailyShare">Challenge another pilot</button>${saved?'<a href="/account.html">View account →</a>':'<a href="/account.html?next=%2Fdaily%2F">Create account →</a>'}</div>`;
  $('#pdDailyShare')?.addEventListener('click',()=>shareResult(result));
  if(saved){setText('#pdDailyXp',result.xp??state.profile?.xp??'—');setText('#pdDailyStreak',result.streak??state.profile?.current_streak??'—');setText('#pdDailyLevel',result.level??state.profile?.level??'—');setText('#pdDailyProgressTitle',`${result.streak||0}-day streak`);setText('#pdDailyProgressText',`Today is saved. You earned ${result.xpAwarded||0} XP. Come back after the UTC reset for the next challenge.`)}
  window.pdTrack?.('PilotDesk Daily Completed',{saved:Boolean(saved),score:result.score,max:result.maxScore});
@@ -68,8 +81,14 @@ function renderSavedCompletion(data){
  const c=data.completion;renderResult({score:c.score,maxScore:c.max_score,xpAwarded:c.xp_awarded,perfect:c.perfect,review:[],streak:state.profile?.current_streak,xp:state.profile?.xp,level:state.profile?.level},true);lockWithoutReveal();setText('#pdDailyFormNote','Already completed today. New challenge at 00:00 UTC.');
 }
 async function shareResult(result){
- const streak=result.streak?` · 🔥 ${result.streak}-day streak`:'';const text=`PilotDesk Daily ${result.score}/${result.maxScore}${streak}\nhttps://www.pilot-desk.com/daily/`;
- try{if(navigator.share)await navigator.share({title:'PilotDesk Daily',text,url:'https://www.pilot-desk.com/daily/'});else{await navigator.clipboard.writeText(text);$('#pdDailyShare').textContent='Copied'}}catch{}
+ const streak=result.streak?`\n🔥 ${result.streak}-day streak`:'';
+ const url=referralUrl(result);
+ const text=`PilotDesk Daily ${result.score}/${result.maxScore}\n${scoreGrid(result)}${streak}\n\nThink you can beat it?`;
+ try{
+  window.pdTrack?.('PilotDesk Daily Shared',{score:result.score,max:result.maxScore,streak:result.streak||0});
+  if(navigator.share)await navigator.share({title:'PilotDesk Daily — beat my score',text,url});
+  else{await navigator.clipboard.writeText(`${text}\n${url}`);$('#pdDailyShare').textContent='Challenge link copied'}
+ }catch{}
 }
 async function submit(e){
  e.preventDefault();if(state.submitted||!state.data)return;const answers=state.data.challenge.questions.map((_,i)=>Number(document.querySelector(`input[name="q${i}"]:checked`)?.value));if(answers.some(x=>!Number.isInteger(x)))return;

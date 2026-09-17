@@ -30,6 +30,28 @@ jobs:
         working-directory: openfoam
         run: python3 tools/prepare_case.py --config config.json --case case
 
+      - name: Add potentialFoam Phi solver
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('openfoam/case/system/fvSolution')
+          s = p.read_text()
+          needle = 'solvers\n{\n'
+          phi = '''solvers
+          {
+              Phi
+              {
+                  solver          GAMG;
+                  tolerance       1e-7;
+                  relTol          0;
+                  smoother        GaussSeidel;
+              }
+          '''
+          if '    Phi\n' not in s and needle in s:
+              s = s.replace(needle, phi, 1)
+          p.write_text(s)
+          PY
+
       - name: Make case writable by OpenFOAM container
         run: chmod -R a+rwX openfoam/case
 

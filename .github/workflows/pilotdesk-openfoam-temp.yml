@@ -1,0 +1,72 @@
+name: PilotDesk Temporary OpenFOAM Solve
+
+on:
+  push:
+    branches:
+      - cfd-openfoam-result-20260916
+    paths:
+      - 'cfd/**'
+
+permissions:
+  contents: read
+
+jobs:
+  solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: Checkout isolated CFD branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Restore aircraft mesh
+        run: |
+          xz -dk cfd/aircraft.obj.xz
+          ls -lh cfd/aircraft.obj
+
+      - name: Fetch Inductiva wind-tunnel case templates
+        run: |
+          git clone --depth 1 https://github.com/inductiva/wind-tunnel.git /tmp/inductiva-wind-tunnel
+          python -m pip install --upgrade pip
+          python -m pip install -e /tmp/inductiva-wind-tunnel
+
+      - name: Generate aircraft OpenFOAM case
+        run: python cfd/generate_case.py
+
+      - name: Pull OpenFOAM 6 image
+        run: docker pull openfoam/openfoam6-paraview56:latest
+
+      - name: Run real OpenFOAM solve
+        run: |
+          chmod -R a+rwx cfd_case
+          docker run --rm --entrypoint /bin/bash \
+            -v "$PWD/cfd_case:/home/openfoam/cfd_case" \
+            openfoam/openfoam6-paraview56:latest \
+            -lc 'source /opt/openfoam6/etc/bashrc && cd /home/openfoam/cfd_case && surfaceFeatures > log.surfaceFeatures 2>&1 && blockMesh > log.blockMesh 2>&1 && snappyHexMesh -overwrite > log.snappyHexMesh 2>&1 && checkMesh > log.checkMesh 2>&1 && potentialFoam > log.potentialFoam 2>&1 && simpleFoam > log.simpleFoam 2>&1'
+
+      - name: Show solver tail
+        if: always()
+        run: |
+          for f in cfd_case/log.surfaceFeatures cfd_case/log.blockMesh cfd_case/log.snappyHexMesh cfd_case/log.checkMesh cfd_case/log.potentialFoam cfd_case/log.simpleFoam; do
+            echo "===== $f ====="
+            test -f "$f" && tail -80 "$f" || true
+          done
+
+      - name: Post-process solved field
+        if: success()
+        run: python cfd/postprocess.py
+
+      - name: Upload OpenFOAM result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pilotdesk-openfoam-result
+          path: |
+            cfd_case
+            cfd_post
+          if-no-files-found: warn
+          retention-days: 3

@@ -146,7 +146,7 @@ const faqBySlug={
 };
 
 const seoTitleBySlug={
-  'isa-temperature':'ISA Temperature Calculator by Altitude | PilotDesk',
+  'isa-temperature':'ISA Temperature Calculator | Standard Atmosphere | PilotDesk',
   'density-altitude':'Density Altitude Calculator for Pilots | PilotDesk',
   'rate-of-turn':'Rate of Turn Calculator | Standard-Rate Turn Math | PilotDesk',
   'turn-radius':'Aircraft Turn Radius Calculator | Speed & Bank Angle | PilotDesk',
@@ -171,7 +171,7 @@ const seoDescriptionBySlug={
   'climb-gradient':'Free climb gradient calculator. Convert feet per nautical mile (ft/NM) and groundspeed into the required feet per minute (FPM) vertical speed.',
   'crosswind':'Free crosswind component calculator and quick chart. Enter runway heading, wind direction, and wind speed to calculate crosswind and headwind or tailwind.',
   'moment-cg':'Free aircraft CG calculator. Calculate center of gravity, station moment, and moment/1000 from aircraft weight, arm, total moment, and total weight.',
-  'isa-temperature':'Free ISA temperature calculator by altitude. Calculate standard temperature in °C from altitude in feet for density-altitude and pilot training.',
+  'isa-temperature':'Free ISA temperature calculator for pilots. Enter altitude in feet to find standard-atmosphere temperature in °C and check ISA conditions for training.',
   'standard-rate-bank':'Free standard-rate turn calculator. Enter true airspeed to calculate the bank angle for a rate 1 turn at 3 degrees per second.',
   'wind-triangle':'Free groundspeed and wind triangle calculator. Solve wind-corrected heading, groundspeed, and wind correction angle from course, TAS, and wind.',
   'three-degree-descent':'Free descent rate calculator for a 3-degree path. Enter groundspeed to calculate required FPM and compare it with the GS × 5 rule.'

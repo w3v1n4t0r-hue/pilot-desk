@@ -7,5 +7,6 @@ export function sharedShell(html){
  html=html.replace(/<header\b[^>]*class="topbar"[^>]*>[\s\S]*?<\/header>/,header);
  html=/<footer\b/.test(html)?html.replace(/<footer\b[^>]*>[\s\S]*?<\/footer>/,footer):html.replace('</body>',footer+'</body>');
  if(!html.includes('src="/assets/app-bootstrap.js"'))html=html.replace('</body>','<script defer src="/assets/app-bootstrap.js"></script></body>');
+ if(!html.includes('/_vercel/insights/script.js'))html=html.replace('</body>','<script defer src="/_vercel/insights/script.js"></script></body>');
  return html;
 }

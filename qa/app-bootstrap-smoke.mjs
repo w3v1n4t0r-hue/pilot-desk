@@ -23,7 +23,9 @@ check(bootstrap.includes('isAstroNative')&&bootstrap.includes("if(!isAstroNative
 check(!bootstrap.includes('visibility:hidden'),'static content must remain visible if optional enhancements fail');
 check(bootstrap.includes("serviceWorker.register('/sw.js')")&&bootstrap.includes('requestIdleCallback')&&bootstrap.includes('timeout:1500'),'service worker must register shortly after load/idle');
 
-for(const asset of ['navigation-data.js','flight-store.js','global-nav.js','theme.js','errors.js','analytics.js','update.js'])check(bootstrap.includes(`/assets/${asset}`),`bootstrap is missing always-on module ${asset}`);
+for(const asset of ['navigation-core.js','global-nav.js','theme.js','errors.js','analytics.js','update.js'])check(bootstrap.includes(`/assets/${asset}`),`bootstrap is missing always-on module ${asset}`);
+check(!bootstrap.includes('/assets/navigation-data.js'),'full navigation payload must not be an always-on bootstrap dependency');
+check(!bootstrap.includes('/assets/flight-store.js'),'saved-flight storage must not be an always-on bootstrap dependency');
 for(const asset of ['features.js','calculator-ux.js','crosswind-mfd.js','pilotdesk-plus.js'])check(bootstrap.includes(`/assets/${asset}`),`calculator bootstrap is missing ${asset}`);
 for(const asset of ['offline-weather.js','wb-export.js','aircraft-transfer.js','aircraft-training.js','planner-pro.js','procedure-pro.js','trainer-pro.js','experience.js'])check(bootstrap.includes(`/assets/${asset}`),`route-specific bootstrap is missing ${asset}`);
 for(const retired of ['product-polish.js','context-widget.js','avionics-command.js','sticky-app.js','home-command-center.js','home-daily.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired competing shell layer returned: ${retired}`);
@@ -38,7 +40,7 @@ check(siteData.includes("['/tools.html', 'All calculators'"),'Tools navigation m
 check(siteData.includes("['/daily/', 'Daily challenge'"),'Learn navigation must expose PilotDesk Daily');
 check(astroHome.includes('data-pd-home-account'),'homepage must preserve account discovery markup');
 check(astroHeader.includes('navSections')&&astroHeader.includes('section.items.map'),'Astro header must render the shared navigation model');
-for(const needle of ['window.PILOTDESK_NAV','data-pd-account-link','Sign in'])check(nav.includes(needle),`global navigation runtime is missing ${needle}`);
+for(const needle of ['window.PILOTDESK_NAV_CORE','navigation-search.js','data-pd-account-link','Sign in','scheduleAccountHydration'])check(nav.includes(needle),`global navigation runtime is missing ${needle}`);
 
 check(safety.includes('/assets/app-bootstrap.js'),'calculator/home path must load app bootstrap without ads.js');
 check(productNav.includes('/assets/app-bootstrap.js'),'workspace path must load app bootstrap without ads.js');

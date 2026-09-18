@@ -90,3 +90,29 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 .pd-training-next .pd-training-section-head{margin-bottom:12px}
 @media(max-width:760px){.pd-training-goal-grid{grid-template-columns:1fr}.pd-training-section-head{display:block}.pd-training-section-head p{text-align:left;margin-top:6px}.pd-training-path{overflow-x:auto;flex-wrap:nowrap}.pd-training-path a{white-space:nowrap}}
 
+/* Pass 12: CFI teaching workspace and student handoffs. */
+.pd-cfi-quickbar{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 30px}
+.pd-cfi-quickbar a,.pd-cfi-quickbar button{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--text);font:600 13px system-ui;cursor:pointer}
+.pd-cfi-quickbar a:hover,.pd-cfi-quickbar button:hover{border-color:var(--accent);text-decoration:none}
+.pd-cfi-tool-section,.pd-cfi-scenarios,.pd-cfi-workflow{margin:34px 0}
+.pd-cfi-scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pd-cfi-scenario{display:flex;flex-direction:column;min-width:0;padding:18px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#172532,#0f1821)}
+.pd-cfi-scenario>small{color:var(--accent)!important;letter-spacing:.08em}
+.pd-cfi-scenario h3{margin:7px 0 9px;font-size:19px}
+.pd-cfi-scenario p{margin:4px 0;color:var(--muted);font-size:13px;line-height:1.55}
+.pd-cfi-scenario p b{color:var(--text)}
+.pd-cfi-scenario-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto;padding-top:15px}
+.pd-cfi-scenario-actions button,.pd-cfi-scenario-actions a{display:inline-flex;align-items:center;min-height:38px;padding:7px 10px;border:1px solid var(--line-hi);border-radius:7px;background:var(--bg2);color:var(--text);font:600 12px system-ui;cursor:pointer}
+.pd-cfi-scenario-actions button:hover,.pd-cfi-scenario-actions a:hover{border-color:var(--accent);text-decoration:none}
+.pd-cfi-workflow{padding:22px;border:1px solid var(--line);border-radius:14px;background:#101a23aa}
+.pd-cfi-workflow ol{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;list-style:none;padding:0;margin:0}
+.pd-cfi-workflow li{position:relative;padding:14px;border:1px solid var(--line);border-radius:9px;background:var(--bg2)}
+.pd-cfi-workflow li:before{content:counter(list-item,decimal-leading-zero);display:block;margin-bottom:8px;color:var(--accent);font:700 10px ui-monospace,monospace}
+.pd-cfi-workflow li b,.pd-cfi-workflow li span{display:block}
+.pd-cfi-workflow li b{font-size:14px}
+.pd-cfi-workflow li span{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.5}
+.pd-cfi-workflow-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.pd-cfi-workflow-links a{font-size:13px}
+@media(max-width:900px){.pd-cfi-workflow ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.pd-cfi-scenario-grid,.pd-cfi-workflow ol{grid-template-columns:1fr}.pd-cfi-quickbar{display:grid;grid-template-columns:1fr}.pd-cfi-quickbar a,.pd-cfi-quickbar button{justify-content:center}.pd-cfi-scenario-actions{display:grid;grid-template-columns:1fr}.pd-cfi-scenario-actions button,.pd-cfi-scenario-actions a{justify-content:center}}
+

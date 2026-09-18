@@ -25,7 +25,8 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true"><img src="/assets/icon.svg" alt="" width="40" height="40"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/tools.html">Calculators</a><a href="/airport.html">Airports</a><a href="/planner.html">Planner</a><a href="/flights.html" aria-current="page">Flights</a><a href="/aircraft.html">Hangar</a><a href="/guides.html">Guides</a></nav></header>
 <main class="shell content-page" id="main-content">
-  <section class="pd-flight-hero"><span class="badge">SAVED ON THIS DEVICE</span><h1>Saved Flights</h1><p>Keep the route, aircraft, TAS, fuel burn, planning wind, date, and notes together. Saved flights stay in this browser; no account is required.</p></section>
+  <section class="pd-flight-hero"><span class="badge">SAVED ON THIS DEVICE</span><h1>Saved Flights</h1><p>Reuse a flight instead of rebuilding it. Resume the seven-step planning workflow, update tomorrow's copy, or reopen a reviewed brief with the same aircraft and route context.</p></section>
+  <section class="pd-saved-flight-resume" id="pdSavedFlightResume" hidden aria-live="polite"></section>
   <div class="safety-strip"><strong>Planning aid only.</strong> A saved flight is not a filed flight plan, dispatch release, or official weather briefing. Recheck all current operational information before flight.</div>
   <section class="pd-panel">
     <div class="pd-card-head"><div><h2 id="flightFormTitle">Save a flight</h2><p>Use the active Hangar aircraft for defaults, or enter the numbers yourself.</p></div><button class="pd-btn secondary" type="button" id="flightImportPlanner">Use latest planner route</button></div>
@@ -47,7 +48,14 @@
       <div class="pd-actions"><button class="pd-btn" type="submit">Save flight</button><button class="pd-btn secondary" id="flightReset" type="button">Clear form</button><a class="pd-btn secondary" href="/route-planner.html">Open Route Planner</a></div>
     </form>
   </section>
-  <section class="pd-panel"><div class="pd-card-head"><div><h2>Your flights</h2><p id="flightCount">Stored only on this device.</p></div><a class="pd-btn secondary" href="/flight-brief.html">Open latest brief</a></div><div id="savedFlights" class="pd-flight-list"></div></section>
+  <section class="pd-panel">
+    <div class="pd-card-head"><div><h2>Your flights</h2><p id="flightCount">Stored only on this device.</p></div><a class="pd-btn secondary" href="/flight-brief.html">Open latest brief</a></div>
+    <div class="pd-saved-flight-toolbar">
+      <label class="pd-site-search"><span aria-hidden="true">⌕</span><input id="flightSearch" type="search" autocomplete="off" placeholder="Search route, name, aircraft…" aria-label="Search saved flights"></label>
+      <select id="flightSort" aria-label="Sort saved flights"><option value="updated">Recently updated</option><option value="date">Planned date</option><option value="progress">Planning progress</option></select>
+    </div>
+    <div id="savedFlights" class="pd-flight-list"></div>
+  </section>
   <div class="ad-wrap"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="content"><span>Ad space</span></div></div>
   <section class="info-card"><h2>How saved flights work</h2><p>PilotDesk stores saved flights in your browser. Clearing site data removes them. You can reopen a saved route in the Route Planner or Flight Brief without entering the same planning numbers again.</p><div class="source-links"><a href="/aircraft.html">Aircraft</a><a href="/airport.html">Airport Search</a><a href="/route-planner.html">Route Planner</a><a href="/legal/privacy.html">Privacy</a></div></section>
 </main>

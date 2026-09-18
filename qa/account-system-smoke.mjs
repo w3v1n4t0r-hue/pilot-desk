@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
-const account=read('account.html'),client=read('assets/account.js'),sql=read('supabase/migrations/001_pilotdesk_accounts.sql'),ownerSql=read('supabase/migrations/002_owner_metrics.sql'),edgeSql=read('supabase/migrations/004_move_owner_metrics_to_edge.sql'),deleteFn=read('supabase/functions/delete-account/index.ts'),ownerFn=read('supabase/functions/owner-metrics/index.ts'),nav=read('assets/global-nav.js');
+const account=read('account.html'),client=read('assets/account.js'),accountCss=read('assets/account.css'),analytics=read('assets/analytics.js'),aircraft=read('aircraft.html'),flights=read('flights.html'),history=read('history.html'),sql=read('supabase/migrations/001_pilotdesk_accounts.sql'),ownerSql=read('supabase/migrations/002_owner_metrics.sql'),edgeSql=read('supabase/migrations/004_move_owner_metrics_to_edge.sql'),deleteFn=read('supabase/functions/delete-account/index.ts'),ownerFn=read('supabase/functions/owner-metrics/index.ts'),nav=read('assets/global-nav.js');
 const checks=[
   ['account page is noindex',/name="robots" content="noindex,nofollow"/.test(account)],
   ['client uses browser-safe publishable key',/sb_publishable_/.test(client)&&!/SERVICE_ROLE|sb_secret_/.test(client)],
@@ -15,6 +15,13 @@ const checks=[
   ['client profile updates are column-limited',/grant update \(display_name, avatar_url, pilot_stage, home_airport, last_seen_at\) on public\.profiles/i.test(sql)],
   ['clients cannot award daily XP',/grant select on public\.daily_progress to authenticated/i.test(sql)&&!/grant select, insert, update on public\.daily_progress/i.test(sql)],
   ['new auth users get profiles',/on_auth_user_created/.test(sql)&&/handle_new_user/.test(sql)],
-  ['account is always visible in the global header',nav.includes('data-pd-account-link')&&nav.includes('href="/account.html"')&&nav.includes("text.textContent='Sign in'")&&nav.includes("text.textContent='Account'")]
+  ['account is always visible in the global header',nav.includes('data-pd-account-link')&&nav.includes('href="/account.html"')&&nav.includes("text.textContent='Sign in'")&&nav.includes("text.textContent='Account'")],
+  ['account page distinguishes synced and device-local data',account.includes('Account synced')&&account.includes('Device local')&&account.includes('Aircraft & saved flights · this device')],
+  ['signed-in account has a useful dashboard',account.includes('pdAccountDashboardGrid')&&client.includes('renderAccountDashboard')],
+  ['account dashboard surfaces Daily and Written Prep',client.includes("eyebrow:'DAILY · ACCOUNT'")&&client.includes("eyebrow:'WRITTEN PREP · ACCOUNT'")],
+  ['account dashboard reads device-local aircraft flights and pins',client.includes("localJson('pd-aircraft'")&&client.includes("localJson('pd-saved-flights'")&&client.includes("localJson('pd-favorites'")],
+  ['account dashboard actions are measurable',analytics.includes('Account Dashboard Action')&&client.includes('pdAccountAction')],
+  ['account dashboard has a mobile layout',accountCss.includes('.pd-account-dashboard-grid')&&accountCss.includes('@media(max-width:620px)')],
+  ['account-adjacent pages use official PilotDesk branding',[aircraft,flights,history].every(x=>x.includes('/assets/icon.svg')&&!x.includes('data-pd-wireframe="1"')&&!x.includes('viewBox="0 0 64 40"'))]
 ];
 let failed=0;for(const [name,ok] of checks){if(ok)console.log(`✓ ${name}`);else{failed++;console.error(`✗ ${name}`)}}if(failed)process.exit(1);console.log('Account system smoke checks passed.');

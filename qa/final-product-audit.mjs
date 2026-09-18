@@ -12,13 +12,14 @@ function walk(dir){
   else if(e.isFile()&&e.name.endsWith('.html'))files.push(p);
  }
 }
-walk('.');
+walk('dist');
 
 let indexable=0,oldBrand=0;
 for(const file of files){
  const html=fs.readFileSync(file,'utf8');
  const lower=html.toLowerCase();
- const indexablePage=/meta\s+name=["']robots["'][^>]*content=["'][^"']*index,follow/i.test(html);
+ const robots=(html.match(/<meta\s+name=["']robots["'][^>]*content=["']([^"']+)["']/i)||[])[1]||'';
+ const indexablePage=/^\s*index\s*,\s*follow\s*$/i.test(robots);
  if(indexablePage)indexable++;
 
  check(/<meta\s+name=["']viewport["']/i.test(html),file+': missing responsive viewport');
@@ -66,4 +67,4 @@ if(failures.length){
  if(failures.length>160)console.error(' ... '+(failures.length-160)+' more');
  process.exit(1);
 }
-console.log('Final product audit passed: '+files.length+' source HTML pages reviewed ('+indexable+' indexable), with responsive metadata, branding, heading/footer duplication, SEO basics, critical runtime, CSS authority, service-worker, and QA coverage verified.');
+console.log('Final product audit passed: '+files.length+' built HTML pages reviewed ('+indexable+' indexable), with responsive metadata, branding, heading/footer duplication, SEO basics, critical runtime, CSS authority, service-worker, and QA coverage verified.');

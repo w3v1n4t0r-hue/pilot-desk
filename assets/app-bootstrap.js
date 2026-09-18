@@ -21,7 +21,7 @@ if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.
 if(path==='/history.html')load('/assets/pilotdesk-plus.js');
 if(path==='/weather.html')load('/assets/offline-weather.js');
 if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js');
-if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js');load('/assets/aircraft-training.js')}
+if(path==='/aircraft.html'){load('/assets/aircraft-transfer.js');load('/assets/aircraft-training.js');load('/assets/aircraft-profile-hub.js')}
 if(path==='/route-planner.html')load('/assets/planner-pro.js');
 if(path==='/procedures.html')load('/assets/procedure-pro.js');
 if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js');

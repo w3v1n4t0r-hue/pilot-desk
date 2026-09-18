@@ -172,3 +172,24 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 .pd-site-search:focus-within{border-color:var(--accent)}
 @media(max-width:760px){.pd-search-wrap{position:static}.pd-search-results{position:fixed;left:12px;right:12px;top:74px;width:auto;max-height:60vh}.pd-site-search input{width:min(42vw,220px)}.pd-search-results a{grid-template-columns:1fr}.pd-search-results a em{max-width:none;text-align:left}}
 
+/* Pass 20: one continuous flight-planning workflow. */
+.pd-flight-journey{margin:0 0 24px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,#101b24,#0b1219);overflow:hidden}
+.pd-flight-journey-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.pd-flight-journey-head>div:first-child{display:grid;gap:3px;min-width:0}
+.pd-flight-journey-head small{color:var(--accent)!important;font-size:9px!important;letter-spacing:.09em}
+.pd-flight-journey-head b{font-size:15px}
+.pd-flight-journey-head span{color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-flight-journey-actions{display:flex;gap:8px;flex-shrink:0}.pd-flight-journey-actions a{font-size:11px}
+.pd-flight-journey-steps{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));padding:8px}
+.pd-flight-journey-steps a{position:relative;display:flex;align-items:center;gap:7px;min-width:0;padding:10px 8px;border:1px solid transparent;border-radius:8px;color:var(--muted);font-size:11px}
+.pd-flight-journey-steps a:hover{background:var(--panel2);text-decoration:none}
+.pd-flight-journey-steps a[aria-current="step"]{background:var(--accent-soft);border-color:var(--line-hi);color:var(--text)}
+.pd-flight-journey-steps a.visited{color:var(--silver)}
+.pd-flight-journey-steps a.visited i{background:rgba(154,220,240,.15);border-color:rgba(154,220,240,.45);color:var(--accent)}
+.pd-flight-journey-steps i{display:grid;place-items:center;width:24px;height:24px;flex:0 0 24px;border:1px solid var(--line);border-radius:50%;font:700 8px/1 ui-monospace,monospace;font-style:normal;color:var(--muted2)}
+.pd-flight-journey-steps span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd-flight-journey-next{display:flex;justify-content:flex-end;align-items:center;gap:12px;padding:9px 16px;border-top:1px solid var(--line);background:#0a1117}
+.pd-flight-journey-next span{color:var(--muted2);font-size:10px}.pd-flight-journey-next a{font-size:11px;font-weight:700}
+@media(max-width:900px){.pd-flight-journey-steps{display:flex;overflow-x:auto;scroll-snap-type:x proximity}.pd-flight-journey-steps a{min-width:116px;scroll-snap-align:start}.pd-flight-journey-head{align-items:flex-start}.pd-flight-journey-head span{white-space:normal}}
+@media(max-width:600px){.pd-flight-journey-head{display:block}.pd-flight-journey-actions{margin-top:8px}.pd-flight-journey-next{justify-content:space-between}.pd-flight-journey-steps{padding:6px}.pd-flight-journey-steps a{min-width:104px;padding:8px 6px}}
+

@@ -60,6 +60,32 @@ const schema = {
   </section>
 
   <div class="pd-home-wrap">
+    <section class="pd-home-section pd-first-run" id="pdFirstRun" aria-labelledby="pdFirstRunTitle">
+      <div class="pd-home-section-head">
+        <div>
+          <div class="eyebrow">START HERE</div>
+          <h2 id="pdFirstRunTitle">What are you trying to do today?</h2>
+          <p>Pick the job. PilotDesk will point you at the shortest useful path.</p>
+        </div>
+        <button class="utility-btn" type="button" id="pdFirstRunReset" hidden>Change</button>
+      </div>
+      <div class="pd-first-run-grid" role="list">
+        <a href="/route-planner.html" data-pd-first-goal="plan" role="listitem">
+          <small>PLAN</small><b>Plan a flight</b><span>Route, airports, weather, procedures, aircraft, and a saved brief.</span><em>Open flight planning →</em>
+        </a>
+        <a href="/tools.html" data-pd-first-goal="calculate" role="listitem">
+          <small>CALCULATE</small><b>Work a number</b><span>Crosswind, density altitude, fuel, climb, W&B, E6B, conversions, and more.</span><em>Find a calculator →</em>
+        </a>
+        <a href="/flight-training.html" data-pd-first-goal="study" role="listitem">
+          <small>STUDY</small><b>Prepare for a rating or checkride</b><span>Written Prep, weak-area review, oral practice, rating hubs, and Daily.</span><em>Open training →</em>
+        </a>
+        <a href="/for-cfis.html" data-pd-first-goal="teach" role="listitem">
+          <small>TEACH</small><b>Work with a student</b><span>Shareable scenarios, calculator handoffs, checklist practice, and CFI tools.</span><em>Open CFI toolkit →</em>
+        </a>
+      </div>
+      <div class="pd-first-run-selected" id="pdFirstRunSelected" hidden aria-live="polite"></div>
+    </section>
+
     <section class="pd-home-section pd-learning-promo pd-daily-home" aria-labelledby="pdDailyHomeTitle">
       <div>
         <div class="eyebrow">PILOTDESK DAILY · TODAY'S CHALLENGE</div>

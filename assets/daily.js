@@ -3,10 +3,49 @@
 const SUPABASE_URL='https://hqqgcfiaxcrzyuhtkzqg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Mj4GgPXqlild6Z_4k47Ypg_TeUvlyfQ';
 const $=(s,r=document)=>r.querySelector(s);
-const state={client:null,session:null,profile:null,data:null,submitted:false};
+const state={client:null,session:null,profile:null,data:null,submitted:false,started:false};
 const edgeHeaders=()=>({apikey:SUPABASE_PUBLISHABLE_KEY,...(state.session?.access_token?{Authorization:`Bearer ${state.session.access_token}`}:{})});
 const escapeHtml=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const guestKey=date=>`pd-daily-guest-${date}`;
+const historyKey='pd-daily-local-history';
+const STUDY_LINKS={
+ weather:[['/weather.html','Check current aviation weather'],['/guides/metar-taf.html','METAR & TAF guide'],['/guides/aviation-weather-reference.html','Weather reference']],
+ performance:[['/tools.html?category=Performance','Performance calculators'],['/guides/aircraft-performance-reference.html','Aircraft performance reference'],['/weight-balance.html','Weight & balance']],
+ systems:[['/guides.html?q=systems','Systems guides'],['/checklist-trainer.html','Checklist trainer'],['/flight-training.html','Training hub']],
+ airport:[['/airport.html','Airport information'],['/guides.html?q=airport','Airport operations guides'],['/route-planner.html','Route planner']],
+ decision:[['/skill-gap.html','Check weak subjects'],['/learn/oral-exam/','Practice oral answers'],['/flight-training.html','Training hub']]
+};
+function localHistory(){try{return JSON.parse(localStorage.getItem(historyKey)||'[]')}catch{return []}}
+function saveLocalHistory(date,result){
+ const score=Number(result?.score),max=Number(result?.maxScore)||3;if(!date||!Number.isFinite(score))return;
+ const next=[{date,score,max},...localHistory().filter(x=>x.date!==date)].slice(0,14);
+ try{localStorage.setItem(historyKey,JSON.stringify(next))}catch{}
+ renderWeek();
+}
+function renderWeek(){
+ const host=$('#pdDailyWeek'),copy=$('#pdDailyWeekText');if(!host)return;
+ const history=localHistory(),byDate=new Map(history.map(x=>[x.date,x]));
+ const now=new Date(),days=[];
+ for(let i=6;i>=0;i--){const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-i));const key=d.toISOString().slice(0,10);days.push({key,label:d.toLocaleDateString(undefined,{weekday:'narrow',timeZone:'UTC'}),entry:byDate.get(key)})}
+ host.innerHTML=days.map(d=>'<div class="pd-daily-day'+(d.entry?' done':'')+'" title="'+escapeHtml(d.key)+(d.entry?' · '+d.entry.score+'/'+d.entry.max:'')+'"><span>'+escapeHtml(d.label)+'</span><i>'+(d.entry?d.entry.score:'·')+'</i></div>').join('');
+ const completed=days.filter(d=>d.entry).length;
+ if(copy)copy.textContent=completed?completed+' of the last 7 daily challenges completed on this device.':'Complete today’s challenge to start a local activity trail.';
+}
+function studyBucket(category=''){
+ const s=String(category).toLowerCase();
+ if(/weather|metar|taf|icing|ceiling|visibility/.test(s))return 'weather';
+ if(/performance|weight|balance|fuel|density|crosswind|aerodynamic/.test(s))return 'performance';
+ if(/system|engine|electrical|pitot|static|instrument/.test(s))return 'systems';
+ if(/airport|runway|surface|airspace|operation/.test(s))return 'airport';
+ return 'decision';
+}
+function renderNextStudy(){
+ const wrap=$('#pdDailyNextStudy'),host=$('#pdDailyNextLinks'),copy=$('#pdDailyNextStudyCopy');if(!wrap||!host||!state.data)return;
+ const category=state.data.challenge?.category||'',bucket=studyBucket(category),links=STUDY_LINKS[bucket]||STUDY_LINKS.decision;
+ if(copy)copy.textContent='Today’s challenge focused on '+(category||'aviation decision making')+'. Review the explanation, then take one more step while the topic is fresh.';
+ host.innerHTML=links.map(([href,label])=>'<a href="'+href+'" data-pd-daily-followup="'+bucket+'">'+escapeHtml(label)+' →</a>').join('');
+ wrap.hidden=false;
+}
 
 function setText(sel,value){const el=$(sel);if(el)el.textContent=String(value)}
 function countdown(){
@@ -37,7 +76,7 @@ async function refreshIdentity(){
 }
 
 function renderChallenge(data){
- state.data=data;const c=data.challenge;
+ state.data=data;const c=data.challenge;renderWeek();
  setText('#pdDailyDate',formatDate(data.date));setText('#pdDailyCategory',c.category);setText('#pdDailyDifficulty',c.difficulty);setText('#pdDailyTitle',c.title);setText('#pdDailyDeck',c.deck);
  setText('#pdDailyAttempts',data.attemptsToday>0?data.attemptsToday:'0');
  const host=$('#pdDailyQuestions');host.innerHTML='';
@@ -46,7 +85,7 @@ function renderChallenge(data){
   const legend=document.createElement('legend');legend.innerHTML=`<span class="pd-daily-qnum">QUESTION ${String(idx+1).padStart(2,'0')}</span>${escapeHtml(q.prompt)}`;fs.appendChild(legend);
   const opts=document.createElement('div');opts.className='pd-daily-options';q.options.forEach((opt,i)=>{const label=document.createElement('label');label.className='pd-daily-option';label.innerHTML=`<input type="radio" name="q${idx}" value="${i}"><span>${escapeHtml(opt)}</span>`;opts.appendChild(label)});fs.appendChild(opts);host.appendChild(fs)
  });
- host.addEventListener('change',updateSubmitState);
+ host.addEventListener('change',()=>{updateSubmitState();if(!state.started){state.started=true;window.pdTrack?.('PilotDesk Daily Started',{category:c.category,difficulty:c.difficulty})}});
  $('#pdDailySubmit').disabled=false;setText('#pdDailyFormNote','Answer all three questions.');updateSubmitState();
  if(data.completion){renderSavedCompletion(data);return}
  if(!state.session){try{const saved=JSON.parse(localStorage.getItem(guestKey(data.date))||'null');if(saved?.score!=null&&saved?.review)renderResult(saved,false)}catch{}}
@@ -84,7 +123,8 @@ function renderResult(result,saved){
  box.innerHTML=`<div class="pd-daily-result-head"><div><h3>${headline}</h3><p>${saved?'Your score, XP and streak are saved.':'Create a free account to save XP and build a daily streak.'}</p></div><div class="pd-daily-reward">${escapeHtml(reward)}</div></div><div class="pd-daily-review">${reviewHtml(result)}</div><div class="pd-daily-result-actions"><button type="button" id="pdDailyShare">Challenge another pilot</button>${saved?'<a href="/account.html">View account →</a>':'<a href="/account.html?next=%2Fdaily%2F">Create account →</a>'}</div>`;
  $('#pdDailyShare')?.addEventListener('click',()=>shareResult(result));
  if(saved){setText('#pdDailyXp',result.xp??state.profile?.xp??'—');setText('#pdDailyStreak',result.streak??state.profile?.current_streak??'—');setText('#pdDailyLevel',result.level??state.profile?.level??'—');setText('#pdDailyProgressTitle',`${result.streak||0}-day streak`);setText('#pdDailyProgressText',`Today is saved. You earned ${result.xpAwarded||0} XP. Come back after the UTC reset for the next challenge.`)}
- window.pdTrack?.('PilotDesk Daily Completed',{saved:Boolean(saved),score:result.score,max:result.maxScore});
+ saveLocalHistory(state.data?.date,result);renderNextStudy();
+ window.pdTrack?.('PilotDesk Daily Completed',{saved:Boolean(saved),score:result.score,max:result.maxScore,category:state.data?.challenge?.category||'unknown'});
 }
 function renderSavedCompletion(data){
  const c=data.completion;renderResult({score:c.score,maxScore:c.max_score,xpAwarded:c.xp_awarded,perfect:c.perfect,review:[],streak:state.profile?.current_streak,xp:state.profile?.xp,level:state.profile?.level},true);lockWithoutReveal();setText('#pdDailyFormNote','Already completed today. New challenge at 00:00 UTC.');
@@ -108,7 +148,7 @@ async function loadChallenge(){
  try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{headers:edgeHeaders()});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load today’s challenge.');renderChallenge(d)}catch(err){$('#pdDailyQuestions').innerHTML=`<div class="pd-daily-error">${escapeHtml(err.message||'PilotDesk Daily is temporarily unavailable.')}</div>`;setText('#pdDailyFormNote','Try again shortly.')}
 }
 async function init(){
- countdown();setInterval(countdown,1000);$('#pdDailyForm')?.addEventListener('submit',submit);applyIncomingChallenge();
+ countdown();setInterval(countdown,1000);renderWeek();$('#pdDailyForm')?.addEventListener('submit',submit);applyIncomingChallenge();
  await loadSupabase();await refreshIdentity();await loadChallenge();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();

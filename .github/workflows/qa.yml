@@ -109,3 +109,5 @@ jobs:
         run: node qa/search-ctr-smoke.mjs
       - name: Run growth + retention checks
         run: node qa/growth-retention-smoke.mjs
+      - name: Run organic sharing checks
+        run: node qa/organic-sharing-smoke.mjs

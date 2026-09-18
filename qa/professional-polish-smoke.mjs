@@ -18,8 +18,10 @@ check(css.includes('@media(prefers-reduced-motion:reduce)'),'experience.css must
 check(css.includes(':focus-visible'),'experience.css must preserve visible keyboard focus');
 check(css.includes('min-height:44px'),'current UI must preserve touch-friendly control sizing');
 
-for(const token of ['--bg:#080d13','--panel:#111b25','--text:#f4f7fa','--line:#263746','--pd-blue:#8dd3ff','--pd-good:#5ecf89'])check(tokens.includes(token),`design token layer missing ${token}`);
-for(const guard of ['body:before{animation:none}','hero-stat:after{animation:none','badge:before,.eyebrow:before{animation:none','.pd-live-dot'])check(tokens.includes(guard),`design token/motion layer missing ${guard}`);
+for(const token of ['--pd-color-canvas:#050506','--pd-color-surface-1:#0c0c0e','--pd-color-text:#f5f5f5','--pd-color-line:rgba(255,255,255,.08)','--pd-color-accent:#8ed8f8','--pd-color-success:#5fd18b','--pd-motion-hover:160ms','--pd-space-4:16px'])check(tokens.includes(token),`design token layer missing ${token}`);
+for(const primitive of [':is(.pd-btn,.calc-btn,button.primary)','input,select,textarea{',':is(.tool-card,.pd-hub-card,.pd-card,.info-card','.input-wrap:focus-within','.pd-live-dot'])check(tokens.includes(primitive),`canonical primitive layer missing ${primitive}`);
+for(const legacyName of ['--bg:var(--pd-color-canvas)','--pd-panel:var(--pd-color-surface-1)','--pd-good:var(--pd-color-success)'])check(tokens.includes(legacyName),`design token compatibility alias missing ${legacyName}`);
+for(const guard of ['body:before,body:after','.hero-stat:after','.badge:before','.eyebrow:before','@media (prefers-reduced-motion:reduce)'])check(tokens.includes(guard),`design token/motion layer missing ${guard}`);
 check(entry.trim().endsWith('@import url("/assets/design-tokens.css");'),'design-tokens.css must remain the final shared cascade authority');
 check(entry.includes('/assets/experience.css'),'shared stylesheet must include the current experience layer');
 

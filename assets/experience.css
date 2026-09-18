@@ -30,3 +30,29 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 .search{flex-wrap:wrap}.pd-filter-label{font-size:13px;color:var(--muted2)}.pd-empty-state{padding:24px;border:1px dashed var(--line-hi);border-radius:12px;background:var(--panel);margin:24px 0}.pd-empty-state h2{margin-top:0}
 @media(max-width:800px){body{padding-bottom:72px}}
 
+/* Calculator directory: task-first search, quick filters, and personal shortcuts. */
+.pd-tool-finder{margin:28px 0 30px;padding:22px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#172532,#0f1821);box-shadow:0 10px 30px #0003}
+.pd-tool-finder-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.pd-tool-finder-head h2{margin:0 0 4px}
+.pd-tool-finder-head p{margin:0}
+#pdToolCount{white-space:nowrap;font-size:13px;color:var(--muted2);padding-top:6px}
+.pd-tool-search-row{display:grid;grid-template-columns:minmax(0,1fr) 220px auto;gap:10px;margin-top:18px}
+#pdToolDirectorySearch{width:100%}
+.pd-tool-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pd-tool-chip{min-height:36px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--bg2);color:var(--muted);font-size:13px}
+.pd-tool-chip:hover,.pd-tool-chip[aria-pressed="true"]{border-color:var(--accent);color:var(--text);background:var(--accent-soft)}
+.pd-tool-personal{margin:28px 0 34px}
+.pd-tool-personal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pd-tool-personal-card{display:flex;flex-direction:column;gap:3px;padding:14px 15px;border:1px solid var(--line);border-radius:10px;background:#101a23aa;color:var(--text)}
+.pd-tool-personal-card:hover{border-color:var(--accent);text-decoration:none}
+.pd-tool-personal-card small{color:var(--accent)!important;text-transform:uppercase;letter-spacing:.08em}
+.pd-tool-personal-card span{font-size:12px;color:var(--muted2)}
+.pd-directory-group{scroll-margin-top:100px}
+.pd-directory-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pd-directory-card{display:flex;flex-direction:column;gap:7px;min-height:142px}
+.pd-directory-card .pd-directory-card-meta{display:block;color:var(--accent);font-size:11px!important;text-transform:uppercase;letter-spacing:.07em}
+.pd-directory-card b{line-height:1.25}
+.pd-directory-card p{margin:0;font-size:13px;line-height:1.45;color:var(--muted2)}
+@media(max-width:900px){.pd-tool-personal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pd-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.pd-tool-finder{padding:16px}.pd-tool-finder-head{display:block}.pd-tool-search-row{grid-template-columns:1fr}.pd-tool-personal-grid,.pd-directory-grid{grid-template-columns:1fr}.pd-directory-card{min-height:0}.pd-tool-chip{flex:1 1 auto}}
+

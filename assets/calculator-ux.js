@@ -34,6 +34,8 @@ const SUMMARY={
 };
 if(results){results.setAttribute('aria-live','polite');results.setAttribute('aria-atomic','true')}
 const advisoryBox=document.createElement('div');advisoryBox.className='safety-warning';advisoryBox.id='pdAdvisory';advisoryBox.setAttribute('aria-live','polite');
+const inputHeading=document.createElement('div');inputHeading.className='pd-calc-section-head';inputHeading.innerHTML='<b>Inputs</b><span>Use consistent units and references.</span>';
+const resultsHeading=document.createElement('div');resultsHeading.className='pd-calc-section-head pd-calc-results-head';resultsHeading.innerHTML='<b>Results</b><span>Primary answer first.</span>';
 const quickHelp=document.createElement('div');quickHelp.className='pd-calc-quick-help';quickHelp.innerHTML='<b>Before you calculate</b><span></span>';
 quickHelp.querySelector('span').textContent=QUICK_HELP[calcKey]||'Confirm each input, unit, and reference before using the result. PilotDesk shows the arithmetic; approved sources control operational decisions.';
 const resultSummary=document.createElement('div');resultSummary.className='pd-calc-result-summary';resultSummary.setAttribute('aria-live','polite');resultSummary.hidden=true;
@@ -41,8 +43,8 @@ resultSummary.innerHTML='<small>QUICK READ</small><strong></strong>';
 const actions=document.createElement('div');actions.className='calc-actions';actions.setAttribute('aria-label','Calculation actions');actions.innerHTML='<button type="button" data-pd-copy-result>Copy result</button><button type="button" data-pd-copy-link>Copy link</button><button type="button" data-pd-share>Share setup</button><button type="button" data-pd-reset>Reset</button><button type="button" data-pd-print>Print</button><a href="/feedback.html?type=calculation" data-pd-report>Report result</a>';
 const more=document.createElement('details');more.className='pd-export-menu';more.innerHTML='<summary>Share / export</summary>';[...actions.children].filter(el=>!el.matches('[data-pd-copy-result],[data-pd-reset]')).forEach(el=>more.append(el));actions.append(more);
 const notice=box.querySelector('.notice');const anchor=notice||box.lastElementChild;
-box.querySelector('.fields')?.insertAdjacentElement('beforebegin',quickHelp);
-results?.insertAdjacentElement('afterend',resultSummary);
+const fields=box.querySelector('.fields');fields?.insertAdjacentElement('beforebegin',inputHeading);fields?.insertAdjacentElement('beforebegin',quickHelp);
+results?.insertAdjacentElement('beforebegin',resultsHeading);results?.insertAdjacentElement('afterend',resultSummary);
 anchor?.insertAdjacentElement('beforebegin',advisoryBox);anchor?.insertAdjacentElement('beforebegin',actions);
 const toast=m=>window.toast?.(m);
 function loadSaved(){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
@@ -67,7 +69,7 @@ box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input')
 actions.querySelector('[data-pd-copy-result]').addEventListener('click',async()=>{sync();try{await navigator.clipboard.writeText(resultText());toast('Result copied');track('Result Copied')}catch{toast('Copy failed')}});
 actions.querySelector('[data-pd-copy-link]').addEventListener('click',async()=>{sync();try{await navigator.clipboard.writeText(location.href);toast('Calculation link copied');track('Calculation Link Copied')}catch{toast('Copy failed')}});
 actions.querySelector('[data-pd-share]').addEventListener('click',async()=>{sync();const title=qs('h1')?.textContent?.trim()||'PilotDesk',url=referralUrl(),text=resultText(url);try{if(navigator.share)await navigator.share({title,text,url});else{await navigator.clipboard.writeText(text);toast('Setup link copied')}track('Calculation Shared');window.pdTrack?.('Calculator Shared',{calculator:document.body.dataset.calc||location.pathname,method:navigator.share?'native':'copy'})}catch(e){if(e?.name!=='AbortError')toast('Share failed')}});
-actions.querySelector('[data-pd-reset]').addEventListener('click',()=>{inputs.forEach(i=>i.value=defaults[i.id]??'');try{localStorage.removeItem(storageKey)}catch{}history.replaceState(null,'',location.pathname);advisoryBox.classList.remove('show');qsa('.result strong').forEach(e=>e.textContent='—');toast('Calculator reset')});
+actions.querySelector('[data-pd-reset]').addEventListener('click',()=>{inputs.forEach(i=>i.value=defaults[i.id]??'');try{localStorage.removeItem(storageKey)}catch{}history.replaceState(null,'',location.pathname);advisoryBox.classList.remove('show');qsa('.result strong').forEach(e=>e.textContent='—');resultSummary.hidden=true;resultSummary.querySelector('strong').textContent='';toast('Calculator reset')});
 actions.querySelector('[data-pd-print]').addEventListener('click',()=>window.print());
 const report=actions.querySelector('[data-pd-report]');if(report){const u=new URL(report.href,location.origin);u.searchParams.set('page',location.pathname);report.href=u.pathname+u.search}
 advisory();requestAnimationFrame(()=>{updateSummary();if([...fromUrl.keys()].some(k=>inputs.some(i=>i.id===k)))calc.click()});

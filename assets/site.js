@@ -64,6 +64,7 @@ function renderRecent(){const el=document.getElementById('recentTools');if(!el)r
 function registerSW(){if(!('serviceWorker' in navigator)||location.protocol!=='https:')return;let started=false,timer=null;const start=()=>{if(started)return;started=true;if(timer)clearTimeout(timer);navigator.serviceWorker.register('/sw.js').catch(()=>{})};['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,start,{once:true,passive:true}));const later=()=>{timer=setTimeout(start,12000)};if(document.readyState==='complete')later();else addEventListener('load',later,{once:true})}
 function loadWorkspaceShell(){if(!document.querySelector('link[href="/assets/hub.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/hub.css';document.head.appendChild(l)}if(!document.querySelector('script[src*="/assets/product-nav.js"]')){const s=document.createElement('script');s.src='/assets/product-nav.js';s.defer=true;document.head.appendChild(s)}}
 if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();
+if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.html$|e6b-flight-computer\.html$|weather\.html$|metar-decoder\.html$)/.test(location.pathname)&&!document.querySelector('script[src*="/assets/page-share.js"]')){const s=document.createElement('script');s.src='/assets/page-share.js';s.defer=true;document.head.appendChild(s)}
 function polishInteractions(){
   const cards=$$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card');
   cards.forEach((card,index)=>{

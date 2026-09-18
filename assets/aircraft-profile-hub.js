@@ -32,8 +32,10 @@ function render(){
  const cov=coverage(p),sets=training().filter(x=>x.aircraftId===p.id);
  const head=document.createElement('div');head.className='pd-aircraft-active-head';
  const ident=document.createElement('div');ident.append(text('small','ACTIVE AIRCRAFT','eyebrow'),text('h2',p.name||'Aircraft'),text('p',[p.type,p.homeAirport].filter(Boolean).join(' · ')||'Aircraft profile'));
- const score=document.createElement('div');score.className='pd-aircraft-coverage';score.append(text('b',cov.count+'/6'),text('span','profile fields covered'));
- head.append(ident,score);host.append(head);
+ const controls=document.createElement('div');controls.className='pd-aircraft-active-controls';
+ const score=document.createElement('div');score.className='pd-aircraft-coverage';score.append(text('b',cov.count+'/6'),text('span','profile fields covered'));controls.append(score);
+ const all=profiles();if(all.length>1){const select=document.createElement('select');select.setAttribute('aria-label','Active aircraft');for(const x of all){const o=document.createElement('option');o.value=x.id;o.textContent=x.name||x.type||'Aircraft';o.selected=x.id===p.id;select.append(o)}select.addEventListener('change',()=>{localStorage.setItem('pd-aircraft-active',select.value);document.dispatchEvent(new CustomEvent('pilotdesk:aircraft-changed',{detail:{id:select.value,action:'active'}}));window.pdTrack?.('Aircraft Active Changed',{source:'aircraft_hub'});render()});controls.append(select)}
+ head.append(ident,controls);host.append(head);
 
  const metrics=document.createElement('div');metrics.className='pd-aircraft-active-metrics';
  const metricData=[
@@ -59,10 +61,12 @@ function render(){
   link('Checklist Trainer','/checklist-trainer.html?aircraft='+encodeURIComponent(p.id)),
   link('POH Chart Studio','/poh-chart-studio.html?aircraft='+encodeURIComponent(p.id))
  );
+ const edit=document.createElement('button');edit.type='button';edit.className='pd-btn secondary';edit.textContent='Edit active profile';edit.addEventListener('click',()=>{$('[data-edit="'+CSS.escape(p.id)+'"]')?.click();window.pdTrack?.('Aircraft Profile Action',{action:'edit_active'})});actions.append(edit);
  if(p.homeAirport){
   actions.append(link(p.homeAirport+' weather','/weather.html?station='+encodeURIComponent(p.homeAirport)),link('Airport page','/airport.html?id='+encodeURIComponent(p.homeAirport)));
  }
  host.append(actions);
+ actions.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>window.pdTrack?.('Aircraft Profile Action',{action:(a.textContent||'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')})));
  const note=document.createElement('p');note.className='fine pd-aircraft-coverage-note';note.textContent='Profile coverage only shows which convenience fields are saved. It does not verify that any value is current, approved, or applicable to this aircraft today.';
  host.append(note);
 }

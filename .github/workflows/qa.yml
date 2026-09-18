@@ -113,3 +113,5 @@ jobs:
         run: node qa/organic-sharing-smoke.mjs
       - name: Run final product audit
         run: node qa/final-product-audit.mjs
+      - name: Run first-run experience checks
+        run: node qa/first-run-experience-smoke.mjs

@@ -11,7 +11,7 @@ const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
 
 function localExists(url){
   let p=String(url).split('#')[0].split('?')[0];
-  if(!p||p==='/'||p.startsWith('/api/'))return true;
+  if(!p||p==='/'||p.startsWith('/api/')||p.startsWith('/_vercel/'))return true;
   if(!p.startsWith('/'))return true;
   if(p==='/calculators/weight-balance-builder'||p==='/calculators/weight-balance-builder/')return fs.existsSync('weight-balance.html');
   p=decodeURIComponent(p).replace(/^\//,'');

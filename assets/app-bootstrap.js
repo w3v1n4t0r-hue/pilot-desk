@@ -14,7 +14,7 @@ function registerServiceWorkerEarly(){
  if(document.readyState==='complete')schedule();else addEventListener('load',schedule,{once:true});
 }
 registerServiceWorkerEarly();
-load('/assets/navigation-data.js');load('/assets/flight-store.js');load('/assets/global-nav.js');load('/assets/theme.js');
+load('/assets/brand.js');load('/assets/navigation-data.js');load('/assets/flight-store.js');load('/assets/global-nav.js');load('/assets/theme.js');
 if(calc){load('/assets/features.js');load('/assets/calculator-ux.js');load('/assets/crosswind-mfd.js');load('/assets/pilotdesk-plus.js')}
 if(calc)load('/assets/share-enhance.js');
 if(path==='/history.html')load('/assets/pilotdesk-plus.js');

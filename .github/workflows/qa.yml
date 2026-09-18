@@ -79,6 +79,8 @@ jobs:
         run: node qa/flight-workspace-smoke.mjs
       - name: Run connected flight-planning checks
         run: node qa/flight-journey-smoke.mjs
+      - name: Run Aircraft Profiles 2.0 checks
+        run: node qa/aircraft-profiles-smoke.mjs
       - name: Run PilotDesk v2 master checks
         run: node qa/v2-smoke.mjs
       - name: Run planner lab checks

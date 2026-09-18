@@ -1,0 +1,244 @@
+/*
+ PilotDesk consistency layer.
+ Loaded last so every page family shares the same structural rhythm without
+ requiring page-by-page inline overrides.
+*/
+
+:root{
+  --pd-page-max:1240px;
+  --pd-reading-max:860px;
+  --pd-panel-radius:14px;
+}
+
+/* One header treatment across Astro, legacy, calculators, training and tools. */
+.topbar{
+  min-height:68px;
+  height:68px;
+  padding-inline:max(20px,calc((100vw - var(--pd-page-max))/2));
+  gap:18px;
+}
+.topbar .brand{
+  min-width:max-content;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.topbar .brandmark{
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+  padding:0;
+  border:0;
+  border-radius:10px;
+  overflow:hidden;
+  background:transparent;
+}
+.topbar .brandmark:empty{
+  background:transparent url("/assets/icon.svg") center/contain no-repeat;
+}
+.topbar .brandmark img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.topbar .brandmark svg{display:none!important}
+.topbar .brand>span:last-child{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.topbar .brand b{
+  font-style:normal;
+  font-weight:750;
+  letter-spacing:-.015em;
+  font-size:18px;
+}
+.topbar .brand small{
+  display:block;
+  margin-top:1px;
+  font-size:9px!important;
+  line-height:1.1;
+  letter-spacing:.16em;
+}
+
+/* Consistent page width and vertical rhythm. */
+.shell,
+main.shell{
+  width:min(100%,var(--pd-page-max));
+  margin-inline:auto;
+  padding:40px 22px 72px;
+}
+.content-page{
+  width:min(100%,1080px);
+  max-width:1080px;
+}
+.content-page>h1,
+.content-page>h1+p,
+.content-page>h2,
+.content-page>h2+p,
+.content-page>ul,
+.content-page>ol,
+.content-page>.formula,
+.content-page>.source-table{
+  max-width:var(--pd-reading-max);
+}
+.content-page>h1{
+  margin-top:10px;
+  margin-bottom:16px;
+  line-height:1.02;
+}
+.content-page>h1+p{
+  font-size:17px;
+  line-height:1.7;
+}
+.content-page>h2{
+  margin-top:42px;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+}
+.content-page>h2:first-of-type{margin-top:34px}
+.content-page p,
+.content-page li{line-height:1.68}
+
+/* Hero language stays consistent regardless of page family. */
+.hero,
+.calc-hero,
+.pd-flight-hero,
+.wx-hero,
+.pd-page-hero,
+.pd-prep-hero,
+.pd-account-hero{
+  margin:0 0 28px;
+}
+.calc-hero h1,
+.pd-flight-hero h1,
+.wx-hero h1,
+.pd-page-hero h1,
+.pd-prep-hero h1,
+.pd-account-hero h1{
+  font-size:clamp(34px,4.4vw,52px);
+  line-height:1.04;
+  letter-spacing:-.045em;
+  margin:8px 0 12px;
+}
+.calc-hero p,
+.pd-flight-hero p,
+.wx-hero p,
+.pd-page-hero p,
+.pd-prep-hero p,
+.pd-account-hero p{
+  max-width:760px;
+  font-size:16px;
+  line-height:1.65;
+}
+
+/* Panels: one radius/border system; only clickable cards move on hover. */
+.tool-card,
+.pd-hub-card,
+.pd-card,
+.info-card,
+.side-card,
+.pd-panel,
+.rp-panel,
+.calc-box,
+.pd-daily-card,
+.pd-daily-sidecard{
+  border-radius:var(--pd-panel-radius);
+}
+.info-card:hover,
+.side-card:hover,
+.pd-panel:hover,
+.rp-panel:hover{
+  transform:none;
+  box-shadow:0 10px 30px #0003;
+  border-color:var(--line);
+}
+a.tool-card:hover,
+a.pd-hub-card:hover,
+a.pd-card:hover,
+.pd-home-action:hover{
+  transform:translateY(-2px);
+}
+
+/* Calculator family. */
+.calculator-layout{
+  grid-template-columns:minmax(0,1fr) 280px;
+  gap:28px;
+}
+.calc-box{padding:22px}
+.fields{gap:14px}
+.field label{font-size:13px}
+.results{gap:10px}
+.result{min-width:0}
+.related a{min-height:40px;display:flex;align-items:center}
+
+/* Shared buttons/actions. */
+.pd-actions,
+.calc-actions{
+  gap:10px;
+  align-items:center;
+}
+.pd-actions>a:not(.pd-btn),
+.calc-actions>a:not(.pd-btn){
+  min-height:42px;
+  display:inline-flex;
+  align-items:center;
+}
+
+/* Tables should not break narrow layouts. */
+.source-table{
+  display:table;
+  width:100%;
+}
+.content-page:has(.source-table){
+  overflow-wrap:anywhere;
+}
+
+/* One footer treatment. */
+footer{
+  width:min(100%,var(--pd-page-max));
+  max-width:var(--pd-page-max);
+  margin-inline:auto;
+  padding:30px 22px 44px;
+  grid-template-columns:minmax(220px,1fr) auto;
+  align-items:start;
+}
+footer>div:first-child p{max-width:420px}
+.footer-links{
+  justify-content:flex-end;
+  row-gap:10px;
+}
+footer .fine{
+  margin-top:4px;
+  max-width:780px;
+}
+
+/* Mobile layout should feel like the same product, not a different shell. */
+@media(max-width:900px){
+  .calculator-layout{grid-template-columns:1fr}
+  .sidebar{position:static}
+}
+@media(max-width:800px){
+  .topbar{
+    position:sticky;
+    top:0;
+    min-height:64px;
+    height:auto;
+    padding:10px 16px;
+    flex-wrap:wrap;
+  }
+  .topbar .brandmark{width:38px;height:38px;flex-basis:38px}
+  .topbar .brand small{display:none}
+  .pd-main-nav.open{top:63px}
+  .shell,main.shell{padding:28px 16px 54px}
+  .content-page{max-width:100%}
+  .content-page>h1{font-size:clamp(36px,10vw,48px)}
+  footer{grid-template-columns:1fr;padding-inline:16px}
+  .footer-links{justify-content:flex-start}
+}
+@media(max-width:520px){
+  .calc-box{padding:16px}
+  .content-page>h1+p{font-size:16px}
+  .pd-hub-card,.tool-card,.pd-card{min-height:0}
+}

@@ -115,3 +115,5 @@ jobs:
         run: node qa/final-product-audit.mjs
       - name: Run first-run experience checks
         run: node qa/first-run-experience-smoke.mjs
+      - name: Run Global Search 2.0 checks
+        run: node qa/global-search-smoke.mjs

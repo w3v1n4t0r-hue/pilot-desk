@@ -132,3 +132,10 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 @media(max-width:850px){.pd-seo-topic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.pd-seo-topic-grid{grid-template-columns:1fr}.pd-topic-links{display:grid;grid-template-columns:1fr}.pd-topic-links a{justify-content:flex-start}}
 
+/* Pass 15: lightweight sharing for useful PilotDesk resources. */
+.pd-page-share{display:flex;align-items:center;gap:8px;margin:14px 0 26px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#0f1720}
+.pd-page-share span{margin-right:auto;color:var(--muted);font-size:12px}
+.pd-page-share button{min-height:36px;padding:7px 10px;border:1px solid var(--line-hi);border-radius:7px;background:var(--bg2);color:var(--text);font:600 12px system-ui;cursor:pointer}
+.pd-page-share button:hover{border-color:var(--accent);background:var(--accent-soft)}
+@media(max-width:560px){.pd-page-share{display:grid;grid-template-columns:1fr 1fr}.pd-page-share span{grid-column:1/-1;margin:0}.pd-page-share button{width:100%}}
+

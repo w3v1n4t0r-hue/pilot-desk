@@ -71,6 +71,8 @@ jobs:
         run: node qa/skill-gap-smoke.mjs
       - name: Run Written Prep checks
         run: node qa/written-prep-smoke.mjs
+      - name: Run training system checks
+        run: node qa/training-system-smoke.mjs
       - name: Run flight workspace checks
         run: node qa/flight-workspace-smoke.mjs
       - name: Run PilotDesk v2 master checks

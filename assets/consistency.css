@@ -242,3 +242,28 @@ footer .fine{
   .content-page>h1+p{font-size:16px}
   .pd-hub-card,.tool-card,.pd-card{min-height:0}
 }
+
+/* Pass 4: narrow-screen resilience and overflow guards. */
+.pd-field-full{grid-column:1/-1}
+img,svg,canvas,video{max-width:100%}
+pre,.formula,.embed-code{max-width:100%;overflow-x:auto}
+table{max-width:100%}
+input,select,textarea,button{min-width:0}
+.pd-actions,.calc-actions,.embed-actions{max-width:100%}
+.pd-actions>a,.pd-actions>button,.calc-actions>a,.calc-actions>button,.embed-actions>a,.embed-actions>button{
+  overflow-wrap:anywhere;
+}
+@media(max-width:620px){
+  .trust-row{grid-template-columns:1fr}
+  .trust-card{border-right:0;border-bottom:1px solid var(--line)}
+  .trust-card:last-child{border-bottom:0}
+  .footer-links{gap:10px 14px}
+}
+@media(max-width:480px){
+  .pd-actions>a,.pd-actions>button,.embed-actions>a,.embed-actions>button{
+    width:100%;
+    justify-content:center;
+  }
+  .source-table{font-size:11px}
+  .source-table th,.source-table td{padding:8px 6px}
+}

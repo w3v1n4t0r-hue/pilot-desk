@@ -7,11 +7,43 @@ const inputs=qsa('[data-calc-input]'),calc=qs('[data-calculate]'),box=qs('.calc-
 if(!inputs.length||!calc||!box)return;
 const storageKey='pd-calc-inputs:'+location.pathname;
 const defaults=Object.fromEntries(inputs.map(i=>[i.id,i.defaultValue]));
+const calcKey=document.body.dataset.calc||location.pathname.split('/').filter(Boolean).pop()||'calculator';
+const QUICK_HELP={
+  crosswind:'Use runway heading and wind direction from the same magnetic/true reference. The primary result is crosswind magnitude and side.',
+  densityAltitude:'Pressure altitude + OAT drive the result. Use the aircraft POH/AFM charts—not density altitude alone—for takeoff and climb performance.',
+  fuelRequired:'Fuel on board is compared with trip fuel plus the entered reserve. Confirm the reserve you enter matches the operation you are planning.',
+  windTriangle:'Use a true course with true wind, or keep all directional references consistently magnetic. The result gives heading, groundspeed, and WCA.',
+  tasApprox:'This is the common 2% per 1,000 ft training estimate. It is not a substitute for aircraft-specific air-data or performance information.',
+  climbGradient:'Enter the required gradient in ft/NM and the groundspeed you expect during the climb. The primary result is required FPM.',
+  threeDegree:'Enter groundspeed to estimate the FPM for a 3° path. The exact result and the common GS × 5 shortcut are shown together.',
+  momentCg:'The calculated CG is arithmetic only. Compare it with the approved envelope and weight limits for the exact aircraft.',
+  rateTurn:'Use true airspeed and bank angle. The results show turn rate, time for 360°, and turn radius.',
+  turnRadius:'Use true airspeed and bank angle. The results show radius, diameter, and turn rate.'
+};
+const SUMMARY={
+  crosswind:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Crosswind: '+a+'. '+b+'. Relative angle: '+d+'.':''},
+  densityAltitude:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Density altitude: '+a+'. ISA temperature: '+b+'; deviation: '+d+'.':''},
+  fuelRequired:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Required fuel: '+a+'. Trip fuel: '+b+'. Margin after reserve: '+d+'.':''},
+  windTriangle:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Heading: '+a+'. Groundspeed: '+b+'. Wind correction: '+d+'.':''},
+  tasApprox:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent;return a&&a!=='—'?'Estimated TAS: '+a+'. Estimated increase over CAS: '+b+'.':''},
+  climbGradient:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent;return a&&a!=='—'?'Required vertical speed: '+a+'. Equivalent gradient: '+b+'.':''},
+  threeDegree:()=>{const a=qs('#out0')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'3° path: '+a+'. GS × 5 shortcut: '+d+'.':''},
+  momentCg:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent;return a&&a!=='—'?'Station moment: '+a+'. Calculated total CG: '+b+'.':''},
+  rateTurn:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Turn rate: '+a+'. 360° time: '+b+'. Radius: '+d+'.':''},
+  turnRadius:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Turn radius: '+a+'. Diameter: '+b+'. Turn rate: '+d+'.':''}
+};
 if(results){results.setAttribute('aria-live','polite');results.setAttribute('aria-atomic','true')}
 const advisoryBox=document.createElement('div');advisoryBox.className='safety-warning';advisoryBox.id='pdAdvisory';advisoryBox.setAttribute('aria-live','polite');
+const quickHelp=document.createElement('div');quickHelp.className='pd-calc-quick-help';quickHelp.innerHTML='<b>Before you calculate</b><span></span>';
+quickHelp.querySelector('span').textContent=QUICK_HELP[calcKey]||'Confirm each input, unit, and reference before using the result. PilotDesk shows the arithmetic; approved sources control operational decisions.';
+const resultSummary=document.createElement('div');resultSummary.className='pd-calc-result-summary';resultSummary.setAttribute('aria-live','polite');resultSummary.hidden=true;
+resultSummary.innerHTML='<small>QUICK READ</small><strong></strong>';
 const actions=document.createElement('div');actions.className='calc-actions';actions.setAttribute('aria-label','Calculation actions');actions.innerHTML='<button type="button" data-pd-copy-result>Copy result</button><button type="button" data-pd-copy-link>Copy link</button><button type="button" data-pd-share>Share setup</button><button type="button" data-pd-reset>Reset</button><button type="button" data-pd-print>Print</button><a href="/feedback.html?type=calculation" data-pd-report>Report result</a>';
 const more=document.createElement('details');more.className='pd-export-menu';more.innerHTML='<summary>Share / export</summary>';[...actions.children].filter(el=>!el.matches('[data-pd-copy-result],[data-pd-reset]')).forEach(el=>more.append(el));actions.append(more);
-const notice=box.querySelector('.notice');const anchor=notice||box.lastElementChild;anchor?.insertAdjacentElement('beforebegin',advisoryBox);anchor?.insertAdjacentElement('beforebegin',actions);
+const notice=box.querySelector('.notice');const anchor=notice||box.lastElementChild;
+box.querySelector('.fields')?.insertAdjacentElement('beforebegin',quickHelp);
+results?.insertAdjacentElement('afterend',resultSummary);
+anchor?.insertAdjacentElement('beforebegin',advisoryBox);anchor?.insertAdjacentElement('beforebegin',actions);
 const toast=m=>window.toast?.(m);
 function loadSaved(){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
 const fromUrl=new URLSearchParams(location.search),saved=loadSaved();
@@ -27,7 +59,8 @@ function outputText(){return qsa('.result').map(r=>{const k=r.querySelector('sma
 function resultText(url=location.href){const title=qs('.calc-hero h1')?.textContent?.trim()||'PilotDesk calculation';const out=outputText();return [title,...inputText(),...(out.length?['',...out]:[]),'',`Try this exact setup: ${url}`].join('\n')}
 function track(name){try{window.va?.('event',{name,data:{calculator:document.body.dataset.calc||location.pathname}})}catch{}}
 function bringResultIntoView(){if(!results||!matchMedia('(max-width:760px)').matches)return;const r=results.getBoundingClientRect();if(r.top>=0&&r.bottom<=innerHeight)return;results.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'})}
-function afterCalculate(){sync();track('Calculator Used');bringResultIntoView();const detail={title:qs('.calc-hero h1')?.textContent?.trim()||'Calculator',path:location.pathname,inputs:valuesObject(),summary:outputText().slice(0,3).join(' · '),url:location.href};document.dispatchEvent(new CustomEvent('pilotdesk:calculated',{detail}))}
+function updateSummary(){const fn=SUMMARY[calcKey],text=fn?.()||'';resultSummary.hidden=!text;resultSummary.querySelector('strong').textContent=text}
+function afterCalculate(){sync();updateSummary();track('Calculator Used');bringResultIntoView();const detail={title:qs('.calc-hero h1')?.textContent?.trim()||'Calculator',path:location.pathname,inputs:valuesObject(),summary:outputText().slice(0,3).join(' · '),url:location.href};document.dispatchEvent(new CustomEvent('pilotdesk:calculated',{detail}))}
 calc.addEventListener('click',()=>setTimeout(afterCalculate,0));
 inputs.forEach(i=>{i.addEventListener('change',sync);i.addEventListener('input',advisory)});
 box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input')){e.preventDefault();calc.click()}});
@@ -37,5 +70,5 @@ actions.querySelector('[data-pd-share]').addEventListener('click',async()=>{sync
 actions.querySelector('[data-pd-reset]').addEventListener('click',()=>{inputs.forEach(i=>i.value=defaults[i.id]??'');try{localStorage.removeItem(storageKey)}catch{}history.replaceState(null,'',location.pathname);advisoryBox.classList.remove('show');qsa('.result strong').forEach(e=>e.textContent='—');toast('Calculator reset')});
 actions.querySelector('[data-pd-print]').addEventListener('click',()=>window.print());
 const report=actions.querySelector('[data-pd-report]');if(report){const u=new URL(report.href,location.origin);u.searchParams.set('page',location.pathname);report.href=u.pathname+u.search}
-advisory();if([...fromUrl.keys()].some(k=>inputs.some(i=>i.id===k)))requestAnimationFrame(()=>calc.click());
+advisory();requestAnimationFrame(()=>{updateSummary();if([...fromUrl.keys()].some(k=>inputs.some(i=>i.id===k)))calc.click()});
 })();

@@ -15,7 +15,7 @@ const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 
 check(!bootstrap.includes('/assets/sticky-app.js'),'retired sticky app shell must not be reintroduced into the streamlined bootstrap');
-check(bootstrap.includes('/assets/flight-store.js')&&bootstrap.includes('/assets/global-nav.js'),'streamlined app shell must retain shared flight storage and navigation');
+check(!bootstrap.includes('/assets/flight-store.js')&&bootstrap.includes('/assets/global-nav.js')&&bootstrap.includes('/assets/navigation-core.js'),'streamlined app shell must keep flight storage route-scoped while retaining lightweight shared navigation');
 check(analytics.includes('Tool Opened')&&analytics.includes('Calculation Completed')&&analytics.includes('Save Action')&&analytics.includes('Share Action'),'analytics funnel milestones missing');
 check(analytics.includes('__pdTrackQueue'),'deferred analytics must flush buffered early events');
 check(analytics.includes('blockedKey')&&analytics.includes('query|search|term|text')&&analytics.includes('tailnumber')&&analytics.includes('passenger'),'analytics must discard free-text and personal-value fields before sending events');
@@ -24,7 +24,7 @@ check(weather.includes('tafIssueAge')&&weather.includes('tafExpired')&&weather.i
 check(weather.includes('pilotdesk:weatherloaded'),'weather analytics should expose only a coarse result event');
 check(/const CACHE='pilotdesk-v\d+'/.test(sw)&&sw.includes("'/offline.html'")&&sw.includes('Promise.allSettled'),'offline release hardening missing');
 check(sw.includes("importScripts('/assets/offline-precache.js')")&&sw.includes('GENERATED_CALCULATORS')&&sw.includes('migrateCalculatorEntries'),'calculator offline precache or cache migration missing');
-check(sw.includes("'/assets/navigation-data.js'")&&sw.includes('MAX_RUNTIME_ENTRIES')&&sw.includes('event.preloadResponse'),'PWA cache should include shared navigation data, stay bounded and use navigation preload');
+check(sw.includes("'/assets/navigation-core.js'")&&!sw.includes("'/assets/navigation-data.js'")&&sw.includes('MAX_RUNTIME_ENTRIES')&&sw.includes('event.preloadResponse'),'PWA cache should use lightweight shared navigation, stay bounded and use navigation preload');
 check(sw.includes('networkOnlyPath')&&sw.includes("url.origin!==self.location.origin"),'service worker must keep live API and cross-origin requests out of static caches');
 check(bootstrap.includes("serviceWorker.register('/sw.js')")&&bootstrap.includes('requestIdleCallback')&&bootstrap.includes('timeout:1500'),'service worker should register shortly after load/idle');
 check(offline.includes('Do not rely on cached operational data')&&offline.includes('Calculator tools available offline'),'offline page needs a safety boundary and deterministic calculator guidance');

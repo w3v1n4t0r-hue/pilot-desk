@@ -5,17 +5,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Aviation Calculators | PilotDesk"
   description="Browse PilotDesk aviation calculators for flight planning, performance, navigation, weather, weight and balance, and conversions."
   canonical="/tools.html"
-  robots="noindex,follow"
+  robots="index,follow"
 >
   <section class="pd-page-hero">
     <div class="eyebrow">AVIATION CALCULATORS</div>
     <h1>Find the calculation you need.</h1>
-    <p>Flight planning, performance, navigation, weather, weight and balance, and conversions. Every calculator shows the math and assumptions.</p>
+    <p>Search by what you're trying to solve—not by remembering a calculator name. Flight planning, performance, navigation, weather, weight and balance, and conversions are all here.</p>
   </section>
-  <section class="category">
-    <div class="category-head"><h2>All calculators</h2><span id="pdToolCount">47 tools</span></div>
-    <div class="search"><input id="pdToolDirectorySearch" type="search" placeholder="Search calculators" autocomplete="off" /><label class="pd-filter-label" for="pdToolDirectoryGroup">Category</label><select id="pdToolDirectoryGroup"><option value="">All categories</option></select></div>
+  <section class="pd-tool-finder" aria-labelledby="pdToolFinderTitle">
+    <div class="pd-tool-finder-head">
+      <div><h2 id="pdToolFinderTitle">What do you need to calculate?</h2><p>Try “crosswind,” “fuel,” “CG,” “ft/NM,” “groundspeed,” or “descent.”</p></div>
+      <span id="pdToolCount" aria-live="polite">Loading tools…</span>
+    </div>
+    <div class="pd-tool-search-row">
+      <label class="skip-link" for="pdToolDirectorySearch">Search aviation calculators</label>
+      <input id="pdToolDirectorySearch" type="search" placeholder="Search by task, formula, or topic" autocomplete="off" enterkeyhint="search" />
+      <label class="skip-link" for="pdToolDirectoryGroup">Filter calculators by category</label>
+      <select id="pdToolDirectoryGroup"><option value="">All categories</option></select>
+      <button class="utility-btn" id="pdToolClear" type="button" hidden>Clear</button>
+    </div>
+    <div class="pd-tool-chips" id="pdToolChips" aria-label="Quick calculator filters"></div>
   </section>
-  <div id="pdToolDirectory"></div>
+
+  <section class="pd-tool-personal" id="pdToolPersonal" hidden aria-labelledby="pdToolPersonalTitle">
+    <div class="category-head"><h2 id="pdToolPersonalTitle">Your tools</h2><span>Pinned and recent</span></div>
+    <div class="pd-tool-personal-grid" id="pdToolPersonalGrid"></div>
+  </section>
+
+  <div id="pdToolDirectory" aria-live="polite"></div>
   <script slot="scripts" is:inline defer src="/assets/tools-directory.js"></script>
 </BaseLayout>

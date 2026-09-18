@@ -51,6 +51,8 @@ jobs:
         run: node scripts/check-home-card-regression.js
       - name: Run tool-first optimization checks
         run: node qa/tool-first-smoke.mjs
+      - name: Run calculator directory checks
+        run: node qa/tools-directory-smoke.mjs
       - name: Run preview consolidation checks
         run: node qa/preview-consolidation-smoke.mjs
       - name: Run deployment discipline checks

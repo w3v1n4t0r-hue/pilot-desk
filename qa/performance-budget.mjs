@@ -12,6 +12,7 @@ const budgets={
   'assets/search-intelligence.js':12*1024,
   'assets/flight-journey.js':12*1024,
   'assets/aircraft-profile-hub.js':12*1024,
+  'assets/flights.js':20*1024,
   'assets/inventory-data.js':24*1024,
   'assets/experience.js':24*1024,
   'assets/experience.css':40*1024,

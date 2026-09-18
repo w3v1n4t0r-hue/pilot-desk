@@ -32,7 +32,7 @@ for(const file of files){
  check(!/\bTODO\b|\bFIXME\b/.test(html),file+': unfinished TODO/FIXME text in public HTML');
  if(indexablePage){
   check(/rel=["']canonical["']/i.test(html),file+': indexable page missing canonical');
-  check(/<title>[^<]{8,}</title>/i.test(html),file+': indexable page missing useful title');
+  check(/<title>[^<]{8,}<\/title>/i.test(html),file+': indexable page missing useful title');
   check(/meta\s+name=["']description["'][^>]*content=["'][^"']{40,}["']/i.test(html),file+': indexable page missing useful meta description');
  }
  if(/class=["'][^"']*brand[^"']*["']/i.test(html)){

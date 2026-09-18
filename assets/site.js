@@ -66,10 +66,10 @@ function loadWorkspaceShell(){if(!document.querySelector('link[href="/assets/hub
 if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();
 if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.html$|e6b-flight-computer\.html$|weather\.html$|metar-decoder\.html$)/.test(location.pathname)&&!document.querySelector('script[src*="/assets/page-share.js"]')){const s=document.createElement('script');s.src='/assets/page-share.js';s.defer=true;document.head.appendChild(s)}
 function polishInteractions(){
-  const cards=$$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card');
+  const cards=$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card'),finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
   cards.forEach((card,index)=>{
     card.style.setProperty('--pd-order',String(index%8));
-    card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--pd-x',`${e.clientX-r.left}px`);card.style.setProperty('--pd-y',`${e.clientY-r.top}px`)},{passive:true});
+    if(finePointer)card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--pd-x',`${e.clientX-r.left}px`);card.style.setProperty('--pd-y',`${e.clientY-r.top}px`)},{passive:true});
   });
   if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver'in window){
     const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.animate([{opacity:.01,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],{duration:420,delay:Number(entry.target.style.getPropertyValue('--pd-order')||0)*28,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});reveal.unobserve(entry.target)}),{rootMargin:'0px 0px -6%'});

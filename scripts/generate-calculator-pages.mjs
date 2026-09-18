@@ -146,7 +146,18 @@ const faqBySlug={
 };
 
 const seoTitleBySlug={
-  'isa-temperature':'ISA Temperature Calculator by Altitude | PilotDesk'
+  'isa-temperature':'ISA Temperature Calculator by Altitude | PilotDesk',
+  'density-altitude':'Density Altitude Calculator for Pilots | PilotDesk',
+  'rate-of-turn':'Rate of Turn Calculator | Standard-Rate Turn Math | PilotDesk',
+  'turn-radius':'Aircraft Turn Radius Calculator | Speed & Bank Angle | PilotDesk',
+  'true-airspeed':'True Airspeed Calculator | 2% TAS Rule Estimate | PilotDesk'
+};
+
+const seoDescriptionBySlug={
+  'density-altitude':'Free aviation density altitude calculator. Enter pressure altitude and OAT to calculate density altitude, ISA temperature, and ISA deviation.',
+  'rate-of-turn':'Free aircraft rate of turn calculator. Enter true airspeed and bank angle to calculate turn rate, 360-degree turn time, and turn radius.',
+  'turn-radius':'Free aircraft turn radius calculator. Enter true airspeed and bank angle to calculate turn radius, turn diameter, and rate of turn.',
+  'true-airspeed':'Free true airspeed calculator using the common 2% TAS rule. Estimate TAS from calibrated airspeed and pressure altitude for pilot training.'
 };
 
 function genericFaq(title,category){return [
@@ -166,7 +177,8 @@ for(const [slug,key,title,desc,fields,results] of calcs){
   const resultNames=results;
   const defaults=fields.map(x=>`${x[1]} ${x[2]}${x[3]?' '+x[3]:''}`).join('; ');
   const metaCandidate=desc.length<118?`${desc} Free browser-based aviation calculator for pilots and flight students.`:desc;
-  const metaDesc=metaCandidate.length>158?metaCandidate.slice(0,155).replace(/\s+\S*$/,'')+'…':metaCandidate;
+  const defaultMetaDesc=metaCandidate.length>158?metaCandidate.slice(0,155).replace(/\s+\S*$/,'')+'…':metaCandidate;
+  const metaDesc=seoDescriptionBySlug[slug]||defaultMetaDesc;
   const titleTag=seoTitleBySlug[slug]||`${title} Calculator for Pilots | PilotDesk`;
 
   const siblings=(categories[category]||[]).filter(x=>x!==slug);

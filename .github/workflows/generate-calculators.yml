@@ -83,6 +83,10 @@ jobs:
             guides/three-degree-descent.html \
             guides/checkride-study-guides.html \
             guides/pilot-checkride-math.html \
+            guides/pilot-math-formulas.html \
+            guides/pilot-math-cheat-sheet.html \
+            guides/isa-temperature.html \
+            guides/types-of-altitude.html \
             guides/multiengine-checkride-study-guide.html \
             guides/critical-engine-multiengine.html \
             guides/multiengine-vmc-factors.html \

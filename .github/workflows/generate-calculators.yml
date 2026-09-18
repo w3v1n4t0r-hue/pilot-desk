@@ -8,6 +8,8 @@ on:
       - 'scripts/generate-calculator-pages.mjs'
       - 'scripts/strengthen-guides.mjs'
       - 'scripts/clean-guide-boilerplate.mjs'
+      - 'scripts/editorial-remediate-articles.mjs'
+      - 'scripts/normalize-canonical-brand.mjs'
       - 'scripts/normalize-guide-schema.mjs'
       - 'scripts/normalize-public-copy.mjs'
       - 'scripts/postprocess-site.mjs'
@@ -26,6 +28,8 @@ on:
       - 'scripts/generate-calculator-pages.mjs'
       - 'scripts/strengthen-guides.mjs'
       - 'scripts/clean-guide-boilerplate.mjs'
+      - 'scripts/editorial-remediate-articles.mjs'
+      - 'scripts/normalize-canonical-brand.mjs'
       - 'scripts/normalize-guide-schema.mjs'
       - 'scripts/normalize-public-copy.mjs'
       - 'scripts/postprocess-site.mjs'
@@ -108,6 +112,10 @@ jobs:
             guides/three-degree-descent-rate-chart.html
       - name: Remove generic guide boilerplate
         run: node scripts/clean-guide-boilerplate.mjs
+      - name: Apply technical editorial baseline to every article
+        run: node scripts/editorial-remediate-articles.mjs
+      - name: Normalize all pages to the handmade PilotDesk logo
+        run: node scripts/normalize-canonical-brand.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
       - name: Verify generated output is already committed

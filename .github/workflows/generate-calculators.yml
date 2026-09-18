@@ -79,6 +79,8 @@ jobs:
             guides/emergency-glide-planning.html \
             guides/crosswind-component.html \
             guides/density-altitude.html \
+            guides/accelerated-stall-load-factor.html \
+            guides/weight-balance-envelope.html \
             guides/pivotal-altitude.html \
             guides/three-degree-descent.html \
             guides/checkride-study-guides.html \

@@ -23,11 +23,16 @@ async function ensureNavigationCore(){
 }
 let searchPromise;
 async function ensureSearchData(){
- if(searchable.length)return searchable;
- if(Array.isArray(window.PILOTDESK_NAV_SEARCH)){searchable=window.PILOTDESK_NAV_SEARCH;return searchable}
- if(Array.isArray(window.PILOTDESK_NAV?.searchable)){searchable=window.PILOTDESK_NAV.searchable;return searchable}
- searchPromise=searchPromise||loadDataScript('/assets/navigation-search.js',()=>Array.isArray(window.PILOTDESK_NAV_SEARCH));
- await searchPromise;searchable=Array.isArray(window.PILOTDESK_NAV_SEARCH)?window.PILOTDESK_NAV_SEARCH:[];return searchable;
+ if(searchable.length&&window.PilotDeskSearch)return searchable;
+ if(Array.isArray(window.PILOTDESK_NAV_SEARCH))searchable=window.PILOTDESK_NAV_SEARCH;
+ else if(Array.isArray(window.PILOTDESK_NAV?.searchable))searchable=window.PILOTDESK_NAV.searchable;
+ searchPromise=searchPromise||Promise.all([
+  searchable.length?Promise.resolve(true):loadDataScript('/assets/navigation-search.js',()=>Array.isArray(window.PILOTDESK_NAV_SEARCH)),
+  window.PilotDeskSearch?Promise.resolve(true):loadDataScript('/assets/search-intelligence.js',()=>Boolean(window.PilotDeskSearch))
+ ]);
+ await searchPromise;
+ searchable=searchable.length?searchable:(Array.isArray(window.PILOTDESK_NAV_SEARCH)?window.PILOTDESK_NAV_SEARCH:[]);
+ return searchable;
 }
 function ensureStyle(href,key){if([...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>{try{return new URL(l.href,location.href).pathname===href}catch{return false}}))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset[key]='1';document.head.appendChild(l)}
 function ensureUnifiedStyle(){ensureStyle('/assets/experience.css','pdExperience')}
@@ -35,7 +40,19 @@ function markStandaloneApp(){if(!APP_PATHS.has(location.pathname))return;documen
 function sectionCurrent(section,path){return section.paths.some(p=>p.endsWith('/')?path.startsWith(p):path===p)}
 function iconSearch(){return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'}
 function navMarkup(path){return sections.map(s=>`<div class="pd-nav-item" data-pd-nav-item><button class="pd-nav-button" type="button" aria-expanded="false" ${sectionCurrent(s,path)?'aria-current="page"':''}>${s.label}<i class="pd-nav-caret"></i></button><div class="pd-nav-menu">${s.items.map(([href,title,copy])=>`<a href="${href}"><b>${title}</b><span>${copy}</span></a>`).join('')}</div></div>`).join('')}
-function renderSearchResults(host,q){const query=String(q||'').trim().toLowerCase();if(!query){host.hidden=true;host.innerHTML='';return}const words=query.split(/\s+/).filter(Boolean);const hits=searchable.map(([title,href,keywords])=>({title,href,score:words.reduce((n,w)=>n+(title.toLowerCase().includes(w)?3:0)+(keywords.includes(w)?1:0),0)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,7);host.innerHTML=hits.length?hits.map(x=>`<a href="${x.href}">${x.title}</a>`).join(''):'<span>No PilotDesk page matched that search.</span>';host.hidden=false}
+function searchLengthBucket(q){const n=String(q||'').trim().length;return n<5?'short':n<14?'medium':'long'}
+function renderSearchResults(host,q){
+ const query=String(q||'').trim();
+ if(!query){
+  const suggestions=window.PilotDeskSearch?.suggestions||[];
+  if(!suggestions.length){host.hidden=true;host.innerHTML='';return}
+  host.innerHTML='<div class="pd-search-suggest-label">Try a pilot task</div>'+suggestions.map(x=>`<button type="button" class="pd-search-suggestion" data-pd-search-suggest="${x}">${x}</button>`).join('');
+  host.hidden=false;return;
+ }
+ const hits=window.PilotDeskSearch?.rank(query,searchable,8)||[];
+ host.innerHTML=hits.length?hits.map((x,i)=>`<a href="${x.href}" data-pd-search-result="${i}" data-pd-search-type="${x.type||'PilotDesk'}"><span><b>${x.title}</b><small>${x.type||'PilotDesk'}${x.intent?' · best match':''}</small></span><em>${x.reason||''}</em></a>`).join(''):'<span class="pd-search-empty">No strong match. Try a pilot term like crosswind, VMC, CG, or IFR alternate.</span>';
+ host.hidden=false;
+}
 function closeMenus(header){header.querySelectorAll('[data-pd-nav-item].open').forEach(x=>{x.classList.remove('open');x.querySelector('button')?.setAttribute('aria-expanded','false')})}
 function bindHeader(header){
  const astroShell=header.hasAttribute('data-pd-astro-shell');
@@ -47,10 +64,24 @@ function bindHeader(header){
  if(!menu){menu=document.createElement('button');menu.type='button';menu.className='menu-btn';menu.dataset.menu='';menu.textContent='☰';header.insertBefore(menu,nav)}
  menu.setAttribute('aria-controls','pdMainNav');menu.setAttribute('aria-label','Open navigation');menu.setAttribute('aria-expanded','false');
  let actions=header.querySelector('.pd-header-actions');if(!actions){actions=document.createElement('div');actions.className='pd-header-actions';header.appendChild(actions)}
- actions.innerHTML=`<div class="pd-search-wrap"><label class="pd-site-search">${iconSearch()}<input type="search" autocomplete="off" spellcheck="false" aria-label="Search PilotDesk" placeholder="Search PilotDesk"></label><div class="pd-search-results" hidden></div></div><a class="pd-account-link" href="/account.html" data-pd-account-link><span class="pd-account-avatar" hidden>PD</span><span class="pd-account-text">Sign in</span></a>`;
- const search=actions.querySelector('input'),results=actions.querySelector('.pd-search-results');
- search.addEventListener('input',async()=>{if(search.value.trim())await ensureSearchData();renderSearchResults(results,search.value)});
- search.addEventListener('keydown',e=>{if(e.key==='Escape'){search.value='';renderSearchResults(results,'');search.blur()}if(e.key==='Enter'){const first=results.querySelector('a');if(first){e.preventDefault();location.assign(first.href)}}});
+ actions.innerHTML=`<div class="pd-search-wrap"><label class="pd-site-search">${iconSearch()}<input type="search" autocomplete="off" spellcheck="false" aria-label="Search PilotDesk" placeholder="Crosswind, VMC, IFR alternate…"></label><div class="pd-search-results" role="listbox" hidden></div></div><a class="pd-account-link" href="/account.html" data-pd-account-link><span class="pd-account-avatar" hidden>PD</span><span class="pd-account-text">Sign in</span></a>`;
+ const search=actions.querySelector('input'),results=actions.querySelector('.pd-search-results');let active=-1;
+ const links=()=>[...results.querySelectorAll('a[data-pd-search-result]')];
+ const move=dir=>{const items=links();if(!items.length)return;active=(active+dir+items.length)%items.length;items.forEach((a,i)=>a.classList.toggle('active',i===active));items[active].scrollIntoView({block:'nearest'})};
+ search.addEventListener('focus',async()=>{await ensureSearchData();renderSearchResults(results,search.value)});
+ search.addEventListener('input',async()=>{await ensureSearchData();active=-1;renderSearchResults(results,search.value)});
+ search.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){search.value='';results.hidden=true;search.blur();active=-1}
+  else if(e.key==='ArrowDown'){e.preventDefault();move(1)}
+  else if(e.key==='ArrowUp'){e.preventDefault();move(-1)}
+  else if(e.key==='Enter'){const items=links(),target=active>=0?items[active]:items[0];if(target){e.preventDefault();window.pdTrack?.('Site Search Open',{resultType:target.dataset.pdSearchType||'unknown',queryLength:searchLengthBucket(search.value)});location.assign(target.href)}}
+ });
+ results.addEventListener('click',e=>{
+  const suggest=e.target.closest('[data-pd-search-suggest]');if(suggest){search.value=suggest.dataset.pdSearchSuggest;search.dispatchEvent(new Event('input'));search.focus();return}
+  const result=e.target.closest('[data-pd-search-result]');if(result)window.pdTrack?.('Site Search Open',{resultType:result.dataset.pdSearchType||'unknown',queryLength:searchLengthBucket(search.value)});
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='/'&&!/input|textarea|select/i.test(document.activeElement?.tagName||'')){e.preventDefault();search.focus()}});
+ 
  nav.querySelectorAll('[data-pd-nav-item]>.pd-nav-button').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const item=btn.parentElement,open=!item.classList.contains('open');closeMenus(header);if(open){item.classList.add('open');btn.setAttribute('aria-expanded','true')}}));
  menu.addEventListener('click',e=>{e.stopPropagation();const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')});
  nav.addEventListener('click',e=>{if(e.target.closest('a')){nav.classList.remove('open');menu.setAttribute('aria-expanded','false')}});

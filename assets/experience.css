@@ -139,3 +139,20 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 .pd-page-share button:hover{border-color:var(--accent);background:var(--accent-soft)}
 @media(max-width:560px){.pd-page-share{display:grid;grid-template-columns:1fr 1fr}.pd-page-share span{grid-column:1/-1;margin:0}.pd-page-share button{width:100%}}
 
+/* Pass 18: task-first onboarding for brand-new PilotDesk visitors. */
+.pd-first-run{margin-top:24px}
+.pd-first-run .pd-home-section-head{align-items:flex-start}
+.pd-first-run-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pd-first-run-grid>a{display:flex;flex-direction:column;gap:7px;min-width:0;padding:17px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#15222d,#0d151d);color:var(--text)}
+.pd-first-run-grid>a:hover{border-color:var(--accent);text-decoration:none;transform:translateY(-2px)}
+.pd-first-run-grid small,.pd-first-run-selected small{color:var(--accent)!important;font-size:9px!important;letter-spacing:.09em}
+.pd-first-run-grid b{font-size:17px;line-height:1.3}
+.pd-first-run-grid span{color:var(--muted);font-size:13px;line-height:1.5}
+.pd-first-run-grid em{margin-top:auto;padding-top:8px;color:var(--silver);font-size:12px;font-style:normal}
+.pd-first-run-selected{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:16px;border:1px solid var(--line-hi);border-radius:12px;background:linear-gradient(145deg,#172936,#101923)}
+.pd-first-run-selected b{font-size:18px}
+.pd-first-run-selected span{color:var(--muted);font-size:13px}
+.pd-first-run-selected a{font-weight:700;white-space:nowrap}
+@media(max-width:920px){.pd-first-run-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.pd-first-run-grid{grid-template-columns:1fr}.pd-first-run-selected{grid-template-columns:1fr;gap:6px}.pd-first-run-selected a{margin-top:4px}.pd-first-run .pd-home-section-head{display:block}.pd-first-run #pdFirstRunReset{margin-top:10px}}
+

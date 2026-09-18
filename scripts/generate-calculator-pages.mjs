@@ -155,7 +155,10 @@ const seoTitleBySlug={
   'glide-range':'Aircraft Glide Distance Calculator | Glide Ratio to NM | PilotDesk',
   'climb-gradient':'Climb Gradient Calculator | ft/NM to FPM | PilotDesk',
   'crosswind':'Crosswind Component Calculator & Chart | PilotDesk',
-  'moment-cg':'Aircraft CG Calculator | Weight, Arm & Moment | PilotDesk'
+  'moment-cg':'Aircraft CG Calculator | Weight, Arm & Moment | PilotDesk',
+  'standard-rate-bank':'Standard Rate Turn Calculator | Rate 1 Bank Angle | PilotDesk',
+  'wind-triangle':'Groundspeed & Wind Triangle Calculator | PilotDesk',
+  'three-degree-descent':'Descent Rate Calculator | 3° Path & FPM | PilotDesk'
 };
 
 const seoDescriptionBySlug={
@@ -168,7 +171,10 @@ const seoDescriptionBySlug={
   'climb-gradient':'Free climb gradient calculator. Convert feet per nautical mile (ft/NM) and groundspeed into the required feet per minute (FPM) vertical speed.',
   'crosswind':'Free crosswind component calculator and quick chart. Enter runway heading, wind direction, and wind speed to calculate crosswind and headwind or tailwind.',
   'moment-cg':'Free aircraft CG calculator. Calculate center of gravity, station moment, and moment/1000 from aircraft weight, arm, total moment, and total weight.',
-  'isa-temperature':'Free ISA temperature calculator by altitude. Calculate standard temperature in °C from altitude in feet for density-altitude and pilot training.'
+  'isa-temperature':'Free ISA temperature calculator by altitude. Calculate standard temperature in °C from altitude in feet for density-altitude and pilot training.',
+  'standard-rate-bank':'Free standard-rate turn calculator. Enter true airspeed to calculate the bank angle for a rate 1 turn at 3 degrees per second.',
+  'wind-triangle':'Free groundspeed and wind triangle calculator. Solve wind-corrected heading, groundspeed, and wind correction angle from course, TAS, and wind.',
+  'three-degree-descent':'Free descent rate calculator for a 3-degree path. Enter groundspeed to calculate required FPM and compare it with the GS × 5 rule.'
 };
 
 function genericFaq(title,category){return [

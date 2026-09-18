@@ -1,7 +1,26 @@
 import fs from 'node:fs';
 import path from 'node:path';
-const target='<span class="brandmark" aria-label="PilotDesk"><svg';
-const replacement='<span class="brandmark" aria-label="PilotDesk" data-pd-wireframe="1" style="background:transparent;box-shadow:none;border:1px solid #34383f;color:#d9dde2;width:38px;height:38px;border-radius:8px;padding:3px"><svg';
-function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){if(e.name==='.git'||e.name==='node_modules')continue;const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else if(e.isFile()&&e.name.endsWith('.html')){let s=fs.readFileSync(p,'utf8');if(s.includes(target)){s=s.split(target).join(replacement);fs.writeFileSync(p,s)}}}}
+
+const canonical='<span class="brandmark" aria-label="PilotDesk"><img src="/assets/icon.svg" alt="" width="36" height="36" aria-hidden="true"></span>';
+let changed=0;
+
+function normalize(html){
+  const before=html;
+  html=html.replace(/<span\s+class=["']brandmark["'][^>]*>\s*(?:<svg[\s\S]*?<\/svg>|<img[^>]*>|PD)\s*<\/span>/gi,canonical);
+  html=html.replace(/(<a\s+class=["']brand["'][^>]*href=["']\/["'][^>]*>)(?!\s*<span\s+class=["']brandmark["'])/gi,`$1${canonical}`);
+  return html===before?null:html;
+}
+function walk(dir){
+  for(const ent of fs.readdirSync(dir,{withFileTypes:true})){
+    if(['.git','node_modules','dist'].includes(ent.name))continue;
+    const p=path.join(dir,ent.name);
+    if(ent.isDirectory())walk(p);
+    else if(ent.isFile()&&ent.name.endsWith('.html')){
+      const html=fs.readFileSync(p,'utf8');
+      const next=normalize(html);
+      if(next!==null){fs.writeFileSync(p,next);changed++;}
+    }
+  }
+}
 walk(process.cwd());
-console.log('Locked static PilotDesk airplane logo styling.');
+console.log(`Locked ${changed} pages to the canonical handmade PilotDesk logo.`);

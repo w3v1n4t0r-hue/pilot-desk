@@ -65,6 +65,7 @@ function registerSW(){if(!('serviceWorker' in navigator)||location.protocol!=='h
 function loadWorkspaceShell(){if(!document.querySelector('link[href="/assets/hub.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/hub.css';document.head.appendChild(l)}if(!document.querySelector('script[src*="/assets/product-nav.js"]')){const s=document.createElement('script');s.src='/assets/product-nav.js';s.defer=true;document.head.appendChild(s)}}
 if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();
 if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.html$|e6b-flight-computer\.html$|weather\.html$|metar-decoder\.html$)/.test(location.pathname)&&!document.querySelector('script[src*="/assets/page-share.js"]')){const s=document.createElement('script');s.src='/assets/page-share.js';s.defer=true;document.head.appendChild(s)}
+if(['/aircraft.html','/route-planner.html','/weather.html','/weight-balance.html','/flight-planning-workspace.html','/procedures.html','/flight-brief.html'].includes(location.pathname)&&!document.querySelector('script[src*="/assets/flight-journey.js"]')){const s=document.createElement('script');s.src='/assets/flight-journey.js';s.defer=true;document.head.appendChild(s)}
 function polishInteractions(){
   const cards=$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card'),finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
   cards.forEach((card,index)=>{

@@ -20,7 +20,8 @@ const ads=read('assets/ads.js');
 ok(ads.includes("!isCalc")&&ads.includes("pilotdesk:calculated"),'ad loading does not protect calculator-first UX');
 
 const bootstrap=read('assets/app-bootstrap.js');
-for(const asset of ['/assets/navigation-data.js','/assets/flight-store.js','/assets/global-nav.js','/assets/theme.js','/assets/errors.js','/assets/analytics.js','/assets/update.js'])ok(bootstrap.includes(asset),`streamlined bootstrap missing ${asset}`);
+for(const asset of ['/assets/navigation-core.js','/assets/global-nav.js','/assets/theme.js','/assets/errors.js','/assets/analytics.js','/assets/update.js'])ok(bootstrap.includes(asset),`streamlined bootstrap missing ${asset}`);
+ok(!bootstrap.includes('/assets/navigation-data.js')&&!bootstrap.includes('/assets/flight-store.js'),'streamlined bootstrap must not eagerly load full navigation data or saved-flight storage');
 for(const retired of ['/assets/context-widget.js','/assets/growth-suite.js','/assets/sticky-app.js','/assets/avionics-command.js','/assets/home-command-center.js'])ok(!bootstrap.includes(retired),`retired competing retention/UI layer returned: ${retired}`);
 ok(bootstrap.includes("if(calc){load('/assets/features.js')")&&bootstrap.includes("load('/assets/pilotdesk-plus.js')"),'calculator retention enhancements must stay route-scoped');
 ok(bootstrap.includes('isAstroNative')&&bootstrap.includes("if(!isAstroNative)load('/assets/experience.js')"),'native Astro pages must not be rebuilt by the legacy experience runtime');
@@ -57,7 +58,8 @@ const sw=read('sw.js');
 const swVersion=Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0);
 ok(swVersion>=38,'service worker cache version is behind the offline reliability release');
 ok(sw.includes("importScripts('/assets/offline-precache.js')")&&sw.includes('...GENERATED_CALCULATORS'),'service worker must consume the generated calculator offline manifest');
-for(const s of ['/assets/experience.css','/assets/design-tokens.css','/assets/navigation-data.js','/assets/global-nav.js'])ok(sw.includes(s),`service worker missing current shared asset ${s}`);
+for(const s of ['/assets/experience.css','/assets/design-tokens.css','/assets/navigation-core.js','/assets/global-nav.js'])ok(sw.includes(s),`service worker missing current shared asset ${s}`);
+ok(!sw.includes("'/assets/navigation-data.js'")&&!sw.includes("'/assets/flight-store.js'"),'service worker calculator core must stay free of full navigation and saved-flight payloads');
 ok(sw.includes('migrateCalculatorEntries')&&sw.includes('networkOnlyPath'),'service worker must preserve calculator caches while keeping live APIs network-only');
 
 if(failures.length){console.error(`Growth + retention check failed (${failures.length})`);for(const x of failures)console.error(' - '+x);process.exit(1)}

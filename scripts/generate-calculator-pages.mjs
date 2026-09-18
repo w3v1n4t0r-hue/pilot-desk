@@ -150,14 +150,22 @@ const seoTitleBySlug={
   'density-altitude':'Density Altitude Calculator for Pilots | PilotDesk',
   'rate-of-turn':'Rate of Turn Calculator | Standard-Rate Turn Math | PilotDesk',
   'turn-radius':'Aircraft Turn Radius Calculator | Speed & Bank Angle | PilotDesk',
-  'true-airspeed':'True Airspeed Calculator | 2% TAS Rule Estimate | PilotDesk'
+  'true-airspeed':'True Airspeed Calculator | 2% TAS Rule Estimate | PilotDesk',
+  'pivotal-altitude':'Pivotal Altitude Calculator & Formula | Eights on Pylons | PilotDesk',
+  'glide-range':'Aircraft Glide Distance Calculator | Glide Ratio to NM | PilotDesk',
+  'climb-gradient':'Climb Gradient Calculator | ft/NM to FPM | PilotDesk',
+  'crosswind':'Crosswind Component Calculator & Chart | PilotDesk'
 };
 
 const seoDescriptionBySlug={
   'density-altitude':'Free aviation density altitude calculator. Enter pressure altitude and OAT to calculate density altitude, ISA temperature, and ISA deviation.',
   'rate-of-turn':'Free aircraft rate of turn calculator. Enter true airspeed and bank angle to calculate turn rate, 360-degree turn time, and turn radius.',
   'turn-radius':'Free aircraft turn radius calculator. Enter true airspeed and bank angle to calculate turn radius, turn diameter, and rate of turn.',
-  'true-airspeed':'Free true airspeed calculator using the common 2% TAS rule. Estimate TAS from calibrated airspeed and pressure altitude for pilot training.'
+  'true-airspeed':'Free true airspeed calculator using the common 2% TAS rule. Estimate TAS from calibrated airspeed and pressure altitude for pilot training.',
+  'pivotal-altitude':'Free pivotal altitude calculator for eights on pylons. Enter groundspeed in knots and calculate pivotal altitude in feet AGL with the GS² ÷ 11.3 formula.',
+  'glide-range':'Free aircraft glide distance calculator. Enter height available and glide ratio to estimate still-air glide distance in nautical miles, feet, and statute miles.',
+  'climb-gradient':'Free climb gradient calculator. Convert feet per nautical mile (ft/NM) and groundspeed into the required feet per minute (FPM) vertical speed.',
+  'crosswind':'Free crosswind component calculator and quick chart. Enter runway heading, wind direction, and wind speed to calculate crosswind and headwind or tailwind.'
 };
 
 function genericFaq(title,category){return [

@@ -79,6 +79,8 @@ jobs:
         run: node qa/planner-lab-tests.mjs
       - name: Run calculator formula regression tests
         run: node qa/formula-tests.mjs
+      - name: Run core calculator UX checks
+        run: node qa/core-calculator-ux-smoke.mjs
       - name: Run site integrity checks
         run: node qa/site-integrity.mjs
       - name: Run trust and safety checks

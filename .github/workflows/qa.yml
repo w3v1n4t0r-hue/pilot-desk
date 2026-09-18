@@ -85,6 +85,10 @@ jobs:
         run: node qa/human-copy-smoke.mjs
       - name: Run technical editorial review
         run: node qa/technical-editorial-smoke.mjs
+      - name: Verify all article editorial coverage
+        run: node qa/article-editorial-coverage.mjs
+      - name: Verify canonical PilotDesk logo everywhere
+        run: node qa/brand-consistency-smoke.mjs
       - name: Check Google audit regressions
         run: node qa/google-audit.mjs
       - name: Run multi-engine SEO checks

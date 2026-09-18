@@ -45,6 +45,8 @@ jobs:
         run: node qa/unified-ui-smoke.mjs
       - name: Run site chassis checks
         run: node qa/site-chassis-smoke.mjs
+      - name: Audit every built page surface
+        run: node qa/page-surface-smoke.mjs
       - name: Check homepage card visibility and icons
         run: node scripts/check-home-card-regression.js
       - name: Run tool-first optimization checks

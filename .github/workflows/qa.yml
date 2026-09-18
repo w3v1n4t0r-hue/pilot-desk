@@ -103,5 +103,7 @@ jobs:
         run: node qa/seo-hardening.mjs
       - name: Run SEO growth cluster checks
         run: node qa/seo-growth-cluster.mjs
+      - name: Run internal SEO architecture checks
+        run: node qa/internal-seo-architecture-smoke.mjs
       - name: Run growth + retention checks
         run: node qa/growth-retention-smoke.mjs

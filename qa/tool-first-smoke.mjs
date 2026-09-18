@@ -18,7 +18,7 @@ check(home.includes('data-pd-home-account'),'homepage must keep account discover
 check(home.includes('Popular tools')&&home.includes('Explore PilotDesk'),'homepage must preserve fast tool discovery without dumping the full inventory');
 check(data.includes("['/daily/', 'Play Daily'"),'shared homepage model must retain Daily as a fourth task');
 check(tools.includes('pdToolDirectorySearch')&&tools.includes('pdToolDirectoryGroup')&&tools.includes('/assets/tools-directory.js'),'calculator directory must remain searchable/filterable');
-check(tools.includes('47 tools'),'calculator directory count must match the standard calculator inventory');
+check(tools.includes('pdToolCount')&&!tools.includes('47 tools'),'calculator directory must use the live inventory count instead of a hard-coded total');
 
 for(const responsive of ['.pd-home-actions{','@media(max-width:800px)','@media(max-width:480px)','min-height:44px'])check(experience.includes(responsive),`current experience layer missing task-first/mobile safeguard ${responsive}`);
 for(const retired of ['tool-first-layout.js','performance.js','home-command-center.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired runtime layout optimizer returned: ${retired}`);

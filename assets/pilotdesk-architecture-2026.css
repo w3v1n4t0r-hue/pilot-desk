@@ -75,6 +75,7 @@ a:hover{color:#fff}
   background:transparent!important;
 }
 .topbar .brandmark svg{width:36px!important;height:28px!important}
+.topbar .brandmark img{width:36px!important;height:36px!important;display:block!important;object-fit:contain!important}
 .topbar .brand>span:last-child{display:flex!important;align-items:baseline!important;gap:8px!important}
 .topbar .brand b{font-size:20px!important;letter-spacing:-.04em!important;line-height:1!important}
 .topbar .brand small{display:none!important}
@@ -236,5 +237,5 @@ footer b{color:#e7ebef!important;font-size:16px!important}footer p{color:#75808c
   footer{width:calc(100% - 24px)!important;grid-template-columns:1fr!important}.footer-links{justify-content:flex-start!important}.fine{grid-column:auto!important}
 }
 @media(max-width:560px){
-  .topbar .brand b{font-size:18px!important}.topbar .brandmark{width:30px!important}.topbar .brandmark svg{width:30px!important}.pd-home-hero{min-height:auto}.pd-home-hero h1{font-size:42px}.pd-home-hero p{font-size:15px}.pd-home-actions{grid-template-columns:1fr}.pd-home-action{min-height:132px}.pd-popular-grid{grid-template-columns:repeat(2,1fr)}.pd-category-grid{grid-template-columns:1fr}.pd-home-account-actions{padding-left:0}.pd-home-account-actions a{flex:1}.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero{padding:24px!important;border-radius:12px!important}.category,.recent-section,.panel,.tool-panel,.pd-account-card,.pd-prep-panel,.pd-owner,.wx-card,.pd-flight-card{padding:16px!important}
+  .topbar .brand b{font-size:18px!important}.topbar .brandmark{width:30px!important;height:30px!important}.topbar .brandmark svg{width:30px!important}.topbar .brandmark img{width:30px!important;height:30px!important}.pd-home-hero{min-height:auto}.pd-home-hero h1{font-size:42px}.pd-home-hero p{font-size:15px}.pd-home-actions{grid-template-columns:1fr}.pd-home-action{min-height:132px}.pd-popular-grid{grid-template-columns:repeat(2,1fr)}.pd-category-grid{grid-template-columns:1fr}.pd-home-account-actions{padding-left:0}.pd-home-account-actions a{flex:1}.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero{padding:24px!important;border-radius:12px!important}.category,.recent-section,.panel,.tool-panel,.pd-account-card,.pd-prep-panel,.pd-owner,.wx-card,.pd-flight-card{padding:16px!important}
 }

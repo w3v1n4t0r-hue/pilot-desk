@@ -22,11 +22,24 @@ function publicUrl(file){
   return SITE+'/'+file;
 }
 
+function historyRef(){
+  const head=process.env.GITHUB_HEAD_REF?.trim();
+  if(!head) return 'HEAD';
+  for(const ref of [`origin/${head}`,head]){
+    try{
+      execFileSync('git',['rev-parse','--verify',ref],{stdio:'ignore'});
+      return ref;
+    }catch{}
+  }
+  return 'HEAD';
+}
+const HISTORY_REF=historyRef();
+
 function lastModified(file){
   const today=new Date().toISOString().slice(0,10);
   try{
     execFileSync('git',['diff','--quiet','HEAD','--',file],{stdio:'ignore'});
-    const date=execFileSync('git',['log','-1','--format=%cs','--',file],{encoding:'utf8'}).trim();
+    const date=execFileSync('git',['log','-1','--format=%cs',HISTORY_REF,'--',file],{encoding:'utf8'}).trim();
     return date||today;
   }catch{
     return today;
@@ -57,8 +70,10 @@ const esc=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&g
 const xml=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',...unique.map(({url,lastmod})=>`<url><loc>${esc(url)}</loc><lastmod>${lastmod}</lastmod></url>`),'</urlset>'].join('\n');
 fs.writeFileSync('sitemap.xml',xml+'\n');
 
-// Advertise only the canonical sitemap. Legacy split sitemaps are retained in the
-// repository for compatibility/history, but exposing all of them in robots.txt
-// causes Google to rediscover overlapping/stale URLs (including redirects).
-fs.writeFileSync('robots.txt',`User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${SITE}/sitemap.xml\n`);
-console.log(`Generated canonical sitemap with ${unique.length} indexable URLs and advertised only sitemap.xml in robots.txt.`);
+// Advertise the canonical sitemap plus purpose-built discovery/retention
+// sitemaps. Keep this generated so robots.txt cannot drift from the sitemap
+// files the product and QA suites expect search engines to discover.
+const advertised=['sitemap.xml','sitemap-daily.xml','sitemap-growth.xml','sitemap-retention.xml'].filter(file=>fs.existsSync(file));
+const robots=['User-agent: *','Allow: /','Disallow: /api/',...advertised.map(file=>`Sitemap: ${SITE}/${file}`),''].join('\n');
+fs.writeFileSync('robots.txt',robots);
+console.log(`Generated canonical sitemap with ${unique.length} indexable URLs from ${HISTORY_REF} and advertised ${advertised.join(', ')} in robots.txt.`);

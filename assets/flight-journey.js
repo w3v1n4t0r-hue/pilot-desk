@@ -44,7 +44,6 @@ function render(){
  $$('.pd-flight-nav,.pd-flight-journey,.pd-flight-context[data-pd-old-flight-context]').forEach(x=>x.remove());
  const f=flight(),current=STEPS.findIndex(([p])=>p===path),parts=routeParts(f),dst=parts.at(-1)||'',ac=aircraftName(f);
  if(f){try{localStorage.setItem('pd-active-flight',f.id);if(f.aircraftId)localStorage.setItem('pd-aircraft-active',f.aircraftId)}catch{}}
- if(f&&current>=0)mark(f,STEPS[current][2]);
  const wrap=document.createElement('section');wrap.className='pd-flight-journey';wrap.setAttribute('aria-label','Flight planning workflow');
  const top=document.createElement('div');top.className='pd-flight-journey-head';
  if(f){

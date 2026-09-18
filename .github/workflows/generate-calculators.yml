@@ -40,7 +40,7 @@ on:
       - '.github/workflows/generate-calculators.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: pilotdesk-generated-pages-${{ github.event.pull_request.number || github.ref }}
@@ -110,19 +110,6 @@ jobs:
         run: node scripts/clean-guide-boilerplate.mjs
       - name: Generate canonical sitemap
         run: node scripts/generate-sitemap.mjs
-      - name: Sync generated output on main
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        shell: bash
-        run: |
-          if git diff --quiet; then
-            echo "Generated output already current."
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add calculators guides sitemap*.xml robots.txt
-            git commit -m "Sync generated calculator and guide pages"
-            git push
-          fi
       - name: Verify generated output is already committed
         shell: bash
         run: |

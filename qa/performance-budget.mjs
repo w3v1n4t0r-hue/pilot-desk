@@ -10,6 +10,7 @@ const budgets={
   'assets/navigation-core.js':8*1024,
   'assets/navigation-search.js':24*1024,
   'assets/search-intelligence.js':12*1024,
+  'assets/flight-journey.js':12*1024,
   'assets/inventory-data.js':24*1024,
   'assets/experience.js':24*1024,
   'assets/experience.css':40*1024,
@@ -43,6 +44,7 @@ check(toolsDirectory.includes('/assets/inventory-data.js')&&!toolsDirectory.incl
 for(const conditional of [
   ["if(calc)",'features.js'],["if(calc)",'calculator-ux.js'],["path==='/weather.html'",'offline-weather.js'],["path==='/route-planner.html'",'planner-pro.js'],["path==='/procedures.html'",'procedure-pro.js'],["path==='/checklist-trainer.html'",'trainer-pro.js']
 ])check(bootstrap.includes(conditional[0])&&bootstrap.includes(`/assets/${conditional[1]}`),`${conditional[1]} should remain route-scoped`);
+check(bootstrap.includes('/assets/flight-journey.js')&&bootstrap.includes("'/flight-brief.html'"),'flight journey should remain scoped to planning pages');
 for(const retired of ['professional-polish.css','tool-first-layout.js','product-polish.js','sticky-app.js','avionics-command.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired visible-shell layer returned: ${retired}`);
 check(bootstrap.includes('requestIdleCallback')&&bootstrap.includes('timeout:1500'),'service-worker registration should happen after load/idle without a 12-second delay');
 const sw=fs.readFileSync('sw.js','utf8');

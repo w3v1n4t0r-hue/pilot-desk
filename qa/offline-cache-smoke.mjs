@@ -42,9 +42,11 @@ for(const asset of ['/assets/styles.css','/assets/hub.css','/assets/site.js','/a
   check(generatedAssets.includes(asset),`generated calculator asset manifest missing ${asset}`);
 }
 
-for(const asset of ['/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/design-tokens.css','/assets/site.js','/assets/safety.js','/assets/app-bootstrap.js','/assets/navigation-data.js','/assets/flight-store.js','/assets/global-nav.js','/assets/theme.js','/assets/features.js','/assets/calculator-ux.js','/assets/experience.js','/assets/update.js']){
+for(const asset of ['/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/design-tokens.css','/assets/site.js','/assets/safety.js','/assets/app-bootstrap.js','/assets/navigation-core.js','/assets/global-nav.js','/assets/theme.js','/assets/features.js','/assets/calculator-ux.js','/assets/experience.js','/assets/update.js']){
   check(sw.includes(`'${asset}'`),`service worker CORE missing ${asset}`);
 }
+check(!sw.includes("'/assets/navigation-data.js'"),'offline core must not precache the full navigation/search/inventory bundle');
+check(!sw.includes("'/assets/flight-store.js'"),'offline calculator core must not precache unrelated saved-flight storage');
 
 check(sw.includes("importScripts('/assets/offline-precache.js')"),'service worker must import the generated calculator manifest');
 check(sw.includes('...GENERATED_CALCULATORS'),'service worker must precache every generated calculator route');

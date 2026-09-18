@@ -27,10 +27,10 @@ check(data.includes("label: 'Tools'")&&data.includes("label: 'Plan'")&&data.incl
 check(['Plan a Flight','Use a Calculator','Study for a Written','Play Daily'].every(x=>data.includes(`'${x}'`)),'shared homepage data must preserve the four primary jobs');
 check(home.includes('data-pd-home-account'),'Astro homepage must keep account discovery near the top');
 check(tools.includes('pdToolDirectorySearch')&&tools.includes('/assets/tools-directory.js'),'Astro calculator directory wiring is incomplete');
-check(bootstrap.includes('isAstroNative')&&bootstrap.includes("/assets/navigation-data.js"),'legacy bootstrap must respect native Astro structure and shared nav data');
-check(nav.includes('window.PILOTDESK_NAV')&&nav.includes("data-pd-astro-shell"),'global navigation must use shared data and preserve Astro-rendered markup');
+check(bootstrap.includes('isAstroNative')&&bootstrap.includes("/assets/navigation-core.js")&&!bootstrap.includes("/assets/navigation-data.js"),'legacy bootstrap must respect native Astro structure and use the lightweight shared navigation core');
+check(nav.includes('PILOTDESK_NAV_CORE')&&nav.includes("data-pd-astro-shell")&&nav.includes("/assets/navigation-search.js"),'global navigation must preserve Astro-rendered markup and lazy-load search data');
 check(vercel.buildCommand==='npm run build'&&vercel.outputDirectory==='dist','Vercel must deploy the Astro dist build');
-for(const file of ['dist/index.html','dist/tools.html','dist/calculators/crosswind/index.html','dist/written-prep.html','dist/assets/navigation-data.js','dist/sw.js'])check(fs.existsSync(file),`Astro build missing ${file}`);
+for(const file of ['dist/index.html','dist/tools.html','dist/calculators/crosswind/index.html','dist/written-prep.html','dist/assets/navigation-core.js','dist/assets/navigation-search.js','dist/assets/inventory-data.js','dist/sw.js'])check(fs.existsSync(file),`Astro build missing ${file}`);
 if(fs.existsSync('dist/index.html'))check(read('dist/index.html').includes('data-pd-astro-native="1"'),'built homepage is not native Astro output');
 if(fs.existsSync('dist/tools.html'))check(read('dist/tools.html').includes('data-pd-astro-native="1"'),'built tools page is not native Astro output');
 

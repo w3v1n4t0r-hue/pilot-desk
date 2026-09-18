@@ -72,3 +72,21 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 .result.primary strong{font-size:26px}
 @media(max-width:600px){.pd-calc-section-head{display:block}.pd-calc-section-head span{display:block;margin-top:2px}.pd-calc-quick-help{display:block}.pd-calc-quick-help b{display:block;margin-bottom:4px}.results{gap:8px}}
 
+/* Pass 9: training system — goal first, then rating, then source. */
+.pd-training-goals,.pd-training-next,.pd-training-ratings{margin:34px 0}
+.pd-training-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:16px}
+.pd-training-section-head h2{margin:2px 0 0}
+.pd-training-section-head p{max-width:430px;margin:0;text-align:right;font-size:14px}
+.pd-training-goal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pd-training-goal-grid>a{display:flex;flex-direction:column;gap:7px;padding:18px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#172532,#0f1821);color:var(--text)}
+.pd-training-goal-grid>a:hover{border-color:var(--accent);text-decoration:none;transform:translateY(-2px)}
+.pd-training-goal-grid small{color:var(--accent)!important;letter-spacing:.08em}
+.pd-training-goal-grid b{font-size:18px}
+.pd-training-goal-grid span{font-size:14px;line-height:1.5;color:var(--muted)}
+.pd-training-path{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 8px;padding:8px;border:1px solid var(--line);border-radius:12px;background:#101a23aa}
+.pd-training-path a{display:inline-flex;align-items:center;min-height:38px;padding:7px 12px;border-radius:8px;color:var(--muted);font-size:14px}
+.pd-training-path a:hover,.pd-training-path a[aria-current="page"]{background:var(--accent-soft);color:var(--text);text-decoration:none}
+.pd-training-next{padding:18px 0 22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pd-training-next .pd-training-section-head{margin-bottom:12px}
+@media(max-width:760px){.pd-training-goal-grid{grid-template-columns:1fr}.pd-training-section-head{display:block}.pd-training-section-head p{text-align:left;margin-top:6px}.pd-training-path{overflow-x:auto;flex-wrap:nowrap}.pd-training-path a{white-space:nowrap}}
+

@@ -168,7 +168,7 @@ const seoDescriptionBySlug={
   'climb-gradient':'Free climb gradient calculator. Convert feet per nautical mile (ft/NM) and groundspeed into the required feet per minute (FPM) vertical speed.',
   'crosswind':'Free crosswind component calculator and quick chart. Enter runway heading, wind direction, and wind speed to calculate crosswind and headwind or tailwind.',
   'moment-cg':'Free aircraft CG calculator. Calculate center of gravity, station moment, and moment/1000 from aircraft weight, arm, total moment, and total weight.',
-  'isa-temperature':'Free ISA temperature calculator by altitude. Calculate standard temperature in °C from altitude in feet for aviation, density-altitude, and flight-training math.'
+  'isa-temperature':'Free ISA temperature calculator by altitude. Calculate standard temperature in °C from altitude in feet for density-altitude and pilot training.'
 };
 
 function genericFaq(title,category){return [

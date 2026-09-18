@@ -64,7 +64,7 @@ function bringResultIntoView(){if(!results||!matchMedia('(max-width:760px)').mat
 function updateSummary(){const fn=SUMMARY[calcKey],text=fn?.()||'';resultSummary.hidden=!text;resultSummary.querySelector('strong').textContent=text}
 function afterCalculate(){sync();updateSummary();track('Calculator Used');bringResultIntoView();const detail={title:qs('.calc-hero h1')?.textContent?.trim()||'Calculator',path:location.pathname,inputs:valuesObject(),summary:outputText().slice(0,3).join(' · '),url:location.href};document.dispatchEvent(new CustomEvent('pilotdesk:calculated',{detail}))}
 calc.addEventListener('click',()=>setTimeout(afterCalculate,0));
-inputs.forEach(i=>{i.addEventListener('change',sync);i.addEventListener('input',advisory)});
+inputs.forEach(i=>{i.addEventListener('change',sync);i.addEventListener('input',()=>{advisory();requestAnimationFrame(updateSummary)})});
 box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input')){e.preventDefault();calc.click()}});
 actions.querySelector('[data-pd-copy-result]').addEventListener('click',async()=>{sync();try{await navigator.clipboard.writeText(resultText());toast('Result copied');track('Result Copied')}catch{toast('Copy failed')}});
 actions.querySelector('[data-pd-copy-link]').addEventListener('click',async()=>{sync();try{await navigator.clipboard.writeText(location.href);toast('Calculation link copied');track('Calculation Link Copied')}catch{toast('Copy failed')}});

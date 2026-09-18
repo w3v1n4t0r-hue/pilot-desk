@@ -83,6 +83,8 @@ jobs:
         run: node qa/aircraft-profiles-smoke.mjs
       - name: Run Saved Flights 2.0 checks
         run: node qa/saved-flights-smoke.mjs
+      - name: Run Weather Workflow 2.0 checks
+        run: node qa/weather-workflow-smoke.mjs
       - name: Run PilotDesk v2 master checks
         run: node qa/v2-smoke.mjs
       - name: Run planner lab checks

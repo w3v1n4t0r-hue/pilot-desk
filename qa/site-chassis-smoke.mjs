@@ -22,7 +22,7 @@ for(const responsive of ['@media(max-width:800px)','@media(max-width:480px)','.p
 
 need(bootstrap,'isAstroNative','app-bootstrap.js');need(bootstrap,"/assets/global-nav.js",'app-bootstrap.js');
 for(const retired of ['site-chassis.css','home-visual-system.css','tool-first-layout.js'])if(bootstrap.includes(retired))failures.push(`app-bootstrap.js: retired chassis layer returned: ${retired}`);
-need(nav,'data-pd-astro-shell','global-nav.js');need(nav,'window.PILOTDESK_NAV','global-nav.js');
+need(nav,'data-pd-astro-shell','global-nav.js');need(nav,'window.PILOTDESK_NAV_CORE','global-nav.js');need(nav,'navigation-search.js','global-nav.js');
 
 for(const [name,html] of [['dist/planner.html',planner],['dist/weather.html',weather],['dist/aircraft.html',aircraft]]){
   need(html,'/assets/styles.css',name);

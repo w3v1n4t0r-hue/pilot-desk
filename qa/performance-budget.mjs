@@ -9,6 +9,7 @@ const budgets={
   'assets/app-bootstrap.js':8*1024,
   'assets/navigation-core.js':8*1024,
   'assets/navigation-search.js':24*1024,
+  'assets/search-intelligence.js':12*1024,
   'assets/inventory-data.js':24*1024,
   'assets/experience.js':24*1024,
   'assets/experience.css':40*1024,
@@ -33,7 +34,7 @@ for(const eager of ['navigation-core.js','global-nav.js','theme.js','errors.js',
 check(!bootstrap.includes('/assets/navigation-data.js'),'full navigation/search/inventory payload must not load on every page');
 check(!bootstrap.includes('/assets/flight-store.js'),'flight-store must stay on the planning pages that explicitly need it');
 const globalNav=fs.readFileSync('assets/global-nav.js','utf8');
-check(globalNav.includes('/assets/navigation-search.js')&&globalNav.includes('ensureSearchData'),'site search data must lazy-load only after search interaction');
+check(globalNav.includes('/assets/navigation-search.js')&&globalNav.includes('/assets/search-intelligence.js')&&globalNav.includes('ensureSearchData'),'site search data and intent intelligence must lazy-load only after search interaction');
 check(globalNav.includes('scheduleAccountHydration')&&globalNav.includes('requestIdleCallback'),'account-session hydration should stay off the critical render path');
 const site=fs.readFileSync('assets/site.js','utf8');
 check(site.includes("(hover:hover) and (pointer:fine)")&&site.includes('if(finePointer)'), 'touch devices should not pay for decorative pointer tracking');

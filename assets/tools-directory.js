@@ -103,7 +103,7 @@ function init(){
   const personalGrid=document.getElementById('pdToolPersonalGrid');
   if(!host||!input||!groupSelect)return;
 
-  const inventory=(window.PILOTDESK_NAV?.inventory||[]).filter(x=>x.type==='Calculator');
+  const inventory=(window.PILOTDESK_INVENTORY||window.PILOTDESK_NAV?.inventory||[]).filter(x=>x.type==='Calculator');
   const featured=[
     {title:'Weight & Balance',href:'/weight-balance.html',group:'Featured'},
     {title:'E6B Flight Computer',href:'/e6b-flight-computer.html',group:'Featured'}
@@ -216,5 +216,5 @@ function init(){
   addEventListener('keydown',e=>{if(e.key==='/'&&!/input|textarea|select/i.test(document.activeElement?.tagName||'')){e.preventDefault();input.focus()}});
   renderPersonal();render();
 }
-if(window.PILOTDESK_NAV)init();else{const s=document.createElement('script');s.src='/assets/navigation-data.js';s.onload=init;document.head.append(s)}
+if(window.PILOTDESK_INVENTORY||window.PILOTDESK_NAV?.inventory)init();else{const s=document.createElement('script');s.src='/assets/inventory-data.js';s.onload=init;document.head.append(s)}
 })();

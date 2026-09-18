@@ -34,6 +34,9 @@ check(!bootstrap.includes('/assets/navigation-data.js'),'full navigation/search/
 check(!bootstrap.includes('/assets/flight-store.js'),'flight-store must stay on the planning pages that explicitly need it');
 const globalNav=fs.readFileSync('assets/global-nav.js','utf8');
 check(globalNav.includes('/assets/navigation-search.js')&&globalNav.includes('ensureSearchData'),'site search data must lazy-load only after search interaction');
+check(globalNav.includes('scheduleAccountHydration')&&globalNav.includes('requestIdleCallback'),'account-session hydration should stay off the critical render path');
+const site=fs.readFileSync('assets/site.js','utf8');
+check(site.includes("(hover:hover) and (pointer:fine)")&&site.includes('if(finePointer)'), 'touch devices should not pay for decorative pointer tracking');
 const toolsDirectory=fs.readFileSync('assets/tools-directory.js','utf8');
 check(toolsDirectory.includes('/assets/inventory-data.js')&&!toolsDirectory.includes("s.src='/assets/navigation-data.js'"),'tools directory should load only inventory data, not the full navigation payload');
 for(const conditional of [

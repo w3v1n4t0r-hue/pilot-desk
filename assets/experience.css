@@ -116,3 +116,19 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 @media(max-width:900px){.pd-cfi-workflow ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.pd-cfi-scenario-grid,.pd-cfi-workflow ol{grid-template-columns:1fr}.pd-cfi-quickbar{display:grid;grid-template-columns:1fr}.pd-cfi-quickbar a,.pd-cfi-quickbar button{justify-content:center}.pd-cfi-scenario-actions{display:grid;grid-template-columns:1fr}.pd-cfi-scenario-actions button,.pd-cfi-scenario-actions a{justify-content:center}}
 
+/* Pass 13: internal SEO topic hubs — useful navigation first, crawl paths second. */
+.pd-seo-topic-hubs{margin:32px 0 36px}
+.pd-seo-topic-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pd-seo-topic-grid>a{display:flex;flex-direction:column;gap:7px;min-width:0;padding:18px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#172532,#0f1821);color:var(--text)}
+.pd-seo-topic-grid>a:hover{border-color:var(--accent);text-decoration:none}
+.pd-seo-topic-grid small{color:var(--accent)!important;font-size:10px!important;letter-spacing:.09em}
+.pd-seo-topic-grid b{font-size:17px;line-height:1.3}
+.pd-seo-topic-grid span{font-size:13px;line-height:1.5;color:var(--muted)}
+.pd-topic-links{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 22px}
+.pd-topic-links a{display:inline-flex;align-items:center;min-height:38px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);color:var(--text);font-size:13px}
+.pd-topic-links a:hover{border-color:var(--accent);background:var(--accent-soft);text-decoration:none}
+.pd-seo-cluster-strip{margin:24px 0;padding:17px;border:1px solid var(--line);border-radius:12px;background:#101a23aa}
+.pd-seo-cluster-strip .pd-topic-links{margin:10px 0 0}
+@media(max-width:850px){.pd-seo-topic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.pd-seo-topic-grid{grid-template-columns:1fr}.pd-topic-links{display:grid;grid-template-columns:1fr}.pd-topic-links a{justify-content:flex-start}}
+

@@ -17,6 +17,7 @@ registerServiceWorkerEarly();
 load('/assets/navigation-data.js');load('/assets/flight-store.js');load('/assets/global-nav.js');load('/assets/theme.js');
 if(calc){load('/assets/features.js');load('/assets/calculator-ux.js');load('/assets/crosswind-mfd.js');load('/assets/pilotdesk-plus.js')}
 if(calc)load('/assets/share-enhance.js');
+if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.html$|e6b-flight-computer\.html$|weather\.html$|metar-decoder\.html$)/.test(path))load('/assets/page-share.js');
 if(path==='/history.html')load('/assets/pilotdesk-plus.js');
 if(path==='/weather.html')load('/assets/offline-weather.js');
 if(path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/wb-export.js');

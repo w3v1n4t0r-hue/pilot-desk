@@ -5,7 +5,7 @@ const failures=[];const need=(t,n,l)=>{if(!t.includes(n))failures.push(`${l}: mi
 need(page,'<link rel="canonical" href="https://www.pilot-desk.com/daily/">','daily page');
 need(page,'"EducationalApplication"','daily page');
 need(page,'Do I need an account to play?','daily page');
-need(page,'Play without signing in','daily page');
+need(page,'No account required','daily page');
 need(client,"/functions/v1/pilot-daily",'daily client');
 need(client,"localStorage.setItem(guestKey",'daily client');
 need(client,"Create account →",'daily client');

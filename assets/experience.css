@@ -56,3 +56,19 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;ba
 @media(max-width:900px){.pd-tool-personal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pd-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.pd-tool-finder{padding:16px}.pd-tool-finder-head{display:block}.pd-tool-search-row{grid-template-columns:1fr}.pd-tool-personal-grid,.pd-directory-grid{grid-template-columns:1fr}.pd-directory-card{min-height:0}.pd-tool-chip{flex:1 1 auto}}
 
+/* Pass 8: calculator clarity and result hierarchy. */
+.pd-calc-section-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;margin:4px 0 10px}
+.pd-calc-section-head b{font-size:15px;color:var(--text)}
+.pd-calc-section-head span{font-size:12px;color:var(--muted2)}
+.pd-calc-quick-help{display:flex;gap:12px;align-items:flex-start;margin:0 0 16px;padding:11px 13px;border:1px solid var(--line);border-radius:9px;background:var(--bg2)}
+.pd-calc-quick-help b{white-space:nowrap;font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.pd-calc-quick-help span{font-size:13px;line-height:1.45;color:var(--muted)}
+.pd-calc-results-head{margin-top:20px}
+.pd-calc-result-summary{margin:12px 0 6px;padding:14px 16px;border:1px solid var(--line-hi);border-radius:10px;background:linear-gradient(145deg,#182733,#101923)}
+.pd-calc-result-summary small{display:block;margin-bottom:4px;color:var(--accent);font-size:10px!important;letter-spacing:.1em}
+.pd-calc-result-summary strong{display:block;font-size:15px;line-height:1.55;color:var(--text)}
+.result.primary{border-color:#587187;background:linear-gradient(145deg,#172936,#101a23)}
+.result.primary small{color:var(--accent)}
+.result.primary strong{font-size:26px}
+@media(max-width:600px){.pd-calc-section-head{display:block}.pd-calc-section-head span{display:block;margin-top:2px}.pd-calc-quick-help{display:block}.pd-calc-quick-help b{display:block;margin-bottom:4px}.results{gap:8px}}
+

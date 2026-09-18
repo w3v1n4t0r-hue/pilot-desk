@@ -154,7 +154,8 @@ const seoTitleBySlug={
   'pivotal-altitude':'Pivotal Altitude Calculator & Formula | Eights on Pylons | PilotDesk',
   'glide-range':'Aircraft Glide Distance Calculator | Glide Ratio to NM | PilotDesk',
   'climb-gradient':'Climb Gradient Calculator | ft/NM to FPM | PilotDesk',
-  'crosswind':'Crosswind Component Calculator & Chart | PilotDesk'
+  'crosswind':'Crosswind Component Calculator & Chart | PilotDesk',
+  'moment-cg':'Aircraft CG Calculator | Weight, Arm & Moment | PilotDesk'
 };
 
 const seoDescriptionBySlug={
@@ -165,7 +166,9 @@ const seoDescriptionBySlug={
   'pivotal-altitude':'Free pivotal altitude calculator for eights on pylons. Enter groundspeed in knots and calculate pivotal altitude in feet AGL with the GS² ÷ 11.3 formula.',
   'glide-range':'Free aircraft glide distance calculator. Enter height available and glide ratio to estimate still-air glide distance in nautical miles, feet, and statute miles.',
   'climb-gradient':'Free climb gradient calculator. Convert feet per nautical mile (ft/NM) and groundspeed into the required feet per minute (FPM) vertical speed.',
-  'crosswind':'Free crosswind component calculator and quick chart. Enter runway heading, wind direction, and wind speed to calculate crosswind and headwind or tailwind.'
+  'crosswind':'Free crosswind component calculator and quick chart. Enter runway heading, wind direction, and wind speed to calculate crosswind and headwind or tailwind.',
+  'moment-cg':'Free aircraft CG calculator. Calculate center of gravity, station moment, and moment/1000 from aircraft weight, arm, total moment, and total weight.',
+  'isa-temperature':'Free ISA temperature calculator by altitude. Calculate standard temperature in °C from altitude in feet for aviation, density-altitude, and flight-training math.'
 };
 
 function genericFaq(title,category){return [

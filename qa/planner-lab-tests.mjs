@@ -47,7 +47,7 @@ for(const item of order){const next=siteData.indexOf(item);if(next<0||next<=pos)
 for(const target of ['/route-planner.html','/airport.html','/procedures.html','/aircraft.html','/flights.html'])if(!siteData.includes(`'${target}'`))throw new Error(`Plan navigation missing ${target}`);
 if(!siteData.includes("['/daily/', 'Daily challenge'"))throw new Error('Daily must remain discoverable in shared Learn navigation');
 if(!header.includes('navSections.map'))throw new Error('Astro header must render shared navigation data');
-if(!gn.includes('window.PILOTDESK_NAV')||!gn.includes('data-pd-account-link'))throw new Error('Shared navigation/account hydration missing');
+if(!gn.includes('PILOTDESK_NAV_CORE')||!gn.includes('data-pd-account-link')||!gn.includes('/assets/navigation-search.js'))throw new Error('Lightweight shared navigation/account hydration missing');
 if(!navCss.includes('@media(max-width:860px)')||!navCss.includes('.pd-main-nav.open{display:grid}')||!navCss.includes('.menu-btn{display:grid!important'))throw new Error('Global navigation/mobile behavior missing');
 
 const wx=fs.readFileSync('api/weather.js','utf8');
@@ -58,7 +58,9 @@ if(!wxClient.includes("cache:'no-store'")||!wxClient.includes('Weather could not
 const sw=fs.readFileSync('sw.js','utf8');
 const swVersion=Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0);
 if(swVersion<20)throw new Error('Service worker version not advanced');
-for(const x of ['/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/assets/navlog-core.js','/assets/procedures.js','/assets/global-nav.js','/assets/checklist-trainer.css','/assets/procedure-viewer.css','/assets/aircraft-training.js'])if(!sw.includes(x))throw new Error(`Offline shell missing ${x}`);
+for(const x of ['/assets/navigation-core.js','/assets/global-nav.js','/assets/app-bootstrap.js'])if(!sw.includes(x))throw new Error(`Offline core missing ${x}`);
+for(const x of ['/planner.html','/route-planner.html','/procedures.html','/poh-chart-studio.html','/checklist-trainer.html','/assets/aircraft-training.js'])if(sw.includes(`'${x}'`))throw new Error(`Route-specific planning asset returned to the core precache: ${x}`);
+if(!sw.includes('staleWhileRevalidate')||!sw.includes("req.mode==='navigate'"))throw new Error('Planning pages must remain runtime-cacheable without bloating the install precache');
 if(!sw.includes('const networkOnlyPath=')||!sw.includes("pathname.startsWith('/api/')")||!sw.includes("pathname.startsWith('/_vercel/')"))throw new Error('Live APIs must bypass service worker cache');
 
 const sitemap=fs.readFileSync('sitemap.xml','utf8');

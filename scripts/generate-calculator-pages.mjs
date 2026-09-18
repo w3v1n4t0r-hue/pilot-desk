@@ -145,6 +145,10 @@ const faqBySlug={
   ]
 };
 
+const seoTitleBySlug={
+  'isa-temperature':'ISA Temperature Calculator by Altitude | PilotDesk'
+};
+
 function genericFaq(title,category){return [
   [`What does the ${title} calculator do?`,`It uses the entered aviation values to solve the ${title.toLowerCase()} relationship and displays the main outputs immediately for study, planning and cross-checking.`],
   ['What inputs should I use?',`Use values from the current source that applies to the problem. Keep units and reference systems consistent, then verify that each input describes the quantity the ${category.toLowerCase()} formula expects.`],
@@ -163,7 +167,7 @@ for(const [slug,key,title,desc,fields,results] of calcs){
   const defaults=fields.map(x=>`${x[1]} ${x[2]}${x[3]?' '+x[3]:''}`).join('; ');
   const metaCandidate=desc.length<118?`${desc} Free browser-based aviation calculator for pilots and flight students.`:desc;
   const metaDesc=metaCandidate.length>158?metaCandidate.slice(0,155).replace(/\s+\S*$/,'')+'…':metaCandidate;
-  const titleTag=`${title} Calculator for Pilots | PilotDesk`;
+  const titleTag=seoTitleBySlug[slug]||`${title} Calculator for Pilots | PilotDesk`;
 
   const siblings=(categories[category]||[]).filter(x=>x!==slug);
   const position=Math.max(0,(categories[category]||[]).indexOf(slug));

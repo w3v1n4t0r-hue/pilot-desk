@@ -14,10 +14,10 @@ ok(air.includes("cruiseTas:s('cruiseTas')"),'Aircraft import/export must preserv
 ok(airTraining.includes("'Weight & Balance','/weight-balance.html'"),'Aircraft binder must use canonical Weight & Balance URL');
 for(const s of ["['GET','HEAD']",'safeRange','content-range','Readable.fromWeb','Accept-Ranges'])ok(pdf.includes(s),`Procedure PDF proxy missing ${s}`);
 
-ok(bootstrap.includes('/assets/flight-store.js'),'Bootstrap must load the canonical shared flight store');
+ok(!bootstrap.includes('/assets/flight-store.js'),'Shared flight store must stay off the global bootstrap and load only where a planning workflow needs it');
 for(const [path,asset] of [['route-planner.html','planner-pro.js'],['procedures.html','procedure-pro.js'],['checklist-trainer.html','trainer-pro.js']])ok(bootstrap.includes(`path==='/${path}'`)&&bootstrap.includes(`/assets/${asset}`),`Bootstrap does not route-scope ${asset}`);
 for(const retired of ['flight-library.js','preview-harvest.js','avionics-command.js'])ok(!bootstrap.includes(`/assets/${retired}`),`Retired consolidated preview layer returned: ${retired}`);
-for(const asset of ['planner-pro.js','procedure-pro.js','trainer-pro.js','poh-chart-studio.js','flight-store.js'])ok(sw.includes(`/assets/${asset}`),`Service worker does not cache ${asset}`);
+for(const asset of ['planner-pro.js','procedure-pro.js','trainer-pro.js','poh-chart-studio.js','flight-store.js'])ok(!sw.includes(`'/assets/${asset}'`),`Route-only asset returned to the service-worker core precache: ${asset}`);
 ok(procedures.includes('/assets/app-bootstrap.js'),'Procedures page logic must reach consolidated enhancements without depending on ads');
 ok(checklist.includes('/assets/app-bootstrap.js'),'Training page logic must reach consolidated enhancements without depending on ads');
 ok(/const CACHE='pilotdesk-v\d+'/.test(sw)&&Number(sw.match(/pilotdesk-v(\d+)/)?.[1]||0)>=38,'offline reliability release must use a current versioned service-worker cache');

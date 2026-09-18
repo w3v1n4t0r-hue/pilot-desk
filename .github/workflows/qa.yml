@@ -77,6 +77,8 @@ jobs:
         run: node qa/cfi-toolkit-smoke.mjs
       - name: Run flight workspace checks
         run: node qa/flight-workspace-smoke.mjs
+      - name: Run connected flight-planning checks
+        run: node qa/flight-journey-smoke.mjs
       - name: Run PilotDesk v2 master checks
         run: node qa/v2-smoke.mjs
       - name: Run planner lab checks

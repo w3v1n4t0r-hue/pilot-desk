@@ -811,3 +811,168 @@ button,.pd-btn,.calc-btn{
 
 /* Revenue path: quiet global plans link, not a loud sales CTA. */
 .pd-plans-link{display:inline-flex;align-items:center;min-height:36px;padding:0 9px;border:1px solid transparent;border-radius:2px;color:#8f8e89;font-size:11.5px;font-weight:600;text-decoration:none}.pd-plans-link:hover{color:#fff;background:#101012;border-color:#2b2b2f;text-decoration:none}@media(max-width:800px){.pd-plans-link{display:none}}
+
+
+/* SITE-WIDE MONOCHROME RIGIDITY + MOTION
+   -------------------------------------------------------------
+   The shared contract: black / graphite / silver, square or clipped
+   geometry, and purposeful motion only. This intentionally sits at the
+   end of the final cascade authority.
+*/
+:root{
+  --pd-metal:#d9d8d2;
+  --pd-metal-dim:#85847f;
+  --pd-graphite:#111113;
+  --pd-graphite-2:#17171a;
+  --pd-hairline:#303035;
+}
+
+html,body{background-color:var(--bg)!important}
+body{
+  background:
+    linear-gradient(180deg,#0b0b0d 0,#050505 340px,#050505 100%)!important;
+}
+
+/* Eliminate residual soft / blue SaaS chrome. */
+.pd-account-card,.pd-account-promise,.pd-account-benefit,.pd-account-dashboard,
+.pd-account-dashboard-card,.pd-user-stat,.pd-owner,.pd-owner-stat,
+.pd-account-roadmap-grid>div,.pd-progress-track,
+.pd-hub-card,.pd-airport-hero,.pd-kpi,.pd-dashboard-block,.pd-flight-card,
+.pd-brief-hero,.pd-brief-item,.pd-official-links a,.pd-token-row,.pd-oral-start,
+.pd-plan-card,.pd-training-progress,.pd-training-next{
+  border-radius:0!important;
+  box-shadow:none!important;
+  background-image:none!important;
+}
+
+.pd-account-card,.pd-account-promise,.pd-account-dashboard,.pd-owner,
+.pd-hub-card,.pd-airport-hero,.pd-dashboard-block,.pd-flight-card,.pd-brief-hero,
+.pd-plan-card,.pd-training-progress{
+  clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px));
+}
+
+.pd-user-avatar{
+  border-radius:0!important;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+  background:#111113!important;
+}
+.pd-progress-track{height:6px!important;background:#09090b!important}
+.pd-progress-fill{
+  background:linear-gradient(90deg,#66666d,#f0efe9)!important;
+  box-shadow:none!important;
+}
+.pd-flightcat-pill,.pd-chip,.pd-product-nav a,.pd-product-nav button,
+.pd-code-token,.recent-chip{
+  border-radius:0!important;
+  color:#c2c1bc!important;
+  background:#0a0a0c!important;
+}
+.pd-flightcat-pill[data-cat="VFR"],
+.pd-flightcat-pill[data-cat="MVFR"],
+.pd-flightcat-pill[data-cat="IFR"],
+.pd-flightcat-pill[data-cat="LIFR"]{
+  border-color:#4a4a50!important;
+  color:#d8d7d2!important;
+  background:#0a0a0c!important;
+}
+
+button,.pd-btn,.pd-auth-btn,.utility-btn,.recent-chip,
+input,select,textarea,.pd-search-shell input{
+  border-radius:0!important;
+}
+
+a,button,input,select,textarea,summary{
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* Stronger keyboard / active state without neon or blue. */
+:focus-visible{
+  outline:1px solid #d9d8d2!important;
+  outline-offset:3px!important;
+}
+[aria-current="page"],[aria-current="step"]{
+  --pd-current-line:#efeee9;
+}
+
+/* Motion is subtle and directional, never floaty. */
+@keyframes pd-surface-in{
+  from{opacity:.01;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes pd-line-scan{
+  from{transform:scaleX(0);transform-origin:left}
+  to{transform:scaleX(1);transform-origin:left}
+}
+@keyframes pd-metal-shimmer{
+  0%{background-position:120% 0}
+  100%{background-position:-20% 0}
+}
+@keyframes pd-number-settle{
+  0%{opacity:.25;transform:translateY(4px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+
+@media(prefers-reduced-motion:no-preference){
+  .pd-ready main>section,
+  .pd-ready main>.hero,
+  .pd-ready main>.calculator-layout,
+  .pd-ready main>.category,
+  .pd-ready main>.pd-account-layout{
+    animation:pd-surface-in 300ms var(--pd-ease) both;
+  }
+  .pd-ready main>section:nth-of-type(2){animation-delay:35ms}
+  .pd-ready main>section:nth-of-type(3){animation-delay:70ms}
+  .pd-ready main>section:nth-of-type(4){animation-delay:105ms}
+
+  .tool-card:before,.pd-card:before,.pd-hub-card:before,.pd-flight-card:before{
+    transform:scaleX(.45);
+    transform-origin:left;
+    transition:transform 180ms var(--pd-ease),opacity 180ms ease!important;
+  }
+  .tool-card:hover:before,.pd-card:hover:before,.pd-hub-card:hover:before,.pd-flight-card:hover:before{
+    transform:scaleX(1);
+    opacity:1!important;
+  }
+
+  .result strong,.pd-user-stat strong,.pd-owner-stat strong,.pd-training-countdown strong{
+    animation:pd-number-settle 240ms var(--pd-ease) both;
+  }
+
+  .pd-btn,.calc-btn,.pd-auth-btn{
+    position:relative;
+    overflow:hidden;
+  }
+  .pd-btn:after,.calc-btn:after,.pd-auth-btn:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:linear-gradient(105deg,transparent 28%,rgba(255,255,255,.32) 48%,transparent 67%);
+    background-size:220% 100%;
+    background-position:120% 0;
+    opacity:0;
+  }
+  .pd-btn:hover:after,.calc-btn:hover:after,.pd-auth-btn:hover:after{
+    opacity:.22;
+    animation:pd-metal-shimmer 520ms ease both;
+  }
+
+  details[open]>:not(summary){
+    animation:pd-surface-in 180ms var(--pd-ease) both;
+  }
+}
+
+/* A little more structure on workflow surfaces. */
+.pd-flight-journey-steps a,
+.pd-training-goal-grid>a,
+.pd-training-ratings .pd-hub-card{
+  position:relative;
+}
+.pd-flight-journey-steps a[aria-current="step"]:after,
+.pd-training-ratings a.is-current-training:after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:1px;
+  background:#efeee9;
+}

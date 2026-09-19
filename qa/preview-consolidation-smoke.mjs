@@ -11,7 +11,7 @@ for(const s of ['Open preview','Reload','Escape','pd-plate-focus'])ok(proc.inclu
 for(const s of ['Export','Import','keydown','ArrowLeft','ArrowRight'])ok(trainer.includes(s),`Training enhancement missing ${s}`);
 ok(poh.includes("KEY='pd-poh-models-v2'")&&poh.includes('will not extrapolate')&&poh.includes('Save model locally'),'POH chart studio did not preserve saved-model/no-extrapolation behavior');
 ok(air.includes("cruiseTas:s('cruiseTas')"),'Aircraft import/export must preserve cruise TAS');
-ok(airTraining.includes("'Weight & Balance','/weight-balance.html'"),'Aircraft binder must use canonical Weight & Balance URL');
+ok(airTraining.includes("link('Weight & Balance','/weight-balance.html?aircraft='+encodeURIComponent(id),id)"),'Aircraft binder must use canonical Weight & Balance URL while preserving aircraft prefill');
 for(const s of ["['GET','HEAD']",'safeRange','content-range','Readable.fromWeb','Accept-Ranges'])ok(pdf.includes(s),`Procedure PDF proxy missing ${s}`);
 
 ok(!bootstrap.includes('/assets/flight-store.js'),'Shared flight store must stay off the global bootstrap and load only where a planning workflow needs it');

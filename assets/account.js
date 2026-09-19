@@ -75,6 +75,50 @@ async function renderAccountDashboard(profile){
  }
 }
 
+function cloudStatus(msg,kind=''){const el=$('#pdCloudBackupStatus');if(!el)return;el.textContent=msg;el.dataset.kind=kind;el.hidden=!msg}
+async function backupDeviceToCloud(){
+ if(!state.session)return cloudStatus('Sign in before backing up this device.','warn');
+ const userId=state.session.user.id,aircraft=localJson('pd-aircraft',[]),flights=localJson('pd-saved-flights',[]);
+ const btn=$('#pdCloudBackupNow');if(btn)btn.disabled=true;cloudStatus('Saving this device snapshot…');
+ try{
+  const delA=await state.client.from('aircraft_profiles').delete().eq('user_id',userId);if(delA.error)throw delA.error;
+  const delF=await state.client.from('saved_flights').delete().eq('user_id',userId);if(delF.error)throw delF.error;
+  if(aircraft.length){
+   const rows=aircraft.map((x,i)=>({user_id:userId,name:String(x.name||x.makeModel||x.make_model||('Aircraft '+(i+1))).slice(0,80),make_model:String(x.makeModel||x.make_model||'').slice(0,120)||null,tail_number:String(x.tailNumber||x.tail_number||'').slice(0,20)||null,data:{...x,_pilotdesk_local_id:x.id||null}}));
+   const ins=await state.client.from('aircraft_profiles').insert(rows);if(ins.error)throw ins.error;
+  }
+  if(flights.length){
+   const rows=flights.map((x,i)=>({user_id:userId,name:String(x.name||x.route||('Saved flight '+(i+1))).slice(0,120),route:String(x.route||'').slice(0,1000)||null,data:{...x,_pilotdesk_local_id:x.id||null}}));
+   const ins=await state.client.from('saved_flights').insert(rows);if(ins.error)throw ins.error;
+  }
+  cloudStatus('Cloud backup saved: '+aircraft.length+' aircraft and '+flights.length+' saved flight'+(flights.length===1?'':'s')+'.','good');
+  window.pdTrack?.('Cloud Backup Saved',{aircraft:aircraft.length,flights:flights.length});
+  await renderAccountDashboard(state.profile);
+ }catch(e){cloudStatus(e.message||'Cloud backup failed. Your local data was not changed.','bad')}
+ finally{if(btn)btn.disabled=false}
+}
+async function restoreCloudToDevice(){
+ if(!state.session)return cloudStatus('Sign in before restoring a backup.','warn');
+ if(!confirm('Restore your PilotDesk cloud backup to this device? This replaces the aircraft and saved-flight lists currently stored in this browser.'))return;
+ const btn=$('#pdCloudRestoreNow');if(btn)btn.disabled=true;cloudStatus('Loading your cloud backup…');
+ try{
+  const userId=state.session.user.id;
+  const [a,f]=await Promise.all([
+   state.client.from('aircraft_profiles').select('id,name,make_model,tail_number,data,updated_at').eq('user_id',userId).order('updated_at',{ascending:true}),
+   state.client.from('saved_flights').select('id,name,route,data,updated_at').eq('user_id',userId).order('updated_at',{ascending:true})
+  ]);
+  if(a.error)throw a.error;if(f.error)throw f.error;
+  const aircraft=(a.data||[]).map(row=>({...row.data,id:row.data?._pilotdesk_local_id||row.id,name:row.data?.name||row.name,makeModel:row.data?.makeModel||row.make_model||'',tailNumber:row.data?.tailNumber||row.tail_number||''}));
+  const flights=(f.data||[]).map(row=>({...row.data,id:row.data?._pilotdesk_local_id||row.id,name:row.data?.name||row.name,route:row.data?.route||row.route||''}));
+  localStorage.setItem('pd-aircraft',JSON.stringify(aircraft));localStorage.setItem('pd-saved-flights',JSON.stringify(flights));
+  document.dispatchEvent(new CustomEvent('pilotdesk:aircraft-changed'));document.dispatchEvent(new CustomEvent('pilotdesk:flights-changed'));
+  cloudStatus('Restored '+aircraft.length+' aircraft and '+flights.length+' saved flight'+(flights.length===1?'':'s')+' to this device.','good');
+  window.pdTrack?.('Cloud Backup Restored',{aircraft:aircraft.length,flights:flights.length});
+  await renderAccountDashboard(state.profile);
+ }catch(e){cloudStatus(e.message||'Cloud restore failed.','bad')}
+ finally{if(btn)btn.disabled=false}
+}
+
 function ensureOwnerMetric(id,label){const grid=$('#pdOwnerMetrics .pd-owner-grid');if(!grid)return null;let el=$(`#${id}`);if(el)return el;const card=document.createElement('div');card.className='pd-owner-stat';card.innerHTML=`<strong id="${id}">0</strong><span>${label}</span>`;grid.appendChild(card);return $(`#${id}`)}
 function renderMetrics(d){
  const box=$('#pdOwnerMetrics');if(!box)return;show('#pdOwnerClaim',false);box.classList.remove('pd-account-hidden');
@@ -106,7 +150,7 @@ async function signInGithub(){status('Opening GitHub sign-in…');const {error}=
 async function saveProfile(e){e.preventDefault();if(!state.session)return;const updates={display_name:$('#pdDisplayName').value.trim().slice(0,80)||null,pilot_stage:$('#pdPilotStage').value||null,home_airport:cleanAirport($('#pdHomeAirport').value)||null,training_goal:$('#pdTrainingGoal').value||null,checkride_date:$('#pdCheckrideDate').value||null};status('Saving your profile…');const {error}=await state.client.from('profiles').update(updates).eq('id',state.session.user.id);if(error)return status(error.message,'bad');try{if(updates.training_goal)localStorage.setItem('pd-training-goal',updates.training_goal);else localStorage.removeItem('pd-training-goal');if(updates.checkride_date)localStorage.setItem('pd-training-date',updates.checkride_date);else localStorage.removeItem('pd-training-date')}catch{}status('Profile saved.','good');window.pdTrack?.('Account Profile Saved',{trainingGoal:updates.training_goal||'none',hasTargetDate:updates.checkride_date?'yes':'no'});await renderSignedIn(state.session)}
 async function signOut(){await state.client.auth.signOut();status('Signed out.','good');window.pdTrack?.('Account Signed Out')}
 async function deleteAccount(){if(!state.session)return;const answer=prompt('This permanently deletes your PilotDesk account and saved account data. Type DELETE to continue.');if(answer!=='DELETE')return;if(!confirm('Delete this PilotDesk account permanently? This cannot be undone.'))return;status('Deleting your account…');try{const r=await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:edgeHeaders()});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||'Unable to delete your account.','bad');await state.client.auth.signOut({scope:'local'}).catch(()=>{});state.session=null;state.profile=null;renderSignedOut();status('Your PilotDesk account was deleted.','good')}catch{status('Unable to delete your account right now.','bad')}}
-function bind(){$('#pdMagicForm')?.addEventListener('submit',sendMagicLink);$('#pdPasswordForm')?.addEventListener('submit',signInPassword);$('#pdCreateAccountForm')?.addEventListener('submit',createAccount);$('#pdForgotPassword')?.addEventListener('click',resetPassword);$('#pdGoogleSignIn')?.addEventListener('click',signInGoogle);$('#pdProfileForm')?.addEventListener('submit',saveProfile);$('#pdSignOut')?.addEventListener('click',signOut);$('#pdDeleteAccount')?.addEventListener('click',deleteAccount);$('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);$('#pdOwnerClaim')?.addEventListener('submit',claimOwnerAccess);$('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)})}
+function bind(){$('#pdMagicForm')?.addEventListener('submit',sendMagicLink);$('#pdPasswordForm')?.addEventListener('submit',signInPassword);$('#pdCreateAccountForm')?.addEventListener('submit',createAccount);$('#pdForgotPassword')?.addEventListener('click',resetPassword);$('#pdGoogleSignIn')?.addEventListener('click',signInGoogle);$('#pdProfileForm')?.addEventListener('submit',saveProfile);$('#pdSignOut')?.addEventListener('click',signOut);$('#pdDeleteAccount')?.addEventListener('click',deleteAccount);$('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);$('#pdOwnerClaim')?.addEventListener('submit',claimOwnerAccess);$('#pdCloudBackupNow')?.addEventListener('click',backupDeviceToCloud);$('#pdCloudRestoreNow')?.addEventListener('click',restoreCloudToDevice);$('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)})}
 async function init(){bind();show('#pdGoogleSignIn',false);$('#pdAccountRoot')?.classList.add('pd-account-disabled');status('Loading your account…');try{await loadSupabase();const {data:{session},error}=await state.client.auth.getSession();if(error)throw error;state.client.auth.onAuthStateChange((_event,next)=>{setTimeout(()=>renderSession(next),0)});status('');await renderSession(session)}catch(e){console.error('[PilotDesk account init]',e);renderSignedOut();$('#pdAccountRoot')?.classList.add('pd-account-disabled');status(e.message||'Accounts are temporarily unavailable.','warn')}}
 document.addEventListener('click',e=>{if(e.target?.id==='pdGithubSignIn')signInGithub()});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

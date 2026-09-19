@@ -117,7 +117,8 @@ function start(RP,L){
     '</section>',
     '<p class="rp-layer-foot">Planning display only. Confirm current weather, NOTAMs, TFRs and chart data with an official briefing source.</p>'
   ].join('');
-  card.appendChild(panel);
+  const mapEl=document.getElementById('rpMap');
+  mapEl.appendChild(panel);
 
   const brief=document.createElement('aside');
   brief.id='rpRouteBrief';
@@ -125,20 +126,25 @@ function start(RP,L){
   brief.setAttribute('aria-label','Route brief');
   brief.hidden=true;
   brief.innerHTML='<div class="rp-efb-head"><div><span class="rp-eyebrow">ROUTE INTELLIGENCE</span><strong>Route Brief</strong></div><button type="button" data-close-brief aria-label="Close route brief">×</button></div><div id="rpBriefBody" class="rp-brief-body"><div class="rp-empty-state">Build a route to load route-specific weather, hazards, TFRs and NOTAM context.</div></div>';
-  card.appendChild(brief);
+  mapEl.appendChild(brief);
 
   const radarControls=document.createElement('div');
   radarControls.id='rpRadarTimeline';
   radarControls.className='rp-radar-timeline';
   radarControls.hidden=!state.enabled.radar;
   radarControls.innerHTML='<button type="button" id="rpRadarPlay" aria-label="Play radar loop">▶</button><span class="rp-radar-label">RADAR</span><input id="rpRadarTime" type="range" min="0" max="24" step="1" value="24" aria-label="Radar time"><output id="rpRadarTimeLabel">Latest</output><label><span>Opacity</span><input id="rpRadarOpacity" type="range" min="20" max="100" step="5" value="'+Math.round(state.radarOpacity*100)+'"></label>';
-  card.appendChild(radarControls);
+  mapEl.appendChild(radarControls);
 
   const legStrip=document.createElement('div');
   legStrip.id='rpLegStrip';
   legStrip.className='rp-leg-strip';
   legStrip.hidden=true;
-  card.appendChild(legStrip);
+  mapEl.appendChild(legStrip);
+
+  [panel,brief,radarControls,legStrip].forEach(el=>{
+    L.DomEvent.disableClickPropagation(el);
+    L.DomEvent.disableScrollPropagation(el);
+  });
 
   function baseRow(value,label){
     return '<label class="rp-layer-row"><span><input type="radio" name="rpEfbBase" value="'+value+'" '+(state.baseMode===value?'checked':'')+'> '+esc(label)+'</span><small data-layer-status="base-'+value+'"></small></label>';
@@ -657,6 +663,12 @@ function start(RP,L){
 
   function showLeg(leg){
     if(!leg){legStrip.hidden=true;return}
+    const pts=RP.getPoints(),dep=pts.length?String(pts[0].id||'').toUpperCase():'',dst=pts.length?String(pts[pts.length-1].id||'').toUpperCase():'';
+    const to=String(leg.to||'').toUpperCase(),from=String(leg.from||'').toUpperCase();
+    const wxData=to===dst?briefWx.dst:(from===dep?briefWx.dep:null);
+    const wx=String((wxData&&wxData.metar&&(wxData.metar.fltCat||wxData.metar.flightCategory))||'—').toUpperCase();
+    const notice=notams[to];
+    const count=notice&&notice.configured!==false?String(Number(notice.count||0)):'—';
     legStrip.hidden=false;
     legStrip.innerHTML=[
       '<div class="rp-leg-strip-route"><span>'+esc(leg.from)+'</span><i>→</i><span>'+esc(leg.to)+'</span></div>',
@@ -664,7 +676,9 @@ function start(RP,L){
       metric('MH',fmt(leg.mag,0)+'°'),
       metric('GS',fmt(leg.gs,0)+' kt'),
       metric('ETE',fmt(Number(leg.hours)*60,0)+' min'),
-      metric('FUEL',fmt(leg.legFuel,1)+' gal')
+      metric('FUEL',fmt(leg.legFuel,1)+' gal'),
+      metric('WX',wx),
+      metric('NOTAM',count)
     ].join('');
   }
   function metric(label,value){return '<div><small>'+label+'</small><b>'+value+'</b></div>'}

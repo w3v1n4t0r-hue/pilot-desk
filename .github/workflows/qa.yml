@@ -35,6 +35,8 @@ jobs:
           find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
       - name: Run PilotDesk smoke checks
         run: node qa/smoke.mjs
+      - name: Run free-first product foundation checks
+        run: node qa/product-roadmap-smoke.mjs
       - name: Run QoL smoke checks
         run: node qa/qol-smoke.mjs
       - name: Run product polish checks

@@ -14,7 +14,7 @@ near(n.totalDistance,60.04,.2,'one degree latitude');
 near(n.totalHours,n.totalDistance/120,.001,'ETE');
 near(n.totalFuel,n.totalHours*10,.001,'fuel');
 
-const required=['planner.html','route-planner.html','procedures.html','poh-chart-studio.html','checklist-trainer.html','assets/navlog-core.js','assets/route-planner.js','assets/procedures.js','assets/global-nav.js','assets/checklist-trainer.css','assets/procedure-viewer.css','assets/planner-suite.css','assets/weather.css','assets/weather-fixed.js','assets/checklist-trainer.js','assets/aircraft-training.js','assets/poh-chart-studio.js','api/navdata.js','api/weather.js','api/procedures.js','api/procedure-pdf.js'];
+const required=['planner.html','route-planner.html','procedures.html','poh-chart-studio.html','checklist-trainer.html','assets/navlog-core.js','assets/route-planner.js','assets/efb-layers.js','assets/procedures.js','assets/global-nav.js','assets/checklist-trainer.css','assets/procedure-viewer.css','assets/planner-suite.css','assets/weather.css','assets/weather-fixed.js','assets/checklist-trainer.js','assets/aircraft-training.js','assets/poh-chart-studio.js','api/navdata.js','api/weather.js','api/aviation-layers.js','api/faa-map-features.js','api/tfrs.js','api/notams.js','api/procedures.js','api/procedure-pdf.js'];
 for(const p of required)if(!fs.existsSync(p))throw new Error(`Missing ${p}`);
 
 const ct=fs.readFileSync('assets/checklist-trainer.js','utf8');
@@ -29,6 +29,17 @@ const rp=fs.readFileSync('route-planner.html','utf8');
 const rpjs=fs.readFileSync('assets/route-planner.js','utf8');
 if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
 for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!rpjs.includes(s))throw new Error(`Route optimization/integration missing ${s}`);
+const efb=fs.readFileSync('assets/efb-layers.js','utf8');
+for(const s of ['Auto by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
+if(!rp.includes('/assets/efb-layers.js'))throw new Error('Route planner does not load the EFB layer controller');
+const layerApi=fs.readFileSync('api/aviation-layers.js','utf8');
+const faaMapApi=fs.readFileSync('api/faa-map-features.js','utf8');
+const tfrApi=fs.readFileSync('api/tfrs.js','utf8');
+const notamApi=fs.readFileSync('api/notams.js','utf8');
+for(const s of ['metar','pirep','airsigmet','gairmet','cwa','obstacle'])if(!layerApi.includes(`'${s}'`))throw new Error(`AWC overlay proxy missing ${s}`);
+for(const s of ['US_Airport','NAVAIDSystem','DesignatedPoints','ATS_Route','Special_Use_Airspace','Class_Airspace'])if(!faaMapApi.includes(s))throw new Error(`FAA map overlay proxy missing ${s}`);
+if(!tfrApi.includes('TFR:V_TFR_LOC')||!tfrApi.includes('Federal Aviation Administration TFR GeoServer'))throw new Error('FAA TFR integration missing');
+if(!notamApi.includes('FAA_NOTAM_CLIENT_ID')||!notamApi.includes('FAA_NOTAM_CLIENT_SECRET')||notamApi.includes('process.env.NEXT_PUBLIC'))throw new Error('FAA NOTAM credentials must remain server-side');
 
 const proc=fs.readFileSync('api/procedures.js','utf8');
 const proxy=fs.readFileSync('api/procedure-pdf.js','utf8');

@@ -12,17 +12,17 @@
 :root{
   color-scheme:dark;
 
-  --bg:#09090a;
+  --bg:#050505;
   --bg2:#0d0d0f;
-  --panel:#121214;
+  --panel:#0d0d0f;
   --panel2:#17171a;
   --panel3:#1d1d21;
 
-  --text:#efefeb;
+  --text:#f4f3ee;
   --muted:#aaa9a5;
   --muted2:#77777f;
 
-  --line:#2e2e32;
+  --line:#29292d;
   --line-hi:#505057;
   --silver:#e5e4df;
   --silver2:#faf9f4;

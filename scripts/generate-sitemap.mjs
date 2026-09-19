@@ -73,7 +73,17 @@ fs.writeFileSync('sitemap.xml',xml+'\n');
 // Advertise the canonical sitemap plus purpose-built discovery/retention
 // sitemaps. Keep this generated so robots.txt cannot drift from the sitemap
 // files the product and QA suites expect search engines to discover.
-const advertised=['sitemap.xml','sitemap-daily.xml','sitemap-growth.xml','sitemap-retention.xml'].filter(file=>fs.existsSync(file));
+const advertised=[
+  'sitemap-index.xml',
+  'sitemap.xml',
+  'sitemap-core.xml',
+  'sitemap-daily.xml',
+  'sitemap-growth.xml',
+  'sitemap-retention.xml',
+  'sitemap-seo-expansion.xml',
+  'sitemap-seo-expansion-2.xml',
+  'sitemap-written-prep.xml'
+].filter(file=>fs.existsSync(file));
 const robots=['User-agent: *','Allow: /','Disallow: /api/',...advertised.map(file=>`Sitemap: ${SITE}/${file}`),''].join('\n');
 fs.writeFileSync('robots.txt',robots);
 console.log(`Generated canonical sitemap with ${unique.length} indexable URLs from ${HISTORY_REF} and advertised ${advertised.join(', ')} in robots.txt.`);

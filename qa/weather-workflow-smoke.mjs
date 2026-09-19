@@ -32,7 +32,7 @@ check(wx.includes("crossQ.set('runway',screen.r.heading)"),'Runway screen does n
 check(wx.includes("daQ.set('pa',Math.round(paApprox))")&&wx.includes("daQ.set('oat',met.temp)"),'Density-altitude setup does not carry pressure altitude + OAT');
 check(wx.includes("(29.92-altInHg)*1000"),'Approximate pressure-altitude handoff formula missing');
 check(wx.includes("a.h<0?50:0"),'Runway orientation screen must avoid preferring a tailwind when equivalent crosswind choices exist');
-check(wx.includes("data-weather-handoff="crosswind"")&&wx.includes("data-weather-handoff="density-altitude""),'Weather calculator handoff attribution missing');
+check(wx.includes('data-weather-handoff="crosswind"')&&wx.includes('data-weather-handoff="density-altitude"'),'Weather calculator handoff attribution missing');
 
 check(extra.includes("flightId=new URLSearchParams(location.search).get('flight')"),'Nearby-station weather comparison drops active flight');
 check(extra.includes("'&flight='+encodeURIComponent(flightId)"),'Nearby-station links do not preserve flight context');

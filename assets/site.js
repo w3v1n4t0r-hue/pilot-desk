@@ -68,7 +68,8 @@ if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.
 if(['/aircraft.html','/route-planner.html','/weather.html','/weight-balance.html','/flight-planning-workspace.html','/procedures.html','/flight-brief.html'].includes(location.pathname)&&!document.querySelector('script[src*="/assets/flight-journey.js"]')){const s=document.createElement('script');s.src='/assets/flight-journey.js';s.defer=true;document.head.appendChild(s)}
 function polishInteractions(){
   const cards=$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card');
-  cards.forEach((card,index)=>card.style.setProperty('--pd-order',String(index%6)));
+  const finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(finePointer)cards.forEach((card,index)=>card.style.setProperty('--pd-order',String(index%6)));
   if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
   const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{
     if(!entry.isIntersecting)return;

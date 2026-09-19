@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { homeActions, popularTools, homeCategories } from '../data/site.mjs';
+import { homeActions, popularTools } from '../data/site.mjs';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -9,7 +9,7 @@ const schema = {
       '@type': 'WebSite',
       name: 'PilotDesk',
       url: 'https://www.pilot-desk.com/',
-      description: 'Free aviation calculators, flight planning, weather tools, and pilot training.'
+      description: 'Aviation calculators, flight planning, weather tools, and pilot training in one workspace.'
     },
     {
       '@type': 'Organization',
@@ -20,10 +20,10 @@ const schema = {
     {
       '@type': 'FAQPage',
       mainEntity: [
-        ['What aviation tools does PilotDesk include?', 'PilotDesk brings together flight planning, aviation calculators, weather references, aircraft performance tools, and pilot study resources.'],
-        ['What is PilotDesk Daily?', 'PilotDesk Daily is a free three-question aviation challenge that changes every day. Pilots can share their score and challenge another pilot, while signed-in users can also save XP and streaks.'],
-        ['Are PilotDesk calculator results official operational data?', 'No. Results are planning aids based on the inputs and methods shown on each tool. Verify operational decisions with current approved aircraft, airport, weather, and regulatory sources.'],
-        ['Can I use PilotDesk for FAA written test preparation?', 'Yes. PilotDesk includes rating-focused practice for common FAA written-test subjects, with explanations and weak-area review.']
+        ['What is PilotDesk?', 'PilotDesk is a browser-based aviation workspace for flight planning, pilot calculations, weather, and training.'],
+        ['Do I need an account?', 'No. Core tools work without an account. An account is useful for saving progress, aircraft, written-prep history, and Daily streaks.'],
+        ['Are PilotDesk calculator results official operational data?', 'No. PilotDesk is a planning and training aid. Verify operational decisions with current approved aircraft data, weather, procedures, regulations, and official sources.'],
+        ['What is PilotDesk Daily?', 'PilotDesk Daily is a short aviation challenge with three new questions each day.']
       ].map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } }))
     }
   ]
@@ -31,7 +31,7 @@ const schema = {
 ---
 <BaseLayout
   title="PilotDesk | Flight Planning, Aviation Calculators & Pilot Training"
-  description="Plan flights, run aviation calculations, check weather, study FAA written-test subjects, and play PilotDesk Daily."
+  description="A practical pilot workspace for flight planning, aviation calculations, weather, written prep, and checkride study."
   canonical="/"
   schema={schema}
   bodyClass="pd-home-2026"
@@ -39,22 +39,29 @@ const schema = {
   <section class="pd-home-hero" aria-labelledby="pdHomeTitle">
     <div class="pd-home-hero-inner">
       <div class="pd-home-hero-copy">
-        <div class="eyebrow">PILOT TOOLS · PLANNING · TRAINING</div>
-        <h1 id="pdHomeTitle">Plan the flight. Run the numbers. Keep learning.</h1>
-        <p>PilotDesk puts flight planning, aviation calculators, weather, and pilot training in one fast workspace. Start with the task you need right now.</p>
+        <div class="eyebrow">BUILT FOR THE WORK BETWEEN FLIGHTS</div>
+        <h1 id="pdHomeTitle">One place for the planning, math, weather, and studying pilots do every week.</h1>
+        <p>Use the tool you need, get the answer, and move on. PilotDesk keeps common pilot tasks together without burying them behind an account or a pile of menus.</p>
+        <div class="pd-home-hero-links">
+          <a class="pd-btn" href="/route-planner.html" data-pd-home-cta="Start Planning">Plan a flight</a>
+          <a class="pd-home-text-link" href="/tools.html" data-pd-home-cta="Browse Tools">Browse all tools →</a>
+        </div>
       </div>
-      <div class="pd-home-actions">
+
+      <div class="pd-home-actions" aria-label="Quick start">
         {homeActions.slice(0,3).map(([href, title, copy, path], index) => (
           <a class="pd-home-action" href={href} data-pd-home-cta={title} data-pd-launch={index === 2 ? 'written-prep' : undefined}>
             <span class="pd-home-action-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg></span>
-            <b>{title}</b><span>{copy}</span><em aria-hidden="true">›</em>
+            <span class="pd-home-action-copy"><b>{title}</b><span>{copy}</span></span>
+            <em aria-hidden="true">↗</em>
           </a>
         ))}
       </div>
+
       <div class="pd-home-proof" aria-label="PilotDesk basics">
-        <span><strong>Free core tools</strong><small>No sign-in required</small></span>
-        <span><strong>Built for pilots</strong><small>Planning, math, weather, training</small></span>
-        <span><strong>Methods shown</strong><small>Verify with approved sources</small></span>
+        <span><strong>Free core tools</strong><small>No account wall</small></span>
+        <span><strong>Made for pilots</strong><small>Not a generic calculator site</small></span>
+        <span><strong>Methods shown</strong><small>Check against approved sources</small></span>
       </div>
     </div>
   </section>
@@ -63,45 +70,37 @@ const schema = {
     <section class="pd-home-section pd-first-run" id="pdFirstRun" aria-labelledby="pdFirstRunTitle">
       <div class="pd-home-section-head">
         <div>
-          <div class="eyebrow">START HERE</div>
-          <h2 id="pdFirstRunTitle">What are you trying to do today?</h2>
-          <p>Pick the job. PilotDesk will point you at the shortest useful path.</p>
+          <div class="eyebrow">START WITH THE JOB</div>
+          <h2 id="pdFirstRunTitle">What are you working on?</h2>
+          <p>Pick the task and go straight to the useful part.</p>
         </div>
         <button class="utility-btn" type="button" id="pdFirstRunReset" hidden>Change</button>
       </div>
+
       <div class="pd-first-run-grid" role="list">
         <a href="/route-planner.html" data-pd-first-goal="plan" role="listitem">
-          <small>PLAN</small><b>Plan a flight</b><span>Route, airports, weather, procedures, aircraft, and a saved brief.</span><em>Open flight planning →</em>
+          <small>PLAN</small><b>Build a flight</b><span>Route, airports, weather, procedures, aircraft, and a saved brief.</span><em>Open flight planning →</em>
         </a>
         <a href="/tools.html" data-pd-first-goal="calculate" role="listitem">
-          <small>CALCULATE</small><b>Work a number</b><span>Crosswind, density altitude, fuel, climb, W&B, E6B, conversions, and more.</span><em>Find a calculator →</em>
+          <small>CALCULATE</small><b>Run the numbers</b><span>Crosswind, density altitude, fuel, climb, W&B, E6B, conversions, and more.</span><em>Find a calculator →</em>
         </a>
         <a href="/flight-training.html" data-pd-first-goal="study" role="listitem">
-          <small>STUDY</small><b>Prepare for a rating or checkride</b><span>Written Prep, weak-area review, oral practice, rating hubs, and Daily.</span><em>Open training →</em>
+          <small>STUDY</small><b>Study for the next rating</b><span>Written prep, weak-area review, oral practice, rating hubs, and PilotDesk Daily.</span><em>Open training →</em>
         </a>
         <a href="/for-cfis.html" data-pd-first-goal="teach" role="listitem">
-          <small>TEACH</small><b>Work with a student</b><span>Shareable scenarios, calculator handoffs, checklist practice, and CFI tools.</span><em>Open CFI toolkit →</em>
+          <small>TEACH</small><b>Teach with it</b><span>Share scenarios, calculator setups, and training resources with a student.</span><em>Open CFI tools →</em>
         </a>
       </div>
       <div class="pd-first-run-selected" id="pdFirstRunSelected" hidden aria-live="polite"></div>
     </section>
 
-    <section class="pd-home-section pd-learning-promo pd-daily-home" aria-labelledby="pdDailyHomeTitle">
-      <div>
-        <div class="eyebrow">PILOTDESK DAILY · TODAY'S CHALLENGE</div>
-        <h2 id="pdDailyHomeTitle">Three questions. Then challenge another pilot.</h2>
-        <p>Weather, performance, systems, airport operations, and aeronautical decision making. Everyone gets the same daily challenge, and your finished score can be shared in one tap.</p>
-        <div class="pd-actions">
-          <a class="pd-btn" href="/daily/" data-pd-home-cta="Play Daily">Play today's pilot quiz</a>
-          <a href="/skill-gap.html" data-pd-home-cta="Skill Gap">Find your weak subjects →</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="pd-home-section" id="pdResume" hidden><h2>Pick up where you left off</h2><div id="pdResumeItems" class="pd-resume-items"></div><p class="fine">Recent tools and flights are saved on this device.</p></section>
     <section class="pd-home-section" id="popular-tools">
       <div class="pd-home-section-head">
-        <div><h2>Popular tools</h2><p>Run the calculation, then share the exact setup with another pilot.</p></div>
+        <div>
+          <div class="eyebrow">QUICK ACCESS</div>
+          <h2>Popular tools pilots come back for</h2>
+          <p>No dashboard tour. No setup wizard. Just open the tool and use it.</p>
+        </div>
         <a href="/tools.html" data-pd-home-cta="All Calculators">All calculators →</a>
       </div>
       <div class="pd-popular-grid">
@@ -113,22 +112,89 @@ const schema = {
       </div>
     </section>
 
-    <section class="pd-home-section pd-learning-promo"><div><div class="eyebrow">LEARN A LITTLE, EVERY DAY</div><h2>Make your next study session count.</h2><p>Choose your rating, try a sample, and build confidence with explanations and weak-area review.</p><a class="pd-btn" href="/flight-training.html" data-pd-home-cta="Study Path">Find your study path</a> <a href="/daily/" data-pd-home-cta="Play Daily">Play Daily →</a></div></section>
-
-    <section class="pd-home-section pd-learning-promo" data-pd-home-account aria-label="PilotDesk account">
-      <div>
-        <div class="eyebrow">SAVE YOUR PROGRESS</div>
-        <h2 data-pd-home-account-title>Make PilotDesk yours when you're ready.</h2>
-        <p data-pd-home-account-copy>Core tools work without an account. Sign in when you want written-prep scores, Daily streaks, aircraft, and progress to follow you between devices.</p>
-        <div class="pd-actions" data-pd-home-account-actions>
-          <a class="pd-btn secondary" href="/account.html?next=%2F" data-pd-home-cta="Sign In">Sign in</a>
-          <a href="/account.html?next=%2F" data-pd-home-cta="Create Account">Create a free account →</a>
+    <section class="pd-home-section pd-home-two-up" aria-label="Training and daily challenge">
+      <article class="pd-home-feature">
+        <div class="eyebrow">PILOTDESK DAILY</div>
+        <h2>Three questions. About five minutes.</h2>
+        <p>Weather, systems, performance, regulations, airport operations, and aeronautical decision making. Same challenge for everyone each day.</p>
+        <div class="pd-actions">
+          <a class="pd-btn" href="/daily/" data-pd-home-cta="Play Daily">Play Daily →</a>
+          <a href="/skill-gap.html" data-pd-home-cta="Skill Gap">See your weak subjects →</a>
         </div>
+      </article>
+
+      <article class="pd-home-feature">
+        <div class="eyebrow">TRAINING</div>
+        <h2>Study by rating, not by random topic.</h2>
+        <p>Use written prep, oral-exam practice, FAA references, and checkride guides that stay organized around the certificate or rating you are working on.</p>
+        <div class="pd-actions">
+          <a class="pd-btn secondary" href="/flight-training.html" data-pd-home-cta="Training Hub">Open training</a>
+          <a href="/written-prep.html" data-pd-home-cta="Written Prep">Written prep →</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="pd-home-section pd-home-business" aria-labelledby="pdBusinessTitle">
+      <div>
+        <div class="eyebrow">FOR CFIS & FLIGHT SCHOOLS</div>
+        <h2 id="pdBusinessTitle">Put PilotDesk in front of your students.</h2>
+        <p>Use shareable tools, training resources, and embeddable calculators in a lesson, on a school website, or as a common reference between flights.</p>
+      </div>
+      <div class="pd-home-business-actions">
+        <a class="pd-btn" href="/for-flight-schools.html" data-pd-home-cta="Flight Schools">Flight school options</a>
+        <a href="/embed.html" data-pd-home-cta="Embeds">See embeddable tools →</a>
       </div>
     </section>
 
-    <section class="pd-home-section pd-home-discovery"><div class="pd-home-section-head"><div><h2>Explore PilotDesk</h2><p>Move from today’s task to the next useful step.</p></div></div><div class="pd-popular-grid"><a class="pd-popular-tool" href="/written-prep.html" data-pd-home-cta="Written Prep"><span><b>Written Prep</b><small>Practice PPL through ATP subjects.</small></span></a><a class="pd-popular-tool" href="/daily/" data-pd-home-cta="PilotDesk Daily"><span><b>PilotDesk Daily</b><small>Three aviation questions, shareable scores, and a learning streak.</small></span></a><a class="pd-popular-tool" href="/flight-training.html" data-pd-home-cta="Flight Training"><span><b>Flight Training</b><small>Organize your study path by rating.</small></span></a><a class="pd-popular-tool" href="/for-cfis.html" data-pd-home-cta="CFI Toolkit"><span><b>CFI Toolkit</b><small>Five shareable tools for instructors and students.</small></span></a></div></section>
-    <section class="pd-home-section"><h2>Know where your numbers come from.</h2><p>Methods, assumptions, and source links accompany the tools. Use current approved information for operational decisions.</p><a href="/sources.html">Sources and methods →</a></section>
-    <section class="pd-home-section pd-home-faq" aria-labelledby="faq-title"><div class="pd-home-section-head"><div><h2 id="faq-title">PilotDesk questions</h2><p>Short answers before you start planning or studying.</p></div></div><div class="pd-faq-list"><details><summary>What aviation tools does PilotDesk include?</summary><p>Flight planning, aviation calculators, weather references, aircraft performance tools, and pilot study resources.</p></details><details><summary>What is PilotDesk Daily?</summary><p>A free three-question aviation challenge that changes every day. Finish it, share your score, and challenge another pilot. Signed-in users can also save XP and streaks.</p></details><details><summary>Are calculator results official operational data?</summary><p>No. Results are planning aids based on the inputs and methods shown. Verify decisions with current approved aircraft, airport, weather, and regulatory sources.</p></details><details><summary>Can I use PilotDesk for FAA written test preparation?</summary><p>Yes. Rating-focused practice includes explanations and weak-area review.</p></details></div></section>
+    <section class="pd-home-section" id="pdResume" hidden>
+      <h2>Pick up where you left off</h2>
+      <div id="pdResumeItems" class="pd-resume-items"></div>
+      <p class="fine">Recent tools and flights are saved on this device.</p>
+    </section>
+
+    <section class="pd-home-section pd-home-discovery" aria-labelledby="pdExploreTitle">
+      <div class="pd-home-section-head">
+        <div><div class="eyebrow">MORE PILOTDESK</div><h2 id="pdExploreTitle">Explore PilotDesk</h2><p>Go deeper without turning the homepage into a directory.</p></div>
+      </div>
+      <div class="pd-popular-grid">
+        <a class="pd-popular-tool" href="/written-prep.html" data-pd-home-cta="Written Prep"><span><b>Written Prep</b><small>Study by rating and FAA standard.</small></span></a>
+        <a class="pd-popular-tool" href="/daily/" data-pd-home-cta="PilotDesk Daily"><span><b>PilotDesk Daily</b><small>Three new aviation questions each day.</small></span></a>
+        <a class="pd-popular-tool" href="/aircraft.html" data-pd-home-cta="Aircraft"><span><b>Aircraft</b><small>Keep planning numbers and profiles together.</small></span></a>
+        <a class="pd-popular-tool" href="/pricing.html" data-pd-home-cta="Plans"><span><b>Plans</b><small>Free, Pro, and Flight School direction.</small></span></a>
+      </div>
+    </section>
+
+    <section class="pd-home-section pd-home-account" data-pd-home-account aria-label="PilotDesk account">
+      <div>
+        <div class="eyebrow">OPTIONAL ACCOUNT</div>
+        <h2 data-pd-home-account-title>Use the site without signing in. Save things when you want to.</h2>
+        <p data-pd-home-account-copy>An account keeps written-prep scores, Daily streaks, aircraft, and progress with you across devices. The core tools still work without one.</p>
+      </div>
+      <div class="pd-home-business-actions" data-pd-home-account-actions>
+        <a class="pd-btn secondary" href="/account.html?next=%2F" data-pd-home-cta="Create Account">Create a free account</a>
+        <a href="/account.html?next=%2F" data-pd-home-cta="Sign In">Sign in →</a>
+      </div>
+    </section>
+
+    <section class="pd-home-section pd-home-trust">
+      <div>
+        <div class="eyebrow">SOURCE-FIRST</div>
+        <h2>Know where the number came from.</h2>
+        <p>PilotDesk shows methods, assumptions, and source links where they matter. It is a planning and training aid—not a replacement for current approved aircraft data, procedures, weather, or regulations.</p>
+      </div>
+      <a href="/sources.html">Read the sources and methods →</a>
+    </section>
+
+    <section class="pd-home-section pd-home-faq" aria-labelledby="faq-title">
+      <div class="pd-home-section-head">
+        <div><h2 id="faq-title">Common questions</h2><p>The short version before you start using it.</p></div>
+      </div>
+      <div class="pd-faq-list">
+        <details><summary>What is PilotDesk?</summary><p>A browser-based aviation workspace for flight planning, pilot calculations, weather, and training.</p></details>
+        <details><summary>Do I need an account?</summary><p>No. Core tools work without one. Sign in only when you want your progress, aircraft, and study history saved across devices.</p></details>
+        <details><summary>Are calculator results official operational data?</summary><p>No. Use PilotDesk as a planning aid and verify operational decisions with current approved aircraft, airport, weather, procedural, and regulatory sources.</p></details>
+        <details><summary>What is PilotDesk Daily?</summary><p>A three-question aviation challenge that changes every day.</p></details>
+      </div>
+    </section>
   </div>
 </BaseLayout>

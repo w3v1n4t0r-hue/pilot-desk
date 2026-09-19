@@ -39,7 +39,7 @@ ok(header.includes('navSections.map')&&header.includes('data-pd-astro-shell'),'s
 const experience=read('assets/experience.css');
 for(const s of ['.pd-home-actions{','.pd-popular-grid{','.pd-home-section{','.pd-home-action{','@media(max-width:800px)','@media(max-width:480px)','min-height:44px'])ok(experience.includes(s),`current homepage experience missing ${s}`);
 const tokens=read('assets/design-tokens.css');
-for(const s of ['--bg:#080d13','--panel:#111b25','--text:#f4f7fa','--accent:#9adcf0','body:before{animation:none}'])ok(tokens.includes(s),`current design-token/motion layer missing ${s}`);
+for(const s of ['--bg:#050505','--panel:#0d0d0f','--text:#f4f3ee','--accent:#f0efe9','body:before{','animation:none'])ok(tokens.includes(s),`current design-token/motion layer missing ${s}`);
 
 const manifest=JSON.parse(read('site.webmanifest'));
 ok(manifest.start_url==='/', 'PWA should open at dashboard/home');

@@ -40,7 +40,7 @@ check(aircraft.includes('pilotdesk:aircraft-changed'),'Aircraft changes do not s
 check(transfer.includes("document.querySelector('#aircraftExport')&&document.querySelector('#aircraftImport')"),'Legacy transfer enhancer can still duplicate native import/export controls');
 
 check(flights.includes("requestedAircraft=p.get('aircraft')"),'New-flight flow does not honor Hangar aircraft query');
-check(training.includes("/weight-balance.html?aircraft="),'Aircraft training binder drops aircraft context for W&B');
+check(training.includes("link('Weight & Balance','/weight-balance.html',id)")&&training.includes("localStorage.setItem('pd-aircraft-active',a.dataset.aircraftBinder)")&&wb.includes("localStorage.getItem('pd-aircraft-active')"),'Aircraft training binder must use canonical W&B URL while preserving aircraft context');
 check(wb.includes("get('aircraft')"),'W&B does not accept aircraft context');
 check(poh.includes("get('aircraft')"),'POH Chart Studio does not accept aircraft context');
 check(checklist.includes("get('aircraft')"),'Checklist Trainer does not accept aircraft context');

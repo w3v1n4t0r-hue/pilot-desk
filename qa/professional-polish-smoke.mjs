@@ -18,7 +18,7 @@ check(css.includes('@media(prefers-reduced-motion:reduce)'),'experience.css must
 check(css.includes(':focus-visible'),'experience.css must preserve visible keyboard focus');
 check(css.includes('min-height:44px'),'current UI must preserve touch-friendly control sizing');
 
-for(const token of ['--bg:#050505','--panel:#0d0d0f','--text:#f4f3ee','--line:#29292d','--pd-cut:9px','--pd-good:#5ecf89'])check(tokens.includes(token),`design token layer missing ${token}`);
+for(const token of ['--bg:#050505','--panel:#0d0d0f','--text:#f4f3ee','--line:#29292d','--pd-cut:9px','--pd-good:#c8c7c2'])check(tokens.includes(token),`design token layer missing ${token}`);
 for(const guard of ['body:before{','animation:none','clip-path:polygon','@keyframes pd-menu-in','@media(prefers-reduced-motion:reduce)','.pd-live-dot'])check(tokens.includes(guard),`design token/motion layer missing ${guard}`);
 check(entry.trim().endsWith('@import url("/assets/design-tokens.css");'),'design-tokens.css must remain the final shared cascade authority');
 check(tokens.includes('Resend-inspired restraint')&&tokens.includes('square controls and clipped corners'),'shared visual system must preserve the Resend/aviation geometry brief');

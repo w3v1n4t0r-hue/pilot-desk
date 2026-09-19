@@ -22,8 +22,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Wait briefly for production
-        if: github.event_name == 'push'
-        run: sleep 45
+
       - name: Verify search-engine discovery
-        run: python scripts/search-engine-health.py
+        shell: bash
+        run: |
+          attempts=1
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then attempts=10; fi
+          for i in $(seq 1 "$attempts"); do
+            echo "Search-engine health attempt $i/$attempts"
+            if python scripts/search-engine-health.py; then
+              exit 0
+            fi
+            if [ "$i" -lt "$attempts" ]; then
+              echo "Production may still be deploying; retrying in 30 seconds."
+              sleep 30
+            fi
+          done
+          exit 1

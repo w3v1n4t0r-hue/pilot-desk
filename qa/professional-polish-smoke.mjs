@@ -24,6 +24,9 @@ check(entry.trim().endsWith('@import url("/assets/design-tokens.css");'),'design
 check(tokens.includes('Resend-inspired restraint')&&tokens.includes('square controls and clipped corners'),'shared visual system must preserve the Resend/aviation geometry brief');
 check(tokens.includes('border-radius:0!important')&&tokens.includes('--pd-radius:3px'),'visual system should avoid generic rounded dashboard cards');
 check(tokens.includes('background:#f0efe9!important')&&tokens.includes('color:#070707!important'),'primary action treatment should use the eggshell/iron material palette');
+check(tokens.includes('HARD-SQUARE GEOMETRY RESET')&&tokens.includes('border-radius:0!important'),'all shared product chrome must remain square/chamfered with no rounded UI');
+const icon=read('assets/icon.svg');
+check(!icon.includes('rx=')&&icon.includes('M12 3H116L125 12'),'canonical PilotDesk logo container must use clipped square geometry, not a rounded rectangle');
 check(entry.includes('/assets/experience.css'),'shared stylesheet must include the current experience layer');
 
 for(const retired of ['professional-polish.css','avionics-architecture.css','avionics-ops.css','avionics-command.js','product-polish.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired visual layer returned to bootstrap: ${retired}`);

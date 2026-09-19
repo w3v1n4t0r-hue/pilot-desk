@@ -1,0 +1,71 @@
+name: Retry Vercel After Rate Limit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7 */6 * * *'
+
+permissions:
+  contents: write
+  statuses: read
+
+concurrency:
+  group: vercel-rate-limit-retry
+  cancel-in-progress: false
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Decide whether a retry is needed
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "retry=false" >> "$GITHUB_OUTPUT"
+
+          status_json=$(curl -fsSL             -H "Authorization: Bearer $GH_TOKEN"             -H "Accept: application/vnd.github+json"             "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/status")
+
+          state=$(python -c "import json,sys; d=json.load(sys.stdin); s=[x for x in d.get('statuses',[]) if x.get('context')=='Vercel']; print(s[0].get('state','') if s else '')" <<<"$status_json")
+          target=$(python -c "import json,sys; d=json.load(sys.stdin); s=[x for x in d.get('statuses',[]) if x.get('context')=='Vercel']; print(s[0].get('target_url','') if s else '')" <<<"$status_json")
+
+          echo "Vercel state: $state"
+          echo "Vercel target: $target"
+
+          if [ "$state" = "success" ]; then
+            echo "Deployment is healthy; no retry needed."
+            exit 0
+          fi
+
+          if [ "$state" != "failure" ] || [[ "$target" != *"build-rate-limit"* ]]; then
+            echo "This is not the known Vercel build-rate-limit failure; not creating a retry commit."
+            exit 0
+          fi
+
+          commit_epoch=$(git show -s --format=%ct HEAD)
+          now_epoch=$(date +%s)
+          age_hours=$(( (now_epoch - commit_epoch) / 3600 ))
+          echo "HEAD age: ${age_hours}h"
+
+          if [ "$age_hours" -lt 24 ]; then
+            echo "Waiting until the 24-hour rate-limit window has passed."
+            exit 0
+          fi
+
+          echo "retry=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger one safe redeploy attempt
+        if: steps.check.outputs.retry == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "pilotdesk-automation"
+          git config user.email "actions@users.noreply.github.com"
+          git commit --allow-empty -m "chore: retry Vercel deployment after rate limit"
+          git push origin HEAD:main

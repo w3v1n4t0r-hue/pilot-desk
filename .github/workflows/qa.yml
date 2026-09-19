@@ -67,6 +67,8 @@ jobs:
         run: node qa/offline-cache-smoke.mjs
       - name: Run account system checks
         run: node qa/account-system-smoke.mjs
+      - name: Run billing readiness checks
+        run: node qa/billing-smoke.mjs
       - name: Run Daily retention checks
         run: node qa/daily-retention-smoke.mjs
       - name: Run Pilot Skill Gap checks

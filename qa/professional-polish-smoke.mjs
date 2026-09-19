@@ -18,14 +18,20 @@ check(css.includes('@media(prefers-reduced-motion:reduce)'),'experience.css must
 check(css.includes(':focus-visible'),'experience.css must preserve visible keyboard focus');
 check(css.includes('min-height:44px'),'current UI must preserve touch-friendly control sizing');
 
-for(const token of ['--bg:#080d13','--panel:#111b25','--text:#f4f7fa','--line:#263746','--pd-blue:#8dd3ff','--pd-good:#5ecf89'])check(tokens.includes(token),`design token layer missing ${token}`);
-for(const guard of ['body:before{animation:none}','hero-stat:after{animation:none','badge:before,.eyebrow:before{animation:none','.pd-live-dot'])check(tokens.includes(guard),`design token/motion layer missing ${guard}`);
+for(const token of ['--bg:#050505','--panel:#0d0d0f','--text:#f4f3ee','--line:#29292d','--pd-cut:9px','--pd-good:#5ecf89'])check(tokens.includes(token),`design token layer missing ${token}`);
+for(const guard of ['body:before{','animation:none','clip-path:polygon','@keyframes pd-menu-in','@media(prefers-reduced-motion:reduce)','.pd-live-dot'])check(tokens.includes(guard),`design token/motion layer missing ${guard}`);
 check(entry.trim().endsWith('@import url("/assets/design-tokens.css");'),'design-tokens.css must remain the final shared cascade authority');
+check(tokens.includes('Resend-inspired restraint')&&tokens.includes('square controls and clipped corners'),'shared visual system must preserve the Resend/aviation geometry brief');
+check(tokens.includes('border-radius:0!important')&&tokens.includes('--pd-radius:3px'),'visual system should avoid generic rounded dashboard cards');
+check(tokens.includes('background:#f0efe9!important')&&tokens.includes('color:#070707!important'),'primary action treatment should use the eggshell/iron material palette');
 check(entry.includes('/assets/experience.css'),'shared stylesheet must include the current experience layer');
 
 for(const retired of ['professional-polish.css','avionics-architecture.css','avionics-ops.css','avionics-command.js','product-polish.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired visual layer returned to bootstrap: ${retired}`);
 check(!bootstrap.includes('pd-ui-booting')&&!bootstrap.includes('visibility:hidden'),'current shell must not hide static content behind a boot gate');
 check(bootstrap.includes('/assets/crosswind-mfd.js'),'crosswind calculator should retain its focused instrument visualization');
+check(read('assets/site.js').includes("polishInteractions();document.documentElement.classList.add('pd-ready')"),'shared motion system must initialize the one-shot interaction polish');
+check(read('scripts/shared-shell.mjs').includes('/assets/icon.svg'),'shared shell must use the canonical PilotDesk aircraft/math logo');
+
 for(const sentinel of ['RUNWAY / WIND VECTOR','data-runway-group','data-wind-group','gustSpeed','Math.sin(rad)','Math.cos(rad)','15 KTS IS NOT A UNIVERSAL AIRCRAFT LIMIT'])check(crosswind.includes(sentinel),`crosswind MFD missing ${sentinel}`);
 
 check(!brand.includes('addStyle('),'brand module must not inject a second visual stylesheet stack');

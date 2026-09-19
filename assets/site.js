@@ -67,14 +67,17 @@ if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();
 if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.html$|e6b-flight-computer\.html$|weather\.html$|metar-decoder\.html$)/.test(location.pathname)&&!document.querySelector('script[src*="/assets/page-share.js"]')){const s=document.createElement('script');s.src='/assets/page-share.js';s.defer=true;document.head.appendChild(s)}
 if(['/aircraft.html','/route-planner.html','/weather.html','/weight-balance.html','/flight-planning-workspace.html','/procedures.html','/flight-brief.html'].includes(location.pathname)&&!document.querySelector('script[src*="/assets/flight-journey.js"]')){const s=document.createElement('script');s.src='/assets/flight-journey.js';s.defer=true;document.head.appendChild(s)}
 function polishInteractions(){
-  const cards=$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card'),finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
-  cards.forEach((card,index)=>{
-    card.style.setProperty('--pd-order',String(index%8));
-    if(finePointer)card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--pd-x',`${e.clientX-r.left}px`);card.style.setProperty('--pd-y',`${e.clientY-r.top}px`)},{passive:true});
-  });
-  if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver'in window){
-    const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.animate([{opacity:.01,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],{duration:420,delay:Number(entry.target.style.getPropertyValue('--pd-order')||0)*28,easing:'cubic-bezier(.2,.8,.2,1)',fill:'both'});reveal.unobserve(entry.target)}),{rootMargin:'0px 0px -6%'});
-    cards.forEach(card=>reveal.observe(card));
-  }
+  const cards=$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card');
+  cards.forEach((card,index)=>card.style.setProperty('--pd-order',String(index%6)));
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
+  const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    if(!entry.isIntersecting)return;
+    entry.target.animate(
+      [{opacity:.01,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],
+      {duration:280,delay:Number(entry.target.style.getPropertyValue('--pd-order')||0)*22,easing:'cubic-bezier(.22,.72,.18,1)',fill:'both'}
+    );
+    reveal.unobserve(entry.target);
+  }),{rootMargin:'0px 0px -4%'});
+  cards.forEach(card=>reveal.observe(card));
 }
-document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(location.search);const source=p.get('utm_source');if(source)pdTrack('campaign_visit',{source,medium:p.get('utm_medium')||'',campaign:p.get('utm_campaign')||'',content:p.get('utm_content')||'',path:location.pathname});$$('[data-calc-input]').forEach(e=>{e.setAttribute('inputmode','decimal');e.addEventListener('input',calculate)});$('[data-calculate]')?.addEventListener('click',()=>{calculate();pdTrack('calculator_calculate',{calculator:document.body.dataset.calc||'unknown',path:location.pathname})});calculate();recordRecent();renderRecent();const q=$('#toolSearch');if(q)q.addEventListener('input',()=>{let s=q.value.toLowerCase().trim(),visible=0;$$('.tool-card').forEach(c=>{let hide=s&&!c.innerText.toLowerCase().includes(s);c.classList.toggle('hidden',hide);if(!hide)visible++});const n=$('#searchCount');if(n)n.textContent=s?`${visible} tool${visible===1?'':'s'} found`:''});registerSW()});
+document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(location.search);const source=p.get('utm_source');if(source)pdTrack('campaign_visit',{source,medium:p.get('utm_medium')||'',campaign:p.get('utm_campaign')||'',content:p.get('utm_content')||'',path:location.pathname});$$('[data-calc-input]').forEach(e=>{e.setAttribute('inputmode','decimal');e.addEventListener('input',calculate)});$('[data-calculate]')?.addEventListener('click',()=>{calculate();pdTrack('calculator_calculate',{calculator:document.body.dataset.calc||'unknown',path:location.pathname})});calculate();recordRecent();renderRecent();const q=$('#toolSearch');if(q)q.addEventListener('input',()=>{let s=q.value.toLowerCase().trim(),visible=0;$$('.tool-card').forEach(c=>{let hide=s&&!c.innerText.toLowerCase().includes(s);c.classList.toggle('hidden',hide);if(!hide)visible++});const n=$('#searchCount');if(n)n.textContent=s?`${visible} tool${visible===1?'':'s'} found`:''});registerSW();polishInteractions();document.documentElement.classList.add('pd-ready')});

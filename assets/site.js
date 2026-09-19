@@ -79,7 +79,9 @@ function animateResultUpdates(){
 }
 function polishInteractions(){
   document.documentElement.classList.add('pd-motion-enabled');
-  const items=$$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card,.hero,.section,.panel,.calc-box');
+  const finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(finePointer)document.documentElement.classList.add('pd-fine-pointer');
+  const items=$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card,.hero,.section,.panel,.calc-box');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   items.forEach((item,index)=>item.style.setProperty('--pd-order',String(index%8)));
   if(reduced||!('IntersectionObserver' in window)){

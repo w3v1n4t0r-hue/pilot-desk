@@ -1,3 +1,25 @@
 /* Procedure layout, then the site-wide component contract. */
 @import url("/assets/procedure-viewer-legacy.css");
 @import url("/assets/unified-ui.css");
+
+
+/* PROCEDURE VIEWER MONOCHROME */
+.pd-proc-browser,.pd-plate-viewer,.pd-proc-pack-panel,.pd-proc-filterbar button,
+.pd-proc-result,.pd-plate-frame{
+  border-radius:0!important;background-image:none!important;box-shadow:none!important;
+}
+.pd-proc-browser,.pd-plate-viewer,.pd-proc-pack-panel{
+  background:#0c0c0e!important;border-color:#303035!important;
+}
+.pd-proc-filterbar button,.pd-proc-result{background:#0a0a0c!important;border-color:#303035!important}
+.pd-proc-filterbar button:hover,.pd-proc-result:hover{background:#141416!important;border-color:#55555b!important}
+.pd-proc-filterbar button[aria-pressed="true"],.pd-proc-result.active{
+  background:#141416!important;border-color:#77777f!important;color:#f4f3ee!important;
+  box-shadow:inset 2px 0 0 #efeee9!important;
+}
+.pd-plate-frame{border-color:#3b3b40!important;background:#d8d7d2!important}
+.pd-plate-frame .pd-empty{background:#0a0a0c!important}
+@media(prefers-reduced-motion:no-preference){
+  .pd-proc-result,.pd-proc-filterbar button{transition:background 140ms ease,border-color 140ms ease,transform 140ms var(--pd-ease)}
+  .pd-proc-result:hover{transform:translateX(2px)}
+}

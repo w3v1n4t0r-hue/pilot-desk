@@ -8,10 +8,11 @@ Deno.serve(async(req:Request)=>{
  if(req.method==="OPTIONS")return new Response(null,{status:204,headers:cors});
  if(!["GET","POST"].includes(req.method))return json(405,{error:"Method not allowed"});
  const base=(Deno.env.get("SUPABASE_URL")||"").replace(/\/+$/,""),pub=envKey("SUPABASE_PUBLISHABLE_KEYS","SUPABASE_ANON_KEY"),admin=envKey("SUPABASE_SECRET_KEYS","SUPABASE_SERVICE_ROLE_KEY");
- const stripeKey=Deno.env.get("STRIPE_SECRET_KEY")||"",proPrice=Deno.env.get("STRIPE_PRO_PRICE_ID")||"",schoolPrice=Deno.env.get("STRIPE_SCHOOL_PRICE_ID")||"";
- if(req.method==="GET")return json(200,{configured:Boolean(base&&pub&&admin&&stripeKey&&proPrice),schoolConfigured:Boolean(base&&pub&&admin&&stripeKey&&schoolPrice)});
+ const stripeKey=Deno.env.get("STRIPE_SECRET_KEY")||"",proPrice=Deno.env.get("STRIPE_PRO_PRICE_ID")||"",schoolPrice=Deno.env.get("STRIPE_SCHOOL_PRICE_ID")||"",billingEnabled=Deno.env.get("PILOTDESK_BILLING_ENABLED")==="true";
+ if(req.method==="GET")return json(200,{configured:Boolean(billingEnabled&&base&&pub&&admin&&stripeKey&&proPrice),schoolConfigured:Boolean(billingEnabled&&base&&pub&&admin&&stripeKey&&schoolPrice)});
  const token=(req.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"").trim();
  if(!base||!pub||!admin)return json(503,{error:"Billing backend is unavailable."});
+ if(!billingEnabled)return json(503,{error:"PilotDesk paid checkout is intentionally disabled until launch checks are complete.",code:"billing_disabled"});
  if(!stripeKey||!proPrice)return json(503,{error:"PilotDesk checkout is not connected to Stripe yet.",code:"billing_not_configured"});
  if(!token)return json(401,{error:"Sign in required."});
  try{

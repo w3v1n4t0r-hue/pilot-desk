@@ -1,3 +1,21 @@
 /* Checklist trainer layout, then the site-wide component contract. */
 @import url("/assets/checklist-trainer-legacy.css");
 @import url("/assets/unified-ui.css");
+
+
+/* CHECKLIST TRAINER MONOCHROME */
+.ct-panel,.ct-tab,.ct-set,.ct-empty,.ct-item,.ct-editor,.ct-category-note{
+  border-radius:0!important;background-image:none!important;box-shadow:none!important;
+}
+.ct-panel,.ct-editor{background:#0c0c0e!important;border-color:#303035!important}
+.ct-tab,.ct-set,.ct-item{background:#0a0a0c!important;border-color:#303035!important}
+.ct-tab:hover,.ct-set:hover,.ct-item:hover{background:#141416!important;border-color:#55555b!important}
+.ct-tab[aria-selected="true"],.ct-tab[data-cat="emergency"][aria-selected="true"],.ct-set.active,.ct-item.active{
+  background:#141416!important;border-color:#77777f!important;color:#f4f3ee!important;
+  box-shadow:inset 2px 0 0 #efeee9!important;
+}
+.ct-progress{border-radius:0!important;background:#1a1a1d!important}
+.ct-progress span{background:#d8d7d2!important}
+.ct-category-note{border-left:2px solid #77777f!important;background:#0a0a0c!important}
+.ct-danger{border-color:#55555b!important;color:#c8c7c2!important}
+.ct-emergency .ct-current{background:#0c0c0e!important}

@@ -62,3 +62,24 @@ body:before{animation:none}
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
 }
+
+
+/* MONOCHROME THEME LOCK
+   Old saved theme attributes must resolve to the same PilotDesk identity. */
+html[data-pd-theme="light"],
+html[data-pd-theme="night-red"],
+html[data-pd-theme="dark"]{
+  color-scheme:dark!important;
+  --bg:#050505!important;--bg2:#0d0d0f!important;--panel:#0d0d0f!important;
+  --panel2:#17171a!important;--panel3:#1d1d21!important;
+  --text:#f4f3ee!important;--muted:#aaa9a5!important;--muted2:#77777f!important;
+  --line:#29292d!important;--line-hi:#505057!important;
+  --silver:#e5e4df!important;--silver2:#faf9f4!important;
+  --accent:#f0efe9!important;--accent-soft:rgba(240,239,233,.08)!important;
+}
+html[data-pd-theme="light"] body,
+html[data-pd-theme="night-red"] body,
+html[data-pd-theme="dark"] body{
+  background:linear-gradient(180deg,#0b0b0d 0,#050505 340px,#050505 100%)!important;
+  color:#f4f3ee!important;
+}

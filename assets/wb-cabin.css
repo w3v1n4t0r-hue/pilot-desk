@@ -10,3 +10,19 @@
 @media(max-width:760px){.wb-cabin-controls{grid-template-columns:1fr}.wb-aircraft-stage{min-height:auto;padding:170px 10px 12px}.wb-aircraft-silhouette{inset:10px 20% auto;height:150px}.wb-cabin-slots{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:8px}.wb-seat-card,.wb-seat-card[data-kind="cargo"]{position:static;transform:none;width:auto}.wb-cabin-meta{padding-left:12px;padding-right:12px}.wb-cabin-head{padding-left:12px;padding-right:12px}.wb-aircraft-stage{margin-left:12px;margin-right:12px}}
 @media(max-width:430px){.wb-cabin-slots{grid-template-columns:1fr}.wb-cabin-meta>label>div{grid-template-columns:1fr}}
 @media print{.wb-cabin-controls,.wb-cabin-note,.wb-aircraft-silhouette{display:none!important}.wb-aircraft-stage{min-height:auto!important;border:0!important;background:#fff!important;margin:0!important}.wb-cabin-slots{position:static!important;display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:8px}.wb-seat-card,.wb-seat-card[data-kind="cargo"]{position:static!important;transform:none!important;width:auto!important;background:#fff!important;color:#111!important;box-shadow:none!important;border-color:#bbb!important}.wb-seat-card input,.wb-cabin-meta input{background:#fff!important;color:#111!important;border-color:#bbb!important}}
+
+
+/* MONOCHROME CABIN VIEW */
+.wb-cabin-card,.wb-cabin-meta input,.wb-seat-card input,.wb-aircraft-stage,
+.wb-seat-card,.wb-advanced{
+  border-radius:0!important;background-image:none!important;box-shadow:none!important;
+}
+.wb-cabin-card,.wb-advanced{background:#0c0c0e!important}
+.wb-cabin-meta input,.wb-seat-card input{background:#08080a!important}
+.wb-aircraft-stage{
+  background:#070709!important;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+}
+.wb-aircraft-silhouette{opacity:.24!important}
+.wb-aircraft-silhouette path,.wb-aircraft-silhouette ellipse,.wb-aircraft-silhouette rect{stroke:#d0cfca!important}
+.wb-seat-card{background:rgba(10,10,12,.96)!important;border-color:#3b3b40!important}

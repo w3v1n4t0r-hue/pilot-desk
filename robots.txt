@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Sitemap: https://www.pilot-desk.com/sitemap-index.xml
 Sitemap: https://www.pilot-desk.com/sitemap.xml
 Sitemap: https://www.pilot-desk.com/sitemap-core.xml
 Sitemap: https://www.pilot-desk.com/sitemap-daily.xml

@@ -32,6 +32,8 @@ on:
       - 'qa/offline-e2e.mjs'
       - '.github/workflows/offline-e2e.yml'
   workflow_dispatch:
+  schedule:
+    - cron: '37 10 * * 1'
 
 permissions:
   contents: read

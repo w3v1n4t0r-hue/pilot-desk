@@ -65,3 +65,6 @@
 .pd-progress-fill{background:linear-gradient(90deg,#55555c,#efeee9)}
 .pd-account-dashboard-card{transition:background .14s ease,border-color .14s ease,transform .14s ease}
 .pd-account-dashboard-card:hover{background:#121214;border-color:#5a595f;transform:translateY(-2px)}
+
+
+.pd-account-billing{margin:18px 0;padding:18px;border:1px solid var(--line);background:#0b0b0d;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px))}.pd-account-billing h2{margin:3px 0 0}.pd-account-billing>p{margin:8px 0 0;color:var(--muted);font-size:11px;line-height:1.55}.pd-account-actions button:disabled{opacity:.42;cursor:not-allowed}.pd-account-actions a.pd-text-button{background:transparent;border:0;text-decoration:underline}.pd-account-billing [aria-busy="true"]{opacity:.55;pointer-events:none}

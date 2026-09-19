@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://www.pilot-desk.com/</loc></url>
+<url><loc>https://www.pilot-desk.com/</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/about.html</loc></url>
-<url><loc>https://www.pilot-desk.com/aircraft.html</loc></url>
+<url><loc>https://www.pilot-desk.com/aircraft.html</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/airport.html</loc></url>
 <url><loc>https://www.pilot-desk.com/calculators/accelerated-stall/</loc></url>
 <url><loc>https://www.pilot-desk.com/calculators/arc-distance/</loc></url>
@@ -54,7 +54,7 @@
 <url><loc>https://www.pilot-desk.com/checklist-trainer.html</loc></url>
 <url><loc>https://www.pilot-desk.com/e6b-flight-computer.html</loc></url>
 <url><loc>https://www.pilot-desk.com/embed.html</loc></url>
-<url><loc>https://www.pilot-desk.com/flight-training.html</loc></url>
+<url><loc>https://www.pilot-desk.com/flight-training.html</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides.html</loc></url>
 <url><loc>https://www.pilot-desk.com/guides/accelerated-stall-load-factor.html</loc></url>
 <url><loc>https://www.pilot-desk.com/guides/aviation-math-glossary.html</loc></url>
@@ -100,10 +100,12 @@
 <url><loc>https://www.pilot-desk.com/legal/safety.html</loc></url>
 <url><loc>https://www.pilot-desk.com/legal/terms.html</loc></url>
 <url><loc>https://www.pilot-desk.com/metar-decoder.html</loc></url>
-<url><loc>https://www.pilot-desk.com/planner.html</loc></url>
+<url><loc>https://www.pilot-desk.com/planner.html</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/poh-chart-studio.html</loc></url>
 <url><loc>https://www.pilot-desk.com/procedures.html</loc></url>
 <url><loc>https://www.pilot-desk.com/route-planner.html</loc></url>
 <url><loc>https://www.pilot-desk.com/sources.html</loc></url>
 <url><loc>https://www.pilot-desk.com/weather.html</loc></url>
+<url><loc>https://www.pilot-desk.com/pricing.html</loc><lastmod>2026-09-19</lastmod></url>
+<url><loc>https://www.pilot-desk.com/for-flight-schools.html</loc><lastmod>2026-09-19</lastmod></url>
 </urlset>

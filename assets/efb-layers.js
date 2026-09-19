@@ -47,13 +47,13 @@ function start(RP,L){
       vectorOpacity:state.vectorOpacity
     }));
   }
-  function makePane(name,z){
+  function makePane(name,z,interactive=true){
     if(map.getPane(name))return;
     const p=map.createPane(name);
     p.style.zIndex=String(z);
-    p.style.pointerEvents='none';
+    if(!interactive)p.style.pointerEvents='none';
   }
-  makePane('pdRadarPane',330);
+  makePane('pdRadarPane',330,false);
   makePane('pdAirspacePane',350);
   makePane('pdWeatherPane',360);
   makePane('pdNavPane',370);

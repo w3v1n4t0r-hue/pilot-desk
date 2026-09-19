@@ -66,19 +66,35 @@ function loadWorkspaceShell(){if(!document.querySelector('link[href="/assets/hub
 if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();
 if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.html$|e6b-flight-computer\.html$|weather\.html$|metar-decoder\.html$)/.test(location.pathname)&&!document.querySelector('script[src*="/assets/page-share.js"]')){const s=document.createElement('script');s.src='/assets/page-share.js';s.defer=true;document.head.appendChild(s)}
 if(['/aircraft.html','/route-planner.html','/weather.html','/weight-balance.html','/flight-planning-workspace.html','/procedures.html','/flight-brief.html'].includes(location.pathname)&&!document.querySelector('script[src*="/assets/flight-journey.js"]')){const s=document.createElement('script');s.src='/assets/flight-journey.js';s.defer=true;document.head.appendChild(s)}
+function animateResultUpdates(){
+  $$('[id^="out"],.result strong').forEach(el=>{
+    const observer=new MutationObserver(()=>{
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+      el.classList.remove('pd-result-updated');
+      void el.offsetWidth;
+      el.classList.add('pd-result-updated');
+    });
+    observer.observe(el,{childList:true,characterData:true,subtree:true});
+  });
+}
 function polishInteractions(){
-  const cards=$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card');
-  const finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
-  if(finePointer)cards.forEach((card,index)=>card.style.setProperty('--pd-order',String(index%6)));
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
+  document.documentElement.classList.add('pd-motion-enabled');
+  const items=$$('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.side-card,.info-card,.hero,.section,.panel,.calc-box');
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  items.forEach((item,index)=>item.style.setProperty('--pd-order',String(index%8)));
+  if(reduced||!('IntersectionObserver' in window)){
+    items.forEach(item=>item.classList.add('pd-revealed'));
+    return;
+  }
   const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{
     if(!entry.isIntersecting)return;
-    entry.target.animate(
-      [{opacity:.01,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}],
-      {duration:280,delay:Number(entry.target.style.getPropertyValue('--pd-order')||0)*22,easing:'cubic-bezier(.22,.72,.18,1)',fill:'both'}
-    );
+    entry.target.classList.add('pd-revealed');
     reveal.unobserve(entry.target);
-  }),{rootMargin:'0px 0px -4%'});
-  cards.forEach(card=>reveal.observe(card));
+  }),{rootMargin:'0px 0px -5%',threshold:.06});
+  items.forEach(item=>{
+    item.classList.add('pd-reveal');
+    reveal.observe(item);
+  });
+  animateResultUpdates();
 }
-document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(location.search);const source=p.get('utm_source');if(source)pdTrack('campaign_visit',{source,medium:p.get('utm_medium')||'',campaign:p.get('utm_campaign')||'',content:p.get('utm_content')||'',path:location.pathname});$$('[data-calc-input]').forEach(e=>{e.setAttribute('inputmode','decimal');e.addEventListener('input',calculate)});$('[data-calculate]')?.addEventListener('click',()=>{calculate();pdTrack('calculator_calculate',{calculator:document.body.dataset.calc||'unknown',path:location.pathname})});calculate();recordRecent();renderRecent();const q=$('#toolSearch');if(q)q.addEventListener('input',()=>{let s=q.value.toLowerCase().trim(),visible=0;$$('.tool-card').forEach(c=>{let hide=s&&!c.innerText.toLowerCase().includes(s);c.classList.toggle('hidden',hide);if(!hide)visible++});const n=$('#searchCount');if(n)n.textContent=s?`${visible} tool${visible===1?'':'s'} found`:''});registerSW();polishInteractions();document.documentElement.classList.add('pd-ready')});
+document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(location.search);const source=p.get('utm_source');if(source)pdTrack('campaign_visit',{source,medium:p.get('utm_medium')||'',campaign:p.get('utm_campaign')||'',content:p.get('utm_content')||'',path:location.pathname});$$('[data-calc-input]').forEach(e=>{e.setAttribute('inputmode','decimal');e.addEventListener('input',calculate)});$('[data-calculate]')?.addEventListener('click',()=>{calculate();pdTrack('calculator_calculate',{calculator:document.body.dataset.calc||'unknown',path:location.pathname})});calculate();recordRecent();renderRecent();const q=$('#toolSearch');if(q)q.addEventListener('input',()=>{let s=q.value.toLowerCase().trim(),visible=0;$$('.tool-card').forEach(c=>{let hide=s&&!c.innerText.toLowerCase().includes(s);const wasHidden=c.classList.contains('hidden');c.classList.toggle('hidden',hide);if(!hide){visible++;if(wasHidden){c.classList.remove('pd-filter-enter');void c.offsetWidth;c.classList.add('pd-filter-enter')}}});const n=$('#searchCount');if(n)n.textContent=s?`${visible} tool${visible===1?'':'s'} found`:''});registerSW();polishInteractions();document.documentElement.classList.add('pd-ready')});

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://www.pilot-desk.com/</loc><lastmod>2026-09-18</lastmod></url>
-<url><loc>https://www.pilot-desk.com/about.html</loc><lastmod>2026-09-18</lastmod></url>
+<url><loc>https://www.pilot-desk.com/about.html</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/aircraft.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/airport.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/accelerated-stall/</loc><lastmod>2026-09-18</lastmod></url>
@@ -22,7 +22,7 @@
 <url><loc>https://www.pilot-desk.com/calculators/great-circle-distance/</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/holding-leg-distance/</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/hydroplaning/</loc><lastmod>2026-09-18</lastmod></url>
-<url><loc>https://www.pilot-desk.com/calculators/isa-temperature/</loc><lastmod>2026-09-19</lastmod></url>
+<url><loc>https://www.pilot-desk.com/calculators/isa-temperature/</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/load-factor/</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/mach-number/</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/maneuvering-speed-weight/</loc><lastmod>2026-09-18</lastmod></url>
@@ -57,9 +57,9 @@
 <url><loc>https://www.pilot-desk.com/editorial-policy.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/embed.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/flight-planning-workspace.html</loc><lastmod>2026-09-15</lastmod></url>
-<url><loc>https://www.pilot-desk.com/flight-training.html</loc><lastmod>2026-09-18</lastmod></url>
+<url><loc>https://www.pilot-desk.com/flight-training.html</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/for-cfis.html</loc><lastmod>2026-09-18</lastmod></url>
-<url><loc>https://www.pilot-desk.com/for-flight-schools.html</loc><lastmod>2026-09-18</lastmod></url>
+<url><loc>https://www.pilot-desk.com/for-flight-schools.html</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/accelerate-stop-accelerate-go.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/accelerated-stall-load-factor.html</loc><lastmod>2026-09-18</lastmod></url>
@@ -71,7 +71,7 @@
 <url><loc>https://www.pilot-desk.com/guides/aviation-calculator-widgets-flight-school-websites.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/aviation-conversions.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/aviation-distance-conversions.html</loc><lastmod>2026-09-15</lastmod></url>
-<url><loc>https://www.pilot-desk.com/guides/aviation-math-glossary.html</loc><lastmod>2026-09-15</lastmod></url>
+<url><loc>https://www.pilot-desk.com/guides/aviation-math-glossary.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/aviation-speed-conversions.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/aviation-temperature-conversions.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/aviation-volume-conversions.html</loc><lastmod>2026-09-15</lastmod></url>
@@ -92,8 +92,8 @@
 <url><loc>https://www.pilot-desk.com/guides/dew-point-spread.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/dme-arc-distance.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/dms-coordinates.html</loc><lastmod>2026-09-15</lastmod></url>
-<url><loc>https://www.pilot-desk.com/guides/e6b-calculator-side.html</loc><lastmod>2026-09-15</lastmod></url>
-<url><loc>https://www.pilot-desk.com/guides/e6b-wind-side.html</loc><lastmod>2026-09-15</lastmod></url>
+<url><loc>https://www.pilot-desk.com/guides/e6b-calculator-side.html</loc><lastmod>2026-09-18</lastmod></url>
+<url><loc>https://www.pilot-desk.com/guides/e6b-wind-side.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/emergency-glide-planning.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/endurance-range.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/feathering-vs-windmilling-propeller.html</loc><lastmod>2026-09-18</lastmod></url>
@@ -169,8 +169,9 @@
 <url><loc>https://www.pilot-desk.com/metar-decoder.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/planner.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/poh-chart-studio.html</loc><lastmod>2026-09-18</lastmod></url>
+<url><loc>https://www.pilot-desk.com/pricing.html</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/procedures.html</loc><lastmod>2026-09-18</lastmod></url>
-<url><loc>https://www.pilot-desk.com/route-planner.html</loc><lastmod>2026-09-18</lastmod></url>
+<url><loc>https://www.pilot-desk.com/route-planner.html</loc><lastmod>2026-09-19</lastmod></url>
 <url><loc>https://www.pilot-desk.com/skill-gap.html</loc><lastmod>2026-09-15</lastmod></url>
 <url><loc>https://www.pilot-desk.com/sources.html</loc><lastmod>2026-09-18</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/acs-far-reference.html</loc><lastmod>2026-09-18</lastmod></url>

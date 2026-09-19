@@ -1,0 +1,29 @@
+name: Search Engine Health
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 8 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'robots.txt'
+      - 'sitemap*.xml'
+      - 'scripts/search-engine-health.py'
+      - 'scripts/submit-indexnow.py'
+      - '.github/workflows/search-engine-health.yml'
+      - '.github/workflows/indexnow-submit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait briefly for production
+        if: github.event_name == 'push'
+        run: sleep 45
+      - name: Verify search-engine discovery
+        run: python scripts/search-engine-health.py

@@ -68,6 +68,16 @@ const stale=[
 ];
 for(const r of rows)for(const re of stale)if(re.test(r.h))fail(r,`stale monetization copy matches ${re}`);
 
+
+const sitemap=fs.readFileSync('sitemap-core.xml','utf8');
+for(const route of [
+ 'https://www.pilot-desk.com/pricing.html',
+ 'https://www.pilot-desk.com/for-flight-schools.html',
+ 'https://www.pilot-desk.com/flight-training.html',
+ 'https://www.pilot-desk.com/aircraft.html',
+ 'https://www.pilot-desk.com/planner.html'
+]) if(!sitemap.includes('<loc>'+route+'</loc>')) failures.push('sitemap-core.xml: missing changed SEO route '+route);
+
 const pricing=rows.find(r=>r.file==='pricing.html');
 if(pricing){
  for(const phrase of ['PilotDesk Pro','$5','Flight School','$29'])if(!pricing.h.includes(phrase))fail(pricing,`pricing page missing current plan signal: ${phrase}`);

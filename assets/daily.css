@@ -19,3 +19,45 @@
 .pd-daily-next-links a:hover{border-color:rgba(215,180,92,.48);color:#f5ead0;text-decoration:none}
 @media(max-width:720px){.pd-daily-proof{display:grid;grid-template-columns:repeat(3,1fr)}.pd-daily-proof span{display:block;text-align:center}.pd-daily-proof small{display:block;margin-top:5px}.pd-daily-next-study{grid-template-columns:1fr}.pd-daily-week{gap:4px}.pd-daily-day{padding:7px 1px}}
 
+
+
+/* MONOCHROME DAILY */
+.pd-daily-hero,.pd-daily-card,.pd-daily-sidecard,.pd-daily-statusbar>div,
+.pd-daily-scorechip,.pd-daily-question,.pd-daily-option,.pd-daily-result,
+.pd-daily-mini-stats>div,.pd-daily-proof span,.pd-daily-day{
+  border-radius:0!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+.pd-daily-hero,.pd-daily-card,.pd-daily-sidecard{
+  background:#0c0c0e!important;
+  border-color:#343438!important;
+}
+.pd-daily-hero{
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+}
+.pd-daily-hero .badge,.pd-daily-scorechip,.pd-daily-result,.pd-daily-sidecard:first-child,
+.pd-daily-proof span,.pd-daily-account-link{
+  border-color:#45454b!important;
+  background:#0a0a0c!important;
+  color:#d8d7d2!important;
+}
+.pd-daily-rail{border-color:#29292d!important}
+.pd-daily-rail::before{
+  width:7px;height:7px;border-radius:0;background:#d8d7d2;box-shadow:none;
+}
+.pd-daily-scorechip strong,.pd-daily-reward,.pd-daily-proof b{color:#efeee9!important}
+.pd-daily-scorechip span{color:#7e7d79!important}
+.pd-daily-option input{
+  border-radius:0!important;border-color:#68686f!important;background:#08080a!important;box-shadow:none!important;
+}
+.pd-daily-option input:checked{background:#efeee9!important;border-color:#efeee9!important;box-shadow:inset 0 0 0 3px #0a0a0c!important}
+.pd-daily-option:has(input:checked){border-color:#7a7974!important;background:#151517!important}
+.pd-daily-option[data-state="correct"]{border-color:#92918c!important;background:#121214!important}
+.pd-daily-option[data-state="wrong"]{border-color:#56565c!important;background:#09090b!important}
+.pd-daily-submit{
+  border-radius:0!important;border-color:#efeee9!important;background:#efeee9!important;color:#070707!important;box-shadow:none!important;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+}
+.pd-daily-result-actions a,.pd-daily-result-actions button,.pd-daily-account-link,.pd-daily-error{border-radius:0!important}
+.pd-daily-error{border-color:#55555b!important;background:#0b0b0d!important;color:#b8b7b2!important}

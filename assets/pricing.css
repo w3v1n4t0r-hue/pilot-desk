@@ -10,3 +10,5 @@
 .pd-plan-card:hover{background:#131315}
 .pd-plan-card small{color:#8f8e89!important}
 .pd-plan-card.featured small{color:#d8d7d1!important}
+
+.pd-pricing-status{margin-top:12px;padding:12px 14px;border:1px solid var(--line);font-size:12px;background:#0b0b0d;color:var(--muted)}.pd-pricing-status[data-kind="good"]{color:#d6d6d2}.pd-pricing-status[data-kind="warn"]{color:#b9b5a8}.pd-pricing-status[data-kind="bad"]{color:#d8b0b0}.pd-btn.disabled,.pd-btn[aria-disabled="true"]{opacity:.45;pointer-events:none}.pd-btn[aria-busy="true"]{opacity:.65;pointer-events:none}

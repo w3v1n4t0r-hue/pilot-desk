@@ -9,7 +9,7 @@ const css=fs.readFileSync('assets/experience.css','utf8');
 for(const goal of ['plan','calculate','study','teach']){
   check(home.includes('data-pd-first-goal="'+goal+'"'),'Homepage missing first-run goal: '+goal);
 }
-check(home.includes('What are you trying to do today?'),'Homepage first-run question missing');
+check(home.includes('What are you working on?'),'Homepage first-run question missing');
 check(home.includes('pdFirstRunSelected'),'Selected-goal shortcut missing');
 check(exp.includes("const key='pd-first-run-goal'"),'First-run choice is not persisted locally');
 check(exp.includes("pdTrack?.('First Run Goal'"),'First-run goal analytics missing');

@@ -9,7 +9,7 @@ const schema = {
       '@type': 'WebSite',
       name: 'PilotDesk',
       url: 'https://www.pilot-desk.com/',
-      description: 'Aviation calculators, flight planning, weather tools, and pilot training in one workspace.'
+      description: 'Free aviation calculators, flight planning, weather tools, FAA-based pilot training, and optional Pro continuity in one workspace.'
     },
     {
       '@type': 'Organization',
@@ -21,7 +21,7 @@ const schema = {
       '@type': 'FAQPage',
       mainEntity: [
         ['What is PilotDesk?', 'PilotDesk is a browser-based aviation workspace for flight planning, pilot calculations, weather, and training.'],
-        ['Do I need an account?', 'No. Core tools work without an account. An account is useful for saving progress, aircraft, written-prep history, and Daily streaks.'],
+        ['Do I need an account?', 'No. Core tools work without an account. A free account can keep study progress and Daily history together, while PilotDesk Pro adds cross-device planning continuity.'],
         ['Are PilotDesk calculator results official operational data?', 'No. PilotDesk is a planning and training aid. Verify operational decisions with current approved aircraft data, weather, procedures, regulations, and official sources.'],
         ['What is PilotDesk Daily?', 'PilotDesk Daily is a short aviation challenge with three new questions each day.']
       ].map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } }))
@@ -30,8 +30,8 @@ const schema = {
 };
 ---
 <BaseLayout
-  title="PilotDesk | Flight Planning, Aviation Calculators & Pilot Training"
-  description="A practical pilot workspace for flight planning, aviation calculations, weather, written prep, and checkride study."
+  title="Free Aviation Calculators, Flight Planning & Pilot Training | PilotDesk"
+  description="Free aviation calculators, flight planning, weather, written prep, and checkride study tools for student pilots, instrument pilots, commercial pilots, and CFIs."
   canonical="/"
   schema={schema}
   bodyClass="pd-home-2026"
@@ -142,7 +142,7 @@ const schema = {
       </div>
       <div class="pd-home-business-actions">
         <a class="pd-btn" href="/for-flight-schools.html" data-pd-home-cta="Flight Schools">Flight school options</a>
-        <a href="/embed.html" data-pd-home-cta="Embeds">See embeddable tools →</a>
+        <a href="/pricing.html" data-pd-home-cta="Plans">Compare Free, Pro & Flight School →</a>
       </div>
     </section>
 

@@ -69,7 +69,8 @@ const featuredSearch = [
   ['Flight training', '/flight-training.html', 'training checkride study'],
   ['Pilot guides', '/guides.html', 'guides checkride aviation'],
   ['PilotDesk Daily', '/daily/', 'daily questions challenge'],
-  ['Account', '/account.html', 'sign in profile progress']
+  ['Account', '/account.html', 'sign in profile progress'],
+  ['PilotDesk plans', '/pricing.html', 'free pro flight school pricing sync training']
 ];
 
 export const homeActions = [
@@ -98,6 +99,8 @@ export const homeCategories = [
 ];
 
 export const footerLinks = [
+  ['/pricing.html', 'Plans'],
+  ['/for-flight-schools.html', 'Flight Schools'],
   ['/about.html', 'About'],
   ['/sources.html', 'Sources'],
   ['/legal/privacy.html', 'Privacy'],

@@ -15,3 +15,53 @@
 .pd-account-dashboard-card em{margin-top:auto;padding-top:5px;color:var(--silver);font-size:10px;font-style:normal}
 @media(max-width:620px){.pd-account-dashboard-grid{grid-template-columns:1fr}.pd-account-dashboard-head{display:block}.pd-account-dashboard-head>small{display:block;margin-top:5px}}
 
+
+
+/* ACCOUNT MONOCHROME OVERRIDE */
+.pd-account-promise,.pd-account-card,.pd-owner,.pd-account-dashboard,
+.pd-account-dashboard-card,.pd-account-benefit,.pd-user-stat,.pd-owner-stat,
+.pd-account-roadmap-grid>div{
+  border-radius:0;
+  background:#0b0b0d;
+  box-shadow:none;
+}
+.pd-account-promise,.pd-account-card,.pd-owner,.pd-account-dashboard{
+  clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px));
+}
+.pd-auth-btn{
+  border-radius:0;
+  background:#efeee9;
+  color:#070707;
+  border-color:#efeee9;
+  box-shadow:none;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+  transition:transform .14s ease,background .14s ease,border-color .14s ease;
+}
+.pd-auth-btn:hover{filter:none;background:#fff;border-color:#fff;transform:translateY(-1px)}
+.pd-auth-btn.secondary{background:#0a0a0c;color:#e8e7e1;border-color:#3b3b40}
+.pd-account-field input,.pd-account-field select{
+  border-radius:0;
+  background:#08080a;
+  border-color:#343438;
+  box-shadow:none;
+}
+.pd-account-field input:focus,.pd-account-field select:focus{
+  border-color:#8d8c87;
+  box-shadow:none;
+}
+.pd-user-avatar{
+  border-radius:0;
+  background:#111113;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+}
+.pd-account-actions button,.pd-account-actions a,.pd-owner-head button{
+  border-radius:0;
+  background:#0a0a0c;
+  border-color:#3b3b40;
+  color:#d6d5d0;
+}
+.pd-account-actions .danger{border-color:#5d4447;color:#cdaeb1;background:#0b090a}
+.pd-progress-track{border-radius:0;background:#08080a}
+.pd-progress-fill{background:linear-gradient(90deg,#55555c,#efeee9)}
+.pd-account-dashboard-card{transition:background .14s ease,border-color .14s ease,transform .14s ease}
+.pd-account-dashboard-card:hover{background:#121214;border-color:#5a595f;transform:translateY(-2px)}

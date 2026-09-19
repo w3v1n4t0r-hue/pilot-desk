@@ -4,6 +4,8 @@ const ROOT='https://services6.arcgis.com/ssFJjBXIUyZDrSYZ/ArcGIS/rest/services/'
 const UA='PilotDesk/4.0 (+https://www.pilot-desk.com)';
 const SOURCES={
   airports:{service:'US_Airport',layer:0,label:'FAA Airports'},
+  navaids:{service:'NAVAIDSystem',layer:0,label:'FAA NAVAID System'},
+  fixes:{service:'DesignatedPoints',layer:0,label:'FAA Designated Points'},
   airways:{service:'ATS_Route',layer:0,label:'FAA ATS Routes'},
   sua:{service:'Special_Use_Airspace',layer:0,label:'FAA Special Use Airspace'},
   airspace:{service:'Class_Airspace',layer:0,label:'FAA Class Airspace'}

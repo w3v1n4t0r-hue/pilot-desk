@@ -15,14 +15,23 @@ function walk(dir){
 walk('.');
 
 const grab=(h,a,b)=>((h.match(a)||h.match(b)||[])[1]||'').replace(/\s+/g,' ').replace(/<[^>]+>/g,'').trim();
+const meta=(h,name)=>{
+  const tags=[...h.matchAll(/<meta\b[^>]*>/gi)].map(x=>x[0]);
+  for(const tag of tags){
+    const n=(tag.match(/\bname\s*=\s*"([^"]*)"/i)||tag.match(/\bname\s*=\s*'([^']*)'/i)||[])[1];
+    if(String(n||'').toLowerCase()!==name.toLowerCase())continue;
+    return ((tag.match(/\bcontent\s*=\s*"([^"]*)"/i)||tag.match(/\bcontent\s*=\s*'([^']*)'/i)||[])[1]||'').replace(/\s+/g,' ').trim();
+  }
+  return '';
+};
 const rows=files.map(file=>{
  const h=fs.readFileSync(file,'utf8');
  return {
   file,h,
   title:grab(h,/<title>([^<]*)<\/title>/i,/$a/),
-  desc:grab(h,/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i,/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i),
+  desc:meta(h,'description'),
   canonical:grab(h,/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i,/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i),
-  robots:grab(h,/<meta[^>]+name=["']robots["'][^>]+content=["']([^"']*)["']/i,/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']robots["']/i),
+  robots:meta(h,'robots'),
   h1:grab(h,/<h1[^>]*>([\s\S]*?)<\/h1>/i,/$a/),
   ogTitle:/property=["']og:title["']/i.test(h),
   ogDesc:/property=["']og:description["']/i.test(h),

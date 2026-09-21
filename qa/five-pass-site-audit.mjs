@@ -106,8 +106,11 @@ for(const file of files){
   if(h1>1) add(hard,5,file,`multiple H1 elements (${h1})`);
   const metaTags=[...html.matchAll(/<meta\b[^>]*>/gi)].map(m=>m[0]);
   const metaContent=name=>{
-    const tag=metaTags.find(t=>new RegExp('\\bname=["\\']'+name+'["\\']','i').test(t));
-    return (tag?.match(/\\bcontent=["']([^"']*)["']/i)||[])[1]||'';
+    const tag=metaTags.find(t=>{
+      const metaName=(t.match(/\bname=["']([^"']+)["']/i)||[])[1]||'';
+      return metaName.toLowerCase()===name.toLowerCase();
+    });
+    return (tag?.match(/\bcontent=["']([^"']*)["']/i)||[])[1]||'';
   };
   const robots=metaContent('robots');
   const robotTokens=robots.toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);

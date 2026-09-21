@@ -21,6 +21,7 @@ for (const rel of [
   'guides/crosswind-component.html',
   'assets/styles.css',
   'assets/global-nav.js',
+  'assets/home-desk.js',
   'assets/navigation-data.js',
   'sw.js',
   'site.webmanifest',
@@ -31,7 +32,7 @@ for (const rel of [
 const home = fs.existsSync(path.join(dist, 'index.html')) ? fs.readFileSync(path.join(dist, 'index.html'), 'utf8') : '';
 const tools = fs.existsSync(path.join(dist, 'tools.html')) ? fs.readFileSync(path.join(dist, 'tools.html'), 'utf8') : '';
 
-for (const marker of ['data-pd-astro-native="1"', 'Plan a Flight', 'Use a Calculator', 'Study for a Written', 'Play Daily', 'pdResume']) {
+for (const marker of ['data-pd-astro-native="1"', 'Plan a Flight', 'Use a Calculator', 'Study for a Written', 'Play Daily', 'pdHomeDesk']) {
   if (!home.includes(marker)) failures.push(`Astro homepage missing ${marker}`);
 }
 for (const marker of ['data-pd-astro-native="1"', 'pdToolDirectorySearch', 'pdToolDirectory']) {

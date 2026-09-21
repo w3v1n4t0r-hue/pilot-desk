@@ -56,6 +56,19 @@ for(const ent of files){
   if(before!==html) fs.writeFileSync(file,html);
 }
 
+const coreSectionLabels={
+  'aircraft.html':['Verify the profile before you use it','Turn one aircraft into a study scenario','Aircraft planning references'],
+  'airport.html':['Verify the airport before you brief it','Turn one airport into a training scenario','Airport planning references'],
+  'weather.html':['Read the weather in a deliberate order','Practice from the raw weather first','Weather references'],
+  'metar-decoder.html':['Cross-check the decode before using it','Practice without the decoder first','METAR study references'],
+  'planner.html':['Keep every planning assumption connected','Estimate first, then refine the plan','Flight-planning references'],
+  'route-planner.html':['Verify the route leg by leg','Work one leg by hand','Route-planning references'],
+  'procedures.html':['Brief the chart before you trust the preview','Practice one briefing order','Procedure references'],
+  'poh-chart-studio.html':['Check the chart setup before interpolating','Predict the trend before calculating','Performance-chart references'],
+  'checklist-trainer.html':['Verify the source before practicing the flow','Recall first, then verify','Checklist training references'],
+  'flight-training.html':['Build the lesson around one scenario','Link the subjects instead of isolating them','Training references']
+};
+
 const corePages={
   'aircraft.html':{
     heading:'Use aircraft profiles as a planning starting point',
@@ -138,7 +151,8 @@ for(const [file,data] of Object.entries(corePages)){
   }
   if(!html.includes('data-pd-core-depth')){
     const checkList=data.checks.map(x=>`<li>${esc(x)}</li>`).join('');
-    const block=`<section class="info-card" data-pd-core-depth="1"><h2>${esc(data.heading)}</h2><p>${esc(data.intro)}</p><h2>A practical verification flow</h2><ul>${checkList}</ul><p>Before accepting any output, ask three questions: Is the source current? Are the units and reference systems correct? Does the result make sense for the aircraft, airport, weather and phase of flight? Those checks catch many planning errors before a more detailed calculation is even needed.</p><h2>Use it for training</h2><p>${esc(data.training)}</p><p>PilotDesk is designed as a supplemental planning and training workspace. It does not replace approved aircraft documents, official weather, current charts, ATC instructions, NOTAMs, regulations or operator procedures. When a result affects an actual flight, verify it with the controlling source.</p><h2>Related PilotDesk resources</h2><p>${data.links} · <a href="/guides.html">All aviation guides</a> · <a href="/">All calculators</a></p></section>`;
+    const [verifyHeading,trainingHeading,resourcesHeading]=coreSectionLabels[file]||['Verify the inputs','Practice with a real scenario','Related references'];
+    const block=`<section class="info-card" data-pd-core-depth="1"><h2>${esc(data.heading)}</h2><p>${esc(data.intro)}</p><h2>${esc(verifyHeading)}</h2><ul>${checkList}</ul><h2>${esc(trainingHeading)}</h2><p>${esc(data.training)}</p><h2>${esc(resourcesHeading)}</h2><p>${data.links} · <a href="/guides.html">All aviation guides</a> · <a href="/">All calculators</a></p></section>`;
     const marker='<div class="safety-strip">';
     if(html.includes(marker)) html=html.replace(marker,`${block}${marker}`);
     else html=html.replace('</main>',`${block}</main>`);

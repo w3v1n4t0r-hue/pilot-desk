@@ -20,6 +20,8 @@ walk(dist);
 // Five independent passes: copy, visual language, density, interaction, final consistency.
 const hard=[];
 const notes=[];
+const paragraphUsage=new Map();
+const headingUsage=new Map();
 const add=(bucket,pass,file,msg)=>bucket.push({pass,file,msg});
 const visible=html=>html
   .replace(/<script\b[\s\S]*?<\/script>/gi,' ')
@@ -29,6 +31,16 @@ const visible=html=>html
   .replace(/&[a-z0-9#]+;/gi,' ')
   .replace(/\s+/g,' ')
   .trim();
+const pushUsage=(map,key,file)=>{
+  const list=map.get(key)||[];
+  if(!list.includes(file)) list.push(file);
+  map.set(key,list);
+};
+const contentOnly=html=>html
+  .replace(/<header\b[\s\S]*?<\/header>/gi,' ')
+  .replace(/<footer\b[\s\S]*?<\/footer>/gi,' ')
+  .replace(/<script\b[\s\S]*?<\/script>/gi,' ')
+  .replace(/<style\b[\s\S]*?<\/style>/gi,' ');
 
 const buzz=[
   [/\bdelve(?:s|d|ing)?\b/i,'delve'],
@@ -64,6 +76,17 @@ for(const file of files){
   const text=visible(html);
   const lower=text.toLowerCase();
 
+  const bodyContent=contentOnly(html);
+  for(const m of bodyContent.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)){
+    const p=visible(m[1]).replace(/\s+/g,' ').trim();
+    const key=p.toLowerCase();
+    if(p.length>=160&&!/planning and training aid only|verify operational information|current approved sources/i.test(p)) pushUsage(paragraphUsage,key,file);
+  }
+  for(const m of bodyContent.matchAll(/<h[23]\b[^>]*>([\s\S]*?)<\/h[23]>/gi)){
+    const h=visible(m[1]).replace(/\s+/g,' ').trim().toLowerCase();
+    if(h) pushUsage(headingUsage,h,file);
+  }
+
   // PASS 1 — copy voice: plainspoken, specific, no canned AI marketing language.
   for(const [re,label] of buzz){
     if(label==='pivotal') continue;
@@ -91,6 +114,17 @@ for(const file of files){
 
   // PASS 4 — interaction clarity: no dead links, unnamed controls, or context-free CTAs.
   if(/href=["']#["']/i.test(html)||/href=["']javascript:/i.test(html)) add(hard,4,file,'dead or javascript link');
+  for(const img of html.matchAll(/<img\b[^>]*>/gi)) if(!/\balt\s*=/.test(img[0])) add(hard,4,file,'image missing alt attribute');
+  for(const frame of html.matchAll(/<iframe\b[^>]*>/gi)) if(!/\btitle\s*=/.test(frame[0])) add(hard,4,file,'iframe missing title');
+  for(const a of html.matchAll(/<a\b[^>]*target=["']_blank["'][^>]*>/gi)){
+    const rel=(a[0].match(/\brel=["']([^"']+)["']/i)||[])[1]||'';
+    if(!/\bnoopener\b/i.test(rel)&&!/\bnoreferrer\b/i.test(rel)) add(hard,4,file,'new-tab link missing noopener/noreferrer');
+  }
+  for(const form of html.matchAll(/<form\b[\s\S]*?<\/form>/gi)){
+    for(const button of form[0].matchAll(/<button\b([^>]*)>/gi)){
+      if(!/\btype\s*=/.test(button[1])) add(hard,4,file,'form button missing explicit type');
+    }
+  }
   for(const m of html.matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button>/gi)){
     const attrs=m[1],label=visible(m[2]);
     if(!label&&!/aria-label\s*=/i.test(attrs)) add(hard,4,file,'button without visible or accessible name');
@@ -117,11 +151,26 @@ for(const file of files){
   const robotTokens=robots.toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
   const indexable=robotTokens.includes('index')&&!robotTokens.includes('noindex');
   const description=metaContent('description').trim();
+  if(indexable&&h1!==1) add(hard,5,file,`indexable page needs exactly one H1 (${h1})`);
+  if(indexable&&!/<main\b/i.test(html)) add(hard,5,file,'indexable page missing main landmark');
+  if(!/<meta\b[^>]*name=["']viewport["']/i.test(html)) add(hard,5,file,'page missing viewport meta');
   if(indexable&&!/rel=["']canonical["']/i.test(html)) add(hard,5,file,'indexable page missing canonical');
   if(indexable&&!/<title>[^<]{8,}<\/title>/i.test(html)) add(hard,5,file,'indexable page missing useful title');
   if(indexable&&description.length<40) add(hard,5,file,'indexable page missing useful meta description');
   if(/\bPilot Desk\b/i.test(text)) add(hard,5,file,'brand written as “Pilot Desk” instead of “PilotDesk”');
+  const inlineStyle=(html.match(/<style\b[\s\S]*?<\/style>/gi)||[]).join('\n');
+  if(/(?:width|min-width)\s*:\s*(?:9\d{2}|[1-9]\d{3,})px/i.test(inlineStyle)) add(notes,5,file,'review large fixed inline width for mobile');
+  if(/font-size\s*:\s*[0-8](?:\.\d+)?px/i.test(inlineStyle)) add(notes,5,file,'review sub-9px inline text');
   passCounts[5]++;
+}
+
+for(const [paragraph,usedBy] of paragraphUsage){
+  if(usedBy.length>=4) add(hard,1,usedBy.join(', '),`same long paragraph repeated across ${usedBy.length} pages: "${paragraph.slice(0,90)}…"`);
+}
+for(const [heading,usedBy] of headingUsage){
+  if(usedBy.length>=4&&/^(a practical|use it for training|related pilotdesk|continue the topic|how .* fits into pilot training)/i.test(heading)){
+    add(hard,3,usedBy.join(', '),`template heading repeated across ${usedBy.length} pages: "${heading}"`);
+  }
 }
 
 const sharedCss=[

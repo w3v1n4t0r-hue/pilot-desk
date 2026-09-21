@@ -92,36 +92,6 @@ const hubFor={
   'Conversions':['/guides/aviation-conversions.html','Aviation conversion reference']
 };
 
-const useText={
-  'Flight Planning':'Use the calculator to work a flight-planning problem, verify hand calculations, or build an example for training. Start with current, correctly referenced inputs and keep runway, wind, course, speed, time and fuel units consistent.',
-  'Atmosphere & Weather':'Use current pressure, temperature and weather information when the calculation depends on atmospheric conditions. Treat the output as a planning or study value and connect it back to the current weather product and aircraft performance data.',
-  'Performance':'Use the result as a math check or training reference. Aircraft performance, limitations and operating decisions still come from the current POH or AFM, applicable charts and the conditions that actually exist.',
-  'Maneuvers & Turns':'Use the result to understand the geometry and relationships behind common flight-training maneuvers. The calculated number is not a substitute for aircraft limitations, instructor guidance or the applicable training standard.',
-  'Navigation':'Use the calculator for navigation planning and cross-checks, keeping true/magnetic references, coordinates, groundspeed and units consistent. Current charts and navigation data remain the controlling source for a flight.',
-  'Weight & Balance':'Use the calculator to perform moment, arm, CG or fuel-weight math. A correct arithmetic result still must be compared with the approved loading data and envelope for the exact aircraft.',
-  'Conversions':'Use the converter when aviation information arrives in a different unit system. Confirm both the starting unit and the physical quantity before carrying the converted value into another calculation.'
-};
-
-const meaningText={
-  'Flight Planning':'The output is most useful when it feeds the next planning step. Wind components affect runway decisions, groundspeed affects time and fuel, and descent or holding math depends on how quickly the airplane moves across the ground.',
-  'Atmosphere & Weather':'Atmospheric numbers matter because air density, pressure and temperature affect both weather interpretation and aircraft performance. A calculated atmospheric value should be read together with current conditions rather than by itself.',
-  'Performance':'Performance math describes relationships, not guarantees. Weight, configuration, runway condition, wind, temperature, technique and aircraft-specific data can all change the operational answer.',
-  'Maneuvers & Turns':'These outputs make the speed-bank-load-factor relationships visible. They are especially useful for oral-exam preparation and for checking whether a mental estimate is in the right range.',
-  'Navigation':'Navigation results are only as good as the references behind the inputs. A correct formula can still produce a wrong operational answer if true and magnetic directions are mixed or if stale coordinates and winds are used.',
-  'Weight & Balance':'Weight-and-balance arithmetic produces a location or moment; airworthiness depends on where that result sits relative to the approved envelope and any weight limits.',
-  'Conversions':'A conversion changes the unit, not the underlying quantity. Converting knots to mph does not turn indicated airspeed into true airspeed, and converting pressure units does not change the observed pressure.'
-};
-
-const mistakeText={
-  'Flight Planning':'Common errors include mixing true and magnetic directions, using airspeed where groundspeed belongs, entering minutes as decimal hours, or treating a generic reserve as the legal requirement for every operation.',
-  'Atmosphere & Weather':'Common errors include mixing field elevation with pressure altitude, using stale weather, confusing Celsius and Fahrenheit, or treating a rule-of-thumb output as an aircraft performance chart.',
-  'Performance':'Common errors include using the wrong weight or configuration, confusing indicated and true airspeed, applying a training shortcut outside its assumptions, or treating a calculated estimate as an aircraft limitation.',
-  'Maneuvers & Turns':'Common errors include using indicated airspeed where a formula expects true airspeed, assuming bank angle alone describes every maneuver, or ignoring how wind changes groundspeed-dependent relationships.',
-  'Navigation':'Common errors include east/west sign mistakes, mixing runway magnetic headings with true wind directions, entering longitude with the wrong sign, or carrying a rounded intermediate value too far.',
-  'Weight & Balance':'Common errors include mixing pounds and kilograms, using an arm from the wrong datum, forgetting fuel burn changes weight and moment, or comparing a calculated CG with the wrong envelope.',
-  'Conversions':'The biggest error is converting the wrong starting unit. Write the original unit beside the number, perform the conversion, and make a quick reasonableness check before using the result elsewhere.'
-};
-
 const faqBySlug={
   crosswind:[
     ['How is crosswind component calculated?','The wind is resolved into components relative to the runway. Crosswind uses the sine of the relative angle; the along-runway headwind or tailwind component uses the cosine.'],
@@ -183,8 +153,8 @@ const seoH1BySlug={
 
 function genericFaq(title,category){return [
   [`What does the ${title} calculator do?`,`It uses the entered aviation values to solve the ${title.toLowerCase()} relationship and displays the main outputs immediately for study, planning and cross-checking.`],
-  ['What inputs should I use?',`Use values from the current source that applies to the problem. Keep units and reference systems consistent, then verify that each input describes the quantity the ${category.toLowerCase()} formula expects.`],
-  ['Can I use the result as the only source for a flight?','No. PilotDesk is a supplemental calculation and training aid. Verify operational decisions with current approved aircraft data, official weather, charts, procedures and applicable regulations.']
+  ['What inputs should I use?',`For ${title.toLowerCase()}, use values from the current source that applies to the problem. Keep units and reference systems consistent, then verify that each input describes the quantity the ${category.toLowerCase()} formula expects.`],
+  ['Can I use the result as the only source for a flight?',`No. A ${title.toLowerCase()} result from PilotDesk is a calculation and training aid. Verify any operational decision with the current aircraft data, weather, chart, procedure or regulation that controls the flight.`]
 ]}
 
 for(const [slug,key,title,desc,fields,results] of calcs){
@@ -222,23 +192,17 @@ for(const [slug,key,title,desc,fields,results] of calcs){
   const resultList=results.map(r=>`<li><strong>${esc(r)}</strong> — one of the calculated outputs for this problem.</li>`).join('');
 
   const educational=`<div class="info-card" data-pd-seo-depth="1">
-    <h2>How to use the ${esc(title)} calculator</h2>
-    <p>${esc(useText[category])}</p>
-    <p>This page is built around <strong>${esc(fieldNames.join(', '))}</strong>. Enter the values, calculate, and then check whether <strong>${esc(resultNames.join(', '))}</strong> are reasonable before carrying them into another planning step.</p>
+    <h2>Use the ${esc(title)} calculator</h2>
+    <p><strong>${esc(title)}</strong> uses <strong>${esc(fieldNames.join(', '))}</strong> to calculate <strong>${esc(resultNames.join(', '))}</strong>. Enter values from the source that applies to the problem, calculate, then compare the result with a rough estimate before you use it anywhere else.</p>
     <h3>Inputs</h3><ul>${inputList}</ul>
-    <h2>Formula and method</h2>
+    <h2>Formula</h2>
     <p>${esc(formula)}</p>
-    <p>The calculator keeps the arithmetic visible so it can be used as more than a black-box answer. If you are studying for an oral exam or reviewing a navlog, work the relationship once by hand and use PilotDesk as the cross-check.</p>
-    <h2>Worked example setup</h2>
-    <p>The default example uses ${esc(defaults)}. Calculate the example first, then change one input at a time. Watching which result changes—and by how much—is a quick way to understand the relationship instead of memorizing a single answer.</p>
-    <h2>What the result means</h2>
-    <p>${esc(meaningText[category])}</p>
-    <ul>${resultList}</ul>
-    <h2>Common mistakes to avoid</h2>
-    <p>${esc(mistakeText[category])}</p>
-    <p>Do a reasonableness check after every calculation. A mathematically valid result can still be unusable if the wrong source value, unit, reference or aircraft data was entered.</p>
-    <h2>Sources and limitations</h2>
-    <p>PilotDesk uses standard aviation math and training relationships. General background is cross-checked against FAA pilot-training material, while aircraft-specific performance, limitations and procedures must come from the current approved source for that aircraft. See <a href="/sources.html">PilotDesk sources and methods</a>.</p>
+    <h2>Try the default setup</h2>
+    <p>The example starts with ${esc(defaults)}. Change one input at a time and watch which output moves. That is usually more useful for training than memorizing one sample answer.</p>
+    <h2>Before you use the number</h2>
+    <p>A ${esc(title.toLowerCase())} result is only as good as its inputs. For ${esc(category.toLowerCase())} work, confirm units, reference systems, and any aircraft-specific values against the current source before carrying the number into a flight decision.</p>
+    <h2>Source trail</h2>
+    <p>PilotDesk shows the ${esc(title.toLowerCase())} relationship here so you can inspect the arithmetic. Use <a href="/sources.html">PilotDesk sources and methods</a> for general references and the current POH/AFM, chart, weather product, procedure, or regulation when it controls the real operation.</p>
   </div>
   <section class="info-card" data-pd-faq><h2>${esc(title)} questions</h2>${faqHtml}<p class="fine">PilotDesk is a supplemental planning and training aid, not an FAA-approved flight-planning source.</p></section>`;
 

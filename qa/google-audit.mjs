@@ -1,8 +1,12 @@
 import fs from 'node:fs';
 const fail=m=>{console.error('Google audit regression:',m);process.exitCode=1};
 const read=p=>fs.readFileSync(p,'utf8');
-const home=read('index.html'),astroHome=read('src/pages/index.astro'),bootstrap=read('assets/app-bootstrap.js'),ads=read('assets/ads.js'),theme=read('assets/theme.js'),tokens=read('assets/design-tokens.css'),site=read('assets/site.js'),nav=read('assets/global-nav.js'),siteData=read('src/data/site.mjs'),header=read('src/components/Header.astro'),syncNav=read('scripts/sync-navigation.mjs'),vercel=read('vercel.json');
+const home=read('index.html'),astroHome=read('src/pages/index.astro'),bootstrap=read('assets/app-bootstrap.js'),ads=read('assets/ads.js'),adsTxt=read('ads.txt'),prepare=read('scripts/prepare-astro-public.mjs'),productionWatch=read('.github/workflows/production-watch.yml'),theme=read('assets/theme.js'),tokens=read('assets/design-tokens.css'),site=read('assets/site.js'),nav=read('assets/global-nav.js'),siteData=read('src/data/site.mjs'),header=read('src/components/Header.astro'),syncNav=read('scripts/sync-navigation.mjs'),vercel=read('vercel.json');
 if(/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=/.test(home))fail('homepage eagerly loads AdSense');
+if(adsTxt.trim()!=='google.com, pub-2325772529624834, DIRECT, f08c47fec0942fa0')fail('ads.txt publisher record is missing or malformed');
+if(!prepare.includes("'robots.txt', 'ads.txt'"))fail('Astro public preparation no longer copies ads.txt');
+if(!vercel.includes('"source": "/ads.txt"')&&!vercel.includes('"source":"/ads.txt"'))fail('Vercel ads.txt response header rule missing');
+for(const url of ['https://www.pilot-desk.com/ads.txt','https://pilot-desk.com/ads.txt'])if(!productionWatch.includes(url))fail('production watch missing '+url);
 if(!ads.includes('scheduleAds()')||!ads.includes("isCalc?10000:7000")||!ads.includes("requestIdleCallback"))fail('AdSense lazy-start guard missing');
 if(!theme.includes("localStorage.setItem('pd-theme','dark')")||!theme.includes("dataset.pdTheme='dark'")||!theme.includes("colorScheme='dark'"))fail('dark-only brand theme guard missing');
 for(const x of ['--bg:#050505','--panel:#0d0d0f','--text:#f4f3ee','--muted:#aaa9a5','--muted2:#77777f'])if(!tokens.includes(x))fail('monochrome contrast token missing '+x);

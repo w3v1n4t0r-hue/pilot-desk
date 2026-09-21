@@ -30,7 +30,7 @@ ok(!bootstrap.includes('pd-ui-booting')&&!bootstrap.includes('visibility:hidden'
 const home=read('src/pages/index.astro');
 const siteData=read('src/data/site.mjs');
 const header=read('src/components/Header.astro');
-for(const s of ['id="popular-tools"','pd-home-discovery','data-pd-home-account','homeActions.slice(0,3).map'])ok(home.includes(s),`Astro homepage missing discovery structure ${s}`);
+for(const s of ['id="popular-tools"','id="pdHomeDesk"','data-pd-home-account','homeActions.slice(0,3).map'])ok(home.includes(s),`Astro homepage missing discovery structure ${s}`);
 for(const s of ['Plan a Flight','Use a Calculator','Study for a Written','Play Daily'])ok(siteData.includes(s),`Astro homepage action data missing ${s}`);
 for(const href of ['/route-planner.html','/tools.html','/written-prep.html','/daily/'])ok(siteData.includes(href),`homepage action data missing ${href}`);
 ok(siteData.includes("['/daily/', 'Daily challenge'")&&siteData.includes("['/written-prep.html', 'Written Prep'"),'shared Learn navigation must keep Daily and Written Prep discoverable');

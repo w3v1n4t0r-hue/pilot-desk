@@ -7,7 +7,7 @@
 :root{
   --pd-page-max:1240px;
   --pd-reading-max:860px;
-  --pd-panel-radius:14px;
+  --pd-panel-radius:0px;
 }
 
 /* One header treatment across Astro, legacy, calculators, training and tools. */
@@ -29,7 +29,7 @@
   flex:0 0 40px;
   padding:0;
   border:0;
-  border-radius:10px;
+  border-radius:0;
   overflow:hidden;
   background:transparent;
 }
@@ -133,7 +133,7 @@ main.shell{
   line-height:1.65;
 }
 
-/* Panels: one radius/border system; only clickable cards move on hover. */
+/* Panels: hard-edged geometry; only clickable cards move on hover. */
 .tool-card,
 .pd-hub-card,
 .pd-card,
@@ -151,7 +151,7 @@ main.shell{
 .pd-panel:hover,
 .rp-panel:hover{
   transform:none;
-  box-shadow:0 10px 30px #0003;
+  box-shadow:none;
   border-color:var(--line);
 }
 a.tool-card:hover,

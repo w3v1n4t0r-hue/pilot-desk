@@ -80,6 +80,6 @@ html[data-pd-theme="dark"]{
 html[data-pd-theme="light"] body,
 html[data-pd-theme="night-red"] body,
 html[data-pd-theme="dark"] body{
-  background:linear-gradient(180deg,#0b0b0d 0,#050505 340px,#050505 100%)!important;
+  background:#050505!important;
   color:#f4f3ee!important;
 }

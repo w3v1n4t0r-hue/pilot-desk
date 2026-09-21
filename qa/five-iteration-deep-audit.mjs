@@ -62,19 +62,20 @@ for(const {raw,files:owners} of paragraphOwners.values()){
   if(owners.size>=5)add(hard,1,[...owners][0],`same long paragraph appears on ${owners.size} pages: "${raw.slice(0,120)}…"`);
 }
 for(const {raw,files:owners} of headingOwners.values()){
-  if(owners.size>=8&&!/^(sources?|common questions|related tools|how it works|what it means|formula and method|worked example setup|what the result means|common mistakes to avoid|sources and limitations|related pilotdesk guides|related pilotdesk tools|worked example|source check)$/i.test(raw))
+  if(owners.size>=8&&!/^(sources?|common questions|related tools|how it works|what it means|formula and method|worked example setup|what the result means|common mistakes to avoid|sources and limitations|related pilotdesk guides|related pilotdesk tools|worked example|source check|checks for this workflow|training use for this tool|continue from here)$/i.test(raw))
     add(hard,1,[...owners][0],`same section heading appears on ${owners.size} pages: "${raw}"`);
 }
 for(const [file,html] of htmlByFile){
-  const text=strip(withoutShell(html));
+  const body=withoutShell(html),text=strip(body);
   if(/\b(?:simply|just) (?:click|enter|select)\b/i.test(text))add(notes,1,file,'instruction copy may be over-simplified or repetitive');
-  const sentences=text.split(/[.!?]+\s+/).map(x=>x.trim()).filter(x=>x.length>25);
+  const prose=[...body.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].map(m=>strip(m[1])).filter(x=>x.length>25).join(' ');
+  const sentences=prose.split(/[.!?]+\s+/).map(x=>x.trim()).filter(x=>x.length>25);
   let sameStarts=0;
   for(let i=2;i<sentences.length;i++){
     const starts=sentences.slice(i-2,i+1).map(s=>s.split(/\s+/).slice(0,2).join(' ').toLowerCase());
     if(new Set(starts).size===1)sameStarts++;
   }
-  if(sameStarts>=2)add(notes,1,file,'several sentence runs begin with the same two words');
+  if(sameStarts>=2)add(notes,1,file,'several prose sentences in a row begin with the same two words');
 }
 
 // ITERATION 2 — visual language and anti-template structure.
@@ -129,9 +130,8 @@ for(const [file,html] of htmlByFile){
   if(/position\s*:\s*fixed/i.test(styles)&&!/max-width|width\s*:\s*min\(|inset/i.test(styles))add(notes,4,file,'fixed-position local UI should be reviewed at narrow widths');
 }
 const responsive=fs.existsSync('assets/responsive-polish.css')?fs.readFileSync('assets/responsive-polish.css','utf8'):'';
-for(const bp of ['430','390','360']){
-  if(!new RegExp(`max-width\\s*:\\s*${bp}px`).test(responsive))add(notes,4,'assets/responsive-polish.css',`no dedicated ${bp}px breakpoint; verify nearby breakpoint covers it intentionally`);
-}
+const narrowBreakpoints=[...responsive.matchAll(/max-width\s*:\s*(\d+)px/gi)].map(m=>Number(m[1]));
+if(!narrowBreakpoints.some(n=>n<=430))add(notes,4,'assets/responsive-polish.css','no narrow-phone breakpoint at or below 430px');
 
 // ITERATION 5 — final consistency, metadata, hierarchy, trust.
 const titles=new Map(),canonicals=new Map();

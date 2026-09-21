@@ -17,6 +17,7 @@ function walk(dir){
 }
 walk(dist);
 
+// Five independent passes: copy, visual language, density, interaction, final consistency.
 const hard=[];
 const notes=[];
 const add=(bucket,pass,file,msg)=>bucket.push({pass,file,msg});

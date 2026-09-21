@@ -49,7 +49,12 @@ if(Array.isArray(recent)&&recent.length){
   if(recentTool)add({kind:'RECENT TOOL',title:text(recentTool.title)||'Recent calculator',detail:'The last calculator you opened on this device.',href:recentTool.path,action:'Use again'});
 }
 
-if(!items.length)return;
+if(!items.length){
+  add({kind:'START HERE',title:'Add an aircraft',detail:'Save cruise speed, fuel burn, and planning values on this device.',href:'/aircraft.html',action:'Add aircraft'});
+  add({kind:'START HERE',title:'Build a route',detail:'Create a route and navlog, then carry it into weather and procedures.',href:'/route-planner.html',action:'Plan flight'});
+  add({kind:'START HERE',title:'Pin a calculator',detail:'Open a calculator and pin it so it shows here next time.',href:'/tools.html',action:'Browse tools'});
+  const status=document.getElementById('pdHomeDeskStatus');if(status)status.textContent='Nothing saved yet';
+}
 host.replaceChildren();
 for(const item of items.slice(0,4)){
   const a=document.createElement('a');
@@ -64,6 +69,14 @@ for(const item of items.slice(0,4)){
   host.append(a);
 }
 section.hidden=false;
+const search=document.getElementById('pdHomeSearch');
+if(search&&!search.dataset.pdBound){
+  search.dataset.pdBound='1';
+  search.addEventListener('click',()=>{
+    const input=document.querySelector('.pd-site-search input');
+    if(input){input.focus();input.select?.();window.pdTrack?.('Home Search Focus',{})}
+  });
+}
 section.addEventListener('click',event=>{
   const a=event.target.closest('[data-pd-home-desk]');
   if(a)window.pdTrack?.('Home Desk Open',{item:a.dataset.pdHomeDesk||'unknown'});

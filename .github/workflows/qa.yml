@@ -51,6 +51,8 @@ jobs:
         run: node qa/page-surface-smoke.mjs
       - name: Run five-pass copy and design audit
         run: node qa/five-pass-site-audit.mjs
+      - name: Run second-round five-iteration deep audit
+        run: node qa/five-iteration-deep-audit.mjs
       - name: Check homepage card visibility and icons
         run: node scripts/check-home-card-regression.js
       - name: Run tool-first optimization checks

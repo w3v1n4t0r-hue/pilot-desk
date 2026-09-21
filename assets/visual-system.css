@@ -72,8 +72,7 @@ html{
 body{
   margin:0;
   color:var(--text);
-  background:
-    linear-gradient(180deg,#101012 0,var(--bg) 320px,var(--bg) 100%);
+  background:var(--bg);
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   font-size:16px;
   line-height:1.6;
@@ -81,17 +80,7 @@ body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
-body:before{
-  content:"";
-  position:fixed;
-  inset:0 0 auto;
-  height:220px;
-  pointer-events:none;
-  z-index:-1;
-  opacity:.42;
-  background:linear-gradient(110deg,transparent 5%,rgba(255,255,255,.025) 38%,transparent 72%);
-  animation:none;
-}
+body:before{display:none!important}
 body:after{display:none!important}
 ::selection{background:var(--silver2);color:#050505}
 
@@ -116,8 +105,8 @@ small,.fine{color:var(--muted2)!important}
   border-bottom:1px solid var(--line)!important;
   background:rgba(5,5,5,.96)!important;
   box-shadow:none!important;
-  backdrop-filter:blur(14px)!important;
-  -webkit-backdrop-filter:blur(14px)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
 }
 .brand{gap:11px!important;color:var(--text)!important}
 .brandmark{
@@ -706,9 +695,7 @@ html[data-pd-theme="light"]{
   --pd-text:var(--text);
   --pd-accent:var(--accent);
 }
-html[data-pd-theme="light"] body{
-  background:linear-gradient(180deg,#faf9f5 0,var(--bg) 320px,var(--bg) 100%)!important;
-}
+html[data-pd-theme="light"] body{background:var(--bg)!important}
 html[data-pd-theme="light"] .topbar{background:rgba(248,247,242,.96)!important}
 html[data-pd-theme="light"] .pd-nav-menu,
 html[data-pd-theme="light"] .pd-search-results,
@@ -833,10 +820,7 @@ button,.pd-btn,.calc-btn{
 }
 
 html,body{background-color:var(--bg)!important}
-body{
-  background:
-    linear-gradient(180deg,#0b0b0d 0,#050505 340px,#050505 100%)!important;
-}
+body{background:#050505!important}
 
 /* Eliminate residual soft / blue SaaS chrome. */
 .pd-account-card,.pd-account-promise,.pd-account-benefit,.pd-account-dashboard,
@@ -863,7 +847,7 @@ body{
 }
 .pd-progress-track{height:6px!important;background:#09090b!important}
 .pd-progress-fill{
-  background:linear-gradient(90deg,#66666d,#f0efe9)!important;
+  background:#d8d7d1!important;
   box-shadow:none!important;
 }
 .pd-flightcat-pill,.pd-chip,.pd-product-nav a,.pd-product-nav button,

@@ -55,7 +55,7 @@ check(bootstrap.includes('/assets/navigation-core.js')&&!bootstrap.includes('/as
 check(nav.includes('/assets/navigation-search.js')&&nav.includes('requestIdleCallback'),'navigation search/account hydration no longer lazy');
 check(styles.trim().endsWith('@import url("/assets/design-tokens.css");'),'design tokens must remain final shared CSS authority');
 check(tokens.includes('body:before{animation:none}'),'decorative persistent motion guard missing');
-check(sw.includes("CACHE='pilotdesk-v41'"),'service-worker version regressed from performance release');
+check(Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0)>=42,'service-worker version regressed from professional shell release');
 check(!bootstrap.includes('/assets/brand.js'),'runtime brand normalizer must stay retired from bootstrap');
 check(workflow.includes('node qa/page-surface-smoke.mjs'),'all-page surface audit missing from QA');
 check(workflow.includes('node qa/performance-budget.mjs'),'performance budget missing from QA');

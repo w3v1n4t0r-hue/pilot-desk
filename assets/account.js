@@ -63,7 +63,7 @@ async function renderAccountDashboard(profile){
  );
  if(home)cards.push({eyebrow:'HOME AIRPORT · ACCOUNT',title:home,copy:'Jump back to your home-airport context and current PilotDesk tools.',href:'/airport.html?id='+encodeURIComponent(home),cta:'Open '+home});
  const cloud=await cloudCounts(state.session?.user?.id||'');
- if(cloud.aircraft||cloud.flights)cards.push({eyebrow:'CLOUD WORKSPACE · ACCOUNT',title:(cloud.aircraft+cloud.flights)+' synced item'+((cloud.aircraft+cloud.flights)===1?'':'s'),copy:cloud.aircraft+' aircraft · '+cloud.flights+' saved flights stored with your account.',href:'/pricing.html',cta:'See sync plans'});
+ if(cloud.aircraft||cloud.flights)cards.push({eyebrow:'CLOUD BACKUP · ACCOUNT',title:(cloud.aircraft+cloud.flights)+' backed-up item'+((cloud.aircraft+cloud.flights)===1?'':'s'),copy:cloud.aircraft+' aircraft · '+cloud.flights+' saved flights stored with your account.',href:'/pricing.html',cta:'Manage Pro'});
  host.replaceChildren();
  for(const card of cards){
   const a=document.createElement('a');a.className='pd-account-dashboard-card';a.href=card.href;a.dataset.pdAccountAction=card.cta;
@@ -84,7 +84,7 @@ function renderBilling(s){
  const title=$('#pdAccountBillingTitle'),stateEl=$('#pdBillingState'),copy=$('#pdBillingCopy'),up=$('#pdUpgradePro'),manage=$('#pdManageBilling'),cloud=$('#pdCloudPlanState');
  if(title)title.innerHTML='<span data-pd-billing-plan>'+(school?'Flight School':paid?'Pro':'Free')+'</span> plan';
  if(stateEl)stateEl.textContent=paid?(sub.cancel_at_period_end?'Cancels at period end':'Active subscription'):(sub.status&&sub.status!=='inactive'?String(sub.status).replaceAll('_',' '):'No active subscription');
- if(copy)copy.textContent=paid?(sub.cancel_at_period_end?'Your paid access remains active through the current billing period. Use billing management to reactivate or review invoices.':'Your paid plan is verified by PilotDesk billing. Pro features stay attached to this account across devices.'):'Core PilotDesk tools remain free. Pro adds cloud planning continuity, deeper history, and an ad-free signed-in experience.';
+ if(copy)copy.textContent=paid?(sub.cancel_at_period_end?'Your paid access remains active through the current billing period. Use billing management to reactivate or review invoices.':'Your paid plan is verified by PilotDesk billing. Pro cloud backup and ad-free access stay attached to this account.'):'Core PilotDesk tools remain free. Pro adds aircraft and saved-flight cloud backup plus an ad-free signed-in experience.';
  up?.classList.toggle('pd-account-hidden',paid);manage?.classList.toggle('pd-account-hidden',!paid);
  if(cloud)cloud.textContent=paid?'Available on this account':'Pro required';
  const backup=$('#pdCloudBackupNow'),restore=$('#pdCloudRestoreNow');if(backup)backup.disabled=!paid;if(restore)restore.disabled=!paid;

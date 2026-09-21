@@ -644,15 +644,7 @@ footer p{font-size:12.5px!important}
   from{opacity:0;transform:translateY(-5px)}
   to{opacity:1;transform:translateY(0)}
 }
-@keyframes pd-title-in{
-  from{opacity:.01;transform:translateY(7px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.pd-ready .hero h1,
-.pd-ready .content-page>h1,
-.pd-ready .calc-hero h1{
-  animation:pd-title-in 320ms var(--pd-ease) both;
-}
+
 .pd-live-dot{
   display:inline-block;
   width:6px;
@@ -756,9 +748,6 @@ html[data-pd-theme="light"] button.primary{
     animation-iteration-count:1!important;
     transition-duration:.001ms!important;
   }
-  .pd-ready .hero h1,
-  .pd-ready .content-page>h1,
-  .pd-ready .calc-hero h1{animation:none!important}
 }
 
 

@@ -104,11 +104,18 @@ for(const file of files){
   // PASS 5 — final consistency: one clear page identity and complete indexable metadata.
   const h1=(html.match(/<h1\b/gi)||[]).length;
   if(h1>1) add(hard,5,file,`multiple H1 elements (${h1})`);
-  const robots=(html.match(/<meta\s+name=["']robots["'][^>]*content=["']([^"']+)["']/i)||[])[1]||'';
-  const indexable=/index\s*,\s*follow/i.test(robots);
+  const metaTags=[...html.matchAll(/<meta\b[^>]*>/gi)].map(m=>m[0]);
+  const metaContent=name=>{
+    const tag=metaTags.find(t=>new RegExp('\\bname=["\\']'+name+'["\\']','i').test(t));
+    return (tag?.match(/\\bcontent=["']([^"']*)["']/i)||[])[1]||'';
+  };
+  const robots=metaContent('robots');
+  const robotTokens=robots.toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
+  const indexable=robotTokens.includes('index')&&!robotTokens.includes('noindex');
+  const description=metaContent('description').trim();
   if(indexable&&!/rel=["']canonical["']/i.test(html)) add(hard,5,file,'indexable page missing canonical');
   if(indexable&&!/<title>[^<]{8,}<\/title>/i.test(html)) add(hard,5,file,'indexable page missing useful title');
-  if(indexable&&!/meta\s+name=["']description["'][^>]*content=["'][^"']{40,}["']/i.test(html)) add(hard,5,file,'indexable page missing useful meta description');
+  if(indexable&&description.length<40) add(hard,5,file,'indexable page missing useful meta description');
   if(/\bPilot Desk\b/i.test(text)) add(hard,5,file,'brand written as “Pilot Desk” instead of “PilotDesk”');
   passCounts[5]++;
 }

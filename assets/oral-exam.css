@@ -1,0 +1,31 @@
+/* PilotDesk oral-exam guide: compact, square, and built for repeated checkride review. */
+.pd-oral-guide{max-width:1180px}
+.pd-oral-track-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 24px}
+.pd-oral-track{display:block;border:1px solid var(--line);background:var(--panel);padding:14px;text-decoration:none;color:inherit}
+.pd-oral-track:hover,.pd-oral-track[aria-current="true"]{border-color:var(--text)}
+.pd-oral-track b,.pd-oral-track span,.pd-oral-track small{display:block}
+.pd-oral-track span{margin-top:4px;color:var(--muted)}
+.pd-oral-track small{margin-top:8px;color:var(--muted2)}
+.pd-oral-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pd-oral-toolbar h2{margin:3px 0 0}
+.pd-oral-progress{text-align:right;min-width:120px}
+.pd-oral-progress b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.pd-oral-progress span{display:block;color:var(--muted2);font-size:12px}
+.pd-oral-list{display:grid;gap:8px;margin:16px 0 24px}
+.pd-oral-item{border:1px solid var(--line);background:var(--panel);padding:0}
+.pd-oral-item summary{cursor:pointer;list-style:none;padding:14px 44px 14px 14px;position:relative}
+.pd-oral-item summary::-webkit-details-marker{display:none}
+.pd-oral-item summary:after{content:"+";position:absolute;right:15px;top:12px;color:var(--muted);font-size:20px}
+.pd-oral-item[open] summary:after{content:"−"}
+.pd-oral-item summary b,.pd-oral-item summary span{display:block}
+.pd-oral-item summary span{margin-top:4px;color:var(--muted);font-size:13px}
+.pd-oral-body{padding:0 14px 14px;border-top:1px solid var(--line)}
+.pd-oral-body h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px;color:var(--muted2)}
+.pd-oral-body p{margin:0 0 10px}
+.pd-oral-source{font-size:13px;color:var(--muted)}
+.pd-oral-review{display:flex;align-items:center;gap:8px;margin-top:12px}
+.pd-oral-review input{width:18px;height:18px}
+.pd-oral-review label{margin:0}
+.pd-oral-links{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 22px}
+@media(max-width:760px){.pd-oral-track-grid{grid-template-columns:1fr 1fr}.pd-oral-toolbar{align-items:flex-start;flex-direction:column}.pd-oral-progress{text-align:left}}
+@media(max-width:460px){.pd-oral-track-grid{grid-template-columns:1fr}}

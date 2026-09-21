@@ -2075,3 +2075,22 @@ Every user-facing page should survive five separate reviews before release:
 5. **Final consistency** — confirm PilotDesk naming, heading structure, metadata, shared navigation, safety language, and the black/silver visual system.
 
 The repository QA should enforce the objective parts of these passes. Subjective review still matters; passing a regex is not a substitute for reading the page.
+
+
+---
+
+# Professional Application Shell
+
+PilotDesk application routes must read as working software, not landing pages.
+
+For Tools, Plan, Weather, Learn, Aircraft, Saved Flights, Account, Pricing, and calculator/workspace routes:
+
+- Use compact page headers. Working screens should not use 60–80px marketing headlines.
+- Prefer flat panels, tables, lists, and divided rows over a card for every group.
+- Use clipped/chamfered geometry selectively. It is an accent for primary controls or important surfaces, not a default on every container.
+- Do not lift cards or buttons on hover. Use border, text, and background state changes.
+- Use tabular/monospaced numerals for aviation values, results, route legs, weather metrics, and account statistics.
+- Keep desktop controls compact, but restore 44px touch targets on narrow screens.
+- Do not use blur, atmospheric page gradients, title-reveal animation, metallic shimmer, pulsing status dots, or decorative background motion.
+- Marketing/editorial pages may use more whitespace than application routes, but they must share the same typography, controls, color, and navigation language.
+- The professional application shell belongs in the canonical shared visual system. Do not add another global override stylesheet to implement it.

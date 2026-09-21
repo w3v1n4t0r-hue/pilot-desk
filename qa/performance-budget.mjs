@@ -53,7 +53,7 @@ check(bootstrap.includes("path==='/aircraft.html'")&&bootstrap.includes('/assets
 for(const retired of ['professional-polish.css','tool-first-layout.js','product-polish.js','sticky-app.js','avionics-command.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired visible-shell layer returned: ${retired}`);
 check(bootstrap.includes('requestIdleCallback')&&bootstrap.includes('timeout:1500'),'service-worker registration should happen after load/idle without a 12-second delay');
 const sw=fs.readFileSync('sw.js','utf8');
-check(sw.includes("CACHE='pilotdesk-v41'"),'performance release must use the current service-worker cache version');
+check(Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0)>=42,'performance release must use the current service-worker cache version');
 for(const retired of ['home-command-center.js','sticky-app.js','growth-suite.js','avionics-command.js','context-widget.js'])check(!sw.includes(`'/assets/${retired}'`),`service-worker precache must not fetch retired runtime: ${retired}`);
 check(sw.includes("'/assets/navigation-core.js'")&&!sw.includes("'/assets/navigation-data.js'"),'offline calculator shell should cache the light navigation core, not the full navigation payload');
 

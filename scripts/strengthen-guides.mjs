@@ -121,7 +121,7 @@ const corePages={
     links:'<a href="/guides/flows-vs-checklists.html">Flows vs. checklists</a> · <a href="/flight-training.html">Flight-training tools</a> · <a href="/guides.html">Aviation guides</a>'
   },
   'flight-training.html':{
-    heading:'Connect PilotDesk tools to a complete lesson',
+    heading:'Connect PilotDesk tools to a complete lesson',subject:'flight training',
     intro:'Flight training becomes more useful when calculations, weather, aircraft knowledge and procedures are connected instead of studied as separate boxes. Use PilotDesk to set up a realistic scenario, make a prediction, work the problem, and then explain why the result matters to the flight. That sequence supports both practical planning and oral-exam preparation.',
     checks:['Start with a specific aircraft, route or airport so the exercise has context.','Use current approved sources when the exercise crosses from study into an actual flight.','Explain the reason behind each formula or checklist item rather than memorizing the output.','Finish with a reasonableness check and identify what change in conditions would alter the decision.'],
     training:'A single cross-country scenario can cover weather decoding, airport review, wind correction, groundspeed, time, fuel, density altitude, weight and balance, procedures and checklist practice. Reusing the same scenario across several tools helps show how aviation knowledge fits together and exposes inconsistencies between assumptions before they become habits.',

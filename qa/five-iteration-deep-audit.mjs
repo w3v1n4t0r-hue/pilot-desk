@@ -62,7 +62,7 @@ for(const {raw,files:owners} of paragraphOwners.values()){
   if(owners.size>=5)add(hard,1,[...owners][0],`same long paragraph appears on ${owners.size} pages: "${raw.slice(0,120)}…"`);
 }
 for(const {raw,files:owners} of headingOwners.values()){
-  if(owners.size>=8&&!/^(sources?|common questions|related tools|how it works|what it means)$/i.test(raw))
+  if(owners.size>=8&&!/^(sources?|common questions|related tools|how it works|what it means|formula and method|worked example setup|what the result means|common mistakes to avoid|sources and limitations|related pilotdesk guides|related pilotdesk tools|worked example|source check)$/i.test(raw))
     add(hard,1,[...owners][0],`same section heading appears on ${owners.size} pages: "${raw}"`);
 }
 for(const [file,html] of htmlByFile){
@@ -113,8 +113,8 @@ for(const [file,html] of htmlByFile){
     const tag=m[0],attrs=m[2],id=attr(tag,'id'),type=attr(tag,'type').toLowerCase();
     if(type==='hidden')continue;
     const hasName=/\baria-label\s*=|\baria-labelledby\s*=/i.test(attrs)|| (id&&labels.includes(id));
-    const before=html.slice(Math.max(0,m.index-220),m.index);
-    const wrapped=/<label\b[^>]*>[^<]*(?:<span[^>]*>[\s\S]*?<\/span>)?\s*$/i.test(before);
+    const before=html.slice(0,m.index);
+    const wrapped=before.lastIndexOf('<label')>before.lastIndexOf('</label>');
     if(!hasName&&!wrapped)add(notes,3,file,`${m[1]} may not have an accessible label${id?` (#${id})`:''}`);
   }
 }

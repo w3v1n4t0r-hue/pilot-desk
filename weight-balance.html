@@ -74,7 +74,7 @@
           </div>
         </div>
         <div class="wb-cabin-meta">
-          <label><span>Basic empty weight</span><div><input id="wbVisualBEWWeight" type="number" step="any" inputmode="decimal" placeholder="lb"><input id="wbVisualBEWArm" type="number" step="any" inputmode="decimal" placeholder="arm in"></div></label>
+          <label><span>Basic empty weight</span><div><input id="wbVisualBEWWeight" type="number" aria-label="Basic empty weight in pounds" step="any" inputmode="decimal" placeholder="lb"><input id="wbVisualBEWArm" type="number" aria-label="Basic empty weight arm in inches" step="any" inputmode="decimal" placeholder="arm in"></div></label>
           <p class="fine">Loading an aircraft profile can prefill approved station arms you previously saved. Always verify them against the current aircraft records.</p>
         </div>
         <div class="wb-aircraft-stage" id="wbAircraftStage">
@@ -119,7 +119,7 @@
       <section class="side-card">
         <h3>Optional entered envelope</h3>
         <p>Paste boundary points from the applicable approved CG envelope in order around the perimeter. Format each line as <b>CG inches, weight pounds</b>.</p>
-        <textarea id="wbEnvelope" class="wb-envelope-input" placeholder="82.0, 1950&#10;86.0, 2550&#10;93.0, 2550&#10;95.0, 1950"></textarea>
+        <textarea id="wbEnvelope" class="wb-envelope-input" aria-label="CG envelope boundary points" placeholder="82.0, 1950&#10;86.0, 2550&#10;93.0, 2550&#10;95.0, 1950"></textarea>
         <button class="utility-btn wb-full" id="wbApplyEnvelope" type="button">Apply entered envelope</button>
         <canvas id="wbChart" width="560" height="390" aria-label="Weight and balance envelope graph" role="img"></canvas>
         <p class="fine" id="wbEnvelopeHint">No envelope is loaded. PilotDesk will calculate CG without judging limits.</p>
@@ -139,7 +139,7 @@
   </section>
 </main>
 
-<dialog id="wbScenarioDialog" class="wb-dialog"><form method="dialog"><div class="wb-dialog-head"><h2>Saved W&amp;B scenarios</h2><button class="utility-btn" value="cancel" aria-label="Close">Close</button></div></form><div id="wbScenarioList"></div><p class="fine">Saved only in this browser. Do not use local storage as an aircraft record or required operational record.</p></dialog>
+<dialog id="wbScenarioDialog" class="wb-dialog"><form method="dialog"><div class="wb-dialog-head"><h2>Saved W&amp;B scenarios</h2><button class="utility-btn" type="submit" value="cancel" aria-label="Close">Close</button></div></form><div id="wbScenarioList"></div><p class="fine">Saved only in this browser. Do not use local storage as an aircraft record or required operational record.</p></dialog>
 
 <footer><div><b>PilotDesk</b><p>Aviation calculators for planning and training.</p></div><div class="footer-links"><a href="/about.html">About</a><a href="/legal/privacy.html">Privacy</a><a href="/legal/terms.html">Terms</a><a href="/legal/disclaimer.html">Disclaimer</a><a href="/sources.html">Sources</a></div><p class="fine">Planning aid only. Verify operational numbers with current approved sources.</p></footer>
 </body>

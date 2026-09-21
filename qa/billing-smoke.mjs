@@ -16,7 +16,7 @@ const migration=read('supabase/migrations/20260919151254_add_secure_billing_subs
 must(pricing.includes('data-pd-checkout-plan="pro"'),'Pro checkout CTA is missing');
 must(pricing.includes('pdPricingBillingStatus'),'Pricing billing status is missing');
 must(account.includes('pdAccountBilling'),'Account billing panel is missing');
-must(account.includes('PRO · CLOUD BACKUP BETA'),'Cloud backup is not labeled as Pro');
+must(account.includes('PRO · CLOUD BACKUP'),'Cloud backup is not labeled as Pro');
 must(accountJs.includes('paidAccess()'),'Account paid-access gate is missing');
 must(accountJs.includes("PilotDeskBilling.checkout('pro')"),'Account upgrade action is missing');
 must(billing.includes("from('billing_subscriptions')"),'Client is not reading server subscription state');

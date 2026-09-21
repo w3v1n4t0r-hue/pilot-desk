@@ -12,7 +12,7 @@ const ratingPages=[
   'training/cfi.html'
 ];
 
-for(const needle of ['What are you studying for today?','Written prep','Oral exam prep','ACS & FAR reference','Pick the rating you are actually working on.']){
+for(const needle of ['What are you studying for today?','Written prep','Oral exam prep','ACS & FAR reference','id="pdTrainingRatingsTitle"']){
   check(hub.includes(needle),`Flight-training hub missing goal-first element: ${needle}`);
 }
 check(!hub.includes('style="margin:22px 0"'),'Old inline training-grid spacing returned');

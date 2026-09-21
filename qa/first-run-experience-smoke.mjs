@@ -3,25 +3,29 @@ import fs from 'node:fs';
 const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 const home=fs.readFileSync('src/pages/index.astro','utf8');
-const exp=fs.readFileSync('assets/experience.js','utf8');
-const css=fs.readFileSync('assets/experience.css','utf8');
+const desk=fs.readFileSync('assets/home-desk.js','utf8');
+const css=fs.readFileSync('assets/home-desk.css','utf8');
+const sw=fs.readFileSync('sw.js','utf8');
 
-for(const goal of ['plan','calculate','study','teach']){
-  check(home.includes('data-pd-first-goal="'+goal+'"'),'Homepage missing first-run goal: '+goal);
+check(home.includes('id="pdHomeDesk"'),'Homepage return-to-work desk is missing');
+check(home.includes('id="pdHomeDeskItems"'),'Homepage desk item host is missing');
+check(home.includes('/assets/home-desk.js'),'Homepage does not load its desk runtime');
+check(!home.includes('pd-first-run-grid'),'Duplicate first-run task grid returned');
+
+for(const key of ['pd-aircraft','pd-aircraft-active','pd-saved-flights','pd-favorites','pd-recent']){
+  check(desk.includes(key),'Home desk does not read '+key);
 }
-check(home.includes('What are you working on?'),'Homepage first-run question missing');
-check(home.includes('pdFirstRunSelected'),'Selected-goal shortcut missing');
-check(exp.includes("const key='pd-first-run-goal'"),'First-run choice is not persisted locally');
-check(exp.includes("pdTrack?.('First Run Goal'"),'First-run goal analytics missing');
-check(exp.includes("pdTrack?.('First Run Continue'"),'First-run continue analytics missing');
-check(exp.includes("pdTrack?.('First Run Goal Reset'"),'First-run reset analytics missing');
-check(exp.includes('firstRun();resume();'),'First-run initialization order missing');
-check(css.includes('.pd-first-run-grid'),'First-run layout styling missing');
-check(css.includes('@media(max-width:560px)'),'First-run mobile guard missing');
+for(const label of ['ACTIVE AIRCRAFT','LATEST FLIGHT','PINNED TOOL','RECENT TOOL']){
+  check(desk.includes(label),'Home desk missing return action '+label);
+}
+check(desk.includes("window.pdTrack?.('Home Desk Open'"),'Home desk analytics missing');
+check(css.includes('.pd-home-desk-grid'),'Home desk layout styling missing');
+check(css.includes('scroll-snap-type:x proximity'),'Home desk mobile horizontal flow missing');
+check(sw.includes('/assets/home-desk.js')&&sw.includes('/assets/home-desk.css'),'Home desk is not available in the offline shell');
 
 if(failures.length){
-  console.error('First-run experience checks failed with '+failures.length+' issue(s):');
+  console.error('Homepage return-to-work checks failed with '+failures.length+' issue(s):');
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('First-run experience checks passed: four task paths, persistent shortcut, reset, analytics, and mobile layout verified.');
+console.log('Homepage return-to-work checks passed: active aircraft, saved flight, pinned tool and recent tool paths are wired with mobile and offline support.');

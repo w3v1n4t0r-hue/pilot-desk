@@ -74,9 +74,9 @@ const featuredSearch = [
 ];
 
 export const homeActions = [
-  ['/route-planner.html', 'Plan a Flight', 'Routes, airports, procedures, aircraft, and saved flights.', 'M5 18h22M16 4v24M9 18l3-8h8l3 8M11 24h10'],
-  ['/tools.html', 'Use a Calculator', 'Performance, W&B, fuel, E6B, navigation, and more.', 'M7 4h18v24H7zM10 9h12M11 15h2m3 0h2m3 0h1M11 20h2m3 0h2m3 0h1M11 24h2m3 0h6'],
-  ['/written-prep.html', 'Study for a Written', 'PPL, Instrument, CPL, CFI, CFII, and ATP practice.', 'M5 7c4-2 8-1 11 2v18c-3-3-7-4-11-2V7Zm22 0c-4-2-8-1-11 2v18c3-3 7-4 11-2V7Z'],
+  ['/route-planner.html', 'Plan a Flight', 'Route, weather, procedures, and aircraft.', 'M5 18h22M16 4v24M9 18l3-8h8l3 8M11 24h10'],
+  ['/tools.html', 'Use a Calculator', 'Flight math, performance, fuel, W&B, and E6B.', 'M7 4h18v24H7zM10 9h12M11 15h2m3 0h2m3 0h1M11 20h2m3 0h2m3 0h1M11 24h2m3 0h6'],
+  ['/written-prep.html', 'Study for a Written', 'Written prep, weak areas, FAA standards, and review.', 'M5 7c4-2 8-1 11 2v18c-3-3-7-4-11-2V7Zm22 0c-4-2-8-1-11 2v18c3-3 7-4 11-2V7Z'],
   ['/daily/', 'Play Daily', 'Three aviation questions. New challenge every day.', 'M7 25V17h4v8M14 25V11h4v14M21 25V6h4v19']
 ];
 

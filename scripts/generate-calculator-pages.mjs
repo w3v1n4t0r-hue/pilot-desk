@@ -183,8 +183,8 @@ const seoH1BySlug={
 
 function genericFaq(title,category){return [
   [`What does the ${title} calculator do?`,`It uses the entered aviation values to solve the ${title.toLowerCase()} relationship and displays the main outputs immediately for study, planning and cross-checking.`],
-  ['What inputs should I use?',`Use values from the current source that applies to the problem. Keep units and reference systems consistent, then verify that each input describes the quantity the ${category.toLowerCase()} formula expects.`],
-  ['Can I use the result as the only source for a flight?','No. PilotDesk is a supplemental calculation and training aid. Verify operational decisions with current approved aircraft data, official weather, charts, procedures and applicable regulations.']
+  ['What inputs should I use?',`For ${title}, use values from the current source that applies to the problem. Keep the units and reference systems consistent with the ${category.toLowerCase()} relationship being solved.`],
+  ['Can I use the result as the only source for a flight?',`No. Treat the ${title} result as a calculation and training cross-check. Operational decisions still require the current aircraft data, weather, charts, procedures and regulations that apply.`]
 ]}
 
 for(const [slug,key,title,desc,fields,results] of calcs){
@@ -223,22 +223,22 @@ for(const [slug,key,title,desc,fields,results] of calcs){
 
   const educational=`<div class="info-card" data-pd-seo-depth="1">
     <h2>How to use the ${esc(title)} calculator</h2>
-    <p>${esc(useText[category])}</p>
+    <p><strong>${esc(title)}:</strong> ${esc(useText[category])}</p>
     <p>This page is built around <strong>${esc(fieldNames.join(', '))}</strong>. Enter the values, calculate, and then check whether <strong>${esc(resultNames.join(', '))}</strong> are reasonable before carrying them into another planning step.</p>
     <h3>Inputs</h3><ul>${inputList}</ul>
     <h2>Formula and method</h2>
     <p>${esc(formula)}</p>
-    <p>The calculator keeps the arithmetic visible so it can be used as more than a black-box answer. If you are studying for an oral exam or reviewing a navlog, work the relationship once by hand and use PilotDesk as the cross-check.</p>
+    <p>For ${esc(title)}, work the relationship once by hand and compare it with the displayed result. That makes the calculator useful for checking the arithmetic without turning it into a black-box answer.</p>
     <h2>Worked example setup</h2>
     <p>The default example uses ${esc(defaults)}. Calculate the example first, then change one input at a time. Watching which result changes—and by how much—is a quick way to understand the relationship instead of memorizing a single answer.</p>
     <h2>What the result means</h2>
-    <p>${esc(meaningText[category])}</p>
+    <p><strong>${esc(resultNames[0]||title)}:</strong> ${esc(meaningText[category])}</p>
     <ul>${resultList}</ul>
     <h2>Common mistakes to avoid</h2>
-    <p>${esc(mistakeText[category])}</p>
-    <p>Do a reasonableness check after every calculation. A mathematically valid result can still be unusable if the wrong source value, unit, reference or aircraft data was entered.</p>
+    <p><strong>${esc(title)} check:</strong> ${esc(mistakeText[category])}</p>
+    <p>Before using the ${esc(title)} result elsewhere, compare ${esc(resultNames[0]||'the primary output')} with a rough estimate and recheck the source and units for ${esc(fieldNames[0]||'the first input')}.</p>
     <h2>Sources and limitations</h2>
-    <p>PilotDesk uses standard aviation math and training relationships. General background is cross-checked against FAA pilot-training material, while aircraft-specific performance, limitations and procedures must come from the current approved source for that aircraft. See <a href="/sources.html">PilotDesk sources and methods</a>.</p>
+    <p>The ${esc(title)} calculation uses the aviation relationship shown above. Aircraft-specific limitations, performance and procedures still come from the current approved source for the airplane or operation. See <a href="/sources.html">PilotDesk sources and methods</a>.</p>
   </div>
   <section class="info-card" data-pd-faq><h2>${esc(title)} questions</h2>${faqHtml}<p class="fine">PilotDesk is a supplemental planning and training aid, not an FAA-approved flight-planning source.</p></section>`;
 

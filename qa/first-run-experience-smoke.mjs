@@ -4,7 +4,7 @@ const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 const home=fs.readFileSync('src/pages/index.astro','utf8');
 const desk=fs.readFileSync('assets/home-desk.js','utf8');
-const css=fs.readFileSync('assets/experience.css','utf8');
+const css=fs.readFileSync('assets/home-desk.css','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 
 check(home.includes('id="pdHomeDesk"'),'Homepage return-to-work desk is missing');
@@ -21,7 +21,7 @@ for(const label of ['ACTIVE AIRCRAFT','LATEST FLIGHT','PINNED TOOL','RECENT TOOL
 check(desk.includes("window.pdTrack?.('Home Desk Open'"),'Home desk analytics missing');
 check(css.includes('.pd-home-desk-grid'),'Home desk layout styling missing');
 check(css.includes('scroll-snap-type:x proximity'),'Home desk mobile horizontal flow missing');
-check(sw.includes('/assets/home-desk.js'),'Home desk is not available in the offline shell');
+check(sw.includes('/assets/home-desk.js')&&sw.includes('/assets/home-desk.css'),'Home desk is not available in the offline shell');
 
 if(failures.length){
   console.error('Homepage return-to-work checks failed with '+failures.length+' issue(s):');

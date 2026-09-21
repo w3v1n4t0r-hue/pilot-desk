@@ -196,10 +196,10 @@ PilotDesk should use fewer obvious cards.
 
 Not every section needs:
 
-- rounded corners
 - background fill
 - border
 - shadow
+- a separate container
 
 Use surfaces only when they communicate grouping or interaction.
 
@@ -211,15 +211,15 @@ Prefer separating content through:
 - subtle dividers
 - background changes
 
-When cards are appropriate:
+When a panel is appropriate:
 
-- use restrained radius
-- use subtle border
-- use little or no shadow
-- use slightly brighter background than the page
+- use square or clipped/chamfered geometry
+- use a subtle border
+- use no shadow for ordinary in-flow content
+- use a slightly brighter neutral background than the page when grouping needs it
 - use hover feedback only when interactive
 
-Avoid excessive "floating card" design.
+Do not make ordinary content look like floating SaaS cards.
 
 ---
 
@@ -247,73 +247,67 @@ Borders should usually be noticed subconsciously.
 
 # 7. Border Radius
 
-PilotDesk should not become excessively rounded.
+PilotDesk uses hard-edged geometry.
 
-Recommended hierarchy:
+Default radius for product chrome:
 
 ```text
-Small control:        6–8px
-Button/input:         8–10px
-Standard panel:       10–12px
-Large modal/panel:    12–16px
+Button/input:         0–2px
+Standard panel:       0px
+Card:                 0px
+Large panel/modal:    0–3px
 ```
 
-Avoid 20–30px radii on ordinary cards.
+Prefer clipped or chamfered corners when a surface needs a stronger PilotDesk identity.
 
-Avoid pill shapes unless:
+Rounded and pill shapes are reserved for cases where the shape carries meaning or improves compact interaction:
 
-- status chips
+- small status indicators
 - filters
-- compact segmented controls
-- very small metadata
+- segmented controls
+- tiny metadata chips
+
+Do not use rounded rectangles as the default visual language.
 
 ---
 
 # 8. Shadows
 
-Shadows must be extremely restrained.
+Ordinary in-flow panels and cards should not use shadows.
 
-Most panels should not require a visible shadow.
-
-Use shadows primarily for:
+Use a shadow only when the interface genuinely needs to communicate elevation, such as:
 
 - dropdowns
 - menus
 - modals
-- elevated overlays
-- temporarily floating UI
+- temporary overlays
 
-Preferred shadow character:
+When an elevated overlay needs one, keep it dark, broad, and low-opacity.
 
-- broad
-- dark
-- soft
-- low opacity
-
-Never make every card appear to float.
+Do not use shadows to make static cards look more important. Hierarchy should come from typography, spacing, borders, and contrast.
 
 ---
 
 # 9. Gradients
 
-Gradients should be rare.
+Do not use gradients as general page, hero, panel, card, or button decoration.
 
-Allowed:
+Gradients are acceptable only when they communicate something functional or material:
 
-- nearly invisible surface depth
-- subtle metallic highlight
-- extremely restrained hero background
 - data visualization
+- a loading/progress sweep
+- a very restrained metallic detail that cannot be expressed more clearly with a flat tone
 
-Avoid:
+Do not use:
 
-- purple gradients
-- giant blue gradients
+- purple or indigo gradients
+- blue atmospheric gradients
 - glowing radial blobs
-- gradients behind every card
-- gradients used as decoration without purpose
+- gradient card backgrounds
+- gradient CTA buttons
+- decorative gradient meshes
 
-If a gradient becomes the first thing someone notices, it is probably too strong.
+Default to a flat neutral surface and a precise border.
 
 ---
 

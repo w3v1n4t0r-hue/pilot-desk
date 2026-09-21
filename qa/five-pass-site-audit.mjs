@@ -122,9 +122,14 @@ const sharedCss=[
 ].filter(fs.existsSync).map(p=>[p,fs.readFileSync(p,'utf8')]);
 
 const consistency=sharedCss.find(([p])=>p.endsWith('consistency.css'))?.[1]||'';
+const experience=sharedCss.find(([p])=>p.endsWith('experience.css'))?.[1]||'';
 if(/--pd-panel-radius\s*:\s*(?:[4-9]|\d{2,})px/i.test(consistency)) add(hard,2,'assets/consistency.css','shared panel radius conflicts with hard-square PilotDesk geometry');
 if(/\.topbar \.brandmark[\s\S]{0,300}border-radius\s*:\s*(?:[4-9]|\d{2,})px/i.test(consistency)) add(hard,2,'assets/consistency.css','brandmark radius conflicts with clipped-square logo system');
 if(/info-card:hover[\s\S]{0,260}box-shadow\s*:\s*(?!none)/i.test(consistency)) add(hard,2,'assets/consistency.css','shared non-interactive cards still add decorative hover shadow');
+if(/radial-gradient/i.test(experience)) add(hard,2,'assets/experience.css','legacy decorative radial gradient remains');
+if(/backdrop-filter\s*:\s*blur/i.test(experience)) add(hard,2,'assets/experience.css','legacy glass blur remains');
+if(/linear-gradient\(145deg/i.test(experience)) add(hard,2,'assets/experience.css','legacy gradient card surface remains');
+if(/@keyframes\s+pd-glow/i.test(experience)) add(hard,2,'assets/experience.css','decorative glow animation remains');
 
 console.log('Five-pass PilotDesk audit');
 console.log(`Pages reviewed: ${files.length}`);

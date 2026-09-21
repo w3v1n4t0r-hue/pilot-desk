@@ -21,16 +21,7 @@
   overflow:hidden;
 }
 
-.pd-home-hero:before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:
-    linear-gradient(90deg,transparent 0,transparent calc(50% - 1px),rgba(255,255,255,.025) 50%,transparent calc(50% + 1px)),
-    repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 92px);
-  mask-image:linear-gradient(to bottom,#000,transparent 78%);
-}
+.pd-home-hero:before{display:none}
 
 .pd-home-hero-inner{
   position:relative;

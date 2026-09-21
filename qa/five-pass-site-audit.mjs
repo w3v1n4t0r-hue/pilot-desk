@@ -110,7 +110,8 @@ for(const file of files){
       const metaName=(t.match(/\bname=["']([^"']+)["']/i)||[])[1]||'';
       return metaName.toLowerCase()===name.toLowerCase();
     });
-    return (tag?.match(/\bcontent=["']([^"']*)["']/i)||[])[1]||'';
+    const contentMatch=tag?.match(/\bcontent=(["'])(.*?)\1/i);
+    return contentMatch?.[2]||'';
   };
   const robots=metaContent('robots');
   const robotTokens=robots.toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);

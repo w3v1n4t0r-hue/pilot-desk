@@ -27,11 +27,15 @@ if(!pcs.includes('function interp')||!pcs.includes('xCal')||!pcs.includes('yCal'
 
 const rp=fs.readFileSync('route-planner.html','utf8');
 const rpjs=fs.readFileSync('assets/route-planner.js','utf8');
+const plannerPro=fs.readFileSync('assets/planner-pro.js','utf8');
 if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
 for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!rpjs.includes(s))throw new Error(`Route optimization/integration missing ${s}`);
 const efb=fs.readFileSync('assets/efb-layers.js','utf8');
 for(const s of ['Auto by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
 if(!rp.includes('/assets/efb-layers.js'))throw new Error('Route planner does not load the EFB layer controller');
+if(!plannerPro.includes("localStorage.getItem('pd-aircraft-active')")||!plannerPro.includes("!params.get('flight')&&!hasSavedRoute"))throw new Error('New route plans no longer inherit the active aircraft safely');
+if(/border-radius:(?:9|10)px/.test(plannerPro))throw new Error('Planner profile/summary panels regressed to rounded cards');
+if(!rp.includes('Before you save the flight')||rp.includes('Turn a route line into a usable navlog'))throw new Error('Route planner task copy regressed to generic filler');
 const layerApi=fs.readFileSync('api/aviation-layers.js','utf8');
 const faaMapApi=fs.readFileSync('api/faa-map-features.js','utf8');
 const tfrApi=fs.readFileSync('api/tfrs.js','utf8');

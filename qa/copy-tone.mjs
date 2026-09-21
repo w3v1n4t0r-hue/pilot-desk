@@ -49,6 +49,18 @@ const banned=[
   [/\bparameterized\b/i,'parameterized']
 ];
 const dynamicBanned=[
+  [/\bseamless(?:ly)?\b/i,'seamless'],
+  [/\bleverage(?:s|d|ing)?\b/i,'leverage'],
+  [/\belevate(?:s|d|ing)?\b/i,'elevate'],
+  [/\bgame[- ]chang(?:er|ing)\b/i,'game-changing'],
+  [/\brevolutioniz(?:e|es|ed|ing)\b/i,'revolutionize'],
+  [/\bdelve(?:s|d|ing)?\b/i,'delve'],
+  [/\becosystem\b/i,'ecosystem'],
+  [/\bcornerstone\b/i,'cornerstone'],
+  [/\brealm\b/i,'realm'],
+  [/\btapestry\b/i,'tapestry'],
+  [/\bspearhead(?:s|ed|ing)?\b/i,'spearhead'],
+  [/\bunleash(?:es|ed|ing)?\b/i,'unleash'],
   [/\bdiagnostic(?:s)?\b/i,'diagnostic'],
   [/\bknowledge map\b/i,'knowledge map'],
   [/\bskill map\b/i,'skill map'],

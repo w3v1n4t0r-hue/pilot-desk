@@ -22,6 +22,7 @@ for (const rel of [
   'assets/styles.css',
   'assets/global-nav.js',
   'assets/home-desk.js',
+  'assets/home-desk.css',
   'assets/navigation-data.js',
   'sw.js',
   'site.webmanifest',

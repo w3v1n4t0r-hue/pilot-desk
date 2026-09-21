@@ -101,7 +101,7 @@ async function backupDeviceToCloud(){
   const delA=await state.client.from('aircraft_profiles').delete().eq('user_id',userId);if(delA.error)throw delA.error;
   const delF=await state.client.from('saved_flights').delete().eq('user_id',userId);if(delF.error)throw delF.error;
   if(aircraft.length){
-   const rows=aircraft.map((x,i)=>({user_id:userId,name:String(x.name||x.makeModel||x.make_model||('Aircraft '+(i+1))).slice(0,80),make_model:String(x.makeModel||x.make_model||'').slice(0,120)||null,tail_number:String(x.tailNumber||x.tail_number||'').slice(0,20)||null,data:{...x,_pilotdesk_local_id:x.id||null}}));
+   const rows=aircraft.map((x,i)=>({user_id:userId,name:String(x.name||x.makeModel||x.make_model||('Aircraft '+(i+1))).slice(0,80),make_model:String(x.makeModel||x.make_model||x.type||'').slice(0,120)||null,tail_number:String(x.tailNumber||x.tail_number||'').slice(0,20)||null,data:{...x,_pilotdesk_local_id:x.id||null}}));
    const ins=await state.client.from('aircraft_profiles').insert(rows);if(ins.error)throw ins.error;
   }
   if(flights.length){

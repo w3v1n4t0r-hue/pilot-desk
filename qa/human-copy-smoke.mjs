@@ -11,6 +11,8 @@ const curated=[
   'training/commercial-pilot.html',
   'training/multiengine.html',
   'training/cfi.html',
+  'training/cfii.html',
+  'learn/oral-exam/index.html',
   'guides/glide-range.html',
   'guides/how-far-can-an-airplane-glide.html',
   'guides/best-glide-speed-vs-glide-ratio.html',
@@ -71,7 +73,7 @@ for(const value of ['For instructors','/for-flight-schools.html','/training/priv
   ok(training.includes(value),`flight-training.html: missing ${value}`);
 }
 
-for(const file of ['training/private-pilot.html','training/instrument-rating.html','training/commercial-pilot.html','training/multiengine.html','training/cfi.html']){
+for(const file of ['training/private-pilot.html','training/instrument-rating.html','training/commercial-pilot.html','training/multiengine.html','training/cfi.html','training/cfii.html']){
   const html=fs.readFileSync(file,'utf8');
   ok(/ACS|Airman Certification Standards/i.test(html),`${file}: ACS context missing`);
   ok(/FAA/i.test(html),`${file}: FAA source context missing`);

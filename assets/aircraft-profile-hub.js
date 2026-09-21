@@ -31,7 +31,7 @@ function render(){
  empty.hidden=true;host.hidden=false;host.replaceChildren();
  const cov=coverage(p),sets=training().filter(x=>x.aircraftId===p.id);
  const head=document.createElement('div');head.className='pd-aircraft-active-head';
- const ident=document.createElement('div');ident.append(text('small','ACTIVE AIRCRAFT','eyebrow'),text('h2',p.name||'Aircraft'),text('p',[p.type,p.homeAirport].filter(Boolean).join(' · ')||'Aircraft profile'));
+ const ident=document.createElement('div');ident.append(text('small','ACTIVE AIRCRAFT','eyebrow'),text('h2',p.name||'Aircraft'),text('p',[p.tailNumber,p.type,p.homeAirport].filter(Boolean).join(' · ')||'Aircraft profile'));
  const controls=document.createElement('div');controls.className='pd-aircraft-active-controls';
  const score=document.createElement('div');score.className='pd-aircraft-coverage';score.append(text('b',cov.count+'/6'),text('span','profile fields covered'));controls.append(score);
  const all=profiles();if(all.length>1){const select=document.createElement('select');select.setAttribute('aria-label','Active aircraft');for(const x of all){const o=document.createElement('option');o.value=x.id;o.textContent=x.name||x.type||'Aircraft';o.selected=x.id===p.id;select.append(o)}select.addEventListener('change',()=>{localStorage.setItem('pd-aircraft-active',select.value);document.dispatchEvent(new CustomEvent('pilotdesk:aircraft-changed',{detail:{id:select.value,action:'active'}}));window.pdTrack?.('Aircraft Active Changed',{source:'aircraft_hub'});render()});controls.append(select)}

@@ -17,6 +17,7 @@ const bootstrap=read('assets/app-bootstrap.js');
 const css=read('assets/experience.css');
 
 check(page.includes('pdAircraftActiveHub')&&page.includes('Your airplane can drive the rest of PilotDesk.'),'Active-aircraft command center missing from Hangar');
+check(page.includes('name="tailNumber"')&&page.includes('Profile name')&&page.includes('Tail / registration'),'Hangar must keep profile name, registration, and model as separate fields');
 for(const field of ['Route defaults','Fuel planning','Weight & balance','CG envelope','Home airport','Source note']){
  check(hub.includes(field),'Profile coverage missing: '+field);
 }
@@ -38,6 +39,8 @@ check(aircraft.includes("format:'PilotDesk-aircraft-profiles'")&&aircraft.includ
 check(aircraft.includes('Array.isArray(j.profiles)')&&aircraft.includes('Array.isArray(j.aircraft)'),'Hangar import must accept current and legacy backups');
 check(aircraft.includes('pilotdesk:aircraft-changed'),'Aircraft changes do not signal dependent UI');
 check(transfer.includes("document.querySelector('#aircraftExport')&&document.querySelector('#aircraftImport')"),'Legacy transfer enhancer can still duplicate native import/export controls');
+for(const field of ["tailNumber","homeAirport","usableFuel","reserveMinutes","notes"])check(transfer.includes(`s('${field}')`),'Legacy import helper would drop '+field);
+check(aircraft.includes("data.tailNumber="),'Aircraft runtime does not persist registration separately');
 
 check(flights.includes("requestedAircraft=p.get('aircraft')"),'New-flight flow does not honor Hangar aircraft query');
 check(training.includes("link('Weight & Balance','/weight-balance.html',id)")&&training.includes("localStorage.setItem('pd-aircraft-active',a.dataset.aircraftBinder)")&&wb.includes("localStorage.getItem('pd-aircraft-active')"),'Aircraft training binder must use canonical W&B URL while preserving aircraft context');

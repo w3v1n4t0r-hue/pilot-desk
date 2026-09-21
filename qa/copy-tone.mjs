@@ -90,7 +90,7 @@ for(const [re,label] of banned)if(re.test(manifestText))failures.push(`site.webm
 for(const file of [
   'scripts/generate-calculator-pages.mjs',
   'assets/weather-fixed.js','assets/product-nav.js','assets/airport.js','assets/flights.js','assets/flight-brief.js','assets/aircraft-v2.js',
-  'assets/skill-gap.js','assets/written-prep.js','assets/home-daily.js','assets/account.js'
+  'assets/skill-gap.js','assets/written-prep.js','assets/home-daily.js','assets/account.js','assets/oral-exam-workbench.js','assets/planner-pro.js'
 ]){
   if(!fs.existsSync(file))continue;
   const text=fs.readFileSync(file,'utf8');

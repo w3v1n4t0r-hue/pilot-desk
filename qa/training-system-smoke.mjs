@@ -4,18 +4,24 @@ const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 const hub=fs.readFileSync('flight-training.html','utf8');
 const css=fs.readFileSync('assets/experience.css','utf8');
+const oral=fs.readFileSync('learn/oral-exam/index.html','utf8');
+const oralJs=fs.readFileSync('assets/oral-exam-workbench.js','utf8');
 const ratingPages=[
   'training/private-pilot.html',
   'training/instrument-rating.html',
   'training/commercial-pilot.html',
   'training/multiengine.html',
-  'training/cfi.html'
+  'training/cfi.html',
+  'training/cfii.html'
 ];
 
 for(const needle of ['What are you studying for today?','Written prep','Oral exam prep','ACS & FAR reference','id="pdTrainingRatingsTitle"']){
   check(hub.includes(needle),`Flight-training hub missing goal-first element: ${needle}`);
 }
 check(!hub.includes('style="margin:22px 0"'),'Old inline training-grid spacing returned');
+check(hub.includes('/training/cfii.html'),'CFII study page is not discoverable from training');
+for(const track of ['private','instrument','commercial','multi','cfi','cfii'])check(oral.includes(`data-track="${track}"`)&&oralJs.includes(`${track}:{title:`),`Oral guide missing ${track} track`);
+check(oral.includes('Reviewed with the source')||oralJs.includes('Reviewed with the source'),'Oral guide lost source-review progress');
 
 for(const file of ratingPages){
   const html=fs.readFileSync(file,'utf8');

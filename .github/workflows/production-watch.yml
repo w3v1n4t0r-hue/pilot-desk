@@ -30,6 +30,8 @@ jobs:
             "https://www.pilot-desk.com/written-prep.html"
             "https://www.pilot-desk.com/account.html"
             "https://www.pilot-desk.com/robots.txt"
+            "https://www.pilot-desk.com/ads.txt"
+            "https://pilot-desk.com/ads.txt"
             "https://www.pilot-desk.com/sitemap-index.xml"
             "https://www.pilot-desk.com/c731d63e44f2d52fcd122041601cfb22.txt"
           )
@@ -38,6 +40,10 @@ jobs:
             code=$(curl -L -sS -o /tmp/pd-watch-body -w '%{http_code}'               --connect-timeout 10 --max-time 30               --retry 3 --retry-delay 3 --retry-all-errors "$url" || echo "000")
             echo "$code $url"
             if [ "$code" != "200" ] || [ ! -s /tmp/pd-watch-body ]; then
+              failed=1
+            fi
+            if [[ "$url" == */ads.txt ]] && ! grep -Fxq "google.com, pub-2325772529624834, DIRECT, f08c47fec0942fa0" /tmp/pd-watch-body; then
+              echo "ads.txt publisher record missing at $url"
               failed=1
             fi
           done

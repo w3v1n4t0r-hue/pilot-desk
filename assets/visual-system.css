@@ -72,8 +72,7 @@ html{
 body{
   margin:0;
   color:var(--text);
-  background:
-    linear-gradient(180deg,#101012 0,var(--bg) 320px,var(--bg) 100%);
+  background:var(--bg);
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   font-size:16px;
   line-height:1.6;
@@ -81,17 +80,7 @@ body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
-body:before{
-  content:"";
-  position:fixed;
-  inset:0 0 auto;
-  height:220px;
-  pointer-events:none;
-  z-index:-1;
-  opacity:.42;
-  background:linear-gradient(110deg,transparent 5%,rgba(255,255,255,.025) 38%,transparent 72%);
-  animation:none;
-}
+body:before{display:none!important}
 body:after{display:none!important}
 ::selection{background:var(--silver2);color:#050505}
 
@@ -313,7 +302,7 @@ small,.fine{color:var(--muted2)!important}
   box-shadow:none!important;
 }
 .tool-card:hover,.pd-card:hover,.pd-hub-card:hover,.pd-flight-card:hover{
-  transform:translateY(-2px)!important;
+  transform:none!important;
   border-color:#5a595f!important;
   background:#111113!important;
   box-shadow:none!important;
@@ -448,7 +437,7 @@ input:focus,select:focus,textarea:focus,
     border-color var(--pd-fast) ease!important;
 }
 .calc-btn:hover,.pd-btn:hover,button.primary:hover{
-  transform:translateY(-1px)!important;
+  transform:none!important;
   filter:none!important;
   background:#fff!important;
   border-color:#fff!important;
@@ -672,13 +661,7 @@ footer p{font-size:12.5px!important}
   background:var(--pd-good);
   box-shadow:none;
 }
-@media (prefers-reduced-motion:no-preference){
-  .pd-live-dot{animation:pd-beacon 2.4s ease-in-out infinite}
-}
-@keyframes pd-beacon{
-  0%,100%{opacity:.45}
-  50%{opacity:1}
-}
+
 
 /* Light theme keeps the same geometry, translated to eggshell / iron. */
 html[data-pd-theme="light"]{
@@ -704,9 +687,7 @@ html[data-pd-theme="light"]{
   --pd-text:var(--text);
   --pd-accent:var(--accent);
 }
-html[data-pd-theme="light"] body{
-  background:linear-gradient(180deg,#faf9f5 0,var(--bg) 320px,var(--bg) 100%)!important;
-}
+html[data-pd-theme="light"] body{background:var(--bg)!important}
 html[data-pd-theme="light"] .topbar{background:rgba(248,247,242,.96)!important}
 html[data-pd-theme="light"] .pd-nav-menu,
 html[data-pd-theme="light"] .pd-search-results,
@@ -831,10 +812,7 @@ button,.pd-btn,.calc-btn{
 }
 
 html,body{background-color:var(--bg)!important}
-body{
-  background:
-    linear-gradient(180deg,#0b0b0d 0,#050505 340px,#050505 100%)!important;
-}
+body{background:#050505!important}
 
 /* Eliminate residual soft / blue SaaS chrome. */
 .pd-account-card,.pd-account-promise,.pd-account-benefit,.pd-account-dashboard,
@@ -861,7 +839,7 @@ body{
 }
 .pd-progress-track{height:6px!important;background:#09090b!important}
 .pd-progress-fill{
-  background:linear-gradient(90deg,#66666d,#f0efe9)!important;
+  background:#d8d7d1!important;
   box-shadow:none!important;
 }
 .pd-flightcat-pill,.pd-chip,.pd-product-nav a,.pd-product-nav button,
@@ -906,8 +884,7 @@ a,button,input,select,textarea,summary{
   from{transform:scaleX(0);transform-origin:left}
   to{transform:scaleX(1);transform-origin:left}
 }
-@keyframes pd-metal-shimmer{
-  0%{background-position:120% 0}
+
   100%{background-position:-20% 0}
 }
 @keyframes pd-number-settle{
@@ -945,20 +922,7 @@ a,button,input,select,textarea,summary{
     position:relative;
     overflow:hidden;
   }
-  .pd-btn:after,.calc-btn:after,.pd-auth-btn:after{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background:linear-gradient(105deg,transparent 28%,rgba(255,255,255,.32) 48%,transparent 67%);
-    background-size:220% 100%;
-    background-position:120% 0;
-    opacity:0;
-  }
-  .pd-btn:hover:after,.calc-btn:hover:after,.pd-auth-btn:hover:after{
-    opacity:.22;
-    animation:pd-metal-shimmer 520ms ease both;
-  }
+  .pd-btn:after,.calc-btn:after,.pd-auth-btn:after{display:none!important}
 
   details[open]>:not(summary){
     animation:pd-surface-in 180ms var(--pd-ease) both;
@@ -1188,5 +1152,8 @@ html.pd-streamlined-app footer{
   }
   html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero) h1{
     font-size:clamp(28px,8vw,36px)!important;
+  }
+  html.pd-streamlined-app :is(input,select,.calc-btn,.pd-btn,button.primary,.pd-auth-btn,.utility-btn,.pd-chip,.recent-chip){
+    min-height:44px!important;
   }
 }

@@ -5,9 +5,9 @@
 .pd-plan-card.featured:before{
   content:"";
   position:absolute;left:0;right:0;top:0;height:2px;
-  background:linear-gradient(90deg,#77777f,#f0efe9,#77777f);
+  background:#d8d7d1;
 }
-.pd-plan-card:hover{background:#131315}
+.pd-plan-card:hover{background:#101012}
 .pd-plan-card small{color:#8f8e89!important}
 .pd-plan-card.featured small{color:#d8d7d1!important}
 

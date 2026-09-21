@@ -114,10 +114,8 @@ small,.fine{color:var(--muted2)!important}
   height:64px!important;
   padding-block:0!important;
   border-bottom:1px solid var(--line)!important;
-  background:rgba(5,5,5,.96)!important;
+  background:#050505!important;
   box-shadow:none!important;
-  backdrop-filter:blur(14px)!important;
-  -webkit-backdrop-filter:blur(14px)!important;
 }
 .brand{gap:11px!important;color:var(--text)!important}
 .brandmark{

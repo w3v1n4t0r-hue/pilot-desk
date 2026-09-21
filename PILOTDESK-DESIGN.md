@@ -2036,3 +2036,48 @@ FIXING THE SYSTEM,
 fix the system.
 
 PilotDesk should become simpler internally while becoming more polished externally.
+
+
+---
+
+# Copy and Anti-Template Standard
+
+All public PilotDesk copy and frontend work must also follow these rules.
+
+## Copy
+
+Write like an experienced pilot, instructor, or aviation software builder speaking to a peer.
+
+- Do not use AI-marketing filler such as: delve, leverage, revolutionize, elevate, seamless, game-changer, ecosystem, cornerstone, realm, tapestry, spearhead, or unleash.
+- Do not open with canned scene-setting such as “In today's fast-paced world,” “It's important to note,” or “Whether you're a…”
+- Use specific features, values, limits, and outcomes instead of hype.
+- Vary sentence length. Short sentences are fine. Do not make every paragraph the same size or cadence.
+- Prefer direct language: “Save aircraft and flights to your account” instead of “Unlock seamless cross-device continuity.”
+- Use first person or second person when it reads naturally. Avoid academic distance and startup-speak.
+- Preserve legitimate aviation terminology even when a word could sound like marketing in another context. For example, “pivotal altitude” is a technical aviation term and must not be rewritten just to satisfy a generic word ban.
+
+## Frontend
+
+PilotDesk should look purpose-built, not like a generated SaaS template.
+
+- No purple/indigo neon gradients.
+- No glassmorphism or backdrop blur as a general surface treatment.
+- No decorative glow blobs behind cards or heroes.
+- No default centered three-column feature grid just because there are three things to say.
+- Prefer black, charcoal, graphite, silver, off-white, and restrained functional accent color.
+- Prefer typography, alignment, dividers, and useful density over decorative shadows.
+- Prefer asymmetric splits, instrument-style readouts, route/briefing panels, tables, and task-specific layouts where they fit the job.
+- Keep headings clear and modern. Use monospaced or tabular treatment for aviation values when useful.
+- Use square or clipped geometry for product chrome. Rounded shapes should be reserved for controls that genuinely need them, such as small status indicators.
+
+## Five-pass review
+
+Every user-facing page should survive five separate reviews before release:
+
+1. **Copy voice** — remove buzzwords, canned openings, vague hype, and repetitive sentence rhythm.
+2. **Visual language** — remove generic SaaS styling, unnecessary rounding, glow, blur, decorative gradients, and fake depth.
+3. **Density and hierarchy** — make sure the page is organized around the pilot's task, not an endless stack of cards.
+4. **Interaction clarity** — every action should say what it does; remove dead links, vague CTAs, and ambiguous controls.
+5. **Final consistency** — confirm PilotDesk naming, heading structure, metadata, shared navigation, safety language, and the black/silver visual system.
+
+The repository QA should enforce the objective parts of these passes. Subjective review still matters; passing a regex is not a substitute for reading the page.

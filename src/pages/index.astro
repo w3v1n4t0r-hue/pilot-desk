@@ -21,7 +21,7 @@ const schema = {
       '@type': 'FAQPage',
       mainEntity: [
         ['What is PilotDesk?', 'PilotDesk is a browser-based set of aviation calculators, route-planning, weather, and study tools.'],
-        ['Do I need an account?', 'No. Core tools work without an account. A free account can keep study progress and Daily history together, while PilotDesk Pro adds cross-device planning continuity.'],
+        ['Do I need an account?', 'No. Core tools work without an account. A free account saves Daily, Written Prep, and profile progress. PilotDesk Pro adds aircraft and saved-flight cloud backup plus ad-free signed-in use.'],
         ['Are PilotDesk calculator results official operational data?', 'No. PilotDesk is a planning and training aid. Verify operational decisions with current approved aircraft data, weather, procedures, regulations, and official sources.'],
         ['What is PilotDesk Daily?', 'PilotDesk Daily is a short aviation challenge with three new questions each day.']
       ].map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } }))
@@ -67,31 +67,15 @@ const schema = {
   </section>
 
   <div class="pd-home-wrap">
-    <section class="pd-home-section pd-first-run" id="pdFirstRun" aria-labelledby="pdFirstRunTitle">
-      <div class="pd-home-section-head">
+    <section class="pd-home-desk" id="pdHomeDesk" hidden aria-labelledby="pdHomeDeskTitle">
+      <div class="pd-home-desk-head">
         <div>
-          <div class="eyebrow">START WITH THE JOB</div>
-          <h2 id="pdFirstRunTitle">What are you working on?</h2>
-          <p>Pick the task.</p>
+          <div class="eyebrow">YOUR DESK</div>
+          <h2 id="pdHomeDeskTitle">Pick up where you left off</h2>
         </div>
-        <button class="utility-btn" type="button" id="pdFirstRunReset" hidden>Change</button>
+        <span id="pdHomeDeskStatus">Saved on this device</span>
       </div>
-
-      <div class="pd-first-run-grid" role="list">
-        <a href="/route-planner.html" data-pd-first-goal="plan" role="listitem">
-          <small>PLAN</small><b>Build a flight</b><span>Route, airports, weather, procedures, aircraft, and a saved brief.</span><em>Open flight planning →</em>
-        </a>
-        <a href="/tools.html" data-pd-first-goal="calculate" role="listitem">
-          <small>CALCULATE</small><b>Run the numbers</b><span>Crosswind, density altitude, fuel, climb, W&B, E6B, conversions, and more.</span><em>Find a calculator →</em>
-        </a>
-        <a href="/flight-training.html" data-pd-first-goal="study" role="listitem">
-          <small>STUDY</small><b>Study for the next rating</b><span>Written prep, weak-area review, oral practice, rating hubs, and PilotDesk Daily.</span><em>Open training →</em>
-        </a>
-        <a href="/for-cfis.html" data-pd-first-goal="teach" role="listitem">
-          <small>TEACH</small><b>Teach with it</b><span>Share scenarios, calculator setups, and training resources with a student.</span><em>Open CFI tools →</em>
-        </a>
-      </div>
-      <div class="pd-first-run-selected" id="pdFirstRunSelected" hidden aria-live="polite"></div>
+      <div class="pd-home-desk-grid" id="pdHomeDeskItems"></div>
     </section>
 
     <section class="pd-home-section" id="popular-tools">
@@ -134,36 +118,6 @@ const schema = {
       </article>
     </section>
 
-    <section class="pd-home-section pd-home-business" aria-labelledby="pdBusinessTitle">
-      <div>
-        <div class="eyebrow">FOR CFIS & FLIGHT SCHOOLS</div>
-        <h2 id="pdBusinessTitle">Use PilotDesk with students.</h2>
-        <p>Share tools, training resources, and embeddable calculators for lessons or school websites.</p>
-      </div>
-      <div class="pd-home-business-actions">
-        <a class="pd-btn" href="/for-flight-schools.html" data-pd-home-cta="Flight Schools">Flight school options</a>
-        <a href="/pricing.html" data-pd-home-cta="Plans">Compare Free, Pro & Flight School →</a>
-      </div>
-    </section>
-
-    <section class="pd-home-section" id="pdResume" hidden>
-      <h2>Pick up where you left off</h2>
-      <div id="pdResumeItems" class="pd-resume-items"></div>
-      <p class="fine">Recent tools and flights are saved on this device.</p>
-    </section>
-
-    <section class="pd-home-section pd-home-discovery" aria-labelledby="pdExploreTitle">
-      <div class="pd-home-section-head">
-        <div><div class="eyebrow">OTHER TOOLS</div><h2 id="pdExploreTitle">More useful parts of PilotDesk</h2><p>Study, save aircraft, or compare plans.</p></div>
-      </div>
-      <div class="pd-popular-grid">
-        <a class="pd-popular-tool" href="/written-prep.html" data-pd-home-cta="Written Prep"><span><b>Written Prep</b><small>Study by rating and FAA standard.</small></span></a>
-        <a class="pd-popular-tool" href="/daily/" data-pd-home-cta="PilotDesk Daily"><span><b>PilotDesk Daily</b><small>Three new aviation questions each day.</small></span></a>
-        <a class="pd-popular-tool" href="/aircraft.html" data-pd-home-cta="Aircraft"><span><b>Aircraft</b><small>Keep planning numbers and profiles together.</small></span></a>
-        <a class="pd-popular-tool" href="/pricing.html" data-pd-home-cta="Plans"><span><b>Plans</b><small>Free, Pro, and Flight School direction.</small></span></a>
-      </div>
-    </section>
-
     <section class="pd-home-section pd-home-account" data-pd-home-account aria-label="PilotDesk account">
       <div>
         <div class="eyebrow">OPTIONAL ACCOUNT</div>
@@ -191,10 +145,11 @@ const schema = {
       </div>
       <div class="pd-faq-list">
         <details><summary>What is PilotDesk?</summary><p>A browser-based set of aviation calculators, route-planning, weather, and study tools.</p></details>
-        <details><summary>Do I need an account?</summary><p>No. Core tools work without one. Sign in only when you want your progress, aircraft, and study history saved across devices.</p></details>
+        <details><summary>Do I need an account?</summary><p>No. Core tools work without one. A free account saves Daily, Written Prep, and profile progress. Pro adds aircraft and saved-flight cloud backup.</p></details>
         <details><summary>Are calculator results official operational data?</summary><p>No. Use PilotDesk as a planning aid and verify operational decisions with current approved aircraft, airport, weather, procedural, and regulatory sources.</p></details>
         <details><summary>What is PilotDesk Daily?</summary><p>A three-question aviation challenge that changes every day.</p></details>
       </div>
     </section>
   </div>
+  <script slot="scripts" is:inline defer src="/assets/home-desk.js"></script>
 </BaseLayout>

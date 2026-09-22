@@ -486,3 +486,166 @@
   .pd-home-2026 .pd-home-two-up .pd-home-feature{padding:22px 0!important}
   .pd-home-2026 .pd-home-section{padding:32px 0!important}
 }
+
+/* CLAUDE STEP 1 — homepage hierarchy. Keep the existing structure/copy; change only visual execution. */
+.pd-home-2026 .pd-home-hero{
+  padding-top:52px!important;
+  background:linear-gradient(180deg,#07090b 0%,#050607 100%)!important;
+}
+.pd-home-2026 .pd-home-hero-inner{align-items:start!important}
+.pd-home-2026 .pd-home-hero-copy{padding-top:10px!important}
+.pd-home-2026 .pd-home-hero .eyebrow{color:#8f979e!important}
+.pd-home-2026 .pd-home-hero h1{
+  max-width:720px!important;
+  color:var(--text)!important;
+  font-size:clamp(40px,4.2vw,58px)!important;
+  font-weight:620!important;
+  letter-spacing:-.042em!important;
+}
+.pd-home-2026 .pd-home-hero-copy>p{color:var(--muted)!important}
+.pd-home-2026 .pd-home-hero-links{gap:10px!important}
+.pd-home-2026 .pd-home-hero-links>.pd-btn{
+  min-height:42px!important;
+  padding-inline:16px!important;
+  border-color:var(--accent)!important;
+  background:var(--accent)!important;
+  color:#061018!important;
+}
+.pd-home-2026 .pd-home-command{
+  min-height:42px!important;
+  padding:0 10px 0 12px!important;
+  border:1px solid var(--line)!important;
+  background:#080b0e!important;
+  color:var(--muted)!important;
+}
+.pd-home-2026 .pd-home-command:hover,
+.pd-home-2026 .pd-home-command:focus-visible{
+  border-color:var(--accent)!important;
+  color:var(--text)!important;
+  background:var(--panel)!important;
+}
+.pd-home-2026 .pd-home-command kbd{
+  min-width:24px!important;
+  height:24px!important;
+  border-color:var(--line-hi)!important;
+  background:#0d1217!important;
+  color:var(--accent)!important;
+}
+.pd-home-2026 .pd-home-text-link{
+  min-height:42px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding-inline:8px!important;
+  color:var(--muted)!important;
+}
+
+.pd-home-2026 .pd-home-actions{
+  max-width:390px!important;
+  border-top-color:var(--line-hi)!important;
+}
+.pd-home-2026 .pd-home-action{
+  min-height:68px!important;
+  padding:14px 10px!important;
+  border-bottom-color:var(--line)!important;
+}
+.pd-home-2026 .pd-home-action:hover,
+.pd-home-2026 .pd-home-action:focus-visible{
+  background:var(--panel)!important;
+  border-bottom-color:var(--line-hi)!important;
+}
+.pd-home-2026 .pd-home-action-icon{
+  width:36px!important;height:36px!important;
+  border-color:#333b43!important;
+  background:#090c0f!important;
+}
+.pd-home-2026 .pd-home-action:hover .pd-home-action-icon{border-color:var(--accent)!important}
+.pd-home-2026 .pd-home-action svg{stroke:#b9c0c5!important}
+.pd-home-2026 .pd-home-action:hover svg{stroke:var(--accent)!important}
+.pd-home-2026 .pd-home-action em{color:#68717a!important}
+
+.pd-home-2026 .pd-home-proof{
+  margin-top:20px!important;
+  border-color:#20262c!important;
+}
+.pd-home-2026 .pd-home-proof>span{
+  padding:11px 16px!important;
+  border-right-color:#20262c!important;
+}
+.pd-home-2026 .pd-home-proof strong{
+  color:#aeb4b9!important;
+  font-size:10.5px!important;
+  text-transform:uppercase!important;
+  letter-spacing:.07em!important;
+}
+.pd-home-2026 .pd-home-proof small{color:#687078!important}
+
+/* Returning-pilot state is the strongest block after the hero. */
+.pd-home-2026 .pd-home-desk{
+  margin:24px 0 48px!important;
+  padding:0 16px 16px!important;
+  border:1px solid #333b43!important;
+  border-left:2px solid var(--accent)!important;
+  background:#080b0e!important;
+}
+.pd-home-2026 .pd-home-desk-head{padding:15px 0 12px!important}
+.pd-home-2026 .pd-home-desk-head .eyebrow,
+.pd-home-2026 .pd-home-desk-item small{color:var(--accent)!important}
+.pd-home-2026 .pd-home-desk-grid{border-color:#252c33!important;background:#252c33!important}
+.pd-home-2026 .pd-home-desk-item{background:#07090b!important}
+.pd-home-2026 .pd-home-desk-item:hover{background:var(--panel2)!important}
+
+/* Section weight intentionally steps down as the page moves from doing -> learning -> trust. */
+.pd-home-2026 #popular-tools{
+  padding:32px 18px 36px!important;
+  margin-inline:-18px!important;
+  background:#080b0e!important;
+  border-top:1px solid #242b32!important;
+}
+.pd-home-2026 #popular-tools .pd-home-section-head{margin-bottom:15px!important}
+.pd-home-2026 #popular-tools .pd-home-section-head h2{font-size:clamp(25px,2.4vw,31px)!important}
+.pd-home-2026 .pd-popular-grid{border-color:#2a3138!important}
+.pd-home-2026 .pd-popular-tool{min-height:56px!important;border-color:#242b32!important}
+.pd-home-2026 .pd-popular-tool:hover{background:#10151a!important}
+.pd-home-2026 .pd-popular-tool:hover:after{color:var(--accent)!important}
+
+.pd-home-2026 .pd-home-two-up{
+  margin-top:36px!important;
+  border-color:#303840!important;
+  background:#0a0d11!important;
+}
+.pd-home-2026 .pd-home-two-up .pd-home-feature{padding:32px!important}
+.pd-home-2026 .pd-home-two-up .pd-home-feature:first-child{border-right:1px solid #303840!important}
+.pd-home-2026 .pd-home-two-up .pd-home-feature .eyebrow{color:#91999f!important}
+.pd-home-2026 .pd-home-two-up .pd-home-feature:first-child .eyebrow{color:var(--accent)!important}
+
+.pd-home-2026 .pd-home-account{
+  padding:28px 0!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:28px!important;
+  align-items:center!important;
+}
+.pd-home-2026 .pd-home-account h2,
+.pd-home-2026 .pd-home-trust h2{font-size:22px!important}
+.pd-home-2026 .pd-home-trust{
+  padding:24px 0!important;
+  opacity:.92!important;
+}
+.pd-home-2026 .pd-home-faq{padding-top:30px!important}
+.pd-home-2026 .pd-home-faq .pd-home-section-head{margin-bottom:10px!important}
+.pd-home-2026 .pd-home-faq h2{font-size:20px!important}
+
+/* No decorative hover movement: feedback is border/surface only. */
+.pd-home-2026 a,.pd-home-2026 button{transform:none!important}
+@media(max-width:760px){
+  .pd-home-2026 .pd-home-hero{padding-top:30px!important}
+  .pd-home-2026 .pd-home-hero-inner{grid-template-columns:1fr!important;gap:28px!important}
+  .pd-home-2026 .pd-home-actions{max-width:none!important}
+  .pd-home-2026 .pd-home-proof{grid-template-columns:1fr!important}
+  .pd-home-2026 .pd-home-proof>span{border-right:0!important;border-bottom:1px solid #20262c!important}
+  .pd-home-2026 .pd-home-proof>span:last-child{border-bottom:0!important}
+  .pd-home-2026 #popular-tools{margin-inline:-12px!important;padding-inline:12px!important}
+  .pd-home-2026 .pd-home-two-up{grid-template-columns:1fr!important}
+  .pd-home-2026 .pd-home-two-up .pd-home-feature:first-child{border-right:0!important;border-bottom:1px solid #303840!important}
+  .pd-home-2026 .pd-home-account{grid-template-columns:1fr!important}
+}

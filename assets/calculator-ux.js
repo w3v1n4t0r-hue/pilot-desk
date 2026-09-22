@@ -40,12 +40,22 @@ const quickHelp=document.createElement('div');quickHelp.className='pd-calc-quick
 quickHelp.querySelector('span').textContent=QUICK_HELP[calcKey]||'Confirm each input, unit, and reference before using the result. PilotDesk shows the arithmetic; approved sources control operational decisions.';
 const resultSummary=document.createElement('div');resultSummary.className='pd-calc-result-summary';resultSummary.setAttribute('aria-live','polite');resultSummary.hidden=true;
 resultSummary.innerHTML='<small>QUICK READ</small><strong></strong>';
-const actions=document.createElement('div');actions.className='calc-actions';actions.setAttribute('aria-label','Calculation actions');actions.innerHTML='<button type="button" data-pd-copy-result>Copy result</button><button type="button" data-pd-copy-link>Copy link</button><button type="button" data-pd-share>Share setup</button><button type="button" data-pd-reset>Reset</button><button type="button" data-pd-print>Print</button><a href="/feedback.html?type=calculation" data-pd-report>Report result</a>';
-const more=document.createElement('details');more.className='pd-export-menu';more.innerHTML='<summary>Share / export</summary>';[...actions.children].filter(el=>!el.matches('[data-pd-copy-result],[data-pd-reset]')).forEach(el=>more.append(el));actions.append(more);
+const actions=document.createElement('div');actions.className='calc-actions';actions.setAttribute('aria-label','Calculation actions');actions.innerHTML='<button class="pd-calc-save" type="button" data-pd-save-calculation>Save calculation</button><button type="button" data-pd-copy-result>Copy result</button><button type="button" data-pd-reset>Reset</button><button type="button" data-pd-copy-link>Copy link</button><button type="button" data-pd-share>Share setup</button><button type="button" data-pd-print>Print</button><a href="/feedback.html?type=calculation" data-pd-report>Report result</a>';
+const more=document.createElement('details');more.className='pd-export-menu';more.innerHTML='<summary>Share / export</summary>';[...actions.children].filter(el=>!el.matches('[data-pd-save-calculation],[data-pd-copy-result],[data-pd-reset]')).forEach(el=>more.append(el));actions.append(more);
 const notice=box.querySelector('.notice');const anchor=notice||box.lastElementChild;
 const fields=box.querySelector('.fields');fields?.insertAdjacentElement('beforebegin',inputHeading);fields?.insertAdjacentElement('beforebegin',quickHelp);
 results?.insertAdjacentElement('beforebegin',resultsHeading);results?.insertAdjacentElement('afterend',resultSummary);
 anchor?.insertAdjacentElement('beforebegin',advisoryBox);anchor?.insertAdjacentElement('beforebegin',actions);
+if(fields&&results){
+  const workbench=document.createElement('div');workbench.className='pd-calc-workbench';
+  const inputPanel=document.createElement('section');inputPanel.className='pd-calc-input-panel';inputPanel.setAttribute('aria-label','Calculator inputs');
+  const outputPanel=document.createElement('section');outputPanel.className='pd-calc-output-panel';outputPanel.setAttribute('aria-label','Calculator results');
+  inputPanel.append(quickHelp,inputHeading,fields,calc);
+  outputPanel.append(resultsHeading,results,resultSummary);
+  workbench.append(inputPanel,outputPanel);
+  box.insertBefore(workbench,box.firstChild);
+  box.classList.add('pd-calc-shell');
+}
 const toast=m=>window.toast?.(m);
 function loadSaved(){try{return JSON.parse(localStorage.getItem(storageKey)||'{}')}catch{return {}}}
 const fromUrl=new URLSearchParams(location.search),saved=loadSaved();
@@ -58,6 +68,7 @@ function sync(){const p=shareParams(),v=valuesObject();history.replaceState(null
 function referralUrl(){const u=new URL(location.href);u.searchParams.set('utm_source','pilotdesk_calculator_share');u.searchParams.set('utm_medium','referral');u.searchParams.set('utm_campaign','calculator_setup');u.searchParams.set('utm_content',(document.body.dataset.calc||location.pathname.split('/').filter(Boolean).pop()||'calculator').toLowerCase());return u.toString()}
 function inputText(){return inputs.map(i=>{const label=i.closest('.field')?.querySelector('label')?.textContent?.trim()||i.id;return i.value!==''?`${label}: ${i.value}`:null}).filter(Boolean)}
 function outputText(){return qsa('.result').map(r=>{const k=r.querySelector('small')?.textContent?.trim(),v=r.querySelector('strong')?.textContent?.trim();return k&&v&&v!=='—'?`${k}: ${v}`:null}).filter(Boolean)}
+function outputObject(){return Object.fromEntries(qsa('.result').map(r=>[r.querySelector('small')?.textContent?.trim(),r.querySelector('strong')?.textContent?.trim()]).filter(([k,v])=>k&&v&&v!=='—'))}
 function resultText(url=location.href){const title=qs('.calc-hero h1')?.textContent?.trim()||'PilotDesk calculation';const out=outputText();return [title,...inputText(),...(out.length?['',...out]:[]),'',`Try this exact setup: ${url}`].join('\n')}
 function track(name){try{window.va?.('event',{name,data:{calculator:document.body.dataset.calc||location.pathname}})}catch{}}
 function bringResultIntoView(){if(!results||!matchMedia('(max-width:760px)').matches)return;const r=results.getBoundingClientRect();if(r.top>=0&&r.bottom<=innerHeight)return;results.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'})}
@@ -66,6 +77,15 @@ function afterCalculate(){sync();updateSummary();track('Calculator Used');bringR
 calc.addEventListener('click',()=>setTimeout(afterCalculate,0));
 inputs.forEach(i=>{i.addEventListener('change',sync);i.addEventListener('input',()=>{advisory();requestAnimationFrame(updateSummary)})});
 box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input')){e.preventDefault();calc.click()}});
+actions.querySelector('[data-pd-save-calculation]').addEventListener('click',async()=>{
+  sync();updateSummary();
+  const outputs=outputObject();if(!Object.keys(outputs).length){toast('Calculate first, then save the result');return}
+  const service=window.PilotDeskSavedCalculations;if(!service){toast('Account save is still loading');return}
+  const saved=await service.save({toolSlug:calcKey,title:qs('.calc-hero h1')?.textContent?.trim()||'PilotDesk calculation',inputs:valuesObject(),result:{outputs,summary:outputText(),url:location.href}});
+  if(saved.ok){toast('Calculation saved to your PilotDesk account');window.pdTrack?.('Calculation Saved',{calculator:calcKey});return}
+  if(saved.reason==='signin'){location.assign(saved.url);return}
+  toast('Could not save calculation to your account');
+});
 actions.querySelector('[data-pd-copy-result]').addEventListener('click',async()=>{sync();try{await navigator.clipboard.writeText(resultText(referralUrl()));toast('Result copied with share link');track('Result Copied');window.pdTrack?.('Calculator Result Copied',{calculator:document.body.dataset.calc||location.pathname})}catch{toast('Copy failed')}});
 actions.querySelector('[data-pd-copy-link]').addEventListener('click',async()=>{sync();const url=referralUrl();try{await navigator.clipboard.writeText(url);toast('Shareable calculation link copied');track('Calculation Link Copied');window.pdTrack?.('Calculator Link Copied',{calculator:document.body.dataset.calc||location.pathname})}catch{toast('Copy failed')}});
 actions.querySelector('[data-pd-share]').addEventListener('click',async()=>{sync();const title=qs('h1')?.textContent?.trim()||'PilotDesk',url=referralUrl(),text=resultText(url);try{if(navigator.share)await navigator.share({title,text,url});else{await navigator.clipboard.writeText(text);toast('Setup link copied')}track('Calculation Shared');window.pdTrack?.('Calculator Shared',{calculator:document.body.dataset.calc||location.pathname,method:navigator.share?'native':'copy'})}catch(e){if(e?.name!=='AbortError')toast('Share failed')}});

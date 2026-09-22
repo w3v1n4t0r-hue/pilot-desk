@@ -53,7 +53,7 @@ check(preflightJs.includes('/api/weather?station=')&&preflightJs.includes('/api/
 check(preflightJs.includes("pd-wb-v2-draft")&&preflightJs.includes("pd-aircraft"),'Pro Preflight does not include W&B/aircraft context');
 check(preflightJs.includes('WITHIN STORED LIMIT')&&preflightJs.includes('REVIEW · EXCEEDS STORED LIMIT'),'personal planning-limit comparison states missing');
 check(preflightJs.includes('does not mean the flight is safe, legal, or recommended'),'Pro Preflight must not make go/no-go decisions');
-check(preflight.includes('Personal planning limits')&&preflight.includes('Print / save PDF'),'Pro Preflight limit/PDF controls missing');
+check(preflight.includes('Personal planning limits')&&preflightJs.includes('Print / save PDF')&&preflightJs.includes("addEventListener('click',()=>print())"),'Pro Preflight limit/PDF controls missing');
 check(!/linear-gradient|radial-gradient|backdrop-filter/.test(preflightCss),'Pro Preflight violates Claude visual rules');
 
 for(const phrase of ['source-based study plan','pro preflight workspace','faa coverage matrices'])check(pricing.toLowerCase().includes(phrase),`pricing missing ${phrase}`);

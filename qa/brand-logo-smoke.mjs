@@ -28,7 +28,7 @@ check(!manifest.includes('/assets/icon.svg'),'Manifest still references the old 
 check(!home.includes('www.pilot-desk.com/assets/icon.svg'),'Organization schema still references the old logo URL');
 check(!calculatorGenerator.includes('/assets/icon.svg'),'Calculator generator still emits the old logo URL');
 check(calculatorGenerator.includes('https://www.pilot-desk.com/favicon.svg'),'Calculator schema must use the canonical user-created logo');
-check(sw.includes("CACHE='pilotdesk-v57'"),'service worker cache was not advanced for the canonical logo rollout');
+check(Number(sw.match(/CACHE='pilotdesk-v(\\d+)'/)?.[1]||0)>=57,'service worker cache fell below the canonical logo rollout floor');
 check(!sw.includes("'/assets/icon.svg'"),'service worker still caches the old favicon URL');
 
 const ico=vercel.redirects?.find(x=>x.source==='/favicon.ico');

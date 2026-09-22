@@ -84,7 +84,8 @@ for(const route of [
  'https://www.pilot-desk.com/for-flight-schools.html',
  'https://www.pilot-desk.com/flight-training.html',
  'https://www.pilot-desk.com/aircraft.html',
- 'https://www.pilot-desk.com/planner.html'
+ 'https://www.pilot-desk.com/planner.html',
+ 'https://www.pilot-desk.com/tools.html'
 ]) if(!sitemap.includes('<loc>'+route+'</loc>')) failures.push('sitemap-core.xml: missing changed SEO route '+route);
 
 const pricing=rows.find(r=>r.file==='pricing.html');

@@ -18,7 +18,7 @@ function text(sel,v){const el=$(sel);if(el)el.textContent=String(v)}
 function show(sel,on){const el=$(sel);if(el)el.hidden=!on}
 function notice(msg,kind=''){const el=$('#pdPrepNotice');if(!el)return;el.textContent=msg;el.dataset.kind=kind;el.hidden=!msg;if(msg)setTimeout(()=>{if(el.textContent===msg)el.hidden=true},4500)}
 function band(v){return v>=80?'strong':v>=60?'developing':'gap'}
-function sourceLabel(q){if(q?.source==='faa-sample-exact')return 'FAA SAMPLE';return q?.standardType==='PTS'?'PTS-LINKED':'ACS-LINKED'}
+function sourceLabel(q){if(q?.source==='faa-sample-exact')return 'FAA SAMPLE';if(q?.source==='pilotdesk-faa-parallel')return 'FAA FIGURE';return q?.standardType==='PTS'?'PTS-LINKED':'ACS-LINKED'}
 function renderFigureRef(q){let box=$('#pdPrepFigureRef');if(!box){box=document.createElement('div');box.id='pdPrepFigureRef';box.className='pd-prep-figure-ref';$('#pdPrepPrompt')?.insertAdjacentElement('afterend',box)}if(!q?.figureRef){box.hidden=true;box.innerHTML='';return}box.hidden=false;box.innerHTML=`<div><small>OFFICIAL FAA FIGURE</small><b>${esc(q.figureRef.supplement)} · Figure ${esc(q.figureRef.figure)}</b><span>Open the FAA testing supplement and use the referenced figure to answer this item.</span></div><a href="${esc(q.figureRef.url)}" target="_blank" rel="noopener">OPEN FIGURE ↗</a>`}
 function lockUI(on){$$('[data-mode],[data-track],[data-difficulty]').forEach(b=>b.disabled=on)}
 

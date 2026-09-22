@@ -41,7 +41,7 @@ for(const item of [
  'All calculators','E6B flight computer','Weight & balance','Flight math','Calculation history',
  'Route planner','Airport search','Procedures','Aircraft','Saved flights','Flight brief','Aircraft performance',
  'METAR & TAF','METAR decoder','Airport weather',
- 'Written Prep','Weak subjects','Flight training','Pilot guides','Daily challenge','Checklist practice',
+ 'Written Prep','Weak subjects','Flight training','Pilot guides','Daily briefing','Checklist practice',
  'ACS & FAR reference','Certificates & ratings','Oral exam guide'
 ]) check(navCore.includes(item),'Required mega-menu item missing: '+item);
 for(const label of ['Tools','Plan','Weather','Learn']) check(nav.includes(label+':')&&header.includes(label+':'),'Aviation glyph missing for '+label);

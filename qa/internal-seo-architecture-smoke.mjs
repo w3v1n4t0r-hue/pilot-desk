@@ -23,7 +23,7 @@ for(const href of [
  '/guides/multiengine-checkride-study-guide.html'
 ]) check(guides.includes(`href="${href}"`),`Guides hub missing topic hub link: ${href}`);
 
-check(guides.includes('Start with the system, not an isolated page.'),'Guides hub topic-first framing missing');
+check(guides.includes('Pick the subject you are working on.')&&guides.includes('BY SUBJECT'),'Guides hub subject-first framing missing');
 check(guides.includes('<img src="/assets/icon.svg"'),'Guides hub must use official PilotDesk logo');
 check(!guides.includes('viewBox="0 0 64 40"'),'Retired Guides hub airplane logo returned');
 

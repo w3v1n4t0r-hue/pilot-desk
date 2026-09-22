@@ -13,6 +13,7 @@ const navCss=read('assets/pilotdesk-navigation-2026.css');
 const tokens=read('assets/design-tokens.css');
 const header=read('src/components/Header.astro');
 const styles=read('assets/styles.css');
+const legacyCss=read('assets/styles-legacy.css');
 const sw=read('sw.js');
 
 for(const phrase of [
@@ -49,6 +50,9 @@ check(nav.includes('data-section="\${s.label}"'),'Runtime nav lacks section mark
 check(navCss.includes('grid-template-columns:repeat(2,minmax(0,1fr))'),'Desktop mega-menu is not grouped into columns');
 check(navCss.includes('@media(max-width:820px)')&&navCss.includes('min-height:58px'),'Mobile drawer lacks generous touch targets');
 check(navCss.includes('.pd-main-nav.open{display:block!important}'),'Mobile navigation drawer open state missing');
+check(!legacyCss.includes('.topbar nav:not(.pd-global-nav){'),'Legacy bottom-dock rule must not force the closed main navigation visible');
+check(nav.includes("pathname==='/assets/styles.css'"),'Global navigation must reuse the shared stylesheet bundle instead of appending duplicate experience.css');
+check(nav.includes('function setMobileNavOpen(nav,menu,open)'),'All mobile drawer close paths must update its accessible label and expanded state together');
 check(navCss.includes('color:var(--accent)'),'Navigation active/search states do not use restrained aviation-blue accent');
 check(styles.includes('@import url("/assets/pilotdesk-navigation-2026.css");'),'Navigation stylesheet not loaded');
 check(styles.trim().endsWith('@import url("/assets/design-tokens.css");'),'Design tokens must remain final shared CSS authority');

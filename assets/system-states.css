@@ -21,3 +21,24 @@
 @keyframes pd-state-online{0%,100%{opacity:.25}50%{opacity:1}}
 html[data-pd-reduce-motion="1"] *,html[data-pd-reduce-motion="1"] *:before,html[data-pd-reduce-motion="1"] *:after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
 @media(prefers-reduced-motion:reduce){.pd-state-loading .pd-state-instrument i{animation:none!important}}
+
+/* Apply the same calm state language to legacy surfaces while they migrate to PilotDeskState. */
+:where(.pd-empty,.pd-prep-empty,.pd-gap-error,.wx-error,.pd-error){
+  border:1px solid var(--line)!important;border-radius:0!important;background:#080b0e!important;
+  color:var(--muted)!important;box-shadow:none!important;padding:12px 13px!important
+}
+:where(.wx-skeleton,.pd-gap-loading){
+  position:relative;border:1px solid var(--line)!important;border-radius:0!important;background:#080b0e!important;
+  color:var(--muted)!important;box-shadow:inset 2px 0 0 var(--accent)!important;padding:12px 13px!important
+}
+:where(.wx-error,.pd-error){border-color:#5f3e42!important;box-shadow:inset 2px 0 0 var(--pd-danger)!important}
+footer{
+  display:grid!important;grid-template-columns:minmax(180px,.8fr) auto minmax(260px,1.1fr)!important;
+  align-items:start!important;gap:24px!important;padding:24px!important;border-top:1px solid var(--line)!important;
+  max-width:1240px!important;margin:26px auto 0!important;background:transparent!important
+}
+footer>div:first-child b{font-size:13px!important}footer>div:first-child p{margin:3px 0 0!important;font-size:9px!important;color:var(--muted2)!important}
+footer .footer-links{display:flex!important;gap:16px!important;flex-wrap:wrap!important;justify-content:center!important}
+footer .footer-links a{font-size:9px!important;color:var(--muted)!important}
+footer>.fine{margin:0!important;text-align:right!important;font-size:8.5px!important;line-height:1.5!important}
+@media(max-width:760px){footer{grid-template-columns:1fr!important;gap:12px!important}footer .footer-links{justify-content:flex-start!important}footer>.fine{text-align:left!important}}

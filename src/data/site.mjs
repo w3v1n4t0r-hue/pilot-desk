@@ -99,14 +99,10 @@ export const homeCategories = [
 ];
 
 export const footerLinks = [
-  ['/pricing.html', 'Plans'],
-  ['/for-flight-schools.html', 'Flight Schools'],
   ['/about.html', 'About'],
-  ['/sources.html', 'Sources'],
-  ['/legal/privacy.html', 'Privacy'],
+  ['/feedback.html', 'Contact'],
   ['/legal/terms.html', 'Terms'],
-  ['/feedback.html', 'Feedback'],
-  ['/legal/safety.html', 'Safety']
+  ['/legal/privacy.html', 'Privacy']
 ];
 
 import inventory from './inventory.json' with { type: 'json' };

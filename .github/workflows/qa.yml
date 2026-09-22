@@ -57,6 +57,8 @@ jobs:
         run: node qa/claude-step4-weather-smoke.mjs
       - name: Run Claude Step 5 Learn and Daily checks
         run: node qa/claude-step5-learn-daily-smoke.mjs
+      - name: Run Claude Step 6 account pricing and states checks
+        run: node qa/claude-step6-account-pricing-states-smoke.mjs
       - name: Audit every built page surface
         run: node qa/page-surface-smoke.mjs
       - name: Run five-pass copy and design audit

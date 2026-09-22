@@ -68,3 +68,66 @@
 
 
 .pd-account-billing{margin:18px 0;padding:18px;border:1px solid var(--line);background:#0b0b0d;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px))}.pd-account-billing h2{margin:3px 0 0}.pd-account-billing>p{margin:8px 0 0;color:var(--muted);font-size:11px;line-height:1.55}.pd-account-actions button:disabled{opacity:.42;cursor:not-allowed}.pd-account-actions a.pd-text-button{background:transparent;border:0;text-decoration:underline}.pd-account-billing [aria-busy="true"]{opacity:.55;pointer-events:none}
+
+/* Claude Step 6 — account home base, not a gamified dashboard. */
+.pd-account-hero{grid-template-columns:minmax(0,1.5fr) minmax(250px,.5fr)!important}
+.pd-account-promise,.pd-account-card,.pd-owner,.pd-account-dashboard,.pd-account-billing,.pd-account-settings,.pd-account-home-panel{
+  clip-path:none!important;border-radius:0!important;box-shadow:none!important
+}
+.pd-account-homebase{margin:18px 0;padding:0}
+.pd-account-homebase-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.pd-account-home-panel{min-width:0;min-height:156px;padding:14px;background:#080b0e;border:0!important}
+.pd-account-home-panel[data-state="warning"]{box-shadow:inset 2px 0 0 var(--pd-warn)!important}
+.pd-account-home-panel[data-state="error"]{box-shadow:inset 2px 0 0 var(--pd-danger)!important}
+.pd-account-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.pd-account-panel-head small{display:block;color:var(--accent)!important;font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:.09em!important}
+.pd-account-panel-head h3{margin:5px 0 0;font-size:14px}
+.pd-account-panel-head>a{font-size:9px;color:var(--muted)}
+.pd-account-panel-value{color:var(--text);font:700 12px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;text-align:right}
+.pd-account-home-panel>p{margin:10px 0 0;color:var(--muted);font-size:9.5px;line-height:1.5}
+.pd-account-panel-link{display:inline-block;margin-top:10px;color:var(--accent);font-size:9px;font-weight:700}
+.pd-account-activity-list{display:grid;margin-top:8px}
+.pd-account-activity-list a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid #222a31;color:var(--text)}
+.pd-account-activity-list a:first-child{border-top:0}
+.pd-account-activity-list span{min-width:0}.pd-account-activity-list b,.pd-account-activity-list small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-account-activity-list b{font-size:10px}.pd-account-activity-list small{margin-top:2px;color:var(--muted2);font-size:7px!important}
+.pd-account-activity-list em{flex:0 0 auto;color:var(--muted2);font-size:8px;font-style:normal}
+
+.pd-account-dashboard{padding:14px!important;background:#07090b!important}
+.pd-account-dashboard-grid{display:grid!important;grid-template-columns:1fr!important;gap:1px!important;background:var(--line)!important}
+.pd-account-dashboard-card{
+  display:grid!important;grid-template-columns:170px minmax(150px,.65fr) minmax(0,1fr) auto!important;
+  align-items:center!important;gap:12px!important;padding:10px 12px!important;border:0!important;background:#080b0e!important
+}
+.pd-account-dashboard-card:hover{background:var(--panel2)!important;border:0!important}
+.pd-account-dashboard-card small{margin:0!important}.pd-account-dashboard-card b{font-size:11px!important}
+.pd-account-dashboard-card span{font-size:9px!important}.pd-account-dashboard-card em{margin:0!important;padding:0!important;white-space:nowrap;font-size:9px!important}
+
+.pd-account-settings{margin:18px 0;padding:14px;border:1px solid var(--line);background:#07090b}
+.pd-account-switches{display:grid;gap:1px;background:var(--line)}
+.pd-switch-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;min-height:58px;padding:10px 12px;background:#080b0e;cursor:pointer}
+.pd-switch-row span{min-width:0}.pd-switch-row b,.pd-switch-row small{display:block}
+.pd-switch-row b{font-size:10.5px}.pd-switch-row small{margin-top:2px;color:var(--muted2);font-size:8.5px!important;line-height:1.4}
+.pd-switch-row input[role="switch"]{
+  appearance:none;width:38px;height:20px;min-height:20px;padding:0;border:1px solid var(--line-hi)!important;background:#050709!important;position:relative;cursor:pointer
+}
+.pd-switch-row input[role="switch"]:after{content:"";position:absolute;left:3px;top:3px;width:12px;height:12px;background:#69747d;transition:left .12s ease,background .12s ease}
+.pd-switch-row input[role="switch"]:checked{border-color:var(--accent)!important;background:#09131a!important}
+.pd-switch-row input[role="switch"]:checked:after{left:21px;background:var(--accent)}
+
+.pd-user-head{margin-bottom:12px!important}.pd-user-avatar{clip-path:none!important}
+#pdProfileForm{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+#pdProfileForm:before{content:"PROFILE";display:block;margin-bottom:4px;color:var(--accent);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em}
+.pd-account-roadmap{padding:14px;border-top:1px solid var(--line);background:#07090b}
+.pd-account-roadmap-grid{gap:1px!important;background:var(--line)!important}
+.pd-account-roadmap-grid>div{border:0!important;background:#080b0e!important}
+
+@media(max-width:980px){
+  .pd-account-homebase-grid{grid-template-columns:1fr}
+  .pd-account-dashboard-card{grid-template-columns:130px minmax(130px,.6fr) minmax(0,1fr) auto!important}
+}
+@media(max-width:680px){
+  .pd-account-dashboard-card{grid-template-columns:1fr!important;gap:3px!important}
+  .pd-account-dashboard-card em{margin-top:4px!important}
+  .pd-switch-row{grid-template-columns:minmax(0,1fr) auto}
+}

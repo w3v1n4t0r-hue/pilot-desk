@@ -1,10 +1,11 @@
 (()=>{
 'use strict';
 const $=s=>document.querySelector(s);
-const note=(msg,kind='')=>{const el=$('#pdPricingBillingStatus');if(!el)return;el.textContent=msg;el.dataset.kind=kind;el.hidden=!msg};
+const note=(msg,kind='')=>{const el=$('#pdPricingBillingStatus');if(!el)return;if(!msg){el.hidden=true;el.replaceChildren();return}el.hidden=false;const type=kind==='bad'?'error':kind==='warn'?'warning':kind==='good'?'empty':'loading';if(window.PilotDeskState?.render)window.PilotDeskState.render(el,{kind:type,title:kind==='bad'?'Billing unavailable':kind==='warn'?'Billing note':kind==='good'?'Billing status':'Checking billing',detail:msg});else{el.textContent=msg;el.dataset.kind=kind}};
 async function render(){
  const b=window.PilotDeskBilling;if(!b)return;const s=await b.ready;
- const pro=$('#pdStartPro'),school=$('#pdStartSchool');
+ const pro=$('#pdStartPro'),school=$('#pdStartSchool'),title=$('#pdPricingCurrentTitle');
+ if(title)title.textContent=s.isSchool?'Flight School plan active':s.isPro?'PilotDesk Pro active':'Free tools remain available';
  if(s.isPro){
   if(pro){pro.textContent=s.isSchool?'Included with Flight School':'Manage Pro';pro.dataset.action='portal'}
   if(school&&s.isSchool){school.textContent='Manage Flight School';school.dataset.action='portal'}

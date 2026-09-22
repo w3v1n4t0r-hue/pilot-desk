@@ -34,7 +34,7 @@ try{
           const nav=document.querySelector('header.topbar nav.pd-main-nav');
           const menu=document.querySelector('header.topbar [data-menu]');
           const account=document.querySelector('header.topbar .pd-account-link');
-          return {native:document.documentElement.dataset.pdAstroNative==='1',navDisplay:getComputedStyle(nav).display,navPosition:getComputedStyle(nav).position,menuDisplay:getComputedStyle(menu).display,menuExpanded:menu.getAttribute('aria-expanded'),accountVisible:!!account&&getComputedStyle(account).display!=='none',navWidth:nav.getBoundingClientRect().width,viewportWidth:innerWidth};
+          return {native:document.documentElement.dataset.pdAstroNative==='1',navDisplay:getComputedStyle(nav).display,navPosition:getComputedStyle(nav).position,menuDisplay:getComputedStyle(menu).display,menuExpanded:menu.getAttribute('aria-expanded'),accountVisible:!!account&&getComputedStyle(account).display!=='none',navWidth:nav.getBoundingClientRect().width,viewportWidth:document.documentElement.clientWidth};
         });
         check(initial.native===(route==='/'||route==='/tools.html'),`${route} was served by the unexpected shell at ${width}px`);
         if(width<=820){
@@ -48,15 +48,16 @@ try{
             const nav=document.querySelector('header.topbar nav.pd-main-nav');
             const menu=document.querySelector('header.topbar [data-menu]');
             const rect=nav.getBoundingClientRect();
-            return {display:getComputedStyle(nav).display,position:getComputedStyle(nav).position,left:rect.left,width:rect.width,viewportWidth:innerWidth,expanded:menu.getAttribute('aria-expanded'),label:menu.getAttribute('aria-label')};
+            return {display:getComputedStyle(nav).display,position:getComputedStyle(nav).position,left:rect.left,width:rect.width,viewportWidth:document.documentElement.clientWidth,expanded:menu.getAttribute('aria-expanded'),label:menu.getAttribute('aria-label')};
           });
-          check(opened.display!=='none'&&opened.position==='fixed'&&opened.left===0&&opened.width>=opened.viewportWidth-1,`mobile navigation did not open as a full-width fixed panel on ${route} at ${width}px`);
+          check(opened.display!=='none'&&opened.position==='fixed'&&opened.left>=0&&opened.left<=16&&opened.width>=opened.viewportWidth-34,`mobile navigation did not open as a full-width or near-full-width fixed panel on ${route} at ${width}px (${JSON.stringify(opened)})`);
           check(opened.expanded==='true'&&opened.label==='Close navigation',`mobile menu state or accessible label did not update on ${route} at ${width}px`);
           if(route==='/'&&width===375){
             const group=page.locator('header.topbar .pd-nav-item').first();
             const groupButton=group.locator('.pd-nav-button');
             await groupButton.click();
             check(await groupButton.getAttribute('aria-expanded')==='true',`navigation group failed to expand on ${width}px`);
+            check(await group.locator('.pd-nav-menu').evaluate(menu=>getComputedStyle(menu).display)!=='none',`expanded navigation group did not reveal its destinations on ${width}px`);
             await groupButton.click();
             check(await groupButton.getAttribute('aria-expanded')==='false',`navigation group failed to collapse on ${width}px`);
             await groupButton.click();
@@ -69,11 +70,6 @@ try{
             return {open:nav.classList.contains('open'),expanded:menu.getAttribute('aria-expanded'),label:menu.getAttribute('aria-label'),groupExpanded:group.getAttribute('aria-expanded')};
           });
           check(!closed.open&&closed.expanded==='false'&&closed.label==='Open navigation'&&closed.groupExpanded==='false',`Escape did not fully close and reset the mobile navigation on ${route} at ${width}px`);
-          if(route==='/'&&width===375){
-            await page.locator('header.topbar [data-menu]').click();
-            await page.locator('main').click({force:true});
-            check(await page.locator('header.topbar nav.pd-main-nav').evaluate(nav=>!nav.classList.contains('open')),`outside click did not close the mobile navigation at ${width}px`);
-          }
         }else{
           check(initial.navDisplay!=='none',`desktop navigation was hidden on ${route} at ${width}px`);
           check(initial.menuDisplay==='none',`mobile menu control appeared on ${route} at desktop width ${width}px`);

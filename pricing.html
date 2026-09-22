@@ -17,22 +17,28 @@
 <main class="shell pd-pricing" id="main-content">
 <section class="pd-pricing-hero"><span class="eyebrow">PLANS</span><h1>Use the core tools free. Pro is $5/month.</h1><p>You can use the calculators, weather, route planning, Daily, and training pages without paying. Pro is for signed-in pilots who want aircraft and saved-flight backups tied to their account, plus an ad-free experience.</p><div class="pd-pricing-note"><b>Stripe billing</b><span>This page checks the billing backend before enabling checkout.</span></div><div class="pd-pricing-status" id="pdPricingBillingStatus" hidden aria-live="polite"></div></section>
 <section class="pd-plan-grid" aria-label="PilotDesk plans">
-<article class="pd-plan-card">
-<small>FREE</small><h2>$0</h2><p class="pd-plan-sub">For any pilot who needs a tool right now.</p>
-<ul><li>Core aviation calculators</li><li>Weather and airport tools</li><li>Route planning basics</li><li>PilotDesk Daily</li><li>Training hubs and FAA-source links</li><li>Written Prep core modes</li><li>Local aircraft and saved-flight tools</li><li>Free account sync for Daily, Written Prep, and your pilot profile</li></ul>
-<a class="pd-btn secondary" href="/tools.html" data-pd-pricing-cta="Free">Use PilotDesk Free</a>
-</article>
-<article class="pd-plan-card featured">
-<small>PILOTDESK PRO</small><h2>$5<span>/month</span></h2><p class="pd-plan-sub">For pilots who want account-backed planning data and no ads while signed in.</p>
-<ul><li>Everything in Free</li><li>Back up aircraft profiles to your PilotDesk account</li><li>Back up saved flights to your PilotDesk account</li><li>Restore that backup on another device</li><li>Ad-free signed-in experience</li><li>Stripe billing portal for cancellation and payment management</li></ul>
-<a class="pd-btn" id="pdStartPro" href="/account.html?next=%2Fpricing.html" data-pd-checkout-plan="pro" data-pd-pricing-cta="Start Pro">Start PilotDesk Pro</a><p class="fine">Cloud backup is a manual backup/restore today, not live two-way sync. Checkout is handled by Stripe.</p>
-</article>
-<article class="pd-plan-card">
-<small>FLIGHT SCHOOL · IN DEVELOPMENT</small><h2>Not for sale yet</h2><p class="pd-plan-sub">We are still testing what instructors and schools actually need.</p>
-<ul><li>Public calculators and study pages remain available now</li><li>Embeddable calculators are already available</li><li>Future school features are being tested with instructors before pricing is finalized</li></ul>
-<a class="pd-btn secondary" href="/feedback.html?topic=flight-school" data-pd-pricing-cta="School Interest">Tell us what your school needs</a><p class="fine">There is no public Flight School checkout yet.</p>
-</article>
+<div class="pd-plan-spec">
+<table>
+<thead><tr><th scope="col">Feature</th><th scope="col">Free</th><th scope="col">Pro · $5/month</th></tr></thead>
+<tbody>
+<tr><th scope="row">Core aviation calculators</th><td class="yes">Included</td><td class="yes">Included</td></tr>
+<tr><th scope="row">Weather, airport, and route-planning tools</th><td class="yes">Included</td><td class="yes">Included</td></tr>
+<tr><th scope="row">Daily, Written Prep, and training pages</th><td class="yes">Included</td><td class="yes">Included</td></tr>
+<tr><th scope="row">Free-account progress sync</th><td class="yes">Daily · Written Prep · profile</td><td class="yes">Daily · Written Prep · profile</td></tr>
+<tr><th scope="row">Aircraft profiles on this device</th><td class="yes">Included</td><td class="yes">Included</td></tr>
+<tr><th scope="row">Saved flights on this device</th><td class="yes">Included</td><td class="yes">Included</td></tr>
+<tr><th scope="row">Cloud backup / restore for aircraft + saved flights</th><td class="no">—</td><td class="yes">Included</td></tr>
+<tr><th scope="row">Ads while signed in</th><td>Shown</td><td class="yes">Removed</td></tr>
+<tr><th scope="row">Billing management</th><td class="no">—</td><td class="yes">Stripe portal</td></tr>
+</tbody>
+</table>
+</div>
+<div class="pd-plan-actions">
+<div><h2>Free</h2><p>Use the core PilotDesk tools without paying. A free account is optional unless you want saved study progress.</p><a class="pd-btn secondary" href="/tools.html" data-pd-pricing-cta="Free">Use PilotDesk Free</a></div>
+<div><h2>Pro · $5/month</h2><p>Add manual cloud backup/restore for aircraft and saved flights, and remove ads while signed in.</p><a class="pd-btn" id="pdStartPro" href="/account.html?next=%2Fpricing.html" data-pd-checkout-plan="pro" data-pd-pricing-cta="Start Pro">Start PilotDesk Pro</a><p class="fine">Cloud backup is manual backup/restore today, not live two-way sync. Checkout is handled by Stripe.</p></div>
+</div>
 </section>
+<section class="pd-pricing-principles"><div><span class="eyebrow">FLIGHT SCHOOL · IN DEVELOPMENT</span><h2>Not for sale yet.</h2><p>PilotDesk is still testing what instructors and schools actually need. Public calculators, study pages, and embeddable calculators remain available now.</p><a href="/feedback.html?topic=flight-school">Tell us what your school needs →</a></div><div><span class="eyebrow">ACCOUNT MODEL</span><h2>Pay for portability, not basic access.</h2><p>Local aircraft and saved-flight tools remain usable on Free. Pro adds account-backed backup/restore and an ad-free signed-in experience.</p></div></section>
 <section class="pd-pricing-principles"><div><span class="eyebrow">FREE</span><h2>The calculators and study pages stay usable without Pro.</h2><p>That includes core calculators, weather and airport tools, route planning, Daily, Written Prep, source links, and the main training pages.</p></div><div><span class="eyebrow">PRO TODAY</span><h2>Cloud backup and an ad-free signed-in account.</h2><p>Pro can back up the aircraft and saved flights from this browser to your account, restore them on another device, and remove ads while you are signed in.</p></div></section>
 <section class="pd-pricing-faq"><h2>Billing questions</h2><details><summary>Can I use PilotDesk without paying?</summary><p>Yes. The core site remains free.</p></details><details><summary>Will existing free features suddenly disappear?</summary><p>No. Core calculators, weather, route planning, source links, and basic study tools remain available without Pro.</p></details><details><summary>What does Pro add right now?</summary><p>Manual cloud backup/restore for aircraft and saved flights, plus an ad-free signed-in experience.</p></details><details><summary>How is paid access controlled?</summary><p>Stripe manages payment and subscription changes. PilotDesk grants paid access only after the server receives a verified subscription event, so changing browser storage or profile fields does not grant Pro access.</p></details><details><summary>Can I cancel or update my card?</summary><p>Yes. Active paid accounts can open Stripe billing management from the PilotDesk account page.</p></details></section>
 </main>

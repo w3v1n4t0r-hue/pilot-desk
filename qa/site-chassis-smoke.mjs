@@ -15,7 +15,7 @@ const need=(text,needle,label)=>{if(!text.includes(needle))failures.push(`${labe
 
 for(const needle of ['data-pd-astro-native="1"','<Header />','<Footer />','class="shell"','id="main-content"','/assets/styles.css','/assets/app-bootstrap.js'])need(layout,needle,'BaseLayout.astro');
 need(header,'data-pd-astro-shell','Header.astro');need(header,'navSections.map','Header.astro');need(header,'pd-header-actions','Header.astro');need(header,'aria-expanded="false"','Header.astro');
-need(footer,'footerLinks.map','Footer.astro');need(footer,'Planning aid only. Verify operational information with current approved sources.','Footer.astro');
+need(footer,'footerLinks.map','Footer.astro');need(footer,'PilotDesk supplements, but does not replace, official flight planning, weather, aircraft, regulatory, or operational sources.','Footer.astro');
 
 for(const selector of ['.shell{','.topbar{','.pd-main-nav{','.pd-nav-menu{','.pd-header-actions{','.hero,','.pd-hub-grid{','.pd-hub-card','.pd-panel','footer{'])need(experience,selector,'experience.css');
 for(const responsive of ['@media(max-width:800px)','@media(max-width:480px)','.pd-main-nav.open'])need(experience,responsive,'experience.css');

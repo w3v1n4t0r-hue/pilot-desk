@@ -3,6 +3,7 @@
 const SUPABASE_URL='https://hqqgcfiaxcrzyuhtkzqg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Mj4GgPXqlild6Z_4k47Ypg_TeUvlyfQ';
 const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const state={client:null,session:null,profile:null,billing:null};
 const status=(msg,kind='')=>{const el=$('#pdAccountStatus');if(!el)return;el.textContent=msg;el.dataset.kind=kind;el.hidden=!msg};
 const show=(sel,on)=>$(sel)?.classList.toggle('pd-account-hidden',!on);
@@ -35,7 +36,7 @@ function ensureWrittenPrepCta(){
 
 function localJson(key,fallback=[]){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
 function localSetting(key,fallback='1'){try{return localStorage.getItem(key)??fallback}catch{return fallback}}
-function renderState(host,opts){const target=typeof host==='string'?$(host):host;if(!target)return;const api=window.PilotDeskState;if(api?.render)return api.render(target,opts);const k=opts.kind||'empty';target.innerHTML=`<div class="pd-state pd-state-${k}"><span class="pd-state-instrument" aria-hidden="true"><i></i><i></i><i></i></span><div><b>${String(opts.title||'')}</b><span>${String(opts.detail||'')}</span>${opts.actionLabel&&opts.actionHref?`<a class="pd-state-action" href="${opts.actionHref}">${opts.actionLabel} →</a>`:''}</div></div>`}
+function renderState(host,opts){const target=typeof host==='string'?$(host):host;if(!target)return;const api=window.PilotDeskState;if(api?.render)return api.render(target,opts);const k=opts.kind||'empty';target.innerHTML=`<div class="pd-state pd-state-${k}"><span class="pd-state-instrument" aria-hidden="true"><i></i><i></i><i></i></span><div><b>${esc(opts.title||'')}</b><span>${esc(opts.detail||'')}</span>${opts.actionLabel&&opts.actionHref?`<a class="pd-state-action" href="${esc(opts.actionHref)}">${esc(opts.actionLabel)} →</a>`:''}</div></div>`}
 function relativeTime(ts){const n=Number(ts);if(!Number.isFinite(n))return'';const d=Math.max(0,Date.now()-n),m=Math.floor(d/60000),h=Math.floor(m/60),days=Math.floor(h/24);return m<2?'just now':m<60?`${m} min ago`:h<24?`${h} hr ago`:days===1?'yesterday':`${days} days ago`}
 function trainingPrepTrack(profile){const map={ppl:'ppl',ira:'ira',cpl:'cpl',multi:'cpl',cfi:'cfi',cfii:'cfii',atp:'atp'};if(localSetting('pd-setting-goal-study','1')==='1'&&map[profile?.training_goal])return map[profile.training_goal];try{return ['ppl','ira','cpl','cfi','cfii','atp'].includes(localStorage.getItem('pd-written-track'))?localStorage.getItem('pd-written-track'):'ppl'}catch{return'ppl'}}
 function renderRecentActivity(){
@@ -44,7 +45,7 @@ function renderRecentActivity(){
  const flights=localJson('pd-saved-flights',[]).map(x=>({title:x.name||x.route||'Saved flight',href:'/route-planner.html?flight='+encodeURIComponent(x.id||''),at:Number(x.updatedAt||x.createdAt)||0,type:'FLIGHT'}));
  const items=[...rec,...flights].filter(x=>x.at).sort((a,b)=>b.at-a.at).slice(0,4);
  if(!items.length){renderState(host,{kind:'empty',title:'No recent device activity',detail:'Use a calculator or save a flight and it will appear here.',actionLabel:'Open calculators',actionHref:'/tools.html'});return}
- host.innerHTML='<div class="pd-account-panel-head"><div><small>RECENT ACTIVITY</small><h3>Continue from this device</h3></div><a href="/history.html">History →</a></div><div class="pd-account-activity-list">'+items.map(x=>`<a href="${x.href}"><span><b>${x.title}</b><small>${x.type}</small></span><em>${relativeTime(x.at)}</em></a>`).join('')+'</div>';
+ host.innerHTML='<div class="pd-account-panel-head"><div><small>RECENT ACTIVITY</small><h3>Continue from this device</h3></div><a href="/history.html">History →</a></div><div class="pd-account-activity-list">'+items.map(x=>`<a href="${esc(x.href)}"><span><b>${esc(x.title)}</b><small>${esc(x.type)}</small></span><em>${esc(relativeTime(x.at))}</em></a>`).join('')+'</div>';
 }
 function daysUntilReminder(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(String(v||'')))return null;const t=new Date(v+'T12:00:00'),n=new Date();n.setHours(12,0,0,0);return Math.ceil((t-n)/86400000)}
 function renderCurrencyReminder(){
@@ -59,7 +60,7 @@ async function renderPrepProgress(profile){
  try{const url=new URL(SUPABASE_URL+'/functions/v1/written-prep');url.searchParams.set('track',track);url.searchParams.set('difficulty','all');const r=await fetch(url,{headers:edgeHeaders(),cache:'no-store'}),d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Written Prep progress is unavailable.');
  const answered=Number(d.totalAnswers||0),accuracy=Number(d.accuracy||0),missed=Number(d.missed||0),weak=d.skillAreas?.[0]?.area||'No measured weak subject yet';
  if(!answered){renderState(host,{kind:'empty',title:(names[track]||track.toUpperCase())+' Written Prep',detail:'No saved answers yet for this rating.',actionLabel:'Start a session',actionHref:'/written-prep.html?track='+encodeURIComponent(track)});return}
- host.innerHTML=`<div class="pd-account-panel-head"><div><small>WRITTEN PREP · ${(names[track]||track).toUpperCase()}</small><h3>${accuracy}% accuracy</h3></div><strong class="pd-account-panel-value">${missed} missed</strong></div><p>Lowest measured subject: <b>${weak}</b>. ${answered} saved answer${answered===1?'':'s'}.</p><a class="pd-account-panel-link" href="/written-prep.html?track=${encodeURIComponent(track)}">Continue Written Prep →</a>`;
+ host.innerHTML=`<div class="pd-account-panel-head"><div><small>WRITTEN PREP · ${esc((names[track]||track).toUpperCase())}</small><h3>${accuracy}% accuracy</h3></div><strong class="pd-account-panel-value">${missed} missed</strong></div><p>Lowest measured subject: <b>${esc(weak)}</b>. ${answered} saved answer${answered===1?'':'s'}.</p><a class="pd-account-panel-link" href="/written-prep.html?track=${encodeURIComponent(track)}">Continue Written Prep →</a>`;
  }catch(e){renderState(host,{kind:'error',title:'Written Prep unavailable',detail:e.message||'Could not load saved study progress.',actionLabel:'Open Written Prep',actionHref:'/written-prep.html?track='+encodeURIComponent(track)})}
 }
 function renderAccountSettings(){

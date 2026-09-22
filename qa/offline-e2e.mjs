@@ -21,6 +21,82 @@ try{
   const home=await page.goto(`${base}/`,{waitUntil:'load',timeout:30000});
   check(home?.ok(),`homepage failed before offline install (${home?.status()||'no response'})`);
 
+  const navigationPages=['/','/tools.html','/route-planner.html','/weather.html','/written-prep.html','/account.html'];
+  const navigationWidths=[375,390,430,768,820,821,1024,1365];
+  for(const route of navigationPages){
+    for(const width of navigationWidths){
+      await page.setViewportSize({width,height:844});
+      const response=await page.goto(`${base}${route}`,{waitUntil:'domcontentloaded',timeout:30000});
+      check(response?.ok(),`navigation QA route ${route} failed at ${width}px (${response?.status()||'no response'})`);
+      try{
+        await page.waitForFunction(()=>document.querySelectorAll('header.topbar nav.pd-main-nav [data-pd-nav-item]').length===4,{timeout:15000});
+        const initial=await page.evaluate(()=>{
+          const nav=document.querySelector('header.topbar nav.pd-main-nav');
+          const menu=document.querySelector('header.topbar [data-menu]');
+          const account=document.querySelector('header.topbar .pd-account-link');
+          return {native:document.documentElement.dataset.pdAstroNative==='1',navDisplay:getComputedStyle(nav).display,navPosition:getComputedStyle(nav).position,menuDisplay:getComputedStyle(menu).display,menuExpanded:menu.getAttribute('aria-expanded'),accountVisible:!!account&&getComputedStyle(account).display!=='none',navWidth:nav.getBoundingClientRect().width,viewportWidth:innerWidth};
+        });
+        check(initial.native===(route==='/'||route==='/tools.html'),`${route} was served by the unexpected shell at ${width}px`);
+        if(width<=820){
+          check(initial.navDisplay==='none',`mobile navigation was visible before opening on ${route} at ${width}px`);
+          check(initial.menuDisplay!=='none',`mobile menu control was hidden on ${route} at ${width}px`);
+          check(initial.menuExpanded==='false',`mobile menu did not start collapsed on ${route} at ${width}px`);
+          check(initial.accountVisible,`account control was hidden on ${route} at ${width}px`);
+          await page.locator('header.topbar [data-menu]').click();
+          await page.waitForFunction(()=>document.querySelector('header.topbar nav.pd-main-nav')?.classList.contains('open'),{timeout:5000});
+          const opened=await page.evaluate(()=>{
+            const nav=document.querySelector('header.topbar nav.pd-main-nav');
+            const menu=document.querySelector('header.topbar [data-menu]');
+            const rect=nav.getBoundingClientRect();
+            return {display:getComputedStyle(nav).display,position:getComputedStyle(nav).position,left:rect.left,width:rect.width,viewportWidth:innerWidth,expanded:menu.getAttribute('aria-expanded'),label:menu.getAttribute('aria-label')};
+          });
+          check(opened.display!=='none'&&opened.position==='fixed'&&opened.left===0&&opened.width>=opened.viewportWidth-1,`mobile navigation did not open as a full-width fixed panel on ${route} at ${width}px`);
+          check(opened.expanded==='true'&&opened.label==='Close navigation',`mobile menu state or accessible label did not update on ${route} at ${width}px`);
+          if(route==='/'&&width===375){
+            const group=page.locator('header.topbar .pd-nav-item').first();
+            const groupButton=group.locator('.pd-nav-button');
+            await groupButton.click();
+            check(await groupButton.getAttribute('aria-expanded')==='true',`navigation group failed to expand on ${width}px`);
+            await groupButton.click();
+            check(await groupButton.getAttribute('aria-expanded')==='false',`navigation group failed to collapse on ${width}px`);
+            await groupButton.click();
+          }
+          await page.keyboard.press('Escape');
+          const closed=await page.evaluate(()=>{
+            const nav=document.querySelector('header.topbar nav.pd-main-nav');
+            const menu=document.querySelector('header.topbar [data-menu]');
+            const group=document.querySelector('header.topbar .pd-nav-button');
+            return {open:nav.classList.contains('open'),expanded:menu.getAttribute('aria-expanded'),label:menu.getAttribute('aria-label'),groupExpanded:group.getAttribute('aria-expanded')};
+          });
+          check(!closed.open&&closed.expanded==='false'&&closed.label==='Open navigation'&&closed.groupExpanded==='false',`Escape did not fully close and reset the mobile navigation on ${route} at ${width}px`);
+          if(route==='/'&&width===375){
+            await page.locator('header.topbar [data-menu]').click();
+            await page.locator('main').click({force:true});
+            check(await page.locator('header.topbar nav.pd-main-nav').evaluate(nav=>!nav.classList.contains('open')),`outside click did not close the mobile navigation at ${width}px`);
+          }
+        }else{
+          check(initial.navDisplay!=='none',`desktop navigation was hidden on ${route} at ${width}px`);
+          check(initial.menuDisplay==='none',`mobile menu control appeared on ${route} at desktop width ${width}px`);
+        }
+      }catch(error){
+        check(false,`navigation QA could not verify ${route} at ${width}px: ${error.message}`);
+      }
+    }
+  }
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(`${base}/`,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.waitForFunction(()=>document.querySelectorAll('header.topbar nav.pd-main-nav [data-pd-nav-item]').length===4,{timeout:15000});
+  await page.locator('header.topbar [data-menu]').click();
+  await page.locator('header.topbar .pd-nav-item[data-section="Weather"] .pd-nav-button').click();
+  const weatherDestination=page.locator('header.topbar .pd-nav-item[data-section="Weather"] a[href="/weather.html"]');
+  check(await weatherDestination.count()===1,'Weather navigation destination missing from its mobile group');
+  if(await weatherDestination.count()){
+    await weatherDestination.click();
+    await page.waitForURL(`${base}/weather.html`,{timeout:15000});
+    await page.waitForFunction(()=>document.querySelector('header.topbar [data-menu]')?.getAttribute('aria-expanded')==='false',{timeout:10000});
+  }
+
+
   await page.evaluate(async()=>{
     await navigator.serviceWorker.ready;
     if(navigator.serviceWorker.controller)return;

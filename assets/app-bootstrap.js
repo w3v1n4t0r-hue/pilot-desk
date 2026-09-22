@@ -1,4 +1,4 @@
-(()=>{const s=document.createElement('script');s.src='/assets/system-states.js';s.defer=true;document.head.appendChild(s)})();
+(()=>{if(document.querySelector('script[src*="/assets/system-states.js"]'))return;const s=document.createElement('script');s.src='/assets/system-states.js';s.defer=true;document.head.appendChild(s)})();
 (()=>{
 'use strict';
 if(window.__pilotDeskAppBootstrap)return;window.__pilotDeskAppBootstrap=true;

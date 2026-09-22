@@ -301,6 +301,56 @@ const src={
    ['reduce workload',['automation','workload','simplify','vectors']],
    ['exit',['approach','divert','land','declare']]
   ],probes:['How do you make the learner prove which instrument is wrong?','What failure scenario is complex enough to teach but not so complex it becomes theater?','What practical exit would you want the learner to choose early?']}
+ ]},
+ atp:{title:'ATP / Type Rating',standard:'FAA-S-ACS-11A Airline Transport Pilot and Type Rating Airplane ACS',hub:'/training/atp.html',items:[
+  {id:'systems',title:'Transport aircraft systems',area:'Systems',prompt:'Choose a major transport-aircraft system and explain its normal architecture, indications, redundancy, and what changes after a significant failure.',source:'FAA-S-ACS-11A · AFM/FCOM/QRH',concepts:[
+   ['architecture',['system','source','bus','pump','valve','channel','redundancy']],
+   ['indications',['indication','status','warning','caution','synoptic']],
+   ['failure effect',['failure','degraded','lost','alternate']],
+   ['crew action',['checklist','qrh','memory','landing','dispatch']]
+  ],probes:['Which indications would confirm the failure instead of merely suggesting it?','What redundancy remains after the first failure?','Which action is memory, which belongs in the QRH, and why?']},
+  {id:'performance',title:'Transport performance and limitations',area:'Performance',prompt:'Build the performance picture for a heavy departure and explain which numbers are legal limits versus operational margins.',source:'FAA-S-ACS-11A · AFM performance data · company procedures',concepts:[
+   ['takeoff data',['v1','vr','v2','takeoff distance','field length']],
+   ['weight limits',['structural','performance limited','maximum takeoff weight']],
+   ['environment',['temperature','pressure altitude','wind','runway']],
+   ['margin',['obstacle','climb','contaminated','margin']]
+  ],probes:['What can make the allowable takeoff weight lower than the structural maximum?','How does a runway or wind change affect the performance-limited weight?','Which number protects accelerate-stop capability?']},
+  {id:'highalt',title:'High-altitude aerodynamics',area:'High-Altitude Aerodynamics',prompt:'Explain the low-speed and high-speed buffet boundaries at altitude and what happens as the margin between them narrows.',source:'FAA-S-ACS-11A · FAA high-altitude aerodynamics guidance',concepts:[
+   ['low speed',['stall','angle of attack','low speed buffet']],
+   ['high speed',['mach','critical mach','shock','high speed buffet']],
+   ['coffin corner',['margin','narrow','altitude','weight']],
+   ['response',['speed','altitude','bank','load factor']]
+  ],probes:['Why does increased bank reduce the usable buffet margin?','Which boundary moves when weight changes?','What is the operational response if buffet margin becomes inadequate?']},
+  {id:'weather',title:'Air-carrier weather decision',area:'Weather',prompt:'Brief a transport-category flight where convection, icing, or destination weather is the controlling threat. Show the information that changes your plan.',source:'FAA-S-ACS-11A · Aviation Weather Handbook · current official weather',concepts:[
+   ['observed forecast',['metar','taf','forecast','trend']],
+   ['hazards',['convective','icing','turbulence','sigmet']],
+   ['dispatch plan',['alternate','fuel','route','escape']],
+   ['decision',['delay','reroute','divert','margin']]
+  ],probes:['Which weather information is strategic and which is tactical?','What changes the alternate or fuel plan?','What condition would make you reject the planned route before departure?']},
+  {id:'carrier',title:'Air-carrier operational rules',area:'Air Carrier Operations',prompt:'Explain how dispatch/release authority, alternates, fuel, and company specifications interact on a Part 121 flight.',source:'FAA-S-ACS-11A · 14 CFR Part 121 · operations specifications',concepts:[
+   ['release',['dispatch release','dispatcher','pic','joint responsibility']],
+   ['alternate',['alternate','operations specifications','weather minima']],
+   ['fuel',['fuel','reserve','alternate','contingency']],
+   ['company authority',['ops specs','manual','company procedure','regulation']]
+  ],probes:['What makes company alternate minima different from simply using published approach minima?','Who shares operational-control responsibility for the release?','Which source would you use when company procedures are more restrictive than the regulation?']},
+  {id:'crm',title:'CRM and threat management',area:'Human Factors / CRM',prompt:'The crew is rushed, the weather is deteriorating, and one crewmember notices a setup error. Describe how you want the cockpit to handle it.',source:'FAA-S-ACS-11A · FAA CRM / human-factors guidance',concepts:[
+   ['speak up',['challenge','speak','assert','concern']],
+   ['verify',['cross check','confirm','independent']],
+   ['workload',['workload','task saturation','slow down']],
+   ['decision',['threat','error','trap','go around','delay']]
+  ],probes:['What wording would make the concern unmistakable?','When does workload justify stopping the operation rather than pressing on?','How do you keep hierarchy from suppressing a valid safety concern?']},
+  {id:'instrument',title:'Transport instrument procedures',area:'Instrument Procedures',prompt:'Brief a complex arrival and approach, including automation mode awareness, altitude constraints, required navigation capability, and the missed approach.',source:'FAA-S-ACS-11A · AIM · current procedures · AFM/FCOM',concepts:[
+   ['procedure',['arrival','approach','constraint','minimums']],
+   ['automation',['mode','armed','active','fma']],
+   ['navigation',['rnav','rnp','waas','required']],
+   ['missed',['missed approach','go around','navigation','altitude']]
+  ],probes:['Which automation annunciation must be verified before relying on vertical guidance?','What makes a navigation specification operationally unavailable?','At what point would you discontinue an unstable or incorrectly configured approach?']},
+  {id:'emergency',title:'Transport emergency priorities',area:'Emergency Operations',prompt:'A significant system failure occurs in IMC at high workload. Explain the crew priorities from immediate control through diversion and landing.',source:'FAA-S-ACS-11A · AFM/QRH · company emergency procedures',concepts:[
+   ['control',['aviate','control','flight path','stabilize']],
+   ['identify',['identify','confirm','failure','indication']],
+   ['procedure',['memory item','qrh','checklist','ecam','eicas']],
+   ['plan',['divert','nearest suitable','fuel','weather','landing']]
+  ],probes:['What makes an airport suitable rather than merely nearest?','How should task sharing change after the failure?','Which condition would make you stop troubleshooting and commit to landing?']}
  ]}
 };
 window.PilotDeskCheckrideData=src;

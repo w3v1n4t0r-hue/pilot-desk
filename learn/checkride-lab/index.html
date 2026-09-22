@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PilotDesk Pro Checkride Lab | Adaptive Mock Oral</title>
-<meta name="description" content="PilotDesk Pro adaptive examiner practice, mock oral sessions, weak-area review, and downloadable checkride study packets for Private, Instrument, Commercial, Multi-Engine, CFI, and CFII.">
+<title>PilotDesk Pro Checkride Lab | Examiner Follow-Up Mock Oral</title>
+<meta name="description" content="PilotDesk Pro examiner follow-up practice, mock oral sessions, weak-area review, and downloadable checkride study packets for Private, Instrument, Commercial, Multi-Engine, CFI, and CFII.">
 <meta name="robots" content="noindex,follow"><meta name="theme-color" content="#08090b"><meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="/assets/styles.css"><link rel="stylesheet" href="/assets/checkride-lab.css"><link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
 <script defer src="/assets/site.js"></script><script defer src="/assets/billing.js"></script><script defer src="/assets/pro-access.js"></script><script defer src="/assets/checkride-lab-data.js"></script><script defer src="/assets/checkride-lab.js"></script>
@@ -16,13 +16,13 @@
 <div class="pd-lab-controls">
 <label>Rating<select id="pdLabTrack"><option value="private">Private Pilot</option><option value="instrument">Instrument Rating</option><option value="commercial">Commercial Pilot</option><option value="multi">Multi-Engine</option><option value="cfi">CFI</option><option value="cfii">CFII</option></select></label>
 <div class="pd-lab-mode-grid">
-<button type="button" data-lab-mode="adaptive"><small>ADAPTIVE DRILL</small><b>Examiner conversation</b><span>Feedback after each answer. Missing concepts trigger a focused probe and influence the next subject.</span></button>
+<button type="button" data-lab-mode="adaptive"><small>EXAMINER DRILL</small><b>Examiner conversation</b><span>Feedback after each answer. Missing concepts trigger a focused probe and influence the next subject.</span></button>
 <button type="button" data-lab-mode="mock"><small>MOCK ORAL</small><b>Run it like a checkride</b><span>Work through the full subject spread. Feedback stays hidden until the debrief.</span></button>
 </div></div>
-<div class="pd-actions"><button class="pd-btn" type="button" id="pdLabStart">Start adaptive drill</button><button class="pd-btn secondary" type="button" id="pdLabPacket">Download blank checkride packet (PDF)</button></div>
+<div class="pd-actions"><button class="pd-btn" type="button" id="pdLabStart">Start examiner drill</button><button class="pd-btn secondary" type="button" id="pdLabPacket">Download blank checkride packet (PDF)</button></div>
 </section>
 <section class="pd-lab-session" id="pdLabSession" hidden aria-live="polite">
-<header class="pd-lab-session-head"><div><small id="pdLabSessionMode">ADAPTIVE DRILL</small><h2 id="pdLabSessionTitle">Private Pilot</h2></div><div class="pd-lab-progress"><b id="pdLabCount">1 / 6</b><span id="pdLabArea">Airworthiness</span></div></header>
+<header class="pd-lab-session-head"><div><small id="pdLabSessionMode">EXAMINER DRILL</small><h2 id="pdLabSessionTitle">Private Pilot</h2></div><div class="pd-lab-progress"><b id="pdLabCount">1 / 6</b><span id="pdLabArea">Airworthiness</span></div></header>
 <div class="pd-lab-conversation" id="pdLabConversation"></div>
 <form id="pdLabAnswerForm" class="pd-lab-answer"><label for="pdLabAnswer">Your answer</label><textarea id="pdLabAnswer" rows="7" maxlength="5000" placeholder="Answer it out loud first if you can, then type the main points you covered." required></textarea><div class="pd-actions"><button class="pd-btn" type="submit">Submit answer</button><button class="pd-btn secondary" type="button" id="pdLabStop">End session</button></div></form>
 <div class="pd-lab-review" id="pdLabReview" hidden></div>

@@ -1,0 +1,426 @@
+/*
+ PilotDesk EFB brief layer.
+ Applies the cockpit-style product brief without replacing the existing token system.
+ No gradients, glow, floating-card theater, or decorative warning colors.
+*/
+:root{
+  --pd-aviation:#6db9d6;
+  --pd-aviation-strong:#8bcce4;
+  --pd-aviation-soft:rgba(109,185,214,.10);
+  --pd-surface-0:#050607;
+  --pd-surface-1:#0b0d10;
+  --pd-surface-2:#111419;
+  --pd-surface-3:#171b20;
+  --pd-text-1:#f3f4f2;
+  --pd-text-2:#b2b7bc;
+  --pd-text-3:#747b83;
+  --pd-caution:#d1ad62;
+  --pd-danger:#d97b7b;
+  --pd-ok:#87b99a;
+}
+
+body{background:var(--pd-surface-0)!important}
+:focus-visible{outline-color:var(--pd-aviation)!important}
+
+/* Accent is reserved for state, selection, and primary actions. */
+:where(a[aria-current="page"],.pd-nav-button[aria-current="page"],.pd-tool-chip[aria-pressed="true"],
+.pd-training-path a[aria-current="page"],.pd-prep-tracks button.active,.pd-prep-difficulty button.active){
+  color:var(--pd-aviation-strong)!important;
+}
+:where(.pd-btn,.calc-btn,button.primary,.pd-auth-btn,.pd-prep-primary){
+  border-color:var(--pd-aviation)!important;
+  background:var(--pd-aviation)!important;
+  color:#061016!important;
+}
+:where(.pd-btn.secondary,.pd-auth-btn.secondary,.utility-btn,.pd-prep-secondary){
+  border-color:var(--line-hi)!important;
+  background:var(--pd-surface-1)!important;
+  color:var(--pd-text-1)!important;
+}
+:where(.pd-btn,.calc-btn,button,.pd-tool-chip,a.tool-card,a.pd-card,a.pd-hub-card){
+  transition:border-color .14s ease,background-color .14s ease,color .14s ease!important;
+  transform:none!important;
+}
+:where(.pd-btn,.calc-btn,button,.pd-tool-chip,a.tool-card,a.pd-card,a.pd-hub-card):hover{
+  transform:none!important;
+  box-shadow:none!important;
+}
+:where(.eyebrow,.badge,.pd-account-kicker,.pd-prep-qmeta span,.pd-directory-card-meta){
+  color:var(--pd-aviation-strong)!important;
+}
+
+/* Technical numeric readouts. */
+:where(.result strong,.pd-kpi b,.wx-kpis b,.rp-summary b,.wb-results strong,.pd-owner-stat strong,
+.pd-user-stat strong,.pd-prep-kpis strong,.pd-daily-mini-stats strong,.pd-daily-statusbar strong){
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace!important;
+  font-variant-numeric:tabular-nums!important;
+  letter-spacing:-.025em!important;
+}
+
+/* Desktop navigation: four operational groups, each opening as a compact mega-menu. */
+.topbar{background:var(--pd-surface-0)!important}
+.pd-main-nav{gap:2px!important}
+.pd-nav-item{position:relative}
+.pd-nav-button{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  min-height:42px!important;
+  padding:0 12px!important;
+}
+.pd-nav-button .pd-nav-icon{
+  width:17px;height:17px;flex:0 0 17px;color:var(--pd-text-3);
+}
+.pd-nav-button[aria-current="page"] .pd-nav-icon,.pd-nav-button[aria-expanded="true"] .pd-nav-icon{color:var(--pd-aviation-strong)}
+.pd-nav-menu{
+  left:0!important;
+  top:calc(100% + 9px)!important;
+  width:min(620px,calc(100vw - 32px))!important;
+  min-width:440px!important;
+  padding:8px!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:1px!important;
+  background:var(--pd-surface-1)!important;
+  border:1px solid var(--line-hi)!important;
+  box-shadow:0 20px 48px rgba(0,0,0,.42)!important;
+}
+.pd-nav-item[data-section="weather"] .pd-nav-menu{width:330px!important;min-width:330px!important;grid-template-columns:1fr!important}
+.pd-nav-menu a{
+  min-height:62px;
+  display:grid!important;
+  align-content:center;
+  gap:2px;
+  padding:10px 12px!important;
+  border:1px solid transparent;
+}
+.pd-nav-menu a:hover,.pd-nav-menu a:focus-visible{
+  background:var(--pd-surface-2)!important;
+  border-color:var(--line)!important;
+  text-decoration:none!important;
+}
+.pd-nav-menu b{font-size:12px!important;font-weight:680!important;color:var(--pd-text-1)!important}
+.pd-nav-menu span{font-size:10.5px!important;line-height:1.4!important;color:var(--pd-text-3)!important}
+.pd-nav-caret{margin-left:1px!important}
+.pd-site-search kbd,.pd-search-key{
+  display:inline-grid!important;place-items:center!important;min-width:20px;height:20px;
+  border:1px solid var(--line-hi)!important;background:var(--pd-surface-2)!important;color:var(--pd-text-3)!important;
+  font:700 9px/1 ui-monospace,monospace!important;
+}
+.pd-site-search:focus-within{border-color:var(--pd-aviation)!important}
+
+/* Mobile drawer is an EFB list, not a tiny desktop dropdown. */
+@media(max-width:800px){
+  body{padding-bottom:68px}
+  .topbar{position:sticky!important;top:0!important}
+  .pd-main-nav.open{
+    position:fixed!important;inset:64px 0 0 0!important;z-index:150!important;
+    display:block!important;overflow:auto!important;padding:12px 14px calc(90px + env(safe-area-inset-bottom))!important;
+    background:var(--pd-surface-0)!important;border-top:1px solid var(--line)!important;
+  }
+  .pd-nav-item{border-bottom:1px solid var(--line)}
+  .pd-nav-button{width:100%!important;min-height:54px!important;padding:0 8px!important;font-size:15px!important;text-align:left!important}
+  .pd-nav-button .pd-nav-icon{width:20px;height:20px;flex-basis:20px}
+  .pd-nav-caret{margin-left:auto!important}
+  .pd-nav-menu{
+    position:static!important;width:100%!important;min-width:0!important;
+    grid-template-columns:1fr!important;margin:0 0 8px!important;padding:0 0 7px 34px!important;
+    border:0!important;background:transparent!important;box-shadow:none!important;
+  }
+  .pd-nav-menu a{min-height:52px;padding:9px 10px!important;border-top:1px solid rgba(255,255,255,.045)!important}
+  .pd-nav-menu span{font-size:11px!important}
+  .pd-header-actions{order:initial!important;width:auto!important;margin-left:auto!important}
+  .pd-plans-link{display:none!important}
+  .pd-site-search{width:44px!important;padding:0!important;justify-content:center!important}
+  .pd-site-search input,.pd-site-search kbd{display:none!important}
+  .pd-search-results{top:68px!important}
+  .pd-account-text{display:none}
+  .pd-account-link{min-width:42px;min-height:42px;display:grid;place-items:center;padding:0!important}
+}
+
+/* Homepage: preserve exact content order, make hierarchy non-flat. */
+.pd-home-2026 .pd-home-hero{background:var(--pd-surface-0)!important}
+.pd-home-2026 .pd-home-command{
+  min-height:38px!important;padding:0 10px!important;border:1px solid var(--line-hi)!important;
+  background:var(--pd-surface-1)!important;color:var(--pd-text-2)!important;
+}
+.pd-home-2026 .pd-home-command:hover{border-color:var(--pd-aviation)!important;color:var(--pd-text-1)!important}
+.pd-home-2026 .pd-home-command kbd{border-color:var(--pd-aviation)!important;color:var(--pd-aviation-strong)!important}
+.pd-home-2026 .pd-home-proof>span{background:var(--pd-surface-1)!important}
+.pd-home-2026 .pd-home-desk{border-color:var(--pd-aviation)!important}
+.pd-home-2026 .pd-home-desk-head>span{color:var(--pd-aviation-strong)!important}
+.pd-home-2026 .pd-home-section:nth-of-type(2){padding-top:52px!important}
+.pd-home-2026 .pd-popular-tool:hover{background:var(--pd-surface-2)!important}
+.pd-home-2026 .pd-home-two-up{background:var(--pd-surface-1)!important}
+.pd-home-2026 .pd-home-account,.pd-home-2026 .pd-home-trust{padding-block:38px!important}
+.pd-home-2026 .pd-home-faq{opacity:.92}
+
+/* Calculator directory: dense operational list with recency and category filtering. */
+.pd-tool-finder{
+  padding:16px!important;background:var(--pd-surface-1)!important;border-color:var(--line-hi)!important;
+}
+.pd-tool-search-row{grid-template-columns:minmax(0,1fr) 220px auto!important}
+.pd-tool-chip{border-radius:0!important;background:transparent!important}
+.pd-tool-chip[aria-pressed="true"]{border-color:var(--pd-aviation)!important;background:var(--pd-aviation-soft)!important}
+.pd-tool-personal{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin:22px 0 30px!important}
+.pd-tool-personal-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.pd-tool-personal-card{
+  background:transparent!important;border:0!important;border-left:1px solid var(--line)!important;
+  min-height:78px;padding:10px 13px!important;
+}
+.pd-tool-personal-card:first-child{border-left:0!important}
+.pd-tool-personal-card small{color:var(--pd-aviation-strong)!important}
+.pd-tool-last-used{margin-top:auto;color:var(--pd-text-3)!important;font:600 9px/1.25 ui-monospace,monospace!important}
+.pd-directory-grid{display:block!important;border-top:1px solid var(--line)!important}
+.pd-directory-card{
+  min-height:0!important;display:grid!important;grid-template-columns:32px minmax(170px,.8fr) minmax(260px,1.4fr) auto!important;
+  align-items:center!important;gap:14px!important;padding:12px 10px!important;
+  border:0!important;border-bottom:1px solid var(--line)!important;background:transparent!important;
+}
+.pd-directory-card:hover{background:var(--pd-surface-1)!important;border-color:var(--line)!important}
+.pd-directory-icon{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--line);color:var(--pd-text-2)}
+.pd-directory-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.5}
+.pd-directory-card .pd-directory-card-meta{justify-self:end;color:var(--pd-text-3)!important}
+.pd-directory-card p{font-size:11.5px!important}
+@media(max-width:760px){
+  .pd-tool-search-row{grid-template-columns:1fr!important}
+  .pd-tool-personal-grid{display:flex!important;overflow-x:auto!important}
+  .pd-tool-personal-card{min-width:220px!important}
+  .pd-directory-card{grid-template-columns:30px 1fr auto!important}
+  .pd-directory-card p{grid-column:2/-1}
+}
+
+/* Calculator template: answers dominate; inputs remain bounded and quiet. */
+.calc-box{border-color:var(--line-hi)!important;background:var(--pd-surface-1)!important}
+.pd-calc-section-head{padding-bottom:7px;border-bottom:1px solid var(--line)}
+.pd-calc-results-head{margin-top:24px!important}
+.results{
+  border:1px solid var(--line-hi)!important;background:var(--pd-surface-0)!important;
+  gap:1px!important;padding:1px!important;
+}
+.result{border:0!important;background:var(--pd-surface-1)!important;min-height:104px!important;padding:17px!important}
+.result strong{font-size:clamp(27px,3vw,38px)!important;color:var(--pd-text-1)!important}
+.result.primary{background:var(--pd-surface-2)!important;border-top:2px solid var(--pd-aviation)!important}
+.result.primary strong{font-size:clamp(32px,4vw,48px)!important;color:var(--pd-aviation-strong)!important}
+.pd-calc-result-summary{border-left:2px solid var(--pd-aviation)!important;background:var(--pd-surface-1)!important}
+.pd-calc-result-summary small{color:var(--pd-aviation-strong)!important}
+.pd-save-calculation{border-color:var(--pd-aviation)!important}
+.pd-calc-save-note{font-size:10px;color:var(--pd-text-3);margin-left:auto}
+.safety-warning.show,.pd-operational-alert{
+  border:1px solid var(--pd-danger)!important;border-left:4px solid var(--pd-danger)!important;
+  background:rgba(217,123,123,.08)!important;color:#efc3c3!important;
+}
+
+/* Weight & balance: departure/landing answer rail sits above the input workspace. */
+.wb-output-deck{
+  margin:14px 0 18px!important;padding:1px!important;border:1px solid var(--line-hi)!important;background:var(--line)!important;
+}
+.wb-output-deck .wb-phase{padding:16px!important;background:var(--pd-surface-1)!important}
+.wb-output-deck .wb-phase h3{font-size:10px!important;letter-spacing:.12em;text-transform:uppercase;color:var(--pd-text-3)}
+.wb-output-deck .wb-results .result{min-height:96px!important}
+.wb-output-deck .wb-results .result.primary strong{font-size:38px!important;color:var(--pd-aviation-strong)!important}
+.wb-envelope-state[data-state="inside"]{border-color:rgba(135,185,154,.55)!important;color:#afd0b9!important}
+.wb-envelope-state[data-state="outside"]{border-color:var(--pd-danger)!important;color:#e7a7a7!important;background:rgba(217,123,123,.07)!important}
+#wbChart{border-color:var(--line-hi)!important}
+
+/* Connected planning sub-app. */
+.pd-flight-subnav{
+  display:flex!important;gap:0!important;overflow-x:auto!important;padding:0!important;border:1px solid var(--line)!important;background:var(--pd-surface-1)!important;
+}
+.pd-flight-subnav a{
+  flex:0 0 auto;min-height:42px;display:flex;align-items:center;padding:0 12px!important;
+  border-right:1px solid var(--line)!important;color:var(--pd-text-2)!important;font-size:11px!important;
+}
+.pd-flight-subnav a[aria-current="page"]{box-shadow:inset 0 -2px var(--pd-aviation)!important;color:var(--pd-aviation-strong)!important}
+.rp-live-summary{
+  position:sticky;top:64px;z-index:45;display:grid;grid-template-columns:minmax(160px,1fr) repeat(3,minmax(120px,.55fr));
+  margin:12px 0 14px;border:1px solid var(--line-hi);background:rgba(7,8,10,.97);
+}
+.rp-live-summary>div{padding:11px 13px;border-left:1px solid var(--line)}
+.rp-live-summary>div:first-child{border-left:0}
+.rp-live-summary small{display:block;font:700 8px/1.2 ui-monospace,monospace;letter-spacing:.1em;color:var(--pd-text-3);text-transform:uppercase}
+.rp-live-summary b{display:block;margin-top:5px;font:700 17px/1.1 ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.rp-live-summary .rp-live-route b{color:var(--pd-aviation-strong)}
+.rp-route-weather-strip{display:flex;gap:1px;overflow-x:auto;margin:-5px 0 14px;background:var(--line);border:1px solid var(--line)}
+.rp-route-weather-strip a,.rp-route-weather-strip span{
+  min-width:126px;display:grid;gap:2px;padding:9px 11px;background:var(--pd-surface-1);color:var(--pd-text-2);text-decoration:none;
+}
+.rp-route-weather-strip small{font:700 8px/1.2 ui-monospace,monospace;color:var(--pd-text-3);letter-spacing:.08em}
+.rp-route-weather-strip b{font-size:11px;color:var(--pd-text-1)}
+.rp-route-weather-strip em{font:600 8px/1.3 ui-monospace,monospace;color:var(--pd-text-3);font-style:normal}
+.rp-saved-routes{margin:12px 0;border:1px solid var(--line);background:var(--pd-surface-0)}
+.rp-saved-routes>header{padding:8px 10px;border-bottom:1px solid var(--line);font:700 8px/1 ui-monospace,monospace;letter-spacing:.1em;color:var(--pd-text-3)}
+.rp-saved-route{display:grid;grid-template-columns:1fr auto;gap:9px;padding:9px 10px;border-top:1px solid var(--line)}
+.rp-saved-route:first-of-type{border-top:0}
+.rp-saved-route b,.rp-saved-route small{display:block}
+.rp-saved-route b{font-size:11px}.rp-saved-route small{font-size:9px;color:var(--pd-text-3)}
+.rp-saved-route-actions{display:flex;gap:5px}
+.rp-saved-route-actions a,.rp-saved-route-actions button{min-height:30px;padding:4px 7px;font-size:9px}
+.rp-aircraft-tools{border-left:2px solid var(--pd-aviation)!important;background:var(--pd-surface-1)!important}
+.rp-summary{border-top:1px solid var(--line-hi)!important}
+@media(max-width:760px){
+  .rp-live-summary{top:0;grid-template-columns:1fr 1fr;position:relative}
+  .rp-live-summary .rp-live-route{grid-column:1/-1}
+  .rp-live-summary>div:nth-child(odd){border-left:0}
+}
+
+/* Airport + Aircraft show connection context without inventing new data. */
+.pd-context-connection{
+  margin:12px 0;padding:10px 12px;border-left:2px solid var(--pd-aviation);background:var(--pd-surface-1);
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+}
+.pd-context-connection small,.pd-context-connection b{display:block}.pd-context-connection small{font-size:8px;letter-spacing:.1em;color:var(--pd-text-3)}
+.pd-context-connection b{margin-top:2px;font-size:12px}
+.pd-context-connection a{font-size:10px;color:var(--pd-aviation-strong)}
+
+/* Weather: briefing hierarchy, explicit observation times, favorites first. */
+.wx-hero .badge{color:var(--pd-aviation-strong)!important}
+.wx-favorites{
+  margin:0 0 14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0;
+}
+.wx-favorites-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.wx-favorites-head b{font-size:11px}.wx-favorites-head span{font-size:9px;color:var(--pd-text-3)}
+.wx-favorites-list{display:flex;gap:6px;overflow-x:auto}
+.wx-favorite{
+  min-width:112px;display:grid;gap:2px;padding:8px 10px;border:1px solid var(--line);background:var(--pd-surface-1);color:var(--pd-text-1);text-decoration:none;
+}
+.wx-favorite:hover{border-color:var(--pd-aviation)}
+.wx-favorite b{font:700 12px ui-monospace,monospace}
+.wx-favorite span{font-size:9px;color:var(--pd-text-3)}
+.wx-summary{border-top:2px solid var(--pd-aviation)!important}
+.wx-asof{
+  display:inline-flex!important;align-items:center;min-height:26px;padding:0 8px;border:1px solid var(--line-hi);
+  font:700 9px/1 ui-monospace,monospace!important;letter-spacing:.06em;color:var(--pd-text-2)!important;text-transform:uppercase;
+}
+.wx-raw-grid .wx-block{background:var(--pd-surface-1)!important}
+.wx-raw-grid .pd-raw{
+  padding:12px;border-left:2px solid var(--pd-aviation);background:var(--pd-surface-0);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;font-size:12px!important;line-height:1.55!important;
+}
+.wx-status[data-state="live"],.wx-status[data-state="current"]{color:var(--pd-text-2)!important}
+.wx-status[data-state="live"]:before,.wx-status[data-state="current"]:before{background:var(--pd-aviation)!important}
+.wx-error,.pd-error-state{border-left:3px solid var(--pd-caution)!important;background:var(--pd-surface-1)!important}
+
+/* METAR decoder = raw report and token breakdown, visually paired. */
+.metar-decoder-layout,.pd-metar-decode-grid{display:grid!important;grid-template-columns:minmax(280px,.8fr) minmax(0,1.2fr)!important;gap:14px!important}
+.pd-raw,.metar-raw{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important}
+@media(max-width:760px){.metar-decoder-layout,.pd-metar-decode-grid{grid-template-columns:1fr!important}}
+
+/* Learn: progression and weak-area handoffs, no arcade treatment. */
+.pd-prep-statusbar{border-top:1px solid var(--line-hi)!important;border-bottom:1px solid var(--line-hi)!important}
+.pd-prep-study-streak{
+  display:flex;align-items:center;gap:8px;margin-left:auto;padding-left:12px;border-left:1px solid var(--line);
+}
+.pd-prep-study-streak b{font:700 10px/1 ui-monospace,monospace;color:var(--pd-text-2)}
+.pd-prep-study-dots{display:flex;gap:3px}
+.pd-prep-study-dots i{width:5px;height:5px;border:1px solid var(--line-hi);background:transparent}
+.pd-prep-study-dots i.done{background:var(--pd-aviation);border-color:var(--pd-aviation)}
+.pd-prep-summary .pd-prep-secondary[href="/skill-gap.html"]{border-color:var(--pd-aviation)!important;color:var(--pd-aviation-strong)!important}
+.pd-certificate-roadmap{
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:0!important;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);counter-reset:cert;
+}
+.pd-certificate-roadmap>.pd-card{counter-increment:cert;position:relative;border:0!important;border-right:1px solid var(--line)!important;padding:18px 14px!important;background:transparent!important}
+.pd-certificate-roadmap>.pd-card:last-child{border-right:0!important}
+.pd-certificate-roadmap>.pd-card:before{
+  content:counter(cert,decimal-leading-zero);display:block;margin-bottom:10px;color:var(--pd-aviation-strong);
+  font:700 9px/1 ui-monospace,monospace;letter-spacing:.08em;
+}
+.pd-certificate-roadmap>.pd-card:not(:last-child):after{
+  content:"→";position:absolute;right:-8px;top:22px;z-index:2;padding:0 2px;background:var(--pd-surface-0);color:var(--pd-text-3)
+}
+@media(max-width:800px){
+ .pd-certificate-roadmap{display:flex!important;overflow-x:auto!important}
+ .pd-certificate-roadmap>.pd-card{min-width:210px}
+}
+
+/* Daily: satisfying but subdued. */
+.pd-daily-proof,.pd-daily-scorechip,.pd-daily-reward{border-radius:0!important;box-shadow:none!important}
+.pd-daily-streak-quiet{font:700 9px/1 ui-monospace,monospace;color:var(--pd-text-3)}
+.pd-daily-result{border-top:1px solid var(--line-hi)!important;background:var(--pd-surface-1)!important}
+.pd-daily-result-actions a[href="/skill-gap.html"]{border-color:var(--pd-aviation)!important;color:var(--pd-aviation-strong)!important}
+.pd-daily-day.done i{background:var(--pd-aviation)!important;color:#071117!important}
+.pd-daily-sidecard{box-shadow:none!important}
+
+/* Account: dashboard first, settings second. */
+.pd-account-dashboard{border-top:2px solid var(--pd-aviation)!important}
+.pd-account-dashboard-card{min-height:104px!important}
+.pd-account-recent-strip{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);margin:14px 0}
+.pd-account-recent-strip a{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:10px 12px;background:var(--pd-surface-1);color:var(--pd-text-1);text-decoration:none}
+.pd-account-recent-strip small{color:var(--pd-text-3)!important}
+.pd-account-settings{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.pd-efb-toggle{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:7px 0;border-bottom:1px solid var(--line)
+}
+.pd-efb-toggle input{appearance:none;width:40px;height:22px;min-height:22px;padding:0;border:1px solid var(--line-hi);background:var(--pd-surface-0)!important;position:relative}
+.pd-efb-toggle input:after{content:"";position:absolute;width:14px;height:14px;left:3px;top:3px;background:var(--pd-text-3)}
+.pd-efb-toggle input:checked{border-color:var(--pd-aviation)!important;background:var(--pd-aviation-soft)!important}
+.pd-efb-toggle input:checked:after{left:21px;background:var(--pd-aviation)}
+.pd-account-ad{margin:14px 0 0!important}
+
+/* Free-tier ads are contained modules, never inserted in the working control stack. */
+.ad-wrap{
+  margin:24px 0!important;padding:8px!important;border:1px solid var(--line)!important;
+  background:var(--pd-surface-1)!important;box-shadow:none!important;clear:both;
+}
+.ad-label{
+  margin-bottom:6px!important;color:var(--pd-text-3)!important;
+  font:700 8px/1 ui-monospace,monospace!important;letter-spacing:.11em!important;text-transform:uppercase!important;
+}
+.ad-slot{min-height:90px!important;display:grid!important;place-items:center!important;background:var(--pd-surface-0)!important;border:1px solid var(--line)!important}
+.ad-slot>span{color:var(--pd-text-3)!important;font-size:9px!important}
+
+/* Pricing is a spec sheet, not SaaS card theater. */
+.pd-plan-grid{display:none!important}
+.pd-pricing-spec{
+  margin:26px 0 34px;border:1px solid var(--line-hi);background:var(--pd-surface-1)
+}
+.pd-pricing-spec-head,.pd-pricing-row{
+  display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(150px,.65fr) minmax(150px,.65fr);align-items:stretch
+}
+.pd-pricing-spec-head{border-bottom:1px solid var(--line-hi)}
+.pd-pricing-spec-head>div,.pd-pricing-row>div{padding:13px 15px;border-left:1px solid var(--line)}
+.pd-pricing-spec-head>div:first-child,.pd-pricing-row>div:first-child{border-left:0}
+.pd-pricing-spec-head strong{display:block;font-size:20px}
+.pd-pricing-spec-head small{display:block;margin-top:3px}
+.pd-pricing-row{border-bottom:1px solid var(--line)}
+.pd-pricing-row:last-child{border-bottom:0}
+.pd-pricing-row>div:first-child b{display:block;font-size:12px}.pd-pricing-row>div:first-child span{display:block;margin-top:3px;color:var(--pd-text-3);font-size:10px}
+.pd-pricing-value{display:flex;align-items:center;font-size:11px;color:var(--pd-text-2)}
+.pd-pricing-value.yes{color:var(--pd-text-1)}.pd-pricing-value.pro{color:var(--pd-aviation-strong)}
+.pd-pricing-actions{
+  display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(150px,.65fr) minmax(150px,.65fr);
+  border-top:1px solid var(--line-hi)
+}
+.pd-pricing-actions>div{padding:13px 15px;border-left:1px solid var(--line)}.pd-pricing-actions>div:first-child{border-left:0}
+.pd-school-status{margin:22px 0;padding:18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+@media(max-width:680px){
+ .pd-pricing-spec{overflow-x:auto}.pd-pricing-spec-head,.pd-pricing-row,.pd-pricing-actions{min-width:620px}
+}
+
+/* Shared loading, empty, error states. */
+.pd-instrument-loading,.wx-skeleton{
+  position:relative;min-height:84px;display:grid;align-content:center;gap:7px;padding:14px 16px;
+  border:1px solid var(--line);background:var(--pd-surface-1);color:var(--pd-text-2)!important;
+}
+.pd-instrument-loading:before,.wx-skeleton:before{
+  content:"INITIALIZING";font:700 8px/1 ui-monospace,monospace;letter-spacing:.13em;color:var(--pd-aviation-strong)
+}
+.pd-instrument-loading:after,.wx-skeleton:after{
+  content:"";height:1px;width:34%;background:var(--pd-aviation);animation:pd-instrument-scan 1.4s ease-in-out infinite alternate
+}
+@keyframes pd-instrument-scan{from{width:8%;opacity:.45}to{width:46%;opacity:1}}
+.pd-empty-state,.pd-empty{
+  padding:16px!important;border:1px solid var(--line)!important;background:var(--pd-surface-1)!important;color:var(--pd-text-2)!important
+}
+.pd-empty-state .pd-btn,.pd-empty .pd-btn{margin-top:10px}
+.pd-error-state,.wx-error{
+  padding:16px!important;border:1px solid var(--pd-caution)!important;border-left-width:3px!important;background:var(--pd-surface-1)!important
+}
+@media(prefers-reduced-motion:reduce){.pd-instrument-loading:after,.wx-skeleton:after{animation:none;width:30%}}
+
+/* Footer is one quiet utility rail. */
+footer{border-top:1px solid var(--line)!important}
+.footer-links{gap:8px 16px!important}
+.footer-links a{font-size:11px!important;color:var(--pd-text-3)!important}
+.footer-links a:hover{color:var(--pd-text-1)!important}
+footer .fine{font-size:10px!important;color:var(--pd-text-3)!important}

@@ -87,3 +87,19 @@
 .pd-prep-skill,.pd-prep-standard,.pd-prep-diff-card{border:0!important;background:#080b0e!important}
 .pd-prep-question,.pd-prep-option,.pd-prep-feedback,.pd-prep-summary{background:#080b0e!important}
 .pd-prep-option:hover{transform:none!important}
+
+/* FAA sample / testing-supplement references */
+.pd-prep-figure-ref{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:13px 14px;border:1px solid var(--line);background:#0a0a0c}
+.pd-prep-figure-ref small,.pd-prep-figure-ref b,.pd-prep-figure-ref span{display:block}
+.pd-prep-figure-ref small{font-size:10px;letter-spacing:.1em;color:var(--muted2)}
+.pd-prep-figure-ref b{margin-top:4px;font-size:13px}
+.pd-prep-figure-ref span{margin-top:4px;color:var(--muted);font-size:12px;line-height:1.45}
+.pd-prep-figure-ref a,.pd-prep-figure-link{flex:0 0 auto;color:var(--text);font-size:11px;text-decoration:none}
+.pd-prep-figure-ref a:hover,.pd-prep-figure-link:hover{text-decoration:underline}
+.pd-prep-choice-rationale{display:grid;gap:6px;margin:14px 0;padding-top:12px;border-top:1px solid var(--line)}
+.pd-prep-choice-rationale h3{margin:0 0 4px;font-size:13px}
+.pd-prep-choice-rationale>div{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:9px;border:1px solid var(--line);background:#0b0b0d;font-size:12px;line-height:1.45}
+.pd-prep-choice-rationale>div[data-state="correct"]{border-color:rgba(95,209,139,.35)}
+.pd-prep-choice-rationale>div[data-state="selected"]{border-color:rgba(230,189,98,.35)}
+.pd-prep-figure-link{display:inline-block;margin-top:10px}
+@media(max-width:680px){.pd-prep-figure-ref{align-items:flex-start;flex-direction:column}.pd-prep-figure-ref a{width:100%}}

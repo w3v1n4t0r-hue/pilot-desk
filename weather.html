@@ -27,10 +27,11 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true"><img src="/assets/icon.svg" alt="" width="40" height="40"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/tools.html">Calculators</a><a href="/airport.html">Airports</a><a href="/planner.html">Planner</a><a href="/weather.html" aria-current="page">Weather</a><a href="/aircraft.html">Hangar</a><a href="/guides.html">Guides</a></nav></header>
 <main class="shell content-page wx-shell" id="main-content">
-  <section class="wx-hero"><span class="badge">LIVE AVIATION WEATHER</span><h1>METAR &amp; TAF</h1><p>Enter an airport or station. PilotDesk shows the raw report, decoded weather, report age, runway-wind context when available, nearby stations, and TAF change groups.</p></section>
+  <section class="wx-hero"><span class="badge">AVIATION WEATHER</span><h1>METAR &amp; TAF</h1><p>Enter an airport or station. PilotDesk shows the raw report, decoded weather, report age, runway-wind context when available, nearby stations, and TAF change groups.</p></section>
+  <section class="wx-favorites" id="wxFavorites" aria-label="Favorite airports"><div class="wx-favorites-head"><b>Favorite airports</b><span>Saved on this device</span></div><div class="wx-favorites-list" id="wxFavoritesList"><a class="wx-favorite" href="/airport.html"><b>ADD AIRPORT</b><span>Save fields you check often</span></a></div></section>
   <section class="pd-panel">
     <form id="weatherForm"><div class="wx-search"><div class="pd-field"><label for="station">Airport / station ID</label><input id="station" name="station" inputmode="text" autocapitalize="characters" maxlength="4" placeholder="KGFK" required></div><button class="pd-btn" type="submit">Get weather</button></div></form>
-    <div id="weatherStatus" class="wx-status" role="status" aria-live="polite">Ready for a live weather lookup</div>
+    <div id="weatherStatus" class="wx-status" role="status" aria-live="polite">Ready for a weather lookup</div>
     <div id="pdWeatherFlightStops" class="pd-weather-flight-stops" hidden aria-label="Active flight weather stops"></div>
     <div id="weatherOutput" class="pd-weather-output" aria-live="polite"></div>
   </section>

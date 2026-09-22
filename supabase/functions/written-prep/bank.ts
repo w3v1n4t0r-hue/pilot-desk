@@ -11,7 +11,7 @@ export type PrepQuestion={
   correct:number;
   explanation:string;
   reference:string;
-  source:'faa-sample-derived'|'faa-sample-exact'|'pilotdesk-faa-parallel'|'pilotdesk-faa-aligned';
+  source:'faa-sample-derived'|'faa-sample-exact'|'pilotdesk-faa-parallel'|'pilotdesk-curated'|'pilotdesk-faa-aligned';
   sourceUrl?:string;
   figureRef?:{supplement:string;figure:string;url:string};
   choiceExplanations?:string[];
@@ -25,7 +25,7 @@ export type PrepQuestion={
   experienceLevel:Track;
 };
 export type TrackMeta={label:string;testCode:string;officialQuestions:number;officialMinutes:number;passingScore:number;description:string};
-export type BankManifest={acsQuestionCount:number;supplementalPtsQuestionCount:number;totalQuestionCount:number;byTrack:Record<string,number>;standards:Record<string,{doc:string;type:string;url:string}>;generatedAt:string};
+export type BankManifest={acsQuestionCount:number;supplementalPtsQuestionCount:number;totalQuestionCount:number;byTrack:Record<string,number>;standards:Record<string,{doc:string;type:string;url:string}>;generatedAt:string;legacyGeneratedFamiliesExcluded?:boolean};
 
 export const banks=generatedBanks as Record<Track,PrepQuestion[]>;
 export const trackMeta=generatedTrackMeta as Record<Track,TrackMeta>;

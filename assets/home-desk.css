@@ -490,7 +490,7 @@
 /* CLAUDE STEP 1 — homepage hierarchy. Keep the existing structure/copy; change only visual execution. */
 .pd-home-2026 .pd-home-hero{
   padding-top:52px!important;
-  background:linear-gradient(180deg,#07090b 0%,#050607 100%)!important;
+  background:#07090b!important;
 }
 .pd-home-2026 .pd-home-hero-inner{align-items:start!important}
 .pd-home-2026 .pd-home-hero-copy{padding-top:10px!important}

@@ -9,7 +9,7 @@ const targets=[
  ['calculators/moment-cg/index.html','Aircraft CG Calculator | Weight × Arm, Moment &amp; CG | PilotDesk','Free aircraft CG calculator using weight × arm = moment.'],
  ['calculators/rate-of-turn/index.html','Rate 1 Turn Calculator | Turn Rate &amp; Radius | PilotDesk','Free rate 1 turn and aircraft turn-rate calculator.'],
  ['calculators/three-degree-descent/index.html','3 Degree Descent Rate Calculator | FPM from Groundspeed | PilotDesk','Free 3 degree descent rate calculator.'],
- ['guides/pilot-math-formulas.html','Pilot Math Formulas: Aviation Formula Cheat Sheet | PilotDesk','Pilot math formulas in one aviation cheat sheet:'],
+ ['guides/pilot-math-formulas.html','Pilot Math Formulas: Aviation Formula Cheat Sheet | PilotDesk','Free pilot math formulas and aviation cheat sheet:'],
  ['guides/feathering-vs-windmilling-propeller.html','Windmilling vs Feathered Propeller: Drag Explained | PilotDesk','Why does a windmilling propeller create so much drag?'],
  ['guides/vmc-vs-vyse.html','VMC vs VYSE Explained: Red Line, Blue Line & Meaning | PilotDesk','What do VMC and VYSE mean?'],
  ['guides/accelerated-stall-load-factor.html','Accelerated Stall Speed: Bank Angle & Load Factor | PilotDesk','Learn accelerated stall speed, the √load-factor relationship'],

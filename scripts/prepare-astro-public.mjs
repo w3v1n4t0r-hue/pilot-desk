@@ -10,7 +10,7 @@ const excludedDirs = new Set([
   'api', 'supabase', 'scripts', 'qa', 'src'
 ]);
 const publicRootNames = new Set([
-  'robots.txt', 'ads.txt', 'sw.js', 'site.webmanifest',
+  'robots.txt', 'ads.txt', 'sw.js', 'site.webmanifest', 'favicon.svg',
   'c731d63e44f2d52fcd122041601cfb22.txt'
 ]);
 

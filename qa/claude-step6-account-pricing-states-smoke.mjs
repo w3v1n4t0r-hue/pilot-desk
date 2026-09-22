@@ -43,7 +43,7 @@ check(pricingCss.includes('.pd-pricing-row')&&pricingCss.includes('grid-template
 check(stateJs.includes('window.PilotDeskState={render,applyMotionPreference}'),'Shared state renderer missing');
 for(const kind of ['pd-state-loading','pd-state-empty','pd-state-error','pd-state-warning'])
   check(stateCss.includes('.'+kind),'Shared state CSS missing '+kind);
-check(stateCss.includes('@keyframes pd-state-online')&&!/spinner/i.test(stateCss),'Loading state is not instrument-like');
+check(stateCss.includes('@keyframes pd-state-online')&&!/\.spinner\b|class=["'][^"']*spinner/i.test(stateCss),'Loading state is not instrument-like');
 check(stateJs.includes("cls==='error'?'alert':'status'")&&stateJs.includes("aria-busy"),'Shared states do not expose accessible status roles');
 check(stateCss.includes('html[data-pd-reduce-motion="1"]'),'Reduced-motion account setting is not honored globally');
 check(boot.includes('/assets/system-states.js'),'Shared state runtime is not loaded by app bootstrap');

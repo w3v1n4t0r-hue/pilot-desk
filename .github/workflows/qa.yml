@@ -91,6 +91,8 @@ jobs:
         run: node qa/billing-smoke.mjs
       - name: Run Pro freemium product checks
         run: node qa/pro-freemium-smoke.mjs
+      - name: Run Checkride Lab checks
+        run: node qa/checkride-lab-smoke.mjs
       - name: Run Daily retention checks
         run: node qa/daily-retention-smoke.mjs
       - name: Run Pilot Skill Gap checks

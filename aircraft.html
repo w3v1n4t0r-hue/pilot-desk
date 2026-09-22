@@ -15,7 +15,9 @@
   <link rel="manifest" href="/site.webmanifest">
   <script defer src="/assets/site.js"></script>
   <script defer src="/assets/product-nav.js"></script>
-  <script defer src="/assets/aircraft-v2.js?v=3.0"></script>
+  <script defer src="/assets/billing.js"></script>
+  <script defer src="/assets/pro-access.js"></script>
+  <script defer src="/assets/aircraft-v2.js?v=3.1"></script>
   <script defer src="/assets/ad-config.js"></script>
   <script defer src="/assets/ads.js"></script>
   
@@ -66,7 +68,7 @@
     </form>
   </section>
 
-  <section class="pd-panel"><div class="pd-card-head"><div><h2>Saved aircraft</h2><p id="aircraftCount">Stored only on this device.</p></div><div class="pd-actions"><a class="pd-btn secondary" href="/flights.html">Saved Flights</a><a class="pd-btn secondary" href="/calculators/weight-balance-builder/">Open W&amp;B</a><button class="pd-btn secondary" type="button" id="aircraftExport">Export Hangar</button><label class="pd-btn secondary pd-file-button" for="aircraftImport">Import Hangar</label><input id="aircraftImport" type="file" accept="application/json,.json" hidden></div></div><div id="aircraftList" class="pd-list"></div></section>
+  <section class="pd-panel"><div class="pd-card-head"><div><h2>Saved aircraft</h2><p id="aircraftCount">Stored only on this device.</p><p class="fine" id="aircraftPlanNote">Free includes 1 aircraft profile. Pro removes the Free-plan cap and adds cloud backup/restore.</p></div><div class="pd-actions"><a class="pd-btn secondary" href="/flights.html">Saved Flights</a><a class="pd-btn secondary" href="/calculators/weight-balance-builder/">Open W&amp;B</a><button class="pd-btn secondary" type="button" id="aircraftExport">Export Hangar</button><label class="pd-btn secondary pd-file-button" for="aircraftImport">Import Hangar</label><input id="aircraftImport" type="file" accept="application/json,.json" hidden></div></div><div id="aircraftList" class="pd-list"></div></section>
   <p>Clearing browser/site data removes local profiles. Export Hangar creates a JSON backup you can keep or move to another device. Imported values should be checked against current approved aircraft data before use.</p>
 </main>
 <footer><div><b>PilotDesk</b><p>Aviation planning and training tools.</p></div><div class="footer-links"><a href="/airport.html">Airports</a><a href="/flights.html">Saved Flights</a><a href="/weather.html">Weather</a><a href="/legal/privacy.html">Privacy</a><a href="/sources.html">Sources</a></div><p class="fine">Planning aid only. Verify operational numbers with current approved sources.</p></footer>

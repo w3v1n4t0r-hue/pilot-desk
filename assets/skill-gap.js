@@ -13,10 +13,10 @@ function renderTracks(){$$('[data-track]').forEach(b=>{b.classList.toggle('activ
 function showGate(copy='Sign in and complete Written Prep questions to build this list.'){const gate=$('#pdGapGate'),list=$('#pdGapWeakList');if(gate)gate.hidden=false;if(list){list.hidden=true;list.innerHTML=''}text('#pdGapIntro',copy);text('#pdGapWeakCount','—');for(const id of ['#pdGapReadiness','#pdGapAccuracy','#pdGapCoverage','#pdGapMissed'])text(id,'—');text('#pdGapNextTitle','Start in Written Prep.');text('#pdGapNextCopy','After you answer questions, this page will put the weakest current subject first.')}
 async function fetchDashboard(){
  if(!state.client||!state.session)throw new Error('Sign in to read Written Prep history.');
- const base=state.client.supabaseUrl;if(!base)throw new Error('PilotDesk account connection is unavailable.');
- const url=new URL(base+'/functions/v1/written-prep');url.searchParams.set('track',state.track);url.searchParams.set('difficulty','all');
- const r=await fetch(url,{headers:{Authorization:'Bearer '+state.session.access_token},cache:'no-store'}),d=await r.json().catch(()=>({}));
- if(!r.ok)throw new Error(d.error||'Unable to load Written Prep history.');return d
+ const name='written-prep?track='+encodeURIComponent(state.track)+'&difficulty=all';
+ const {data,error}=await state.client.functions.invoke(name,{method:'GET'});
+ if(error)throw new Error('Unable to load Written Prep history.');
+ return data||{}
 }
 function band(v){return v<60?'gap':v<80?'review':'missed'}
 function renderDashboard(d){

@@ -79,7 +79,8 @@ function animateResultUpdates(){
 }
 function polishInteractions(){
   document.documentElement.classList.add('pd-motion-enabled');
-  if(matchMedia('(hover:hover) and (pointer:fine)').matches)document.documentElement.classList.add('pd-fine-pointer');
+  const finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(finePointer)document.documentElement.classList.add('pd-fine-pointer');
   animateResultUpdates();
 }
 document.addEventListener('DOMContentLoaded',()=>{const p=new URLSearchParams(location.search);const source=p.get('utm_source');if(source)pdTrack('campaign_visit',{source,medium:p.get('utm_medium')||'',campaign:p.get('utm_campaign')||'',content:p.get('utm_content')||'',path:location.pathname});$$('[data-calc-input]').forEach(e=>{e.setAttribute('inputmode','decimal');e.addEventListener('input',calculate)});$('[data-calculate]')?.addEventListener('click',()=>{calculate();pdTrack('calculator_calculate',{calculator:document.body.dataset.calc||'unknown',path:location.pathname})});calculate();recordRecent();renderRecent();const q=$('#toolSearch');if(q)q.addEventListener('input',()=>{let s=q.value.toLowerCase().trim(),visible=0;$$('.tool-card').forEach(c=>{let hide=s&&!c.innerText.toLowerCase().includes(s);const wasHidden=c.classList.contains('hidden');c.classList.toggle('hidden',hide);if(!hide){visible++;if(wasHidden){c.classList.remove('pd-filter-enter');void c.offsetWidth;c.classList.add('pd-filter-enter')}}});const n=$('#searchCount');if(n)n.textContent=s?`${visible} tool${visible===1?'':'s'} found`:''});registerSW();polishInteractions();document.documentElement.classList.add('pd-ready')});

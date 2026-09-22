@@ -53,6 +53,8 @@ jobs:
         run: node qa/claude-step2-calculators-smoke.mjs
       - name: Run Claude Step 3 planning checks
         run: node qa/claude-step3-planning-smoke.mjs
+      - name: Run Claude Step 4 weather checks
+        run: node qa/claude-step4-weather-smoke.mjs
       - name: Audit every built page surface
         run: node qa/page-surface-smoke.mjs
       - name: Run five-pass copy and design audit

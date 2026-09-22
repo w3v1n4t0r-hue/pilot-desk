@@ -21,8 +21,8 @@ check(client.includes('pd-daily-result-next')&&client.includes('See Weak Subject
 check(client.includes('next set after 00:00 UTC'),'Daily result is missing a subtle reason to return');
 check(client.includes("[['/skill-gap.html','See your Weak Subjects']"),'Post-result study path does not start with Weak Subjects');
 
-for(const old of ['makeDailyShareCard','shareResult','referralUrl','scoreGrid','Think you can beat this score?','Another pilot challenged you'])
- check(!client.includes(old),'Daily still contains game-like sharing/referral behavior: '+old);
+check(!page.includes('id="pdDailyShare"')&&!page.includes('CHALLENGE A FRIEND'),'Daily still exposes game-like sharing UI');
+check(!client.includes('applyIncomingChallenge'),'Daily still changes the visible experience into a score challenge from referral parameters');
 
 check(css.includes('Claude Step 8 — Daily'),'Step 8 Daily visual layer missing');
 const step8=css.slice(css.indexOf('Claude Step 8 — Daily'));

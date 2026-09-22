@@ -1,9 +1,9 @@
 (()=>{
 'use strict';
 const $=s=>document.querySelector(s);
-const note=(msg,kind='')=>{const el=$('#pdPricingBillingStatus');if(!el)return;el.textContent=msg;el.dataset.kind=kind;el.hidden=!msg};
+const note=(msg,kind='')=>{const el=$('#pdPricingBillingStatus');if(!el)return;if(!msg){el.hidden=true;el.replaceChildren();return}el.hidden=false;el.dataset.kind=kind;if(window.PilotDeskState){const stateKind=kind==='loading'?'loading':kind==='bad'?'error':'ready',title=kind==='loading'?'Checking billing':kind==='bad'?'Billing request failed':kind==='warn'?'Billing status':'Billing status';window.PilotDeskState.render(el,{kind:stateKind,title,detail:msg});return}el.textContent=msg};
 async function render(){
- const b=window.PilotDeskBilling;if(!b)return;const s=await b.ready;
+ const b=window.PilotDeskBilling;if(!b)return;note('Checking the account plan and Stripe availability.','loading');const s=await b.ready;
  const pro=$('#pdStartPro'),school=$('#pdStartSchool');
  if(s.isPro){
   if(pro){pro.textContent=s.isSchool?'Included with Flight School':'Manage Pro';pro.dataset.action='portal'}
@@ -19,7 +19,7 @@ document.addEventListener('click',async e=>{
  const btn=e.target.closest('[data-pd-checkout-plan],[data-action="portal"]');if(!btn)return;
  e.preventDefault();if(btn.getAttribute('aria-disabled')==='true')return;
  try{
-  btn.setAttribute('aria-busy','true');note('Opening secure billing…');
+  btn.setAttribute('aria-busy','true');note('Opening Stripe for this PilotDesk account.','loading');
   if(btn.dataset.action==='portal')await window.PilotDeskBilling.portal();else await window.PilotDeskBilling.checkout(btn.dataset.pdCheckoutPlan||'pro');
  }catch(err){
   if(err.code==='sign_in_required'){location.assign('/account.html?next=%2Fpricing.html');return}

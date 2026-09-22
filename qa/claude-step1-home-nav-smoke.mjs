@@ -12,6 +12,7 @@ const navCss=read('assets/pilotdesk-navigation-2026.css');
 const tokens=read('assets/design-tokens.css');
 const header=read('src/components/Header.astro');
 const styles=read('assets/styles.css');
+const sw=read('sw.js');
 
 for(const phrase of [
   'Do the flight math. Check the weather. Study the next rating.',
@@ -50,6 +51,8 @@ check(navCss.includes('.pd-main-nav.open{display:block!important}'),'Mobile navi
 check(navCss.includes('color:var(--accent)'),'Navigation active/search states do not use restrained aviation-blue accent');
 check(styles.includes('@import url("/assets/pilotdesk-navigation-2026.css");'),'Navigation stylesheet not loaded');
 check(styles.trim().endsWith('@import url("/assets/design-tokens.css");'),'Design tokens must remain final shared CSS authority');
+check(sw.includes("'/assets/pilotdesk-navigation-2026.css'"),'EFB navigation stylesheet is not available in the offline shell');
+check(Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0)>=44,'Step 1 service-worker release version was not advanced');
 
 if(failures.length){
   console.error('Claude Step 1 home/navigation smoke failed ('+failures.length+')');

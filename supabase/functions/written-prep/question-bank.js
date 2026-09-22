@@ -1063,9 +1063,9 @@ const productionSampleIds={
 };
 const productionSamples=track=>(officialSamples[track]||[]).filter(q=>productionSampleIds[track]?.has(q.id));
 export const banks={
- ppl:[...productionSamples('ppl'),...figureParallelQuestions.ppl],
- ira:[...productionSamples('ira'),...figureParallelQuestions.ira],
- cpl:[...productionSamples('cpl'),...figureParallelQuestions.cpl],
+ ppl:[...productionSamples('ppl'),...figureParallelQuestions.ppl.filter(q=>q.difficulty!=='foundation')],
+ ira:[...productionSamples('ira'),...figureParallelQuestions.ira.filter(q=>q.difficulty!=='foundation')],
+ cpl:[...productionSamples('cpl'),...figureParallelQuestions.cpl.filter(q=>q.difficulty!=='foundation')],
  cfi:curatedCfi,
  cfii:curatedCfii,
  atp:exactAtpSamples

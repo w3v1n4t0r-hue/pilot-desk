@@ -38,7 +38,7 @@ let last=-1;
 for(const marker of order){const i=navCore.indexOf(marker);check(i>last,'Navigation order must be Tools → Plan → Weather → Learn');last=i}
 check(!navCore.includes('"label":"Calculators"'),'Stale Calculators top-level label remains in runtime nav');
 for(const item of [
- 'All calculators','E6B flight computer','Weight & balance','Flight math','Calculation history',
+ 'Free aviation calculators','E6B flight computer','Weight & balance','Flight math','Calculation history',
  'Route planner','Airport search','Procedures','Aircraft','Saved flights','Flight brief','Aircraft performance',
  'METAR & TAF','METAR decoder','Airport weather',
  'Written Prep','Weak subjects','Flight training','Pilot guides','Daily challenge','Checklist practice',

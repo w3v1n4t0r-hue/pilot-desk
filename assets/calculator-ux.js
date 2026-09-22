@@ -40,8 +40,8 @@ const quickHelp=document.createElement('div');quickHelp.className='pd-calc-quick
 quickHelp.querySelector('span').textContent=QUICK_HELP[calcKey]||'Confirm each input, unit, and reference before using the result. PilotDesk shows the arithmetic; approved sources control operational decisions.';
 const resultSummary=document.createElement('div');resultSummary.className='pd-calc-result-summary';resultSummary.setAttribute('aria-live','polite');resultSummary.hidden=true;
 resultSummary.innerHTML='<small>QUICK READ</small><strong></strong>';
-const actions=document.createElement('div');actions.className='calc-actions';actions.setAttribute('aria-label','Calculation actions');actions.innerHTML='<button type="button" data-pd-copy-result>Copy result</button><button type="button" data-pd-copy-link>Copy link</button><button type="button" data-pd-share>Share setup</button><button type="button" data-pd-reset>Reset</button><button type="button" data-pd-print>Print</button><a href="/feedback.html?type=calculation" data-pd-report>Report result</a>';
-const more=document.createElement('details');more.className='pd-export-menu';more.innerHTML='<summary>Share / export</summary>';[...actions.children].filter(el=>!el.matches('[data-pd-copy-result],[data-pd-reset]')).forEach(el=>more.append(el));actions.append(more);
+const actions=document.createElement('div');actions.className='calc-actions';actions.setAttribute('aria-label','Calculation actions');actions.innerHTML='<button type="button" class="pd-save-calculation" data-pd-save-calculation>Save calculation</button><button type="button" data-pd-copy-result>Copy result</button><button type="button" data-pd-copy-link>Copy link</button><button type="button" data-pd-share>Share setup</button><button type="button" data-pd-reset>Reset</button><button type="button" data-pd-print>Print</button><a href="/feedback.html?type=calculation" data-pd-report>Report result</a>';
+const more=document.createElement('details');more.className='pd-export-menu';more.innerHTML='<summary>Share / export</summary>';[...actions.children].filter(el=>!el.matches('[data-pd-save-calculation],[data-pd-copy-result],[data-pd-reset]')).forEach(el=>more.append(el));actions.append(more);
 const notice=box.querySelector('.notice');const anchor=notice||box.lastElementChild;
 const fields=box.querySelector('.fields');fields?.insertAdjacentElement('beforebegin',inputHeading);fields?.insertAdjacentElement('beforebegin',quickHelp);
 results?.insertAdjacentElement('beforebegin',resultsHeading);results?.insertAdjacentElement('afterend',resultSummary);
@@ -60,12 +60,28 @@ function inputText(){return inputs.map(i=>{const label=i.closest('.field')?.quer
 function outputText(){return qsa('.result').map(r=>{const k=r.querySelector('small')?.textContent?.trim(),v=r.querySelector('strong')?.textContent?.trim();return k&&v&&v!=='—'?`${k}: ${v}`:null}).filter(Boolean)}
 function resultText(url=location.href){const title=qs('.calc-hero h1')?.textContent?.trim()||'PilotDesk calculation';const out=outputText();return [title,...inputText(),...(out.length?['',...out]:[]),'',`Try this exact setup: ${url}`].join('\n')}
 function track(name){try{window.va?.('event',{name,data:{calculator:document.body.dataset.calc||location.pathname}})}catch{}}
+function saveCalculation(){
+ const user=window.PilotDeskSession?.user;
+ if(!user?.id){
+   const next=encodeURIComponent(location.pathname+location.search);
+   location.assign('/account.html?next='+next);
+   return;
+ }
+ const outputs=outputText();
+ if(!outputs.length){toast('Calculate a result first');return}
+ const key='pd-saved-calculations:'+user.id;
+ let saved=[];try{saved=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(saved))saved=[]}catch{saved=[]}
+ const item={id:crypto?.randomUUID?.()||('calc'+Date.now()),title:qs('.calc-hero h1')?.textContent?.trim()||document.title,path:location.pathname,url:location.href,inputs:valuesObject(),outputs,savedAt:Date.now()};
+ saved=[item,...saved].slice(0,20);
+ try{localStorage.setItem(key,JSON.stringify(saved));toast('Calculation saved on this device');window.pdTrack?.('Calculator Saved',{calculator:calcKey});document.dispatchEvent(new CustomEvent('pilotdesk:calculation-saved',{detail:item}))}catch{toast('Could not save on this device')}
+}
 function bringResultIntoView(){if(!results||!matchMedia('(max-width:760px)').matches)return;const r=results.getBoundingClientRect();if(r.top>=0&&r.bottom<=innerHeight)return;results.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'})}
 function updateSummary(){const fn=SUMMARY[calcKey],text=fn?.()||'';resultSummary.hidden=!text;resultSummary.querySelector('strong').textContent=text}
 function afterCalculate(){sync();updateSummary();track('Calculator Used');bringResultIntoView();const detail={title:qs('.calc-hero h1')?.textContent?.trim()||'Calculator',path:location.pathname,inputs:valuesObject(),summary:outputText().slice(0,3).join(' · '),url:location.href};document.dispatchEvent(new CustomEvent('pilotdesk:calculated',{detail}))}
 calc.addEventListener('click',()=>setTimeout(afterCalculate,0));
 inputs.forEach(i=>{i.addEventListener('change',sync);i.addEventListener('input',()=>{advisory();requestAnimationFrame(updateSummary)})});
 box.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('input')){e.preventDefault();calc.click()}});
+actions.querySelector('[data-pd-save-calculation]').addEventListener('click',saveCalculation);
 actions.querySelector('[data-pd-copy-result]').addEventListener('click',async()=>{sync();try{await navigator.clipboard.writeText(resultText(referralUrl()));toast('Result copied with share link');track('Result Copied');window.pdTrack?.('Calculator Result Copied',{calculator:document.body.dataset.calc||location.pathname})}catch{toast('Copy failed')}});
 actions.querySelector('[data-pd-copy-link]').addEventListener('click',async()=>{sync();const url=referralUrl();try{await navigator.clipboard.writeText(url);toast('Shareable calculation link copied');track('Calculation Link Copied');window.pdTrack?.('Calculator Link Copied',{calculator:document.body.dataset.calc||location.pathname})}catch{toast('Copy failed')}});
 actions.querySelector('[data-pd-share]').addEventListener('click',async()=>{sync();const title=qs('h1')?.textContent?.trim()||'PilotDesk',url=referralUrl(),text=resultText(url);try{if(navigator.share)await navigator.share({title,text,url});else{await navigator.clipboard.writeText(text);toast('Setup link copied')}track('Calculation Shared');window.pdTrack?.('Calculator Shared',{calculator:document.body.dataset.calc||location.pathname,method:navigator.share?'native':'copy'})}catch(e){if(e?.name!=='AbortError')toast('Share failed')}});

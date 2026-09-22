@@ -1,10 +1,12 @@
 import fs from 'node:fs';
+import vm from 'node:vm';
 const read=p=>fs.readFileSync(p,'utf8');
 const html=read('written-prep.html');
 const js=read('assets/written-prep.js');
 const bankWrapper=read('supabase/functions/written-prep/bank.ts');
 const bankSource=read('supabase/functions/written-prep/question-bank.js');
 const edge=read('supabase/functions/written-prep/index.ts');
+const standardsSource=read('assets/training-standards-data.js');
 const migration=read('supabase/migrations/008_written_prep.sql');
 const gradingMigration=read('supabase/migrations/009_written_prep_acs_grading.sql');
 const siteData=read('src/data/site.mjs');
@@ -22,6 +24,9 @@ const expectedDocs={ppl:'FAA-S-ACS-6C',ira:'FAA-S-ACS-8C',cpl:'FAA-S-ACS-7B',cfi
 const prefixes={ppl:['PA.'],ira:['IR.'],cpl:['CA.'],cfi:['FI.','AI.'],atp:['AA.']};
 const all=Object.values(banks).flat();
 const ids=new Set();
+const standardsContext={window:{}};vm.runInNewContext(standardsSource,standardsContext);const standards=standardsContext.window.PilotDeskTrainingStandards;
+ok(Boolean(standards),'FAA training standards matrix must load for Written Prep authoring QA');
+
 
 ok(bankManifest.legacyGeneratedFamiliesExcluded===true,'Legacy generated question families must remain excluded from the live bank');
 ok(bankManifest.acsQuestionCount===40,`Expected 40 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
@@ -55,6 +60,15 @@ for(const [track,items] of Object.entries(banks)){
    ok(q.standardType==='PTS',`${q.id} must remain PTS-linked until the FAA publishes a CFII ACS`);
    ok(q.standardDoc==='FAA-S-8081-9E',`${q.id} must reference FAA-S-8081-9E`);
   }
+ }
+}
+for(const [track,items] of Object.entries(banks)){
+ const matrixTrack=standards?.tracks?.[track];
+ ok(Boolean(matrixTrack),`${track.toUpperCase()} must exist in the shared FAA coverage matrix`);
+ for(const q of items){
+  const code=String(q.standardCode||'');
+  const mapped=matrixTrack?.clusters?.some(c=>c.codes.some(prefix=>code.startsWith(prefix)));
+  ok(mapped||(track==='cfii'&&code.startsWith('PTS Area')), `${q.id} is live but does not map to the shared ${track.toUpperCase()} ACS/PTS coverage matrix`);
  }
 }
 ok(ids.size===all.length,'Question IDs must be globally unique');

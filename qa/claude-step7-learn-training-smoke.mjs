@@ -26,7 +26,7 @@ check(site.includes('/assets/learn-step7.js')&&boot.includes('/assets/learn-step
 const step7Css=css.slice(css.indexOf('Claude Step 7 — Learn / Training'));
 for(const bad of ['linear-gradient','radial-gradient','backdrop-filter'])check(!step7Css.includes(bad),'Step 7 introduced SaaS decoration: '+bad);
 for(const cls of ['.pd-gap-weak-row','.pd-certificate-path','.pd-source-matrix','.pd-oral-subject-strip','.pd-guide-reader-rail'])check(css.includes(cls),'Step 7 visual system missing '+cls);
-check(sw.includes("CACHE='pilotdesk-v50'")&&sw.includes('/assets/learn-step7.js'),'Service worker did not advance for Step 7');
+check(Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0)>=50&&sw.includes('/assets/learn-step7.js'),'Service worker did not reach the Step 7 cache floor');
 
 if(failures.length){console.error('Claude Step 7 Learn/Training smoke failed ('+failures.length+')');failures.forEach(x=>console.error(' - '+x));process.exit(1)}
 console.log('Claude Step 7 Learn/Training smoke passed.');

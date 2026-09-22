@@ -139,19 +139,28 @@ function init(){
   });
 
   function itemByPath(path){return items.find(x=>x.href===path||x.href.replace(/\/$/,'')===String(path||'').replace(/\/$/,''))}
+  function relativeUsed(ts){
+    const n=Number(ts||0);if(!n)return 'Recently used';
+    const days=Math.max(0,Math.floor((Date.now()-n)/86400000));
+    if(days===0)return 'Last used today';
+    if(days===1)return 'Last used yesterday';
+    return 'Last used '+days+' days ago';
+  }
   function renderPersonal(){
     if(!personal||!personalGrid)return;
-    const pinned=read('pd-favorites',[]).map(x=>itemByPath(x.path)).filter(Boolean);
-    const recent=read('pd-recent',[]).map(x=>itemByPath(x.path)).filter(Boolean);
+    const storedPinned=read('pd-favorites',[]);
+    const storedRecent=read('pd-recent',[]);
+    const pinned=storedPinned.map(x=>itemByPath(x.path)).filter(Boolean);
+    const recent=storedRecent.map(x=>{const item=itemByPath(x.path);return item?{...item,usedAt:x.usedAt||0}:null}).filter(Boolean);
     const merged=dedupe([...pinned,...recent]).slice(0,8);
     personalGrid.replaceChildren();
     if(!merged.length){personal.hidden=true;return}
     personal.hidden=false;
     for(const x of merged){
       const a=document.createElement('a');a.className='pd-tool-personal-card';a.href=x.href;
-      const source=pinned.some(p=>p.href===x.href)?'Pinned':'Recent';
-      a.innerHTML=`<small>${source}</small><b>${x.title}</b><span>${x.category}</span>`;
-      a.addEventListener('click',()=>window.pdTrack?.('Tool Directory Open',{tool:x.slug,source:source.toLowerCase()}));
+      const isPinned=pinned.some(p=>p.href===x.href),source=isPinned?'Pinned':relativeUsed(x.usedAt);
+      a.innerHTML=`<small data-last-used>${source}</small><b>${x.title}</b><span>${x.category}</span>`;
+      a.addEventListener('click',()=>window.pdTrack?.('Tool Directory Open',{tool:x.slug,source:isPinned?'pinned':'recent'}));
       personalGrid.append(a);
     }
   }

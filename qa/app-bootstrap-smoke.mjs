@@ -34,10 +34,10 @@ for(const retired of ['product-polish.js','context-widget.js','avionics-command.
 for(const layer of ['styles-legacy.css','hub.css','experience.css','design-tokens.css'])check(styles.includes(`/assets/${layer}`),`shared styles entrypoint is missing ${layer}`);
 check(!styles.includes('professional-polish.css')&&!styles.includes('avionics-ui.css'),'shared styles entrypoint must not restore retired visual stacks');
 
-for(const needle of ['Plan a Flight','Use a Calculator','Study for a Written','Play Daily'])check(siteData.includes(needle),`shared homepage data is missing ${needle}`);
+for(const needle of ['Plan a Flight','Use a Calculator','Study for a Written','Open Daily'])check(siteData.includes(needle),`shared homepage data is missing ${needle}`);
 for(const needle of ["label: 'Tools'","label: 'Plan'","label: 'Weather'","label: 'Learn'"])check(siteData.includes(needle),`shared global navigation is missing ${needle}`);
 check(siteData.includes("['/tools.html', 'All calculators'"),'Tools navigation must expose the calculator directory');
-check(siteData.includes("['/daily/', 'Daily challenge'"),'Learn navigation must expose PilotDesk Daily');
+check(siteData.includes("['/daily/', 'Daily briefing'"),'Learn navigation must expose PilotDesk Daily');
 check(astroHome.includes('data-pd-home-account'),'homepage must preserve account discovery markup');
 check(astroHeader.includes('navSections')&&astroHeader.includes('section.items.map'),'Astro header must render the shared navigation model');
 for(const needle of ['window.PILOTDESK_NAV_CORE','navigation-search.js','data-pd-account-link','Sign in','scheduleAccountHydration'])check(nav.includes(needle),`global navigation runtime is missing ${needle}`);

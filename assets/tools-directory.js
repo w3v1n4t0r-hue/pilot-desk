@@ -91,6 +91,8 @@ const categoryOf=x=>{
 const read=(key,fallback=[])=>{try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}};
 const norm=s=>String(s||'').toLowerCase().replace(/[°&/]/g,' ').replace(/[^a-z0-9.+-]+/g,' ').trim();
 const dedupe=items=>[...new Map(items.map(x=>[x.href,x])).values()];
+function relativeUsed(ts){const n=Number(ts||0);if(!n)return 'Recently used';const days=Math.max(0,Math.floor((Date.now()-n)/86400000));if(days===0)return 'Last used today';if(days===1)return 'Last used yesterday';return 'Last used '+days+' days ago'}
+function toolIcon(category,slug){const common='viewBox="0 0 24 24" aria-hidden="true"';if(slug==='weight-balance')return `<svg ${common}><path d="M12 4v16M5 8h14M7 8l-3 6h6L7 8Zm10 0-3 6h6l-3-6ZM8 20h8"/></svg>`;if(category==='Flight Planning')return `<svg ${common}><circle cx="12" cy="12" r="8"/><path d="m12 5 2.1 4.9L19 12l-4.9 2.1L12 19l-2.1-4.9L5 12l4.9-2.1Z"/></svg>`;if(category==='Atmosphere & Weather')return `<svg ${common}><path d="M4 7h11M4 12h16M4 17h12"/><path d="m16 5 2 2-2 2"/></svg>`;if(category==='Performance')return `<svg ${common}><path d="M5 18 10 8l3 6 3-9 3 13"/><path d="M4 20h16"/></svg>`;if(category==='Maneuvers & Turns')return `<svg ${common}><path d="M6 12a6 6 0 1 1 6 6"/><path d="m6 8v4h4"/></svg>`;if(category==='Navigation')return `<svg ${common}><circle cx="12" cy="12" r="8"/><path d="m15 7-2 6-6 2 2-6 6-2Z"/></svg>`;if(category==='Weight & Balance')return `<svg ${common}><path d="M12 5v14M6 9h12M7 9l-3 5h6L7 9Zm10 0-3 5h6l-3-5Z"/></svg>`;if(category==='Conversions')return `<svg ${common}><path d="M7 7h10l-2-2m2 2-2 2M17 17H7l2 2m-2-2 2-2"/></svg>`;return `<svg ${common}><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8v8"/></svg>`}
 
 function init(){
   const host=document.getElementById('pdToolDirectory');
@@ -141,32 +143,37 @@ function init(){
   function itemByPath(path){return items.find(x=>x.href===path||x.href.replace(/\/$/,'')===String(path||'').replace(/\/$/,''))}
   function renderPersonal(){
     if(!personal||!personalGrid)return;
-    const pinned=read('pd-favorites',[]).map(x=>itemByPath(x.path)).filter(Boolean);
-    const recent=read('pd-recent',[]).map(x=>itemByPath(x.path)).filter(Boolean);
-    const merged=dedupe([...pinned,...recent]).slice(0,8);
+    const recentRaw=read('pd-recent',[]);
+    const recent=recentRaw.map(x=>{const item=itemByPath(x.path);return item?{...item,usedAt:x.usedAt||0}:null}).filter(Boolean).slice(0,8);
     personalGrid.replaceChildren();
-    if(!merged.length){personal.hidden=true;return}
+    if(!recent.length){personal.hidden=true;return}
     personal.hidden=false;
-    for(const x of merged){
+    for(const x of recent){
       const a=document.createElement('a');a.className='pd-tool-personal-card';a.href=x.href;
-      const source=pinned.some(p=>p.href===x.href)?'Pinned':'Recent';
-      a.innerHTML=`<small>${source}</small><b>${x.title}</b><span>${x.category}</span>`;
-      a.addEventListener('click',()=>window.pdTrack?.('Tool Directory Open',{tool:x.slug,source:source.toLowerCase()}));
+      a.innerHTML=`<span class="pd-directory-icon">${toolIcon(x.category,x.slug)}</span><span class="pd-tool-personal-copy"><small data-last-used>${relativeUsed(x.usedAt)}</small><b>${x.title}</b><span>${x.category}</span></span>`;
+      a.addEventListener('click',()=>window.pdTrack?.('Tool Directory Open',{tool:x.slug,source:'recent'}));
       personalGrid.append(a);
     }
   }
 
+  const recentByPath=new Map(read('pd-recent',[]).map(x=>[String(x.path||'').replace(/\/$/,''),x]));
   function cardFor(x){
     const a=document.createElement('a');a.className='tool-card pd-directory-card';a.href=x.href;
-    const title=document.createElement('b');title.textContent=x.title;
+    const icon=document.createElement('span');icon.className='pd-directory-icon';icon.innerHTML=toolIcon(x.category,x.slug);
+    const copy=document.createElement('span');copy.className='pd-directory-card-copy';
+    const row=document.createElement('span');row.className='pd-directory-card-topline';
     const meta=document.createElement('small');meta.className='pd-directory-card-meta';meta.textContent=x.category;
+    row.append(meta);
+    const recent=recentByPath.get(x.href.replace(/\/$/,''));
+    if(recent){const used=document.createElement('small');used.className='pd-directory-last-used';used.textContent=relativeUsed(recent.usedAt);row.append(used)}
+    const title=document.createElement('b');title.textContent=x.title;
     const desc=document.createElement('p');
     desc.textContent=DESCRIPTIONS[x.slug]||(
       x.slug==='weight-balance'?'Build and check an aircraft loading scenario.':
       x.slug==='e6b'?'Run common E6B flight-planning calculations in one place.':
       'Open this aviation calculator and see the formula, inputs, and result.'
     );
-    a.append(meta,title,desc);
+    copy.append(row,title,desc);a.append(icon,copy);
     a.addEventListener('click',()=>window.pdTrack?.('Tool Directory Open',{tool:x.slug,source:'directory'}));
     return a;
   }

@@ -104,6 +104,7 @@
   min-height:0!important;border:0!important;border-radius:0!important;background:var(--bg)!important;clip-path:none!important;padding:14px!important
 }
 .pd-saved-flight-card:hover{transform:none!important;background:var(--panel2)!important}
+.pd-saved-flight-card:after{display:none!important}
 .pd-saved-flight-card.is-active{box-shadow:inset 2px 0 0 var(--accent)!important}
 .pd-saved-flight-eyebrow .ACTIVE{color:var(--accent)!important}
 .pd-saved-flight-actions .pd-btn{min-height:36px!important;font-size:9px!important}

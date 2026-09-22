@@ -6,11 +6,11 @@ const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelecto
 const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt',"'":'&#39;','"':'&quot;'}[c]));
 const trackNames={ppl:'Private Pilot',ira:'Instrument',cpl:'Commercial',cfi:'CFI',cfii:'CFII',atp:'ATP'};
 const modeNames={learn:'WEAK-AREA REVIEW',missed:'MISSED QUESTIONS',marked:'MARKED QUESTIONS',random:'RANDOM QUESTIONS',exam:'PRACTICE EXAM'};
-const difficultyNames={all:'ALL LEVELS',foundation:'FOUNDATION',applied:'APPLIED',advanced:'ADVANCED'};
+const difficultyNames={all:'ALL REVIEWED',applied:'APPLIED',advanced:'ADVANCED'};
 const state={client:null,auth:null,track:'ppl',difficulty:'all',dashboard:null,session:null,current:null,pendingNext:null,timer:null,timerSeconds:0};
 const edgeHeaders=()=>({apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${state.auth?.access_token||''}`});
 const safeTrack=v=>['ppl','ira','cpl','cfi','cfii','atp'].includes(v)?v:'ppl';
-const safeDifficulty=v=>['all','foundation','applied','advanced'].includes(v)?v:'all';
+const safeDifficulty=v=>['all','applied','advanced'].includes(v)?v:'all';
 const savePrefs=()=>{try{localStorage.setItem('pd-written-track',state.track);localStorage.setItem('pd-written-difficulty',state.difficulty)}catch{}};
 const savedTrack=()=>{try{return safeTrack(localStorage.getItem('pd-written-track')||'ppl')}catch{return'ppl'}};
 const savedDifficulty=()=>{try{return safeDifficulty(localStorage.getItem('pd-written-difficulty')||'all')}catch{return'all'}};
@@ -18,7 +18,7 @@ function text(sel,v){const el=$(sel);if(el)el.textContent=String(v)}
 function show(sel,on){const el=$(sel);if(el)el.hidden=!on}
 function notice(msg,kind=''){const el=$('#pdPrepNotice');if(!el)return;el.textContent=msg;el.dataset.kind=kind;el.hidden=!msg;if(msg)setTimeout(()=>{if(el.textContent===msg)el.hidden=true},4500)}
 function band(v){return v>=80?'strong':v>=60?'developing':'gap'}
-function sourceLabel(q){if(q?.source==='faa-sample-exact')return 'FAA SAMPLE';if(q?.source==='pilotdesk-faa-parallel')return 'FAA FIGURE';return q?.standardType==='PTS'?'PTS-LINKED':'ACS-LINKED'}
+function sourceLabel(q){if(q?.source==='faa-sample-exact')return 'FAA SAMPLE';if(q?.source==='pilotdesk-faa-parallel')return 'FAA FIGURE';if(q?.source==='pilotdesk-curated')return 'CURATED';return q?.standardType==='PTS'?'PTS-LINKED':'ACS-LINKED'}
 function renderFigureRef(q){let box=$('#pdPrepFigureRef');if(!box){box=document.createElement('div');box.id='pdPrepFigureRef';box.className='pd-prep-figure-ref';$('#pdPrepPrompt')?.insertAdjacentElement('afterend',box)}if(!q?.figureRef){box.hidden=true;box.innerHTML='';return}box.hidden=false;box.innerHTML=`<div><small>OFFICIAL FAA FIGURE</small><b>${esc(q.figureRef.supplement)} · Figure ${esc(q.figureRef.figure)}</b><span>Open the FAA testing supplement and use the referenced figure to answer this item.</span></div><a href="${esc(q.figureRef.url)}" target="_blank" rel="noopener">OPEN FIGURE ↗</a>`}
 function lockUI(on){$$('[data-mode],[data-track],[data-difficulty]').forEach(b=>b.disabled=on)}
 

@@ -59,6 +59,8 @@ jobs:
         run: node qa/claude-step5-learn-daily-smoke.mjs
       - name: Run Claude Step 6 account footer and state checks
         run: node qa/claude-step6-account-footer-states-smoke.mjs
+      - name: Claude Step 7 Learn and training contract
+        run: node qa/claude-step7-learn-training-smoke.mjs
       - name: Audit every built page surface
         run: node qa/page-surface-smoke.mjs
       - name: Run five-pass copy and design audit

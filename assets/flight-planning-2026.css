@@ -94,7 +94,7 @@
 .rp-leg-wx-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
 .rp-leg-wx b{font-size:9px}
 .rp-leg-wx-cat{
-  min-width:34px;text-align:center;padding:3px 5px;border:1px solid #3c4750;color:var(--text);
+  font-style:normal;  min-width:34px;text-align:center;padding:3px 5px;border:1px solid #3c4750;color:var(--text);
   font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace
 }
 .rp-leg-wx span,.rp-leg-wx small{color:var(--muted2);font-size:8px;line-height:1.35}
@@ -109,7 +109,6 @@
 .pd-saved-flight-card:after{display:none!important}
 .pd-saved-flight-card:hover{background:var(--panel)!important;transform:none!important}
 .pd-saved-flight-actions [data-dup]{border-color:#42515c!important}
-.pd-saved-flight-actions [data-dup]:after{content:" & edit"}
 .pd-saved-flight-actions [data-edit]{display:none!important}
 
 /* Planner landing becomes an operations index, not a card showcase. */

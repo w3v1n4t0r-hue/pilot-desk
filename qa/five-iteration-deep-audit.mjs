@@ -158,6 +158,50 @@ for(const [file,html] of htmlByFile){
 for(const [title,owners] of titles)if(title&&owners.length>1)add(hard,5,owners[0],`duplicate page title on ${owners.length} indexable pages: "${title}"`);
 for(const [canonical,owners] of canonicals)if(canonical&&owners.length>1)add(hard,5,owners[0],`duplicate canonical on ${owners.length} pages: ${canonical}`);
 
+
+/* PRODUCT-LAYOUT REGRESSIONS uncovered in the September five-pass audit. */
+const sourceRead=p=>fs.readFileSync(p,'utf8');
+const coreSource=[
+  'planner.html','weather.html','airport.html','metar-decoder.html','procedures.html',
+  'poh-chart-studio.html','checklist-trainer.html','flight-training.html','guides.html'
+];
+for(const file of coreSource){
+  const html=sourceRead(file);
+  const visibleText=strip(withoutShell(html));
+  for(const phrase of ['Checks for this workflow','Training use for this tool','Continue from here']){
+    if(visibleText.includes(phrase))add(hard,1,file,'generated template heading returned: '+phrase);
+  }
+}
+const guidesSource=sourceRead('guides.html');
+for(const phrase of ['POPULAR PILOT SEARCHES','Guide → calculator → training → source.','Start with the system, not an isolated page.']){
+  if(strip(guidesSource).includes(phrase))add(hard,1,'guides.html','SEO/template-looking guide copy returned: '+phrase);
+}
+if(/\sstyle=["']/i.test(guidesSource))add(notes,2,'guides.html','inline layout style returned to Guides directory');
+const plannerSource=sourceRead('planner.html');
+if(!plannerSource.includes('pd-plan-flow')||plannerSource.includes('Use the planner as a flight-planning workflow'))add(hard,2,'planner.html','task-first planner layout regressed');
+const weatherSource=sourceRead('weather.html');
+if(weatherSource.indexOf('class="pd-panel"')>weatherSource.indexOf('pd-weather-read'))add(hard,2,'weather.html','weather lookup must stay ahead of explanatory material');
+const trainingSource=sourceRead('flight-training.html');
+if(trainingSource.includes('pd-seo-cluster-strip')||trainingSource.includes('class="pd-list"'))add(hard,2,'flight-training.html','duplicate/SEO-style training catalog returned');
+if(!trainingSource.includes('data-pd-core-depth="1"'))add(hard,2,'flight-training.html','hand-edited training layout is no longer protected from generated boilerplate');
+
+const siteJs=sourceRead('assets/site.js');
+if(siteJs.includes("const items=$('.tool-card")||siteJs.includes('.pd-reveal')||siteJs.includes('IntersectionObserver'))add(hard,3,'assets/site.js','decorative reveal runtime or single-element forEach bug returned');
+if(!siteJs.includes('animateResultUpdates();'))add(hard,3,'assets/site.js','result-update feedback is no longer initialized');
+
+const experienceJs=sourceRead('assets/experience.js');
+for(const marker of ["multi:['Multi-Engine','/training/multiengine.html']","cfii:['CFII','/training/cfii.html']"])if(!experienceJs.includes(marker))add(hard,3,'assets/experience.js','rating destination missing: '+marker);
+if(experienceJs.includes("['/flight-training.html','/written-prep.html'")||experienceJs.includes("path.startsWith('/training/')"))add(hard,3,'assets/experience.js','duplicate rating selector returned to rating/training pages');
+if(!experienceJs.includes("pd-guide-filter")||!experienceJs.includes("pdGuideCount"))add(hard,3,'assets/experience.js','Guides search/filter count missing');
+
+const globalNav=sourceRead('assets/global-nav.js');
+for(const marker of ["p.startsWith('/calculators/')","p.startsWith('/training/')","p.startsWith('/learn/oral-exam/')","p==='/guides.html'"])if(!globalNav.includes(marker))add(hard,5,'assets/global-nav.js','shared streamlined shell missing '+marker);
+
+const motionCss=sourceRead('assets/motion.css');
+for(const retired of ['pd-page-in','.pd-reveal','pd-scan','translateY(-3px)'])if(motionCss.includes(retired))add(hard,2,'assets/motion.css','decorative motion returned: '+retired);
+const tokensCss=sourceRead('assets/design-tokens.css');
+if(!tokensCss.includes('.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.info-card,.side-card')||!tokensCss.includes('clip-path:none!important'))add(hard,2,'assets/design-tokens.css','simple content cards are being chamfered again');
+
 console.log('PilotDesk deep five-iteration audit');
 console.log(`Built pages reviewed: ${files.length}`);
 for(let i=1;i<=5;i++){

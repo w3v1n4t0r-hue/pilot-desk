@@ -11,11 +11,13 @@ export type PrepQuestion={
   correct:number;
   explanation:string;
   reference:string;
-  source:'faa-sample-derived'|'faa-sample-exact'|'pilotdesk-faa-aligned';
+  source:'faa-sample-derived'|'faa-sample-exact'|'pilotdesk-faa-parallel'|'pilotdesk-faa-aligned';
   sourceUrl?:string;
   figureRef?:{supplement:string;figure:string;url:string};
   choiceExplanations?:string[];
   reviewedAt?:string;
+  authoring?:'curated-manual'|'generated';
+  calibratedFrom?:string;
   standardCode:string;
   standardDoc:string;
   standardType:StandardType;

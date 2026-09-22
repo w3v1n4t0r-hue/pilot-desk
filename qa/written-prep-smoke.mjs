@@ -23,10 +23,12 @@ const prefixes={ppl:['PA.'],ira:['IR.'],cpl:['CA.'],cfi:['FI.','AI.'],atp:['AA.'
 const all=Object.values(banks).flat();
 const ids=new Set();
 
-ok(bankManifest.acsQuestionCount>=5028,`Expected at least 5,028 ACS-linked items after FAA sample + curated figure families; got ${bankManifest.acsQuestionCount}`);
-for(const track of acsTracks){const floor=['ppl','ira','cpl'].includes(track)?1005:1000;ok(banks[track]?.length>=floor,`${track.toUpperCase()} must contain at least ${floor} ACS-linked items`)}
-ok(banks.cfii?.length>=250,'CFII should keep at least 250 PTS-linked supplemental items');
-ok(bankManifest.totalQuestionCount>=5278,`Expected at least 5,278 total items including FAA samples, curated figure families, and CFII PTS; got ${bankManifest.totalQuestionCount}`);
+ok(bankManifest.legacyGeneratedFamiliesExcluded===true,'Legacy generated question families must remain excluded from the live bank');
+ok(bankManifest.acsQuestionCount===43,`Expected 43 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
+ok(bankManifest.supplementalPtsQuestionCount===8,`Expected 8 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
+ok(bankManifest.totalQuestionCount===51,`Expected 51 total curated live questions; got ${bankManifest.totalQuestionCount}`);
+const minimumByTrack={ppl:7,ira:9,cpl:8,cfi:10,cfii:8,atp:9};
+for(const [track,min] of Object.entries(minimumByTrack))ok(banks[track]?.length>=min,`${track.toUpperCase()} curated bank fell below ${min} questions`);
 
 for(const [track,items] of Object.entries(banks)){
  for(const q of items){
@@ -35,12 +37,16 @@ for(const [track,items] of Object.entries(banks)){
   ok(new Set(q.options).size===3,`${q.id} contains duplicate answer choices`);
   ok(q.options.every(x=>typeof x==='string'&&x.trim().length>=2),`${q.id} contains an empty/trivial answer choice`);
   ok(Number.isInteger(q.correct)&&q.correct>=0&&q.correct<3,`${q.id} has invalid correct-answer index`);
-  ok(['foundation','applied','advanced'].includes(q.difficulty),`${q.id} has invalid difficulty`);
+  ok(['applied','advanced'].includes(q.difficulty),`${q.id} must be applied or advanced; foundation questions are not allowed in the live bank`);
   ok(q.experienceLevel===track,`${q.id} experience level does not match its track`);
-  ok(typeof q.explanation==='string'&&q.explanation.length>=35,`${q.id} needs a substantive explanation`);
-  ok(typeof q.reference==='string'&&q.reference.length>=8,`${q.id} needs an FAA/reference citation`);
-  ok(/^https:\/\/www\.faa\.gov\//.test(q.sourceUrl||''),`${q.id} must link to an FAA standard source`);
+  ok(typeof q.explanation==='string'&&q.explanation.length>=55,`${q.id} needs a substantive explanation`);
+  ok(typeof q.reference==='string'&&q.reference.length>=12,`${q.id} needs an FAA/reference citation`);
+  ok(/^https:\/\/www\.faa\.gov\//.test(q.sourceUrl||''),`${q.id} must link to an FAA source`);
+  ok(['faa-sample-exact','pilotdesk-faa-parallel','pilotdesk-curated'].includes(q.source),`${q.id} uses disallowed live source type ${q.source}`);
+  ok(Array.isArray(q.choiceExplanations)&&q.choiceExplanations.length===3,`${q.id} must explain all three choices`);
   ok(!q.options.some(x=>/all of the above|none of the above|obviously|joke answer/i.test(x)),`${q.id} contains a low-quality test-taking shortcut`);
+  ok(!/A flight is \d+ NM|planned leg is \d+ NM|Airport elevation is \d+ ft MSL and the altimeter setting/i.test(q.prompt),`${q.id} looks like a removed numeric-template family`);
+  if(q.source!=='faa-sample-exact')ok(q.authoring==='curated-manual',`${q.id} must be manually curated`);
   if(acsTracks.includes(track)){
    ok(q.standardType==='ACS',`${q.id} must be ACS-linked`);
    ok(q.standardDoc===expectedDocs[track],`${q.id} uses ${q.standardDoc}; expected ${expectedDocs[track]}`);
@@ -50,48 +56,46 @@ for(const [track,items] of Object.entries(banks)){
    ok(q.standardDoc==='FAA-S-8081-9E',`${q.id} must reference FAA-S-8081-9E`);
   }
  }
- if(acsTracks.includes(track)){
-  const foundation=items.filter(x=>x.difficulty==='foundation').length,applied=items.filter(x=>x.difficulty==='applied').length,advanced=items.filter(x=>x.difficulty==='advanced').length;
-  ok(foundation>=200&&applied>=350&&advanced>=250,`${track.toUpperCase()} difficulty distribution is too narrow (${foundation}/${applied}/${advanced})`);
- }
-}
-const exactFaa=all.filter(q=>q.source==='faa-sample-exact');
-ok(exactFaa.length>=15,`Expected at least 15 exact FAA sample items; got ${exactFaa.length}`);
-for(const track of ['ppl','ira','cpl'])ok(banks[track].filter(q=>q.source==='faa-sample-exact').length>=5,`${track.toUpperCase()} must include at least five exact FAA sample questions`);
-ok(exactFaa.some(q=>q.figureRef?.url&&q.figureRef?.figure),'Exact FAA sample layer must include testing-supplement figure questions');
-for(const q of exactFaa){ok(Array.isArray(q.choiceExplanations)&&q.choiceExplanations.length===3,`${q.id} needs per-choice rationale`);ok(q.reviewedAt==='2026-09-22',`${q.id} must carry the current review date`)}
-const figureParallel=all.filter(q=>q.source==='pilotdesk-faa-parallel');
-ok(figureParallel.length>=13,`Expected at least 13 curated FAA-figure parallel items; got ${figureParallel.length}`);
-for(const q of figureParallel){
- ok(q.authoring==='curated-manual',`${q.id} must be manually curated`);
- ok(Boolean(q.figureRef?.supplement&&q.figureRef?.figure&&q.figureRef?.url),`${q.id} must carry an exact FAA figure reference`);
- ok(Array.isArray(q.choiceExplanations)&&q.choiceExplanations.length===3,`${q.id} needs three per-choice rationales`);
- ok(typeof q.calibratedFrom==='string'&&q.calibratedFrom.startsWith('FAA '),`${q.id} must identify the FAA sample used for calibration`);
 }
 ok(ids.size===all.length,'Question IDs must be globally unique');
-const uniquePrompts=new Set(all.map(q=>`${q.prompt}::${q.options.join('|')}`)).size;
-ok(uniquePrompts>=1400,`Question variants are not diverse enough (${uniquePrompts} unique prompt/choice sets)`);
+ok(new Set(all.map(q=>q.prompt)).size===all.length,'Live Written Prep prompts must be unique');
 
-has(html,'5,000+ ACS-linked','Written Prep must advertise the expanded ACS question bank accurately');
-has(html,'exactly three answer choices','Three-choice exam format disclosure missing');
-has(html,'FAA-S-8081-9E','CFII PTS disclosure missing');
-has(html,'data-difficulty="foundation"','Foundation difficulty filter missing');
+const exactFaa=all.filter(q=>q.source==='faa-sample-exact');
+ok(exactFaa.length>=20,`Expected at least 20 exact FAA sample items; got ${exactFaa.length}`);
+ok(exactFaa.some(q=>q.figureRef?.url&&q.figureRef?.figure),'Exact FAA sample layer must include testing-supplement figure questions');
+
+const figureParallel=all.filter(q=>q.source==='pilotdesk-faa-parallel');
+ok(figureParallel.length===13,`Expected 13 manually curated FAA-figure parallel items; got ${figureParallel.length}`);
+for(const q of figureParallel){
+ ok(Boolean(q.figureRef?.supplement&&q.figureRef?.figure&&q.figureRef?.url),`${q.id} must carry an exact FAA figure reference`);
+ ok(typeof q.calibratedFrom==='string'&&q.calibratedFrom.startsWith('FAA '),`${q.id} must identify the FAA sample used for calibration`);
+}
+const figureQuestions=all.filter(q=>q.figureRef?.url&&q.figureRef?.figure);
+ok(figureQuestions.length>=25,`At least 25 live questions should require an official FAA figure; got ${figureQuestions.length}`);
+ok(figureQuestions.length/all.length>=0.45,'At least 45% of the live bank should be FAA-figure based');
+
+has(html,'Quality before question count.','Written Prep quality-first disclosure missing');
+ok(!html.includes('5,000'),'Written Prep must not market the removed generated-volume bank');
+ok(!html.includes('data-difficulty="foundation"'),'Foundation difficulty must not be exposed');
 has(html,'data-difficulty="applied"','Applied difficulty filter missing');
 has(html,'data-difficulty="advanced"','Advanced difficulty filter missing');
+has(html,'exactly three answer choices','Three-choice exam format disclosure missing');
+has(html,'FAA-S-8081-9E','CFII PTS disclosure missing');
 has(html,'id="pdPrepStandard"','Per-question standard badge missing');
 has(html,'id="pdPrepGrade"','Practice grade UI missing');
 has(html,'ACCOUNT REQUIRED','Account wall copy missing');
 has(html,'/account.html?next=%2Fwritten-prep.html','Account gate must return users to Written Prep');
-ok(html.toLowerCase().includes('not a leaked faa test bank'),'Live-bank integrity disclosure missing');
 for(const track of ['ppl','ira','cpl','cfi','cfii','atp'])has(html,`data-track="${track}"`,`Missing ${track.toUpperCase()} Written Prep track`);
 for(const mode of ['learn','missed','marked','random','exam'])has(html,`data-mode="${mode}"`,`Missing ${mode} study mode`);
 
 has(js,'/functions/v1/written-prep','Client must use secure Written Prep edge function');
 has(js,"if(r.status===401){renderGate()",'Client must fail closed to account gate');
-has(js,'pd-written-difficulty','Difficulty selection must persist');
+has(js,"const safeDifficulty=v=>['all','applied','advanced']",'Client must reject stale foundation difficulty');
 has(js,"difficulty:state.difficulty",'Study sessions must send selected difficulty');
 has(js,"text('#pdPrepStandard'",'Question UI must render the ACS/PTS element');
 has(js,"return 'FAA SAMPLE'",'Exact FAA sample questions must be visibly labeled');
+has(js,"return 'FAA FIGURE'",'FAA-figure parallel questions must be visibly labeled');
+has(js,"return 'CURATED'",'Manually curated non-figure questions must be visibly labeled');
 has(js,'renderFigureRef(q)','FAA testing-supplement figure handoff missing');
 has(js,'pd-prep-choice-rationale','Per-choice rationale rendering missing');
 has(js,"text('#pdPrepGrade'",'Dashboard must render practice grade');
@@ -104,16 +108,18 @@ has(bankWrapper,"experienceLevel:Track",'Typed bank must expose experience level
 has(bankWrapper,"bankManifest",'Typed bank must expose bank manifest');
 has(bankWrapper,"'faa-sample-exact'",'Typed bank must distinguish exact FAA sample questions');
 has(bankWrapper,"'pilotdesk-faa-parallel'",'Typed bank must distinguish curated FAA-figure parallel questions');
+has(bankWrapper,"'pilotdesk-curated'",'Typed bank must distinguish manually curated questions');
 has(bankWrapper,"authoring?:'curated-manual'",'Typed bank must expose manual-curation provenance');
 has(bankWrapper,'figureRef?:','Typed bank must support FAA figure references');
 has(bankWrapper,'choiceExplanations?:','Typed bank must support per-choice rationales');
+
 for(const [track,meta] of Object.entries({ppl:['PAR',60,120],ira:['IRA',60,120],cpl:['CAX',100,150],cfi:['FIA',100,150],cfii:['FII',50,150],atp:['ATM',125,210]})){
  const [code,count,minutes]=meta;ok(trackMeta[track].testCode===code&&trackMeta[track].officialQuestions===count&&trackMeta[track].officialMinutes===minutes&&trackMeta[track].passingScore===70,`${track.toUpperCase()} official test metadata mismatch`);
 }
 
 has(edge,"return json(401,{error:'A free PilotDesk account is required to use Written Prep.'",'Edge function must require authentication');
 has(edge,'function prepareQuestion','Server answer-choice shuffle missing');
-has(edge,'validDifficulty','Difficulty filter must be enforced by the grading service');
+has(edge,"['applied','advanced'].includes(String(v))",'Server must reject foundation difficulty');
 has(edge,'standardCode:q.standardCode','Question payload must include standards element');
 has(edge,'figureRef:q.figureRef||null','Question payload must include FAA figure references');
 has(edge,'choiceExplanations:Array.isArray(qq.choiceExplanations)','Answer feedback must include per-choice rationales');
@@ -124,7 +130,7 @@ has(edge,"grade:grade(percent)",'Sessions must receive a letter grade');
 has(edge,"mode==='exam'&&!done?null",'Practice exam must suppress correctness feedback until completion');
 has(edge,'nextDue(streak,correct)','Review scheduling missing');
 has(edge,'mastery(corr,total,streak)','Mastery tracking missing');
-has(edge,'Math.min(60,pool.length)','Practice exam should support a 60-question simulation');
+has(edge,'Math.min(60,pool.length)','Practice exam must cap cleanly at the reviewed pool size');
 
 for(const table of ['written_prep_stats','written_prep_sessions','written_prep_bookmarks']){
  has(migration,`create table if not exists public.${table}`,`Missing ${table} table`);
@@ -145,4 +151,4 @@ has(account,'renderPrepOverview','Written Prep progress missing from signed-in a
 has(account,"ensureOwnerMetric('pdMetricPrepToday'",'Owner dashboard must track Written Prep usage');
 
 if(failures.length){console.error('Written Prep checks failed:\n- '+failures.join('\n- '));process.exit(1)}
-console.log(`Written Prep checks passed: ${bankManifest.acsQuestionCount.toLocaleString()} ACS-linked practice items + ${bankManifest.supplementalPtsQuestionCount} CFII PTS items; three choices each, difficulty tiers, secure grading, standards links, weak-area review, and account persistence verified.`);
+console.log(`Written Prep checks passed: ${bankManifest.totalQuestionCount} curated live questions; generated template families excluded, ${figureQuestions.length} FAA-figure items, exact FAA samples, per-choice rationales, secure grading, standards mapping, and account persistence verified.`);

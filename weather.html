@@ -27,11 +27,15 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true"><img src="/assets/icon.svg" alt="" width="40" height="40"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/tools.html">Calculators</a><a href="/airport.html">Airports</a><a href="/planner.html">Planner</a><a href="/weather.html" aria-current="page">Weather</a><a href="/aircraft.html">Hangar</a><a href="/guides.html">Guides</a></nav></header>
 <main class="shell content-page wx-shell" id="main-content">
-  <section class="wx-hero"><span class="badge">LIVE AVIATION WEATHER</span><h1>METAR &amp; TAF</h1><p>Enter an airport or station. PilotDesk shows the raw report, decoded weather, report age, runway-wind context when available, nearby stations, and TAF change groups.</p></section>
-  <section class="pd-panel">
-    <form id="weatherForm"><div class="wx-search"><div class="pd-field"><label for="station">Airport / station ID</label><input id="station" name="station" inputmode="text" autocapitalize="characters" maxlength="4" placeholder="KGFK" required></div><button class="pd-btn" type="submit">Get weather</button></div></form>
-    <div id="weatherStatus" class="wx-status" role="status" aria-live="polite">Ready for a live weather lookup</div>
+  <section class="wx-hero"><span class="badge">AVIATION WEATHER</span><h1>METAR &amp; TAF</h1><p>Read the report like a briefing: station, observation time, raw code, decoded conditions, forecast, and runway-wind context. Every product shows when it was observed, issued, or retrieved.</p></section>
+  <section class="pd-panel wx-briefing-control">
     <div id="pdWeatherFlightStops" class="pd-weather-flight-stops" hidden aria-label="Active flight weather stops"></div>
+    <section class="wx-favorites" aria-labelledby="weatherFavoritesTitle">
+      <div class="wx-favorites-head"><div><span class="eyebrow">FAVORITE AIRPORTS</span><h2 id="weatherFavoritesTitle">Your regular weather checks</h2></div><span>Saved on this device</span></div>
+      <div id="weatherFavorites" class="wx-favorite-list"><div class="pd-empty">No favorite airports yet. Load a station below and save it here.</div></div>
+    </section>
+    <form id="weatherForm"><div class="wx-search"><div class="pd-field"><label for="station">Airport / station ID</label><input id="station" name="station" inputmode="text" autocapitalize="characters" maxlength="4" placeholder="KGFK" required></div><button class="pd-btn" type="submit">Load weather</button></div></form>
+    <div id="weatherStatus" class="wx-status" role="status" aria-live="polite">No weather loaded. Choose a favorite or enter a station.</div>
     <div id="weatherOutput" class="pd-weather-output" aria-live="polite"></div>
   </section>
   <section class="info-card pd-weather-read" data-pd-core-depth="1"><h2>Read the result in order.</h2><ol><li>Confirm the station and report time.</li><li>Read the raw METAR or TAF before relying on the decode.</li><li>Compare wind with the runway and temperature/pressure with performance.</li><li>Use the full official weather picture before an actual flight.</li></ol><div class="source-links"><a href="/metar-decoder.html">METAR decoder</a><a href="/guides/metar-taf.html">METAR / TAF guide</a></div></section><div class="safety-strip"><strong>Supplemental display — not a complete weather briefing.</strong> Confirm current weather, NOTAMs, TFRs, forecasts, runway status, and other required operational information through current official sources before flight.</div>

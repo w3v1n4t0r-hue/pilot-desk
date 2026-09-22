@@ -15,3 +15,121 @@
 .pd-weather-decision-grid .pd-btn{margin-top:auto}.pd-weather-caution{display:block;margin-top:4px;color:var(--muted2)!important;font-size:9px!important;line-height:1.45}
 @media(max-width:720px){.pd-weather-flight-stops{display:block}.pd-weather-stop-links{margin-top:9px}.pd-weather-decision-grid{grid-template-columns:1fr}}
 
+
+/* Claude Step 4 — aviation briefing hierarchy. */
+.wx-shell{max-width:1220px!important}
+.wx-shell .badge,.wx-shell .pd-source-chip,.wx-shell .pd-flightcat-pill{border-radius:0!important}
+.wx-shell .pd-panel,.wx-shell .wx-block,.wx-shell .wx-summary,.wx-shell .wx-error,.wx-shell .wx-skeleton{box-shadow:none!important}
+.wx-status:before{border-radius:0!important}
+.wx-status[data-state="live"]:before{background:var(--accent)!important}
+.wx-status[data-state="warn"]:before{background:var(--pd-warn)!important}
+.wx-status[data-state="error"]:before{background:var(--pd-danger)!important}
+
+.wx-briefing-control{border-top:2px solid #46515a!important;background:#07090b!important}
+.wx-favorites{margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid var(--line)}
+.wx-favorites-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:9px}
+.wx-favorites-head h2{margin:2px 0 0;font-size:16px}
+.wx-favorites-head>span{color:var(--muted2);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+.wx-favorite-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line)}
+.wx-favorite{
+  min-width:0;min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:9px 10px;border:0;background:#080b0e;color:var(--text);cursor:pointer;text-align:left
+}
+.wx-favorite:hover,.wx-favorite:focus-visible{background:var(--panel2);box-shadow:inset 2px 0 0 var(--accent)}
+.wx-favorite span{min-width:0}.wx-favorite b,.wx-favorite small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wx-favorite b{font:700 12px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace}
+.wx-favorite small{margin-top:2px;color:var(--muted2);font-size:8px}
+.wx-favorite em{color:var(--accent);font:700 7px/1.1 ui-monospace,SFMono-Regular,Consolas,monospace;font-style:normal;letter-spacing:.08em}
+
+.wx-search{margin-top:0!important;grid-template-columns:minmax(220px,1fr) auto!important}
+.wx-search input{min-height:46px!important;background:#080b0e!important;border-color:var(--line-hi)!important}
+.wx-search input:focus{border-color:var(--accent)!important;outline:1px solid var(--accent)!important;outline-offset:1px!important}
+.wx-search button{min-height:46px!important}
+
+.pd-weather-output{margin-top:12px!important}
+.wx-summary{padding:14px!important;border-top:2px solid var(--accent)!important;background:#080c10!important}
+.wx-title{align-items:center!important}
+.wx-title h2{font:700 29px/1 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:-.04em!important}
+.wx-title p{margin-top:5px!important}
+.wx-summary-source{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.wx-time-stamp{
+  display:inline-grid;gap:2px;min-width:136px;padding:6px 8px;border:1px solid #36414a;background:#070a0d
+}
+.wx-time-stamp small{color:var(--accent)!important;font:700 7px/1 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:.1em!important}
+.wx-time-stamp b{color:var(--text)!important;font:700 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;white-space:nowrap}
+.wx-time-stamp.is-missing{border-color:#66533f!important;background:#100d09!important}
+.wx-time-stamp.is-missing small,.wx-time-stamp.is-missing b{color:#d8b985!important}
+
+.wx-brief-strip{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:12px;background:var(--line)
+}
+.wx-brief-strip>div{min-width:0;padding:10px;background:#070a0d}
+.wx-brief-strip small{display:block;color:var(--muted2);font:700 7px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.09em}
+.wx-brief-strip b{display:block;margin-top:5px;color:var(--text);font:700 13px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wx-summary-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.wx-summary-actions .utility-btn{min-height:34px!important;border-radius:0!important}
+
+.wx-raw-grid{gap:1px!important;margin-top:1px;background:var(--line)}
+.wx-raw-grid .wx-block{margin-top:0!important;background:#07090b!important}
+.wx-product{padding:14px!important}
+.wx-product-head{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:9px}
+.wx-product-head h2{margin:2px 0 0;font-size:16px}
+.wx-product .pd-raw{
+  min-height:76px;padding:11px;border:1px solid #2e3740;background:#050709;color:#e8ebed;
+  font:600 11px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.01em
+}
+
+.wx-decoded{padding:0!important;background:#07090b!important}
+.wx-decoded>.pd-card-head{padding:12px 14px;margin:0!important;border-bottom:1px solid var(--line)}
+.wx-decoded>.pd-card-head h2{margin:2px 0 0;font-size:16px}
+.wx-brief-table{display:grid}
+.wx-brief-row{
+  display:grid;grid-template-columns:150px minmax(0,1fr) 190px;gap:12px;align-items:center;
+  min-height:48px;padding:7px 12px;border-top:1px solid #222a31
+}
+.wx-brief-row:first-child{border-top:0}
+.wx-brief-row>small{color:var(--muted2);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.07em;text-transform:uppercase}
+.wx-brief-row>b{font:650 11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--text)}
+.wx-brief-row .wx-time-stamp{justify-self:end;min-width:170px;padding:5px 7px}
+
+.wx-block{border-radius:0!important;background:#080b0e!important}
+.wx-block>.pd-card-head{align-items:center!important}
+.wx-runways{gap:0!important}
+.wx-runway{padding:9px 0!important;background:transparent!important}
+.wx-runway b{font-family:ui-monospace,SFMono-Regular,Consolas,monospace!important}
+
+.pd-weather-extra{margin-top:1px!important}
+.pd-weather-extra .pd-dashboard-grid{gap:1px!important;background:var(--line)!important}
+.pd-weather-extra .pd-dashboard-grid>div{padding:12px!important;background:#07090b!important}
+.pd-age-good{color:var(--accent)!important}.pd-age-warn{color:#d5b676!important}.pd-age-old{color:#d99797!important}
+.pd-taf-timeline{display:grid;gap:1px;background:var(--line)}
+.pd-taf-segment{display:grid;grid-template-columns:90px minmax(0,1fr);gap:10px;padding:9px 10px;background:#07090b}
+.pd-taf-segment>b{color:var(--accent);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-taf-segment>div{font:600 10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--text)}
+
+.pd-weather-decision-grid{gap:1px!important;background:var(--line)!important}
+.pd-weather-decision-grid>article{border:0!important;border-radius:0!important;background:#07090b!important}
+.pd-weather-decision-grid>article>small:first-child{color:var(--accent)!important}
+.pd-weather-flight-stops{background:#07090b!important}
+.pd-weather-stop-links a{border-radius:0!important}
+.pd-weather-stop-links a[aria-current="page"]{border-color:var(--accent)!important;box-shadow:inset 0 -2px 0 var(--accent)!important;background:#0a1218!important}
+
+/* Weather pages never use decorative movement or consumer-weather card effects. */
+.wx-shell a,.wx-shell button{transform:none!important}
+
+@media(max-width:900px){
+  .wx-favorite-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wx-brief-strip{grid-template-columns:1fr 1fr}
+  .wx-brief-row{grid-template-columns:120px minmax(0,1fr)}
+  .wx-brief-row .wx-time-stamp{grid-column:1/-1;justify-self:start;min-width:0;width:auto}
+}
+@media(max-width:600px){
+  .wx-favorite-list{grid-template-columns:1fr}
+  .wx-title{align-items:flex-start!important;flex-direction:column}
+  .wx-summary-source{justify-content:flex-start}
+  .wx-brief-strip{grid-template-columns:1fr}
+  .wx-brief-row{grid-template-columns:1fr;gap:4px}
+  .wx-brief-row .wx-time-stamp{grid-column:auto}
+  .wx-product-head{align-items:flex-start;flex-direction:column}
+  .wx-time-stamp{min-width:0;width:100%;box-sizing:border-box}
+}

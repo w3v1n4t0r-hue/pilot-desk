@@ -67,7 +67,8 @@ if(!navCss.includes('@media(max-width:860px)')||!navCss.includes('.pd-main-nav.o
 
 const wx=fs.readFileSync('api/weather.js','utf8');
 const wxClient=fs.readFileSync('assets/weather-fixed.js','utf8');
-for(const marker of ["const NOAA=",'Promise.all','fetchJson(','fetchText(','stale-while-revalidate=300'])if(!wx.includes(marker))throw new Error(`Weather fallback/resilience missing ${marker}`);
+for(const marker of ["const NOAA=",'Promise.all','fetchJson(','fetchText('])if(!wx.includes(marker))throw new Error(`Weather fallback/resilience missing ${marker}`);
+if(!wx.includes("Cache-Control','no-store, max-age=0")||wx.includes('stale-while-revalidate=300'))throw new Error('Weather freshness contract must remain no-store');
 if(!wxClient.includes("cache:'no-store'")||!wxClient.includes('Weather could not be loaded')||!wxClient.includes('Retry'))throw new Error('Weather client retry/failure state missing');
 
 const sw=fs.readFileSync('sw.js','utf8');

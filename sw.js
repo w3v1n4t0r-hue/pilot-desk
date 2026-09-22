@@ -1,6 +1,6 @@
 importScripts('/assets/offline-precache.js');
 
-const CACHE='pilotdesk-v55';
+const CACHE='pilotdesk-v56';
 const GENERATED_CALCULATORS=Array.isArray(self.PILOTDESK_OFFLINE_CALCULATORS)?self.PILOTDESK_OFFLINE_CALCULATORS:[];
 const GENERATED_ASSETS=Array.isArray(self.PILOTDESK_OFFLINE_ASSETS)?self.PILOTDESK_OFFLINE_ASSETS:[];
 const CORE=[...new Set([
@@ -9,12 +9,12 @@ const CORE=[...new Set([
   '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/visual-system.css','/assets/pilotdesk-navigation-2026.css','/assets/calculators-2026.css','/assets/planning-2026.css','/assets/learn-2026.css','/assets/step6-2026.css','/assets/design-tokens.css',
   '/assets/site.js','/assets/safety.js','/assets/app-bootstrap.js','/assets/billing.js','/assets/pro-access.js','/assets/calculation-account.js','/assets/home-desk.js','/assets/home-desk.css','/assets/navigation-core.js','/assets/global-nav.js','/assets/theme.js','/assets/features.js','/assets/calculator-ux.js','/assets/crosswind-mfd.js','/assets/pilotdesk-plus.js','/assets/experience.js','/assets/errors.js','/assets/analytics.js','/assets/update.js','/assets/ad-config.js','/assets/ads.js','/assets/share-enhance.js','/assets/inventory-data.js',
   ...GENERATED_ASSETS,
-  '/assets/icon.svg','/assets/hero-flightline.svg','/site.webmanifest'
+  '/favicon.svg','/assets/hero-flightline.svg','/site.webmanifest'
 ])];
 const CORE_PATHS=new Set(CORE);
 const MAX_RUNTIME_ENTRIES=140;
 const NETWORK_FIRST_ASSETS=new Set([
-  '/assets/app-bootstrap.js','/assets/navigation-core.js','/assets/navigation-search.js','/assets/inventory-data.js','/assets/global-nav.js','/assets/icon.svg',
+  '/assets/app-bootstrap.js','/assets/navigation-core.js','/assets/navigation-search.js','/assets/inventory-data.js','/assets/global-nav.js','/favicon.svg',
   '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/pilotdesk-navigation-2026.css','/assets/calculators-2026.css','/assets/planning-2026.css','/assets/design-tokens.css',
   '/assets/analytics.js','/assets/billing.js','/assets/pro-access.js','/assets/checkride-lab-data.js','/assets/checkride-lab.js','/assets/checkride-lab.css','/assets/share-enhance.js','/assets/page-share.js','/assets/learn-step7.js','/assets/weather.css','/assets/weather-fixed.js','/assets/weather-extra.js','/assets/offline-weather.js','/assets/learn-shell.js','/assets/learn-2026.css','/assets/step6-2026.css','/assets/user-preferences.js','/assets/system-states.js','/assets/written-prep.js','/assets/written-prep.css','/assets/daily.js','/assets/daily.css','/assets/skill-gap.js','/assets/account.js','/assets/account.css'
 ]);

@@ -29,7 +29,7 @@ function renderWeek(){
  const history=localHistory(),byDate=new Map(history.map(x=>[x.date,x]));
  const now=new Date(),days=[];
  for(let i=6;i>=0;i--){const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-i));const key=d.toISOString().slice(0,10);days.push({key,label:d.toLocaleDateString(undefined,{weekday:'narrow',timeZone:'UTC'}),entry:byDate.get(key)})}
- host.innerHTML=days.map(d=>'<div class="pd-daily-day'+(d.entry?' done':'')+'" title="'+escapeHtml(d.key)+(d.entry?' · '+d.entry.score+'/'+d.entry.max:'')+'"><span>'+escapeHtml(d.label)+'</span><i>'+(d.entry?d.entry.score:'·')+'</i></div>').join('');
+ host.innerHTML=days.map(d=>'<div class="pd-daily-day'+(d.entry?' done':'')+'" title="'+escapeHtml(d.key)+(d.entry?' · completed':'')+'"><span>'+escapeHtml(d.label)+'</span><i>'+(d.entry?'✓':'·')+'</i></div>').join('');
  const completed=days.filter(d=>d.entry).length;
  if(copy)copy.textContent=completed?completed+' of the last 7 daily checks completed on this device.':'Complete today’s check to start a local activity trail.';
 }
@@ -79,9 +79,9 @@ function studyBucket(category=''){
 }
 function renderNextStudy(){
  const wrap=$('#pdDailyNextStudy'),host=$('#pdDailyNextLinks'),copy=$('#pdDailyNextStudyCopy');if(!wrap||!host||!state.data)return;
- const category=state.data.challenge?.category||'',bucket=studyBucket(category),links=STUDY_LINKS[bucket]||STUDY_LINKS.decision;
- if(copy)copy.textContent='Today’s challenge focused on '+(category||'aviation decision making')+'. Review the explanation, then take one more step while the topic is fresh.';
- host.innerHTML=links.map(([href,label])=>'<a href="'+href+'" data-pd-daily-followup="'+bucket+'">'+escapeHtml(label)+' →</a>').join('');
+ const category=state.data.challenge?.category||'',bucket=studyBucket(category),topicLinks=STUDY_LINKS[bucket]||STUDY_LINKS.decision,links=[['/skill-gap.html','See your Weak Subjects'],...topicLinks.filter(x=>x[0]!=='/skill-gap.html')].slice(0,3);
+ if(copy)copy.textContent='Today’s set focused on '+(category||'aviation decision making')+'. Start with Weak Subjects, then use the topic links if you want another rep.';
+ host.innerHTML=links.map(([href,label],i)=>'<a href="'+href+'" data-pd-daily-followup="'+bucket+'"'+(i===0?' data-primary="1"':'')+'>'+escapeHtml(label)+' →</a>').join('');
  wrap.hidden=false;
 }
 
@@ -92,14 +92,6 @@ function countdown(){
  setText('#pdDailyCountdown',`${h}:${m}:${s}`);
 }
 function formatDate(date){try{return new Date(`${date}T12:00:00Z`).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'}).toUpperCase()}catch{return date}}
-function applyIncomingChallenge(){
- const raw=new URLSearchParams(location.search).get('challenge'),score=Number(raw);
- if(!Number.isInteger(score)||score<0||score>3)return;
- const hero=$('.pd-daily-hero'),intro=hero?.querySelector('p');
- if(intro){const target=score>=3?'match their 3/3':`beat their ${score}/3`;intro.textContent=`Another pilot challenged you to ${target}. Answer the same three daily questions, then send your score back.`}
- window.pdTrack?.('PilotDesk Daily Referral Landed',{challengeScore:score});
-}
-
 async function loadSupabase(){
  const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
  state.client=mod.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
@@ -109,7 +101,7 @@ async function loadSupabase(){
 async function refreshIdentity(){
  if(!state.session){state.profile=null;setText('#pdDailyAccountState','Guest');setText('#pdDailyProgressTitle','A small daily habit.');setText('#pdDailyProgressText','No account is required. Sign in only if you want Daily completions and study progress saved across devices.');$('#pdDailyAccountLink').textContent='Create a free account →';return}
  setText('#pdDailyAccountState','Signed in');$('#pdDailyAccountLink').textContent='Open my account →';$('#pdDailyAccountLink').href='/account.html';
- const {data}=await state.client.from('profiles').select('xp,level,current_streak,longest_streak,daily_completions,last_challenge_date').eq('id',state.session.user.id).maybeSingle();
+ const {data}=await state.client.from('profiles').select('current_streak,daily_completions,last_challenge_date').eq('id',state.session.user.id).maybeSingle();
  state.profile=data||null;if(data){setText('#pdDailyProgressTitle',`${data.current_streak||0}-day Daily streak`);setText('#pdDailyProgressText',`${data.daily_completions||0} saved daily check${Number(data.daily_completions||0)===1?'':'s'}. Use the activity trail as a reminder, not a score to chase.`)}
 }
 
@@ -121,50 +113,44 @@ function renderChallenge(data){
  c.questions.forEach((q,idx)=>{
   const fs=document.createElement('fieldset');fs.className='pd-daily-question';fs.dataset.question=q.id;
   const legend=document.createElement('legend');legend.innerHTML=`<span class="pd-daily-qnum">QUESTION ${String(idx+1).padStart(2,'0')}</span>${escapeHtml(q.prompt)}`;fs.appendChild(legend);
-  const opts=document.createElement('div');opts.className='pd-daily-options';q.options.forEach((opt,i)=>{const label=document.createElement('label');label.className='pd-daily-option';label.innerHTML=`<input type="radio" name="q${idx}" value="${i}"><span>${escapeHtml(opt)}</span>`;opts.appendChild(label)});fs.appendChild(opts);host.appendChild(fs)
+  const opts=document.createElement('div');opts.className='pd-daily-options';q.options.forEach((opt,i)=>{const label=document.createElement('label');label.className='pd-daily-option';label.innerHTML=`<input type="radio" name="q${idx}" value="${i}"><i>${String.fromCharCode(65+i)}</i><span>${escapeHtml(opt)}</span>`;opts.appendChild(label)});fs.appendChild(opts);host.appendChild(fs)
  });
  host.addEventListener('change',()=>{updateSubmitState();if(!state.started){state.started=true;window.pdTrack?.('PilotDesk Daily Started',{category:c.category,difficulty:c.difficulty})}});
  $('#pdDailySubmit').disabled=false;setText('#pdDailyFormNote','Answer all three questions.');updateSubmitState();
  if(data.completion){renderSavedCompletion(data);return}
  if(!state.session){try{const saved=JSON.parse(localStorage.getItem(guestKey(data.date))||'null');if(saved?.score!=null&&saved?.review)renderResult(saved,false)}catch{}}
 }
-function updateSubmitState(){if(state.submitted||state.data?.completion){$('#pdDailySubmit').disabled=true;return}const total=state.data?.challenge?.questions?.length||0,answered=[...document.querySelectorAll('#pdDailyQuestions fieldset')].filter((_,i)=>document.querySelector(`input[name="q${i}"]:checked`)).length;$('#pdDailySubmit').disabled=answered!==total;setText('#pdDailyFormNote',answered===total?'Ready to score.':`${answered}/${total} answered`)}
+function updateSubmitState(){
+ const fields=[...document.querySelectorAll('#pdDailyQuestions fieldset')],total=state.data?.challenge?.questions?.length||fields.length||3;
+ const answered=fields.filter((_,i)=>document.querySelector(`input[name="q${i}"]:checked`)).length;
+ setText('#pdDailyAnsweredCount',`${answered} / ${total}`);
+ document.querySelectorAll('[data-daily-step]').forEach((el,i)=>{const done=Boolean(document.querySelector(`input[name="q${i}"]:checked`));el.dataset.state=state.submitted?'review':done?'answered':'open'});
+ fields.forEach((el,i)=>el.dataset.state=document.querySelector(`input[name="q${i}"]:checked`)?'answered':'open');
+ if(state.submitted||state.data?.completion){$('#pdDailySubmit').disabled=true;return}
+ $('#pdDailySubmit').disabled=answered!==total;setText('#pdDailyFormNote',answered===total?'All three answered. Check the set.':`${answered}/${total} answered`)
+}
 function lockAnswers(review){
  review?.forEach((r,idx)=>{const group=document.querySelectorAll(`input[name="q${idx}"]`);group.forEach((input,i)=>{input.disabled=true;const label=input.closest('.pd-daily-option');if(i===r.correctIndex)label.dataset.state='correct';else if(r.selected===i&&!r.correct)label.dataset.state='wrong'});const wrap=group[0]?.closest('.pd-daily-options');if(wrap)wrap.setAttribute('aria-disabled','true')});
 }
 function lockWithoutReveal(){document.querySelectorAll('#pdDailyQuestions input').forEach(input=>{input.disabled=true});document.querySelectorAll('.pd-daily-options').forEach(wrap=>wrap.setAttribute('aria-disabled','true'))}
 function reviewHtml(result){
  const questions=state.data?.challenge?.questions||[];
- return (result.review||[]).map((r,i)=>`<div class="pd-daily-review-item"><strong>${r.correct?'✓':'Review'} Question ${i+1}: ${escapeHtml(questions[i]?.options?.[r.correctIndex]||'')}</strong><span>${escapeHtml(r.explanation||'')}</span></div>`).join('');
-}
-function scoreGrid(result){
- const score=Math.max(0,Math.min(Number(result.maxScore)||0,Number(result.score)||0));
- const max=Math.max(score,Number(result.maxScore)||3);
- return `${'🟩'.repeat(score)}${'⬛'.repeat(Math.max(0,max-score))}`;
-}
-function referralUrl(result){
- const score=Math.max(0,Math.min(Number(result.maxScore)||3,Number(result.score)||0));
- const url=new URL('/daily/',location.origin);
- url.searchParams.set('challenge',String(score));
- url.searchParams.set('utm_source','pilotdesk_daily_share');
- url.searchParams.set('utm_medium','referral');
- url.searchParams.set('utm_campaign','daily_challenge');
- url.searchParams.set('utm_content',`${score}-of-${Number(result.maxScore)||3}`);
- return url.toString();
+ return (result.review||[]).map((r,i)=>`<div class="pd-daily-review-item" data-state="${r.correct?'correct':'review'}"><strong><span>Q${String(i+1).padStart(2,'0')}</span>${r.correct?'Correct':'Review this one'}</strong><p>${escapeHtml(questions[i]?.options?.[r.correctIndex]||'')}</p><small>${escapeHtml(r.explanation||'')}</small></div>`).join('');
 }
 function renderResult(result,saved){
- state.submitted=true;lockAnswers(result.review);$('#pdDailySubmit').disabled=true;$('#pdDailySubmit').textContent='Completed';setText('#pdDailyFormNote',saved?'Saved to your PilotDesk account.':'Guest score — sign in to save future streaks.');
- $('#pdDailyScoreChip').hidden=false;setText('#pdDailyScore',`${result.score}/${result.maxScore}`);
- const box=$('#pdDailyResult');box.hidden=false;const perfect=result.score===result.maxScore;
- const headline=perfect?'Perfect score.':(result.review||[]).length?(result.score>0?'Challenge complete.':'Challenge complete — review it below.'):'Challenge complete.';
- const reward=saved?'Saved to account':'Guest result';
- box.innerHTML=`<div class="pd-daily-result-head"><div><h3>${headline}</h3><p>${saved?'Today’s result is saved. Review the explanation and move into the subject that needs work.':'Guest result. Create a free account only if you want future Daily completions saved.'}</p></div><div class="pd-daily-reward">${escapeHtml(reward)}</div></div><div class="pd-daily-review">${reviewHtml(result)}</div><div class="pd-daily-result-actions">${saved?'<a href="/written-prep.html">Open Written Prep →</a><a href="/account.html">Account →</a>':'<a href="/written-prep.html">Open Written Prep →</a><a href="/account.html?next=%2Fdaily%2F">Create account →</a>'}</div>`;
- if(saved){setText('#pdDailyProgressTitle',`${result.streak||0}-day Daily streak`);setText('#pdDailyProgressText','Today is saved. Come back after the UTC reset for the next check-in.')}
+ state.submitted=true;lockAnswers(result.review);$('#pdDailySubmit').disabled=true;$('#pdDailySubmit').textContent='Completed';setText('#pdDailyFormNote',saved?'Saved to your PilotDesk account.':'Guest result — sign in only if you want future completions saved.');
+ $('#pdDailyScoreChip').hidden=false;setText('#pdDailyScore',`${result.score}/${result.maxScore}`);updateSubmitState();
+ const box=$('#pdDailyResult');box.hidden=false;const perfect=result.score===result.maxScore,streak=Number(result.streak)||0;
+ const headline=perfect?'All three correct.':result.score>0?'Today’s set is complete.':'Today’s set is complete — review the explanations.';
+ const saveLabel=saved?'Saved to account':'Guest result';
+ const returnCopy=saved&&streak>0?`${streak}-day Daily streak · next set after 00:00 UTC`:'Next set after 00:00 UTC';
+ box.innerHTML=`<div class="pd-daily-result-head"><div><span class="eyebrow">TODAY’S RESULT</span><h3>${headline}</h3><p>Review each explanation below. Then use Weak Subjects to see what your Written Prep history already says needs another pass.</p></div><div class="pd-daily-reward">${escapeHtml(saveLabel)}</div></div><div class="pd-daily-review">${reviewHtml(result)}</div><div class="pd-daily-result-next"><div><span>WHAT NEXT</span><b>Take the result somewhere useful.</b><small>Weak Subjects is the focused follow-up. It shows only the areas already flagged by your Written Prep history.</small></div><a class="pd-daily-result-primary" href="/skill-gap.html">See Weak Subjects →</a></div><div class="pd-daily-result-actions"><a href="/written-prep.html">Open Written Prep</a><a href="/learn/oral-exam/">Oral Prep</a>${saved?'<a href="/account.html">Account</a>':'<a href="/account.html?next=%2Fdaily%2F">Save future completions</a>'}</div><div class="pd-daily-return-line"><span>RETURN</span><strong>${escapeHtml(returnCopy)}</strong></div>`;
+ if(saved){setText('#pdDailyProgressTitle',streak>0?`${streak}-day Daily streak`:'Today is saved');setText('#pdDailyProgressText','Today is complete. The next three-question set opens after the UTC reset.')}
  saveLocalHistory(state.data?.date,result);renderNextStudy();
  window.pdTrack?.('PilotDesk Daily Completed',{saved:Boolean(saved),score:result.score,max:result.maxScore,category:state.data?.challenge?.category||'unknown'});
 }
 function renderSavedCompletion(data){
- const c=data.completion;renderResult({score:c.score,maxScore:c.max_score,xpAwarded:c.xp_awarded,perfect:c.perfect,review:[],streak:state.profile?.current_streak,xp:state.profile?.xp,level:state.profile?.level},true);lockWithoutReveal();setText('#pdDailyFormNote','Already completed today. New challenge at 00:00 UTC.');
+ const c=data.completion;renderResult({score:c.score,maxScore:c.max_score,perfect:c.perfect,review:[],streak:state.profile?.current_streak},true);lockWithoutReveal();setText('#pdDailyFormNote','Already completed today. New challenge at 00:00 UTC.');
 }
 async function makeDailyShareCard(result){
  const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1080;const ctx=canvas.getContext('2d');
@@ -201,7 +187,7 @@ async function loadChallenge(){
  try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{headers:edgeHeaders()});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load today’s challenge.');renderChallenge(d)}catch(err){$('#pdDailyQuestions').innerHTML=`<div class="pd-daily-error">${escapeHtml(err.message||'PilotDesk Daily is temporarily unavailable.')}</div>`;setText('#pdDailyFormNote','Try again shortly.')}
 }
 async function init(){
- countdown();setInterval(countdown,1000);renderWeek();renderCurrencyReminders();$('#pdCurrencySave')?.addEventListener('click',saveCurrencyReminders);$('#pdDailyForm')?.addEventListener('submit',submit);applyIncomingChallenge();
+ countdown();setInterval(countdown,1000);renderWeek();renderCurrencyReminders();$('#pdCurrencySave')?.addEventListener('click',saveCurrencyReminders);$('#pdDailyForm')?.addEventListener('submit',submit);
  const weatherPromise=loadDailyRouteWeather();await loadSupabase();await refreshIdentity();await loadChallenge();await weatherPromise;
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();

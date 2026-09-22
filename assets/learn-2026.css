@@ -1,0 +1,107 @@
+/* Claude Step 5 — connected Learn system + restrained study hierarchy. */
+.pd-learn-subnav{
+  display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;margin:14px 0 20px;
+  border:1px solid var(--line);background:var(--line)
+}
+.pd-learn-subnav a{
+  min-height:44px;display:flex;align-items:center;justify-content:center;padding:8px 10px;
+  background:#080b0e;color:var(--muted);font-size:10px;font-weight:650;text-align:center;text-decoration:none
+}
+.pd-learn-subnav a:hover{background:var(--panel2);color:var(--text);text-decoration:none}
+.pd-learn-subnav a[aria-current="page"]{background:#0a1218;color:var(--text);box-shadow:inset 0 -2px 0 var(--accent)}
+
+.pd-prep-study-entry{
+  display:grid;grid-template-columns:minmax(0,1.3fr) repeat(2,minmax(180px,.65fr));gap:1px;
+  margin:12px 0;background:var(--line);border:1px solid var(--line)
+}
+.pd-prep-study-entry button{
+  min-height:78px;display:grid;align-content:center;gap:4px;padding:12px 14px;text-align:left;
+  border:0;background:#080b0e;color:var(--text);cursor:pointer
+}
+.pd-prep-study-entry button:hover{background:var(--panel2)}
+.pd-prep-study-entry button:first-child{box-shadow:inset 2px 0 0 var(--accent);background:#091017}
+.pd-prep-study-entry small{color:var(--accent);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.09em}
+.pd-prep-study-entry b{font-size:13px}
+.pd-prep-study-entry span{color:var(--muted2);font-size:9px;line-height:1.4}
+
+.pd-prep-streakline{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;margin:10px 0 0;padding:9px 11px;
+  border:1px solid var(--line);background:#07090b
+}
+.pd-prep-streakline>div:first-child{display:flex;align-items:baseline;gap:7px}
+.pd-prep-streakline strong{font:700 13px/1 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--text)}
+.pd-prep-streakline span{color:var(--muted2);font-size:8px}
+.pd-prep-streak-dots{display:flex;gap:5px}
+.pd-prep-streak-dots i{width:7px;height:7px;border:1px solid #4b555e;background:#07090b}
+.pd-prep-streak-dots i.done{border-color:var(--accent);background:var(--accent)}
+
+.pd-prep-missed-topics{margin-top:14px}
+.pd-prep-missed-topic-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line)}
+.pd-prep-missed-topic{
+  min-height:58px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;background:#080b0e
+}
+.pd-prep-missed-topic b{font-size:11px}.pd-prep-missed-topic span{color:var(--muted2);font-size:9px}
+.pd-prep-missed-topic strong{color:var(--accent);font:700 13px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-prep-review-group{margin-top:12px;border-top:1px solid var(--line)}
+.pd-prep-review-group>h3{margin:0;padding:10px 0 6px;color:var(--accent);font:700 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+
+/* Daily is a 15-second pilot briefing first; the quiz is secondary. */
+.pd-daily-hero{padding:22px 0 14px!important;border:0!important;border-bottom:1px solid var(--line)!important;clip-path:none!important;background:#050607!important}
+.pd-daily-hero h1{font-size:clamp(30px,4.2vw,46px)!important;line-height:1!important}
+.pd-daily-hero::after,.pd-daily-proof{display:none!important}
+.pd-daily-statusbar{margin-top:10px!important}
+.pd-daily-brief{
+  display:grid;grid-template-columns:.8fr 1.35fr 1fr;gap:1px;margin:12px 0 16px;
+  border:1px solid var(--line);background:var(--line)
+}
+.pd-daily-brief-card{min-width:0;padding:14px;background:#080b0e}
+.pd-daily-brief-card>small{display:block;color:var(--accent);font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em}
+.pd-daily-brief-card h2{margin:7px 0 5px;font-size:15px}
+.pd-daily-brief-card p{margin:0;color:var(--muted);font-size:10px;line-height:1.5}
+.pd-daily-brief-value{margin:9px 0 5px;color:var(--text);font:700 19px/1.1 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-daily-brief-card[data-state="soon"]{box-shadow:inset 2px 0 0 var(--pd-warn)}
+.pd-daily-brief-card[data-state="expired"]{box-shadow:inset 2px 0 0 var(--pd-danger)}
+.pd-daily-brief-card[data-state="ok"]{box-shadow:inset 2px 0 0 var(--accent)}
+.pd-daily-brief-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.pd-daily-brief-actions button,.pd-daily-brief-actions a,.pd-daily-currency-edit button{
+  min-height:34px;display:inline-flex;align-items:center;padding:0 9px;border:1px solid var(--line-hi);background:#080b0e;color:var(--muted);font-size:8px;text-decoration:none;cursor:pointer
+}
+.pd-daily-brief-actions button:hover,.pd-daily-brief-actions a:hover{border-color:var(--accent);color:var(--text)}
+.pd-daily-currency-edit{margin-top:10px;padding-top:9px;border-top:1px solid var(--line)}
+.pd-daily-currency-edit label{display:grid;grid-template-columns:minmax(120px,1fr) 150px;gap:8px;align-items:center;margin:5px 0;color:var(--muted);font-size:9px}
+.pd-daily-currency-edit input{min-height:34px;border:1px solid var(--line);background:#050709;color:var(--text);padding:0 7px}
+.pd-daily-weather-lines{display:grid;gap:6px;margin-top:9px}
+.pd-daily-weather-line{display:grid;grid-template-columns:70px minmax(0,1fr);gap:8px;padding-top:6px;border-top:1px solid #222a31}
+.pd-daily-weather-line:first-child{border-top:0;padding-top:0}
+.pd-daily-weather-line b{font:700 10px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-daily-weather-line span{color:var(--muted);font-size:9px;line-height:1.35}
+.pd-daily-question-preview{margin-top:9px;color:var(--text)!important;font-size:11px!important;line-height:1.45!important}
+
+.pd-daily-grid{grid-template-columns:minmax(0,1fr)!important}
+.pd-daily-side{display:grid!important;grid-template-columns:1fr 1fr!important;gap:1px!important;background:var(--line)!important}
+.pd-daily-sidecard{border:0!important;background:#080b0e!important}
+.pd-daily-card{border-top:2px solid #46515a!important;background:#07090b!important}
+.pd-daily-title h2{font-size:24px!important}
+.pd-daily-option:hover{transform:none!important}
+.pd-daily-submit{border-color:var(--accent)!important;background:var(--accent)!important;color:#061018!important;clip-path:none!important}
+.pd-daily-scorechip{border-color:var(--line-hi)!important}
+.pd-daily-reward{color:var(--muted)!important}
+.pd-daily-week-card h2{font-size:15px!important}
+.pd-daily-week{gap:4px!important}
+.pd-daily-day,.pd-daily-day i{border-radius:0!important}
+.pd-daily-next-study{border-radius:0!important;background:#080b0e!important;border-color:var(--line)!important}
+.pd-daily-next-links a{border-radius:0!important;background:#07090b!important}
+.pd-daily-seo{opacity:.9}
+
+@media(max-width:900px){
+  .pd-learn-subnav{grid-template-columns:repeat(3,1fr)}
+  .pd-prep-study-entry{grid-template-columns:1fr}
+  .pd-daily-brief{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .pd-learn-subnav{grid-template-columns:repeat(2,1fr)}
+  .pd-learn-subnav a{min-height:48px}
+  .pd-prep-missed-topic-list{grid-template-columns:1fr}
+  .pd-daily-side{grid-template-columns:1fr!important}
+  .pd-daily-currency-edit label{grid-template-columns:1fr}
+}

@@ -68,25 +68,57 @@ const read=()=>{try{return JSON.parse(localStorage.getItem(key)||'{}')}catch{ret
 const write=v=>{try{localStorage.setItem(key,JSON.stringify(v))}catch{}};
 const params=new URLSearchParams(location.search);
 let current=tracks[params.get('track')]?params.get('track'):'private';
+let access={isPro:false,plan:'free',limits:{oralTopicsPerTrack:2}},accessReady=false;
 const trackHost=document.querySelector('#pdOralTracks'),list=document.querySelector('#pdOralList'),title=document.querySelector('#pdOralTrackTitle'),standard=document.querySelector('#pdOralTrackStandard'),progress=document.querySelector('#pdOralProgress'),hub=document.querySelector('#pdOralRatingHub');
+const planLabel=document.querySelector('#pdOralPlanLabel'),planTitle=document.querySelector('#pdOralPlanTitle'),planCopy=document.querySelector('#pdOralPlanCopy'),upgrade=document.querySelector('#pdOralUpgrade');
 if(!trackHost||!list)return;
+function previewLimit(){return Math.max(1,Number(access?.limits?.oralTopicsPerTrack||2))}
+function visibleCount(t){return access.isPro?t.items.length:Math.min(previewLimit(),t.items.length)}
 function renderTracks(){
  trackHost.querySelectorAll('[data-track]').forEach(a=>a.setAttribute('aria-current',String(a.dataset.track===current)));
 }
+function renderPlan(t){
+ if(!planLabel||!planTitle||!planCopy||!upgrade)return;
+ if(!accessReady){
+  planLabel.textContent='CHECKING PLAN';planTitle.textContent='Loading checkride access…';planCopy.textContent='PilotDesk is checking the subscription attached to this account.';upgrade.hidden=true;return;
+ }
+ if(access.isPro){
+  planLabel.textContent=access.plan==='school'?'FLIGHT SCHOOL ACCESS':'PILOTDESK PRO';
+  planTitle.textContent='Full '+t.title+' oral prep unlocked.';
+  planCopy.textContent='All '+t.items.length+' subjects are available. Work them out loud, mark verified topics, and move between ratings without a Free-plan cap.';
+  upgrade.hidden=true;
+ }else{
+  const n=visibleCount(t);
+  planLabel.textContent='FREE PREVIEW · '+n+' OF '+t.items.length;
+  planTitle.textContent='Try the workflow before you subscribe.';
+  planCopy.textContent='Free includes '+n+' sample subjects in every rating. Pro unlocks the complete oral-prep set across all six checkride tracks, plus the other Pro planning benefits.';
+  upgrade.hidden=false;upgrade.href=window.PilotDeskProAccess?.upgradeUrl?.('oral-exam')||'/pricing.html?from=oral-exam';
+ }
+}
+function lockedRow(item,i){
+ return `<article class="pd-oral-item pd-oral-item-locked" aria-label="${item[0]} locked for PilotDesk Pro"><div class="pd-oral-lock-row"><div><small>PRO · SUBJECT ${i+1}</small><b>${item[0]}</b><span>Full prompt, answer guidance, and source review unlock with PilotDesk Pro.</span></div><a href="${window.PilotDeskProAccess?.upgradeUrl?.('oral-topic')||'/pricing.html?from=oral-topic'}">Unlock →</a></div></article>`;
+}
 function render(){
- const t=tracks[current],state=read(),done=t.items.filter((_,i)=>state[current+':'+i]).length;
+ const t=tracks[current],state=read(),limit=visibleCount(t),done=t.items.slice(0,limit).filter((_,i)=>state[current+':'+i]).length;
  title.textContent=t.title;
  standard.textContent=t.standard;
- progress.innerHTML=`<b>${done}/${t.items.length}</b><span>topics reviewed</span>`;
+ progress.innerHTML=access.isPro?`<b>${done}/${t.items.length}</b><span>topics reviewed</span>`:`<b>${done}/${limit}</b><span>free preview reviewed</span>`;
  hub.href=t.hub;
  hub.textContent='Open '+t.title+' study page';
  list.innerHTML=t.items.map((item,i)=>{
+   if(!access.isPro&&i>=limit)return lockedRow(item,i);
    const id=current+':'+i,checked=Boolean(state[id]);
    return `<details class="pd-oral-item"><summary><b>${i+1}. ${item[0]}</b><span>${item[1]}</span></summary><div class="pd-oral-body"><h3>What a solid answer should cover</h3><p>${item[2]}</p><h3>Check it in</h3><p class="pd-oral-source">${item[3]}</p><div class="pd-oral-review"><input type="checkbox" id="oral-${current}-${i}" data-review="${id}" ${checked?'checked':''}><label for="oral-${current}-${i}">Reviewed with the source</label></div></div></details>`;
  }).join('');
- renderTracks();
+ renderTracks();renderPlan(t);
 }
 trackHost.addEventListener('click',e=>{const a=e.target.closest('[data-track]');if(!a)return;e.preventDefault();current=a.dataset.track;const u=new URL(location.href);u.searchParams.set('track',current);history.replaceState(null,'',u);render();title.scrollIntoView({block:'nearest'});});
 list.addEventListener('change',e=>{const box=e.target.closest('[data-review]');if(!box)return;const state=read();if(box.checked)state[box.dataset.review]=true;else delete state[box.dataset.review];write(state);render();});
-render();
+async function init(){
+ render();
+ try{access=await (window.PilotDeskProAccess?.snapshot?.()||Promise.resolve(access))}catch{}
+ accessReady=true;render();
+ document.addEventListener('pilotdesk:billing',async()=>{try{access=await window.PilotDeskProAccess.snapshot()}catch{}accessReady=true;render()});
+}
+init();
 })();

@@ -34,7 +34,7 @@
   background:transparent;
 }
 .topbar .brandmark:empty{
-  background:transparent url("/assets/icon.svg") center/contain no-repeat;
+  background:transparent url("/favicon.svg") center/contain no-repeat;
 }
 .topbar .brandmark img{
   display:block;

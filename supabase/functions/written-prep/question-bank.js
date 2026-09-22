@@ -430,12 +430,17 @@ function cfiiSupplement(n){
 const FAA_SAMPLE_URLS={
   ppl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/par_questions.pdf',
   ira:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/ira_questions.pdf',
-  cpl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/cax_questions.pdf'
+  cpl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/cax_questions.pdf',
+  cfi:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/fia_questions.pdf',
+  atp:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/atm_questions.pdf'
 };
 const FAA_SUPPLEMENTS={
   ppl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/sport_rec_private_akts.pdf',
   ira:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/instrument_rating_akts.pdf',
-  cpl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/commercial_akts.pdf'
+  cpl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/commercial_akts.pdf',
+  cfi:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/flight_ground_instructor_akts.pdf',
+  atp:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/atp_akts.pdf',
+  cfii:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/instrument_rating_akts.pdf'
 };
 const faaSample=(track,id,area,code,prompt,options,correct,explanation,reference,extra={})=>{
   const st=STANDARDS[track];
@@ -751,6 +756,294 @@ const figureParallelQuestions={
   ]
 };
 
+
+const curatedQuestion=(track,id,area,code,prompt,options,correct,explanation,reference,extra={})=>{
+  const st=STANDARDS[track];
+  return {id:`curated-${track}-${id}`,area,prompt,options,correct,explanation,reference,
+    source:'pilotdesk-curated',sourceUrl:st.url,standardCode:code,standardDoc:st.doc,
+    standardType:st.type,difficulty:extra.difficulty||'applied',experienceLevel:track,
+    reviewedAt:'2026-09-22',authoring:'curated-manual',...extra};
+};
+
+const curatedCfi=[
+  curatedQuestion('cfi','assessment-open-ended','Assessment & Testing','FI.I.D.K6a',
+    'During a stage check, an instructor asks, “What would make you discontinue this approach before reaching DA?” Why is this a stronger assessment question than asking whether the learner knows the missed-approach point?',
+    ['It requires the learner to apply judgment and identify conditions that change the plan.','It removes the need to evaluate factual knowledge.','It guarantees only one possible response and therefore eliminates instructor judgment.'],0,
+    'A strong instructor question requires application and decision-making, not just recognition or recall. The learner must connect procedure, weather, aircraft state, and risk controls to a decision.',
+    'FAA-S-ACS-25 FI.I.D.K6a; Aviation Instructor’s Handbook',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. The question probes application, judgment, and decision criteria.',
+      'Incorrect. Higher-order assessment complements factual knowledge; it does not replace it.',
+      'Incorrect. Good scenario questions can have several defensible considerations while still testing whether the learner applies the standard correctly.'
+    ]}),
+  curatedQuestion('cfi','assessment-leading','Assessment & Testing','FI.I.D.K6b',
+    'An instructor asks, “You know the stall speed increases in a steep turn, right?” What is the primary weakness in that question?',
+    ['It is leading and lets the learner agree without demonstrating understanding.','It is too difficult because stall speed is not appropriate for oral questioning.','It is invalid because instructors may only use written questions for aerodynamics.'],0,
+    'A leading question supplies the expected conclusion. It can hide a misconception because the learner can simply agree.',
+    'FAA-S-ACS-25 FI.I.D.K6b; Aviation Instructor’s Handbook',
+    {difficulty:'applied',choiceExplanations:[
+      'Correct. The wording cues the answer instead of requiring the learner to explain the relationship.',
+      'Incorrect. Aerodynamic relationships are appropriate oral-assessment material.',
+      'Incorrect. Oral questioning is a normal instructional and assessment tool.'
+    ]}),
+  curatedQuestion('cfi','lesson-objective','Course Development & Lesson Plans','FI.I.C.K3',
+    'You are building a lesson on short-field landings. Which lesson objective is written to a useful performance standard?',
+    ['“Given the aircraft POH and current conditions, the learner will plan and perform a short-field landing to the applicable ACS standards while explaining the major risks.”','“The learner will understand short-field landings.”','“The instructor will discuss every short-field landing fact in the handbook.”'],0,
+    'A useful objective states what the learner will do, the conditions, and the standard or measurable outcome.',
+    'FAA-S-ACS-25 FI.I.C.K3; Aviation Instructor’s Handbook',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. It gives conditions, learner performance, and an objective standard.',
+      'Incorrect. “Understand” is not directly measurable.',
+      'Incorrect. This describes instructor activity rather than learner performance.'
+    ]}),
+  curatedQuestion('cfi','method-demonstration','Teaching Methods','FI.I.C.K5',
+    'A learner is seeing steep turns for the first time. The instructor explains the setup, demonstrates one while narrating key cues, has the learner perform the maneuver, then evaluates the result. Which method is being used?',
+    ['Demonstration-performance.','Guided discussion only.','Drill and practice without demonstration.'],0,
+    'The demonstration-performance method follows explanation, demonstration, learner performance, and instructor evaluation.',
+    'FAA-S-ACS-25 FI.I.C.K5; Aviation Instructor’s Handbook',
+    {difficulty:'applied',choiceExplanations:[
+      'Correct. The sequence matches demonstration-performance.',
+      'Incorrect. Discussion may be part of the lesson, but it does not describe the full sequence.',
+      'Incorrect. The scenario specifically includes an instructor demonstration.'
+    ]}),
+  curatedQuestion('cfi','communication-jargon','Effective Communication','FI.I.A.K4b',
+    'A new pre-solo learner hears an avionics explanation filled with terms they have never encountered and leaves with the wrong mental picture. Which communication problem is most directly involved?',
+    ['Lack of common experience and imprecise terminology for the learner’s level.','Positive transfer of learning.','Overlearning caused by too much practice.'],0,
+    'Communication fails when the sender and receiver do not share the same meaning for the words and symbols being used.',
+    'FAA-S-ACS-25 FI.I.A.K4b; Aviation Instructor’s Handbook',
+    {difficulty:'applied',choiceExplanations:[
+      'Correct. The learner cannot interpret jargon without a shared frame of reference.',
+      'Incorrect. Positive transfer helps new learning rather than blocking communication.',
+      'Incorrect. The problem occurred during explanation, not excessive practice.'
+    ]}),
+  curatedQuestion('cfi','negative-transfer','Learning Process','FI.I.B.K16',
+    'A learner consistently carries a tailwind-landing correction technique into a short-field landing where it produces an inappropriate control response. Which learning concept best describes the problem?',
+    ['Negative transfer.','Positive transfer.','Primacy.'],0,
+    'Negative transfer occurs when previously learned behavior interferes with correct performance of a new or different task.',
+    'FAA-S-ACS-25 FI.I.B.K16; Aviation Instructor’s Handbook',
+    {difficulty:'applied',choiceExplanations:[
+      'Correct. Prior learning is interfering with the new task.',
+      'Incorrect. Positive transfer helps rather than interferes.',
+      'Incorrect. Primacy concerns the persistence of what is learned first, not the transfer relationship itself.'
+    ]}),
+  curatedQuestion('cfi','learning-plateau','Learning Process','FI.I.B.K9d',
+    'An instrument learner’s scan performance stops improving for several lessons even though effort remains high. Which instructor response is most appropriate?',
+    ['Diagnose the plateau, vary practice and presentation, and continue measuring performance before assuming learning has stopped.','Increase criticism until the learner breaks through the plateau.','Repeat the identical lesson indefinitely because any change would interfere with primacy.'],0,
+    'Learning plateaus can occur during skill development. The instructor should diagnose the cause and adjust practice rather than treating the plateau as permanent failure.',
+    'FAA-S-ACS-25 FI.I.B.K9d; Aviation Instructor’s Handbook',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. Diagnosis and varied, purposeful practice are appropriate responses.',
+      'Incorrect. Punitive criticism does not address the learning cause.',
+      'Incorrect. Repeating an ineffective approach can reinforce the problem.'
+    ]}),
+  curatedQuestion('cfi','learner-centered-debrief','Assessment & Testing','FI.I.D.K3a',
+    'After a weak landing, the instructor first asks the learner to compare the approach with the stated standard, then adds specific observations and agrees on one change for the next attempt. What type of assessment is this?',
+    ['Learner-centered assessment.','A punitive critique.','A norm-referenced test.'],0,
+    'Learner-centered assessment involves the learner in analyzing performance against objective standards and planning the next improvement.',
+    'FAA-S-ACS-25 FI.I.D.K3a; Aviation Instructor’s Handbook',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. The learner participates in evaluation against the standard.',
+      'Incorrect. The feedback is specific and improvement-oriented rather than punitive.',
+      'Incorrect. The performance is being compared with a standard, not other learners.'
+    ]}),
+  curatedQuestion('cfi','endorsement-practical','Instructor Responsibilities','AI.III.A.K1',
+    'Before recommending an applicant for a practical test, which instructor action is the most defensible?',
+    ['Verify the required training, aeronautical experience, knowledge-test prerequisites, and applicable endorsements before signing.','Sign the recommendation whenever the applicant requests it because the evaluator determines eligibility.','Use a generic endorsement without identifying the applicable regulatory basis.'],0,
+    'A recommending instructor is certifying that required preparation and prerequisites have been met. The recommendation is not a clerical formality.',
+    'FAA-S-ACS-25 AI.III.A.K1; 14 CFR part 61; AC 61-65',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. The instructor must verify eligibility and preparation before recommending the applicant.',
+      'Incorrect. The instructor has an independent certification responsibility.',
+      'Incorrect. Endorsements should match the applicable regulatory requirement.'
+    ]}),
+  curatedQuestion('cfi','solo-records','Instructor Responsibilities','AI.III.A.K1',
+    'You complete required training and authorize a student pilot for solo operation. Which recordkeeping practice is correct?',
+    ['Make the required learner logbook endorsements and retain the instructor records required by regulation.','Only the learner keeps records; the instructor has no recordkeeping obligation.','A verbal authorization is sufficient if the solo flight remains in the local practice area.'],0,
+    'Solo authorization and instructor recordkeeping are regulatory responsibilities. Required endorsements and instructor records cannot be replaced by verbal permission.',
+    'FAA-S-ACS-25 AI.III.A.K1; 14 CFR part 61; AC 61-65',
+    {difficulty:'applied',choiceExplanations:[
+      'Correct. Required endorsements and instructor records must be completed and retained as applicable.',
+      'Incorrect. Instructors have specific recordkeeping obligations.',
+      'Incorrect. Verbal permission does not replace required endorsements.'
+    ]})
+];
+
+const exactAtpSamples=[
+  faaSample('atp','atm-001','Air Carrier Regulations','AA.I.G.K4',
+    'As required by Part 121, an airport may be listed as an alternate in the flight release only if the weather forecast indicates that conditions will be at or above the',
+    ['alternate weather minima specified in the operation specifications at the time of arrival.','lowest available IAP minima at the time of arrival.','lowest available IAP minima for 1 hour before to 1 hour after the time of arrival.'],0,
+    'Part 121 alternate planning uses the alternate minima specified by the certificate holder’s operations specifications, not simply the lowest charted approach minima.',
+    'FAA ATM sample question 1; 14 CFR part 121; operations specifications',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. The applicable alternate minima come from the operations specifications.',
+      'Incorrect. Published IAP minima are not automatically the Part 121 alternate planning minima.',
+      'Incorrect. This substitutes an unsupported timing rule for the applicable alternate minima.'
+    ]}),
+  faaSample('atp','atm-009','Holding','AA.VI.J.K1',
+    'When using a flight director system, what rate of turn or bank angle should a pilot observe during turns in a holding pattern?',
+    ['3° per second or 25° bank, whichever is less.','1-1/2° per second or 25° bank, whichever is less.','3° per second or 30° bank, whichever is less.'],0,
+    'Holding turns are made at 3° per second or 30° of bank, whichever requires less bank, unless using a flight director system, in which case 25° is used.',
+    'FAA ATM sample question 9; AIM holding procedures',
+    {difficulty:'applied',choiceExplanations:[
+      'Correct. With a flight director, use 3° per second or 25° bank, whichever is less.',
+      'Incorrect. The standard holding turn is not based on 1-1/2° per second.',
+      'Incorrect. The flight-director limitation in this question is 25°, not 30°.'
+    ]}),
+  faaSample('atp','atm-010','Aircraft Performance','AA.I.B.K2c',
+    'How does an increase in an aircraft’s weight affect its climb performance?',
+    ['The aircraft will climb at a lower angle of attack, which allows for a higher TAS and higher rate of climb.','Both parasite and induced drag are increased, which will lower the reserve thrust available to climb.','A higher aircraft weight requires that the aircraft is configured for climb earlier in the departure which allows a greater climb gradient.'],1,
+    'Higher weight requires more lift and increases drag, reducing excess thrust or power available for climb.',
+    'FAA ATM sample question 10; FAA-S-ACS-11A AA.I.B.K2c',
+    {difficulty:'advanced',choiceExplanations:[
+      'Incorrect. Increased weight does not create a higher climb rate through a lower angle of attack.',
+      'Correct. Increased drag reduces the excess thrust available for climb.',
+      'Incorrect. Configuration timing does not reverse the performance penalty of added weight.'
+    ]}),
+  faaSample('atp','atm-016','Instrument Approaches','AA.VI.E.K2',
+    'To conduct an RNAV (GPS) approach to LPV minimums, the aircraft must be furnished with',
+    ['a GPS/WAAS receiver approved for an LPV approach by the AFM.','a GPS (TSO-C129) receiver certified for IFR operations.','an IFR approach-certified system with required navigation performance (RNP) of 0.5.'],0,
+    'LPV guidance requires approved WAAS-capable equipment and the aircraft approval/documentation necessary for LPV operations.',
+    'FAA ATM sample question 16; FAA-S-ACS-11A AA.VI.E.K2',
+    {difficulty:'applied',choiceExplanations:[
+      'Correct. LPV requires appropriately approved WAAS capability.',
+      'Incorrect. A basic TSO-C129 GPS does not by itself provide LPV capability.',
+      'Incorrect. An RNP 0.5 statement is not the equipment approval described for LPV.'
+    ]}),
+  faaSample('atp','atm-025','High-Altitude Aerodynamics','AA.I.B.K4',
+    'When piloting a turbojet transport airplane, what is a possible result when operating at speeds 5-10 percent above the critical Mach number?',
+    ['Increased aerodynamic efficiency.','Decreased control surface effectiveness.','Occasional low speed Mach buffet warnings.'],1,
+    'Above critical Mach, shock-wave effects and associated flow separation can reduce control effectiveness and increase drag.',
+    'FAA ATM sample question 25; FAA-S-ACS-11A AA.I.B.K4',
+    {difficulty:'advanced',choiceExplanations:[
+      'Incorrect. Compressibility effects do not produce a simple increase in aerodynamic efficiency.',
+      'Correct. Shock-related separation can reduce control effectiveness.',
+      'Incorrect. This describes a low-speed buffet concept rather than the high-Mach effect asked about.'
+    ]}),
+  faaSample('atp','atm-026','High-Altitude Aerodynamics','AA.I.D.K9',
+    'While operating a turbojet transport airplane at high altitude, which condition is most likely to cause a low speed Mach buffet?',
+    ['Reducing the angle of attack after a high speed Mach buffet.','Flying too fast for the aircraft weight and altitude.','Flying too slow for the aircraft weight and altitude.'],2,
+    'Low-speed buffet occurs when the airplane approaches the high-altitude stall boundary at excessive angle of attack for its weight and altitude.',
+    'FAA ATM sample question 26; FAA-S-ACS-11A AA.I.D.K9',
+    {difficulty:'advanced',choiceExplanations:[
+      'Incorrect. Reducing angle of attack moves away from the low-speed stall boundary.',
+      'Incorrect. Excessive speed is associated with the high-speed buffet boundary.',
+      'Correct. Too little speed for the weight and altitude moves the airplane toward the low-speed buffet boundary.'
+    ]}),
+  faaSample('atp','atm-030','Weather / Weather Charts','AA.I.C.K2',
+    '(Refer to FAA-CT-8080-7D, Appendix 2, Figure 149.) What is the forecasted wind direction, speed, and temperature over ABI at 30,000 feet?',
+    ['240°, 108 knots, -33°C.','240°, 8 knots, -33°C.','240°, 8 knots, 33°C.'],0,
+    'The winds-aloft coding indicates 240° true at 108 knots with a temperature of -33°C; high wind speeds use the coded direction adjustment.',
+    'FAA ATM sample question 30; FAA-CT-8080-7D Figure 149',
+    {difficulty:'advanced',figureRef:{supplement:'FAA-CT-8080-7D',figure:'Appendix 2, Figure 149',url:FAA_SUPPLEMENTS.atp},choiceExplanations:[
+      'Correct. The encoded wind represents 240° true at 108 knots and -33°C.',
+      'Incorrect. This misses the high-wind-speed coding convention.',
+      'Incorrect. This misses both the high-wind-speed coding and the negative temperature.'
+    ]}),
+  faaSample('atp','atm-033','RNAV / WAAS','AA.VI.D.K2',
+    '(Refer to FAA-CT-8080-7D, Appendix 2, Figure 258.) As you approach DEPEW in a WAAS-equipped aircraft on the RNAV (GPS) RWY 32 approach, the CDI needle shows increasing deviation to the left with no increase in cross-track distance. What does this indicate?',
+    ['Immediately execute the missed approach.','The CDI sensitivity has increased.','Turn right solely to re-center the CDI needle.'],1,
+    'WAAS approach sensitivity scales as the aircraft progresses through the procedure. Greater displayed needle movement without greater cross-track error indicates increased sensitivity.',
+    'FAA ATM sample question 33; FAA-CT-8080-7D Figure 258',
+    {difficulty:'advanced',figureRef:{supplement:'FAA-CT-8080-7D',figure:'Appendix 2, Figure 258',url:FAA_SUPPLEMENTS.atp},choiceExplanations:[
+      'Incorrect. Increased sensitivity alone is not a reason to execute the missed approach.',
+      'Correct. The same cross-track error produces greater needle displacement as sensitivity increases.',
+      'Incorrect. The question asks what the indication means, not for a blind correction without considering course guidance.'
+    ]}),
+  faaSample('atp','atm-039','Departure Procedures','AA.VI.C.K1',
+    '(Refer to FAA-CT-8080-7D, Appendix 2, Figure 269.) You are cleared from the SENIC ONE Departure direct LAHAB before reaching MOXIE and then realize you cannot cross LAHAB at 15,000 feet. What should you do in IMC?',
+    ['Enter holding at LAHAB until reaching 15,000 feet.','Advise Departure Control that you cannot make the clearance and request another clearance or vectors.','Turn temporarily toward Long Beach and continue climbing without advising ATC.'],1,
+    'If an assigned clearance cannot be complied with, the crew should advise ATC promptly and obtain an amended clearance rather than improvising a route or holding pattern.',
+    'FAA ATM sample question 39; FAA-CT-8080-7D Figure 269',
+    {difficulty:'advanced',figureRef:{supplement:'FAA-CT-8080-7D',figure:'Appendix 2, Figure 269',url:FAA_SUPPLEMENTS.atp},choiceExplanations:[
+      'Incorrect. The crew should not invent a hold that was not cleared.',
+      'Correct. Advise ATC immediately and obtain an amended clearance.',
+      'Incorrect. An uncoordinated course deviation in IMC is not the proper response.'
+    ]})
+];
+
+const curatedCfii=[
+  curatedQuestion('cfii','fig242-teaching','Instrument Approach Instruction','PTS Area/Task',
+    '(Refer to FAA-CT-8080-3F, Figure 242 and Legend 27.) A learner says, “A 3.00° path means about 550 feet per nautical mile, so 550 FPM is correct at any groundspeed.” What is the best instructor correction?',
+    ['A 3.00° path is about 318 feet per NM; the required FPM changes with groundspeed.','The learner is correct because a 3.00° path always requires the same FPM.','The only error is that 550 feet per NM should be rounded to 600.'],0,
+    'The geometric descent gradient is approximately 318 ft/NM for a 3° path, while the descent rate in FPM changes with groundspeed.',
+    'FAA-S-8081-9E; FAA-CT-8080-3F Figure 242 and Legend 27',
+    {difficulty:'advanced',figureRef:{supplement:'FAA-CT-8080-3F',figure:'242 / Legend 27',url:FAA_SUPPLEMENTS.cfii},choiceExplanations:[
+      'Correct. It separates path geometry from speed-dependent descent rate.',
+      'Incorrect. FPM varies directly with groundspeed for a fixed descent angle.',
+      'Incorrect. The fundamental issue is confusing ft/NM with FPM.'
+    ]}),
+  curatedQuestion('cfii','fig254-signs','Airport / Taxi Instruction','PTS Area/Task',
+    '(Refer to FAA-CT-8080-3F, Figure 254.) A learner identifies the yellow sign as the mandatory instruction sign because it appears more prominent. What should the instructor correct first?',
+    ['Mandatory instruction signs are identified by a red background with white inscription.','Mandatory instruction signs are always yellow with black inscription.','The sign color is irrelevant if the airport diagram is available.'],0,
+    'Airport sign color and inscription conventions carry operational meaning. Mandatory instruction signs use red with white inscription.',
+    'FAA-S-8081-9E; FAA-CT-8080-3F Figure 254; AIM',
+    {difficulty:'applied',figureRef:{supplement:'FAA-CT-8080-3F',figure:'254',url:FAA_SUPPLEMENTS.cfii},choiceExplanations:[
+      'Correct. Red/white is the mandatory-instruction convention.',
+      'Incorrect. Yellow/black is used for other sign functions.',
+      'Incorrect. Pilots must understand and comply with signs regardless of whether an airport diagram is available.'
+    ]}),
+  curatedQuestion('cfii','lost-comms-teach','IFR Instruction','PTS Area/Task',
+    'A learner recites AVEF correctly but cannot explain when the rule would actually matter or how altitude selection is handled after a communications failure. What is the best next instructional step?',
+    ['Give a realistic route and clearance scenario and require the learner to apply both route and altitude priorities.','Have the learner repeat the acronym faster until recall is automatic.','Move on because recalling AVEF proves satisfactory lost-communications knowledge.'],0,
+    'Instrument instruction should move from recall to application. A realistic clearance forces the learner to combine route priority, altitude requirements, timing, and practical judgment.',
+    'FAA-S-8081-9E; AIM lost communications',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. Scenario application exposes whether the learner can use the rule.',
+      'Incorrect. Faster rote recall does not fix an application gap.',
+      'Incorrect. Knowing the acronym alone does not demonstrate operational understanding.'
+    ]}),
+  curatedQuestion('cfii','partial-panel-diagnosis','Instrument Instruction','PTS Area/Task',
+    'During partial-panel work, the learner fixates on the failed attitude indication and begins chasing supporting instruments. What should the instructor emphasize first?',
+    ['Identify the unreliable source through cross-check, stabilize the airplane with reliable information, then simplify the scan.','Cover every remaining instrument so the learner stops fixating.','Restore the failed instrument immediately because diagnosis is not part of instrument instruction.'],0,
+    'The teaching objective is recognition of unreliable information, aircraft control using reliable sources, and workload management.',
+    'FAA-S-8081-9E; Instrument Flying Handbook',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. Diagnose, control, and simplify the scan using reliable information.',
+      'Incorrect. Removing all information creates an artificial problem instead of teaching diagnosis.',
+      'Incorrect. Failure recognition and partial-panel control are core instrument-instruction skills.'
+    ]}),
+  curatedQuestion('cfii','weather-decision','Weather Instruction','PTS Area/Task',
+    'A learner can decode every line of a TAF but still launches without identifying what forecast change would trigger a delay or diversion. What is the instructional deficiency?',
+    ['The learner is demonstrating decoding knowledge without applying it to risk-management decisions.','The learner needs more practice memorizing weather abbreviations only.','The learner should ignore forecast trends and rely on the departure METAR.'],0,
+    'Instrument weather instruction must connect products to decisions, trends, margins, and escape options rather than stop at decoding.',
+    'FAA-S-8081-9E; Aviation Weather Handbook',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. The missing skill is application and decision-making.',
+      'Incorrect. More abbreviation recall does not address the decision gap.',
+      'Incorrect. A single observation cannot replace forecast and trend analysis.'
+    ]}),
+  curatedQuestion('cfii','holding-reasoning','Holding Instruction','PTS Area/Task',
+    'A learner can name direct, teardrop, and parallel entries but cannot determine the protected side of an unfamiliar hold. What should the instructor teach next?',
+    ['Build the hold from the clearance and protected side first, then treat the entry as a way to join that pattern.','Memorize more entry-angle diagrams without drawing the clearance.','Always use a direct entry because ATC will correct it if necessary.'],0,
+    'Holding instruction should prioritize clearance interpretation, protected airspace, and aircraft control rather than treating the entry label as the objective.',
+    'FAA-S-8081-9E; AIM holding procedures',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. Understanding the hold geometry makes entry selection meaningful.',
+      'Incorrect. More memorization does not fix the underlying spatial understanding.',
+      'Incorrect. Entry and containment remain pilot responsibilities.'
+    ]}),
+  curatedQuestion('cfii','currency-vs-proficiency','Instructor Responsibilities','PTS Area/Task',
+    'A pilot has completed the regulatory tasks needed for recent instrument experience but has not flown actual or simulated IMC in months. Which instructional point is most important?',
+    ['Currency is a legal threshold; proficiency must still be evaluated separately for the planned operation.','Meeting recent-experience requirements proves the pilot is proficient for any IFR operation.','An IPC is prohibited while the pilot remains legally current.'],0,
+    'A pilot can be legally current yet not proficient for a demanding operation. Instrument instructors should distinguish legal eligibility from operational proficiency.',
+    'FAA-S-8081-9E; 14 CFR 61.57; FAA risk-management guidance',
+    {difficulty:'advanced',choiceExplanations:[
+      'Correct. Legal currency and operational proficiency are different questions.',
+      'Incorrect. Recent-experience compliance does not guarantee proficiency in every condition.',
+      'Incorrect. Additional proficiency training or an IPC can be appropriate even when not legally required.'
+    ]}),
+  curatedQuestion('cfii','waas-sensitivity','RNAV / GPS Instruction','PTS Area/Task',
+    '(Refer to FAA-CT-8080-7D, Appendix 2, Figure 258.) A learner sees larger CDI movement while cross-track error remains essentially unchanged on a WAAS approach. What concept should the instructor reinforce?',
+    ['Approach CDI sensitivity scales as the aircraft progresses through the procedure.','The GPS has necessarily failed and the missed approach must begin immediately.','Cross-track distance always increases in direct proportion to CDI deflection.'],0,
+    'WAAS approach course sensitivity increases through the approach, so the same physical cross-track error can produce greater displayed deflection.',
+    'FAA-S-8081-9E; FAA-CT-8080-7D Figure 258',
+    {difficulty:'advanced',figureRef:{supplement:'FAA-CT-8080-7D',figure:'Appendix 2, Figure 258',url:FAA_SUPPLEMENTS.atp},choiceExplanations:[
+      'Correct. Increased CDI sensitivity explains greater deflection without greater cross-track error.',
+      'Incorrect. Scaling by itself is normal and is not a failure indication.',
+      'Incorrect. Display sensitivity can change while the physical cross-track error does not.'
+    ]})
+];
+
 const FAMILIES={
  ppl:[pplFuel,pplTsd,pplPressure,pplWb,pplAirspace,pplVfrMins,pplMetar,pplWeather,pplSystems,pplEquipment],
  ira:[iraFuel,iraAlternate,iraHoldSpeed,iraLostComms,iraPitot,iraVor,iraApproach,iraMissed,iraIcing,iraPlanning],
@@ -763,13 +1056,19 @@ function buildTrack(track){
  for(const fn of FAMILIES[track]) for(let n=0;n<100;n++) out.push(fn(n));
  return out;
 }
+const productionSampleIds={
+ ppl:new Set(['faa-ppl-par-001','faa-ppl-par-020','faa-ppl-par-044']),
+ ira:new Set(['faa-ira-ira-001','faa-ira-ira-003','faa-ira-ira-044','faa-ira-ira-047']),
+ cpl:new Set(['faa-cpl-cax-004','faa-cpl-cax-031','faa-cpl-cax-032','faa-cpl-cax-044'])
+};
+const productionSamples=track=>(officialSamples[track]||[]).filter(q=>productionSampleIds[track]?.has(q.id));
 export const banks={
- ppl:[...officialSamples.ppl,...figureParallelQuestions.ppl,...buildTrack('ppl')],
- ira:[...officialSamples.ira,...figureParallelQuestions.ira,...buildTrack('ira')],
- cpl:[...officialSamples.cpl,...figureParallelQuestions.cpl,...buildTrack('cpl')],
- cfi:buildTrack('cfi'),
- cfii:Array.from({length:250},(_,n)=>cfiiSupplement(n)),
- atp:buildTrack('atp')
+ ppl:[...productionSamples('ppl'),...figureParallelQuestions.ppl],
+ ira:[...productionSamples('ira'),...figureParallelQuestions.ira],
+ cpl:[...productionSamples('cpl'),...figureParallelQuestions.cpl],
+ cfi:curatedCfi,
+ cfii:curatedCfii,
+ atp:exactAtpSamples
 };
 export const bankManifest={
  acsQuestionCount:['ppl','ira','cpl','cfi','atp'].reduce((s,t)=>s+banks[t].length,0),
@@ -777,5 +1076,6 @@ export const bankManifest={
  totalQuestionCount:Object.values(banks).reduce((s,a)=>s+a.length,0),
  byTrack:Object.fromEntries(Object.entries(banks).map(([k,v])=>[k,v.length])),
  standards:STANDARDS,
- generatedAt:'2026-09-22'
+ generatedAt:'2026-09-22',
+ legacyGeneratedFamiliesExcluded:true
 };

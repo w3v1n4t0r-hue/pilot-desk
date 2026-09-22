@@ -84,6 +84,15 @@ ok(/still[- ]air/i.test(glide),'Glide calculator lost its still-air limitation l
 ok(/glide ratio/i.test(glide),'Glide calculator lost glide-ratio explanation');
 ok(/POH|AFM/i.test(glide),'Glide calculator lost aircraft-source warning');
 
+
+const coreHumanPages=['planner.html','weather.html','airport.html','metar-decoder.html','procedures.html','poh-chart-studio.html','checklist-trainer.html','flight-training.html','guides.html'];
+for(const file of coreHumanPages){
+  const html=fs.readFileSync(file,'utf8').replace(/<script\b[\s\S]*?<\/script>/gi,' ').replace(/<style\b[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
+  for(const phrase of ['Checks for this workflow','Training use for this tool','Continue from here']){
+    if(html.includes(phrase))failures.push(`${file}: generated template phrase returned: ${phrase}`);
+  }
+}
+
 if(failures.length){
   console.error(`Human-copy smoke failed (${failures.length})`);
   failures.forEach(x=>console.error(' - '+x));

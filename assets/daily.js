@@ -137,6 +137,21 @@ function reviewHtml(result){
  const questions=state.data?.challenge?.questions||[];
  return (result.review||[]).map((r,i)=>`<div class="pd-daily-review-item" data-state="${r.correct?'correct':'review'}"><strong><span>Q${String(i+1).padStart(2,'0')}</span>${r.correct?'Correct':'Review this one'}</strong><p>${escapeHtml(questions[i]?.options?.[r.correctIndex]||'')}</p><small>${escapeHtml(r.explanation||'')}</small></div>`).join('');
 }
+function scoreGrid(result){
+ const score=Math.max(0,Math.min(Number(result.maxScore)||0,Number(result.score)||0));
+ const max=Math.max(score,Number(result.maxScore)||3);
+ return `${'🟩'.repeat(score)}${'⬛'.repeat(Math.max(0,max-score))}`;
+}
+function referralUrl(result){
+ const score=Math.max(0,Math.min(Number(result.maxScore)||3,Number(result.score)||0));
+ const url=new URL('/daily/',location.origin);
+ url.searchParams.set('challenge',String(score));
+ url.searchParams.set('utm_source','pilotdesk_daily_share');
+ url.searchParams.set('utm_medium','referral');
+ url.searchParams.set('utm_campaign','daily_challenge');
+ url.searchParams.set('utm_content',`${score}-of-${Number(result.maxScore)||3}`);
+ return url.toString();
+}
 function renderResult(result,saved){
  state.submitted=true;lockAnswers(result.review);$('#pdDailySubmit').disabled=true;$('#pdDailySubmit').textContent='Completed';setText('#pdDailyFormNote',saved?'Saved to your PilotDesk account.':'Guest result — sign in only if you want future completions saved.');
  $('#pdDailyScoreChip').hidden=false;setText('#pdDailyScore',`${result.score}/${result.maxScore}`);updateSubmitState();

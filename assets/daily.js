@@ -202,7 +202,7 @@ async function loadChallenge(){
 }
 async function init(){
  countdown();setInterval(countdown,1000);renderWeek();renderCurrencyReminders();$('#pdCurrencySave')?.addEventListener('click',saveCurrencyReminders);$('#pdDailyForm')?.addEventListener('submit',submit);applyIncomingChallenge();
- await loadDailyRouteWeather();await loadSupabase();await refreshIdentity();await loadChallenge();
+ const weatherPromise=loadDailyRouteWeather();await loadSupabase();await refreshIdentity();await loadChallenge();await weatherPromise;
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

@@ -30,9 +30,12 @@ body:before{animation:none}
   border-radius:0!important;
   box-shadow:none!important;
 }
-:where(.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.pd-panel,.rp-panel,.pd-dashboard-block,
-.pd-account-card,.pd-account-promise,.pd-account-dashboard,.pd-owner,.pd-plan-card,.pd-training-progress){
+:where(.pd-panel,.rp-panel,.calc-box,.pd-dashboard-block,
+.pd-account-card,.pd-account-dashboard,.pd-owner,.pd-plan-card,.pd-training-progress){
   clip-path:polygon(0 0,calc(100% - var(--pd-cut)) 0,100% var(--pd-cut),100% 100%,var(--pd-cut) 100%,0 calc(100% - var(--pd-cut)));
+}
+:where(.tool-card,.pd-card,.pd-hub-card,.pd-flight-card,.info-card,.side-card){
+  clip-path:none!important;
 }
 :where(.calc-btn,.pd-btn,button.primary,.pd-auth-btn){
   border:1px solid #f4f3ee!important;border-radius:0!important;

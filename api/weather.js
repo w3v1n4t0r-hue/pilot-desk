@@ -151,7 +151,7 @@ module.exports=async function handler(req,res){
   const source=fallbackUsed?(awcMetar.data||awcTaf.data?'Aviation Weather Center + NOAA/NWS backup':'NOAA/NWS aviation text feed'):'U.S. Aviation Weather Center';
 
   res.setHeader('Server-Timing',`weather;dur=${Date.now()-started}`);
-  res.setHeader('Cache-Control','public, s-maxage=75, stale-while-revalidate=300');
+  res.setHeader('Cache-Control','no-store, max-age=0');
 
   if(!metar&&!taf&&!airport){
     const allUnavailable=[awcMetar,awcTaf,noaaMetar,noaaTaf].every(r=>!r.ok||!r.data);

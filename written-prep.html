@@ -17,7 +17,7 @@
 
 <main class="shell pd-prep-shell" id="main-content">
 <section class="pd-prep-hero">
- <div class="pd-prep-hero-copy"><span class="eyebrow">PILOTDESK · WRITTEN PREP</span><h1>Build confidence before test day.</h1><p>Study for Private, Instrument, Commercial, CFI or ATP with questions tied to the current FAA standards. Every question has three choices, an FAA reference, an explanation and a difficulty level. CFII questions use the FAA’s current instrument-instructor PTS.</p><div class="pd-prep-hero-actions"><a href="#pdStudySample" class="pd-prep-primary">TRY THREE SAMPLE QUESTIONS</a><a href="/skill-gap.html" class="pd-prep-secondary">CHECK MY WEAK SUBJECTS</a></div></div>
+ <div class="pd-prep-hero-copy"><span class="eyebrow">PILOTDESK · WRITTEN PREP</span><h1>Pick the rating. Find the weak areas. Work them.</h1><p>Private, Instrument, Commercial, CFI, CFII, and ATP practice tied to the current FAA standards used by PilotDesk. Progress is broken down by subject and FAA element so the next study session has a reason.</p><div class="pd-prep-hero-actions"><a href="#pdPrepApp" class="pd-prep-primary">OPEN MY STUDY DESK</a><a href="/skill-gap.html" class="pd-prep-secondary">CHECK MY WEAK SUBJECTS</a></div></div>
  <div class="pd-prep-instrument"><div><span>ACS QUESTIONS</span><strong>5,000</strong></div><div><span>CHOICES EACH</span><strong>3</strong></div><div><span>PRICE</span><strong>$0</strong></div><small>PPL · IRA · CPL · CFI · ATP · 250 additional CFII PTS questions</small></div>
 </section>
 
@@ -42,6 +42,12 @@
 
  <div id="pdPrepWorkspace" hidden>
   <section class="pd-prep-statusbar"><div><span id="pdPrepTrackCode">PAR</span><strong id="pdPrepTrackName">Private Pilot Airplane</strong><em id="pdPrepStandardDoc">FAA-S-ACS-6C</em></div><div class="pd-prep-test-meta"><span><b id="pdPrepOfficialQuestions">60</b> FAA questions</span><span><b id="pdPrepOfficialTime">120</b> min</span><span><b>70%</b> pass</span><span><b id="pdPrepBankSize">—</b> selected</span><span><b id="pdPrepFullBankSize">—</b> question bank</span></div></section>
+  <section class="pd-prep-study-entry" aria-label="Start a Written Prep session">
+   <button type="button" data-mode="learn"><small>START HERE</small><b>Weak-area session</b><span>20 questions weighted toward unseen, missed, due, and low-scoring material.</span></button>
+   <button type="button" data-mode="missed"><small>MISSED</small><b>Review misses</b><span>Work only questions whose latest result was incorrect.</span></button>
+   <button type="button" data-mode="exam"><small>CHECK PROGRESS</small><b>Practice exam</b><span>Timed mixed set using the selected rating and difficulty.</span></button>
+  </section>
+  <div class="pd-prep-streakline" aria-label="Recent Written Prep activity"><div><strong id="pdPrepStudyStreak">0-day study streak</strong><span>Completed sessions</span></div><div class="pd-prep-streak-dots" id="pdPrepStreakDots" aria-hidden="true"></div></div>
 
   <div class="pd-prep-dashboard" id="pdPrepDashboard">
    <section class="pd-prep-readiness"><div class="pd-prep-readiness-ring"><strong id="pdPrepReadiness">0%</strong><span>READINESS</span></div><div><span class="eyebrow">WRITTEN READINESS</span><h2 id="pdPrepReadinessLabel">Get your first score.</h2><p id="pdPrepReadinessCopy">Start weak-area review and PilotDesk will show which subjects need more work.</p></div></section>
@@ -58,7 +64,8 @@
    <button type="button" data-mode="exam"><span>05</span><b>Practice exam</b><small>60-question practice test when available. Answers are shown at the end.</small></button>
   </section>
 
-  <section class="pd-prep-skillmap"><div class="pd-prep-section-head"><div><span class="eyebrow">SCORES BY SUBJECT</span><h2>Weak subjects</h2></div><span>Updates after every answer</span></div><div id="pdPrepSkillMap" class="pd-prep-skill-grid"><div class="pd-prep-empty">No answers yet for this rating.</div></div></section>
+  <section class="pd-prep-skillmap"><div class="pd-prep-section-head"><div><span class="eyebrow">ACS / PTS KNOWLEDGE AREAS</span><h2>Progress by subject</h2></div><span>Lowest mastery first</span></div><div id="pdPrepSkillMap" class="pd-prep-skill-grid"><div class="pd-prep-empty">No answers yet for this rating.</div></div></section>
+  <section class="pd-prep-skillmap pd-prep-missed-topics"><div class="pd-prep-section-head"><div><span class="eyebrow">REVIEW MISSED QUESTIONS</span><h2>Misses grouped by topic</h2></div><button class="pd-prep-secondary" type="button" data-mode="missed">STUDY ALL MISSES</button></div><div id="pdPrepMissedTopics" class="pd-prep-missed-topic-list"><div class="pd-prep-empty">No missed questions for this rating.</div></div></section>
   <section class="pd-prep-skillmap pd-prep-standards"><div class="pd-prep-section-head"><div><span class="eyebrow" id="pdPrepStandardsEyebrow">ACS ELEMENTS</span><h2>Scores by FAA standard</h2></div><span id="pdPrepStandardsCount">0 elements attempted</span></div><div id="pdPrepStandardMap" class="pd-prep-standard-grid"><div class="pd-prep-empty">Answer questions to see your score by FAA standard.</div></div></section>
   <section class="pd-prep-skillmap"><div class="pd-prep-section-head"><div><span class="eyebrow">BY DIFFICULTY</span><h2>How the hard questions are going</h2></div></div><div id="pdPrepDifficultyMap" class="pd-prep-difficulty-grid"><div class="pd-prep-empty">No answers yet.</div></div></section>
  </div>

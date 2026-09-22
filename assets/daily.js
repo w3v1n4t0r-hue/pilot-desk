@@ -99,7 +99,7 @@ async function loadSupabase(){
  state.client.auth.onAuthStateChange((_e,next)=>{state.session=next||null;setTimeout(()=>refreshIdentity(),0)});
 }
 async function refreshIdentity(){
- if(!state.session){state.profile=null;setText('#pdDailyAccountState','Guest');setText('#pdDailyProgressTitle','A small daily habit.');setText('#pdDailyProgressText','No account is required. Sign in only if you want Daily completions and study progress saved across devices.');$('#pdDailyAccountLink').textContent='Create a free account →';return}
+ if(!state.session){state.profile=null;setText('#pdDailyAccountState','Guest');setText('#pdDailyProgressTitle','A small daily habit.');setText('#pdDailyProgressText','No account is required. Sign in only if you want Daily completions and study progress saved across devices.');$('#pdDailyAccountLink').textContent='Create account →';return}
  setText('#pdDailyAccountState','Signed in');$('#pdDailyAccountLink').textContent='Open my account →';$('#pdDailyAccountLink').href='/account.html';
  const {data}=await state.client.from('profiles').select('current_streak,daily_completions,last_challenge_date').eq('id',state.session.user.id).maybeSingle();
  state.profile=data||null;if(data){setText('#pdDailyProgressTitle',`${data.current_streak||0}-day Daily streak`);setText('#pdDailyProgressText',`${data.daily_completions||0} saved daily check${Number(data.daily_completions||0)===1?'':'s'}. Use the activity trail as a reminder, not a score to chase.`)}

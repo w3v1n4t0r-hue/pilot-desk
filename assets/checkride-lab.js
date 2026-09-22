@@ -74,7 +74,7 @@ function finish(){
  const x=summary(),t=data[s.track];$('#pdLabSummaryTitle').textContent=t.title+' '+(s.mode==='mock'?'mock oral':'examiner drill');
  $('#pdLabSummaryScore').textContent=x.avg+'%';$('#pdLabStrong').textContent=x.strong?.area||'—';$('#pdLabWeak').textContent=x.weak?.area||'—';$('#pdLabAnswered').textContent=String(x.rows.length);
  $('#pdLabBreakdown').innerHTML=x.rows.map(r=>'<div class="pd-lab-breakdown-row"><b>'+esc(r.title)+'</b><strong>'+r.score+'%</strong><span>'+(r.missing.length?'Review: '+esc(r.missing.join(' · ')):'Core concepts detected')+'</span></div>').join('');
- try{localStorage.setItem('pd-checkride-last',JSON.stringify({track:s.track,mode:s.mode,finishedAt:s.finishedAt,avg:x.avg,rows:x.rows}))}catch{}
+ try{const entry={track:s.track,mode:s.mode,finishedAt:s.finishedAt,avg:x.avg,rows:x.rows};localStorage.setItem('pd-checkride-last',JSON.stringify(entry));const key='pd-checkride-history-v1',history=JSON.parse(localStorage.getItem(key)||'[]');history.unshift(entry);localStorage.setItem(key,JSON.stringify(history.slice(0,30)));document.dispatchEvent(new CustomEvent('pilotdesk:checkride-completed',{detail:entry}))}catch{}
  window.pdTrack?.('Checkride Lab Completed',{track:s.track,mode:s.mode,score:x.avg});
 }
 function start(){

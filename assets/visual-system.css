@@ -1146,3 +1146,54 @@ html.pd-streamlined-app footer{
     min-height:44px!important;
   }
 }
+
+/* Five-pass product audit: task-first layouts, not dashboard decoration. */
+.pd-plan-flow{margin:26px 0 30px;padding:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pd-plan-flow .pd-training-section-head{margin:0;padding:16px 0 12px}
+.pd-plan-flow ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.pd-plan-flow li{min-width:0;padding:15px 16px 16px;border-right:1px solid var(--line)}
+.pd-plan-flow li:last-child{border-right:0}
+.pd-plan-flow li b,.pd-plan-flow li span{display:block}
+.pd-plan-flow li b{font-size:12px;color:var(--text);letter-spacing:.01em}
+.pd-plan-flow li span{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.45}
+.pd-plan-primary{margin-top:24px}
+.pd-plan-links{display:flex;flex-wrap:wrap;gap:0;margin:18px 0 30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pd-plan-links a{padding:10px 14px;border-right:1px solid var(--line);color:var(--muted);font-size:12px;text-decoration:none}
+.pd-plan-links a:hover{color:var(--text);background:#0d0d0f}
+
+.pd-weather-read{margin:18px 0 26px;padding:0!important;border:0!important;background:transparent!important}
+.pd-weather-read h2{margin:0 0 10px!important;padding:0!important;border:0!important;font-size:16px!important}
+.pd-weather-read ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;counter-reset:wxstep;margin:0;padding:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pd-weather-read li{counter-increment:wxstep;padding:13px 14px;border-right:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.45}
+.pd-weather-read li:last-child{border-right:0}
+.pd-weather-read li:before{content:counter(wxstep,decimal-leading-zero);display:block;margin-bottom:5px;color:var(--muted2);font:650 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-weather-read .source-links{margin-top:10px}
+
+.pd-training-scenario{margin:34px 0;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pd-training-scenario h2{max-width:720px;margin:7px 0 8px!important;padding:0!important;border:0!important}
+.pd-training-scenario p{max-width:760px;margin:0}
+
+.pd-guides-index .pd-guide-section-title{margin-top:40px!important}
+.pd-guides-index .pd-list{display:block!important;border-top:1px solid var(--line)}
+.pd-guides-index .pd-list .pd-card{display:grid!important;grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr);gap:24px;min-height:0!important;margin:0!important;padding:13px 0!important;border:0!important;border-bottom:1px solid var(--line)!important;background:transparent!important;clip-path:none!important}
+.pd-guides-index .pd-list .pd-card:before{display:none!important}
+.pd-guides-index .pd-list .pd-card:hover{background:transparent!important;border-bottom-color:var(--line-hi)!important}
+.pd-guides-index .pd-list .pd-card h3{margin:0!important;font-size:14px!important}
+.pd-guides-index .pd-list .pd-card p{margin:0!important;font-size:12.5px!important;line-height:1.5!important}
+.pd-guides-index .pd-hub-grid{gap:1px!important;background:var(--line)!important}
+.pd-guides-index .pd-hub-card{clip-path:none!important;border-radius:0!important}
+
+@media(max-width:820px){
+  .pd-plan-flow ol,.pd-weather-read ol{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pd-plan-flow li:nth-child(2),.pd-weather-read li:nth-child(2){border-right:0}
+  .pd-plan-flow li:nth-child(-n+2),.pd-weather-read li:nth-child(-n+2){border-bottom:1px solid var(--line)}
+}
+@media(max-width:600px){
+  .pd-plan-flow ol,.pd-weather-read ol{grid-template-columns:1fr}
+  .pd-plan-flow li,.pd-weather-read li{border-right:0!important;border-bottom:1px solid var(--line)}
+  .pd-plan-flow li:last-child,.pd-weather-read li:last-child{border-bottom:0}
+  .pd-plan-links{display:grid;grid-template-columns:1fr 1fr}
+  .pd-plan-links a{border-right:0;border-bottom:1px solid var(--line)}
+  .pd-guides-index .pd-list .pd-card{grid-template-columns:1fr;gap:3px;padding:12px 0!important}
+}
+

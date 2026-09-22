@@ -37,7 +37,7 @@ for(const file of files){
   check(/meta\s+name=["']description["'][^>]*content=["'][^"']{40,}["']/i.test(html),file+': indexable page missing useful meta description');
  }
  if(/class=["'][^"']*brand[^"']*["']/i.test(html)){
-  const official=/\/assets\/icon\.svg/i.test(html);
+  const official=/\/favicon\.svg/i.test(html);
   const astro=/data-pd-astro-native=["']1["']/i.test(html);
   check(official||astro,file+': branded legacy page does not reference official PilotDesk icon');
  }

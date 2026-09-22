@@ -426,6 +426,183 @@ function cfiiSupplement(n){
  return q('cfii','pts-supplement',n,'Instrument Instruction','PTS Area/Task',`During instrument instruction, ${s}. What is the best instructional response?`,[c,a,b],0,'CFII instruction should protect instrument-procedure standards while diagnosing the learner’s scan, interpretation, and decision-making errors.','FAA-S-8081-9E Flight Instructor Instrument PTS; Instrument Flying Handbook',{standardType:'PTS'});
 }
 
+
+const FAA_SAMPLE_URLS={
+  ppl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/par_questions.pdf',
+  ira:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/ira_questions.pdf',
+  cpl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/cax_questions.pdf'
+};
+const FAA_SUPPLEMENTS={
+  ppl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/sport_rec_private_akts.pdf',
+  ira:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/instrument_rating_akts.pdf',
+  cpl:'https://www.faa.gov/sites/faa.gov/files/training_testing/testing/supplements/commercial_akts.pdf'
+};
+const faaSample=(track,id,area,code,prompt,options,correct,explanation,reference,extra={})=>{
+  const st=STANDARDS[track];
+  return {id:`faa-${track}-${id}`,area,prompt,options,correct,explanation,reference,
+    source:'faa-sample-exact',sourceUrl:FAA_SAMPLE_URLS[track],standardCode:code,
+    standardDoc:st.doc,standardType:st.type,difficulty:'applied',experienceLevel:track,
+    reviewedAt:'2026-09-22',...extra};
+};
+const officialSamples={
+  ppl:[
+    faaSample('ppl','par-001','Airworthiness','PA.I.B.K1b',
+      'Maintenance records show the last transponder inspection was performed on September 1, 2014. The next inspection will be due no later than',
+      ['September 30, 2015.','September 1, 2016.','September 30, 2016.'],2,
+      'A transponder used under the applicable rule must be inspected within the preceding 24 calendar months. A September 2014 inspection remains current through the end of September 2016.',
+      'FAA PAR sample question 1; 14 CFR 91.413',
+      {choiceExplanations:[
+        'Incorrect. This allows only 12 calendar months.',
+        'Incorrect. Calendar-month compliance runs through the last day of the applicable month.',
+        'Correct. Twenty-four calendar months after September 2014 runs through September 30, 2016.'
+      ]}),
+    faaSample('ppl','par-002','Pilot Qualifications','PA.I.A.K1',
+      'With respect to the certification of airmen, which are categories of aircraft?',
+      ['Gyroplane, helicopter, airship, free balloon.','Airplane, rotorcraft, glider, lighter-than-air.','Single-engine land and sea, multiengine land and sea.'],1,
+      'Airplane, rotorcraft, glider, and lighter-than-air are aircraft categories. Items such as single-engine land and multiengine land are classes within the airplane category.',
+      'FAA PAR sample question 2; 14 CFR 1.1 / Part 61',
+      {choiceExplanations:[
+        'Incorrect. Several of these are classes within broader categories.',
+        'Correct. These are aircraft categories used in airman certification.',
+        'Incorrect. These are airplane classes, not aircraft categories.'
+      ]}),
+    faaSample('ppl','par-003','Airport Operations','PA.III.A.K3',
+      'A flashing white light signal from the control tower to a taxiing aircraft is an indication to',
+      ['taxi at a faster speed.','taxi only on taxiways and not cross runways.','return to the starting point on the airport.'],2,
+      'For an aircraft on the ground, a flashing white light gun signal means return to the starting point on the airport.',
+      'FAA PAR sample question 3; AIM light gun signals',
+      {choiceExplanations:[
+        'Incorrect. A flashing white signal does not authorize increased taxi speed.',
+        'Incorrect. This is not the meaning assigned to the flashing white signal.',
+        'Correct. Flashing white to an aircraft on the ground means return to the starting point.'
+      ]}),
+    faaSample('ppl','par-020','Airport Operations','PA.II.D.K3',
+      '(Refer to FAA-CT-8080-2H, Figure 48.) The portion of the runway identified by the letter A may be used for',
+      ['landing.','taxiing and takeoff.','taxiing and landing.'],1,
+      'The marked portion is a displaced-threshold area. It may be available for taxi and takeoff while not being available for touchdown from that direction.',
+      'FAA PAR sample question 20; FAA-CT-8080-2H Figure 48',
+      {figureRef:{supplement:'FAA-CT-8080-2H',figure:'48',url:FAA_SUPPLEMENTS.ppl},choiceExplanations:[
+        'Incorrect. The displaced portion is not available for touchdown from that approach direction.',
+        'Correct. The area may be used for taxi and takeoff.',
+        'Incorrect. Landing touchdown is not permitted on the displaced portion from that direction.'
+      ]}),
+    faaSample('ppl','par-044','Performance','PA.I.F.K2a',
+      '(Refer to FAA-CT-8080-2H, Figure 8.) What is the effect of a temperature increase from 35 to 50°F on the density altitude if the pressure altitude remains at 3,000 feet MSL?',
+      ['1,000-foot increase.','1,100-foot decrease.','1,300-foot increase.'],0,
+      'With pressure altitude unchanged, warmer air increases density altitude. Figure 8 shows approximately a 1,000-foot increase for the stated temperature change.',
+      'FAA PAR sample question 44; FAA-CT-8080-2H Figure 8',
+      {figureRef:{supplement:'FAA-CT-8080-2H',figure:'8',url:FAA_SUPPLEMENTS.ppl},choiceExplanations:[
+        'Correct. The warmer temperature raises density altitude by about 1,000 feet.',
+        'Incorrect. Increasing temperature does not lower density altitude when pressure altitude is unchanged.',
+        'Incorrect. This overstates the change shown by the FAA figure.'
+      ]})
+  ],
+  ira:[
+    faaSample('ira','ira-001','Pilot Qualifications','IR.I.A.K1',
+      'To act as pilot in command of an aircraft under IFR, what is the minimum instrument flight experience you must have logged during the preceding six months, in the same category of aircraft?',
+      ['Holding procedures, intercepting and tracking courses through the use of navigation systems, and six instrument approaches.','Six hours of instrument time in any aircraft, and six instrument approaches.','Six instrument approaches, three of which must be in the same category and class of aircraft to be flown, and 6 hours of instrument time in any aircraft.'],0,
+      'The recent-instrument-experience rule requires six instrument approaches plus holding procedures/tasks and intercepting/tracking courses using navigation systems within the prescribed period and category.',
+      'FAA IRA sample question 1; 14 CFR 61.57(c)',
+      {choiceExplanations:[
+        'Correct. This lists the required recent instrument tasks.',
+        'Incorrect. The regulation does not use a six-hour instrument-time requirement for this currency rule.',
+        'Incorrect. The rule is not structured around three approaches in class plus six instrument hours.'
+      ]}),
+    faaSample('ira','ira-003','IFR Flight Planning','IR.I.C.R3',
+      'When is an IFR clearance required during VFR weather conditions?',
+      ['When operating in the Class E airspace.','When operating in a Class A airspace.','When operating in airspace above 14,500 feet.'],1,
+      'Class A airspace is operated under IFR. VFR weather does not remove the requirement for an IFR clearance there.',
+      'FAA IRA sample question 3; 14 CFR 91.135',
+      {choiceExplanations:[
+        'Incorrect. Class E does not by itself require an IFR clearance in VFR conditions.',
+        'Correct. Operations in Class A airspace are conducted under IFR.',
+        'Incorrect. Altitude alone at 14,500 feet does not create the Class A requirement.'
+      ]}),
+    faaSample('ira','ira-017','Airport Operations','IR.VI.E.K2',
+      'Which type of runway lighting consists of a pair of synchronized flashing lights, one on each side of the runway threshold?',
+      ['MALSR.','HIRL.','REIL.'],2,
+      'Runway End Identifier Lights (REIL) are synchronized flashing lights installed laterally at the runway threshold.',
+      'FAA IRA sample question 17; AIM runway lighting',
+      {choiceExplanations:[
+        'Incorrect. MALSR is an approach-light system.',
+        'Incorrect. HIRL are runway edge lights.',
+        'Correct. REIL uses a synchronized flashing-light pair at the threshold.'
+      ]}),
+    faaSample('ira','ira-044','Airport Operations','IR.VI.E.K2',
+      '(Refer to FAA-CT-8080-3F, Figure 254.) Which of the signs in the figure is a mandatory instruction sign?',
+      ['Top red.','Middle yellow.','Bottom yellow.'],0,
+      'Mandatory instruction signs use a red background with white inscription.',
+      'FAA IRA sample question 44; FAA-CT-8080-3F Figure 254',
+      {figureRef:{supplement:'FAA-CT-8080-3F',figure:'254',url:FAA_SUPPLEMENTS.ira},choiceExplanations:[
+        'Correct. The red sign is the mandatory instruction sign.',
+        'Incorrect. Yellow signs are not mandatory instruction signs.',
+        'Incorrect. Yellow signs are not mandatory instruction signs.'
+      ]}),
+    faaSample('ira','ira-047','Instrument Approaches','IR.VI.A.K1',
+      '(Refer to FAA-CT-8080-3F, Figure 242 and Legend 27.) You have been cleared for the RNAV (GPS) RWY 36 approach to LIT. At a groundspeed of 105 knots, what is the vertical descent angle and rate of descent on final approach?',
+      ['2.82 degrees and 524 feet per minute.','3.00 degrees and 557 feet per minute.','4.00 degrees and 550 feet per nautical mile.'],1,
+      'The procedure depicts a 3.00° vertical path. At 105 knots groundspeed, the corresponding descent rate is about 557 feet per minute.',
+      'FAA IRA sample question 47; FAA-CT-8080-3F Figure 242 and Legend 27',
+      {figureRef:{supplement:'FAA-CT-8080-3F',figure:'242 / Legend 27',url:FAA_SUPPLEMENTS.ira},choiceExplanations:[
+        'Incorrect. This does not match the depicted vertical path and rate for 105 knots.',
+        'Correct. The published path is 3.00° and the table gives approximately 557 FPM.',
+        'Incorrect. This mixes an incorrect angle with feet-per-nautical-mile wording rather than the requested descent rate.'
+      ]})
+  ],
+  cpl:[
+    faaSample('cpl','cax-001','Navigation','CA.VI.A.R1',
+      'When in the vicinity of a VOR which is being used for navigation on VFR flights, it is important to',
+      ['make 90° left and right turns to scan for other traffic.','exercise sustained vigilance to avoid aircraft that may be converging on the VOR from other directions.','pass the VOR on the right side of the radial to allow room for aircraft flying in the opposite direction on the same radial.'],1,
+      'VORs can concentrate traffic from multiple directions. The risk-management point is sustained visual vigilance for converging aircraft.',
+      'FAA CAX sample question 1; FAA-S-ACS-7B CA.VI.A.R1',
+      {choiceExplanations:[
+        'Incorrect. Large scanning turns are not the recommended traffic-avoidance technique.',
+        'Correct. Navigation facilities can create traffic convergence, requiring sustained vigilance.',
+        'Incorrect. There is no standard rule assigning the right side of a VOR radial for opposite-direction traffic.'
+      ]}),
+    faaSample('cpl','cax-004','Preflight Planning','CA.I.C.K3',
+      'You are pilot-in-command of a VFR flight that you think will be within the fuel range of your aircraft. As part of your preflight planning you must',
+      ['be familiar with all instrument approaches at the destination airport.','list an alternate airport on the flight plan, and confirm adequate takeoff and landing performance at the destination airport.','obtain weather reports, forecasts, and fuel requirements for the flight.'],2,
+      'Preflight action requires becoming familiar with available information appropriate to the flight, including weather and fuel requirements.',
+      'FAA CAX sample question 4; 14 CFR 91.103',
+      {choiceExplanations:[
+        'Incorrect. VFR preflight action does not require familiarity with every instrument approach.',
+        'Incorrect. A VFR flight does not automatically require filing an alternate.',
+        'Correct. Weather information and fuel requirements are core preflight information.'
+      ]}),
+    faaSample('cpl','cax-031','National Airspace System','CA.I.E.K2',
+      '(Refer to FAA-CT-8080-1E, Figure 53, Area 2.) What is indicated by the star next to the "L" in the airport information box for the MADERA (MAE) airport north of area 2?',
+      ['Special VFR is prohibited.','There is a rotating beacon at the field.','Lighting limitations exist.'],2,
+      'The star associated with the airport lighting notation indicates that lighting limitations or special activation information apply and should be checked in the Chart Supplement.',
+      'FAA CAX sample question 31; FAA-CT-8080-1E Figure 53',
+      {figureRef:{supplement:'FAA-CT-8080-1E',figure:'53, Area 2',url:FAA_SUPPLEMENTS.cpl},choiceExplanations:[
+        'Incorrect. This symbol is not the notation for a Special VFR prohibition.',
+        'Incorrect. The star is tied to lighting information, not simply the existence of a rotating beacon.',
+        'Correct. The star indicates lighting limitations/special lighting information.'
+      ]}),
+    faaSample('cpl','cax-032','National Airspace System','CA.I.E.K3',
+      '(Refer to FAA-CT-8080-1E, Figure 54, Area 3.) What is the significance of R-2531? This is a restricted area',
+      ['for IFR aircraft.','where aircraft may never operate.','where often invisible hazards exist.'],2,
+      'Restricted areas contain activity considered hazardous to nonparticipating aircraft, which may not be readily visible.',
+      'FAA CAX sample question 32; FAA-CT-8080-1E Figure 54',
+      {figureRef:{supplement:'FAA-CT-8080-1E',figure:'54, Area 3',url:FAA_SUPPLEMENTS.cpl},choiceExplanations:[
+        'Incorrect. Restricted areas are not defined as areas reserved for IFR aircraft.',
+        'Incorrect. Flight may be authorized when the area is not active or with controlling-agency permission as applicable.',
+        'Correct. Restricted areas identify unusual, often invisible hazards to aircraft.'
+      ]}),
+    faaSample('cpl','cax-044','National Airspace System','CA.I.E.K1',
+      '(Refer to FAA-CT-8080-1E, Figure 52, Area 2.) When departing the RIO LINDA (L36) airport to the northwest at an altitude of 1,000 feet, AGL, you',
+      ['must make contact with MC CLELLAN (MCC) control tower as soon as practical after takeoff.','are not required to contact any ATC facilities if you do not enter the Class C Airspace','must make contact with the SACRAMENTO INTL (SMF) control tower immediately after takeoff.'],1,
+      'The departure described can remain outside the depicted Class C airspace. Two-way communication is required before entering Class C, not merely because the airport is nearby.',
+      'FAA CAX sample question 44; FAA-CT-8080-1E Figure 52',
+      {figureRef:{supplement:'FAA-CT-8080-1E',figure:'52, Area 2',url:FAA_SUPPLEMENTS.cpl},choiceExplanations:[
+        'Incorrect. Contact with that tower is not required solely by the described departure.',
+        'Correct. If the flight remains outside Class C and no other rule requires contact, ATC communication is not required solely for the departure.',
+        'Incorrect. Immediate contact with the Class C primary airport tower is not required while remaining outside the Class C airspace.'
+      ]})
+  ]
+};
+
 const FAMILIES={
  ppl:[pplFuel,pplTsd,pplPressure,pplWb,pplAirspace,pplVfrMins,pplMetar,pplWeather,pplSystems,pplEquipment],
  ira:[iraFuel,iraAlternate,iraHoldSpeed,iraLostComms,iraPitot,iraVor,iraApproach,iraMissed,iraIcing,iraPlanning],
@@ -439,9 +616,9 @@ function buildTrack(track){
  return out;
 }
 export const banks={
- ppl:buildTrack('ppl'),
- ira:buildTrack('ira'),
- cpl:buildTrack('cpl'),
+ ppl:[...officialSamples.ppl,...buildTrack('ppl')],
+ ira:[...officialSamples.ira,...buildTrack('ira')],
+ cpl:[...officialSamples.cpl,...buildTrack('cpl')],
  cfi:buildTrack('cfi'),
  cfii:Array.from({length:250},(_,n)=>cfiiSupplement(n)),
  atp:buildTrack('atp')
@@ -452,5 +629,5 @@ export const bankManifest={
  totalQuestionCount:Object.values(banks).reduce((s,a)=>s+a.length,0),
  byTrack:Object.fromEntries(Object.entries(banks).map(([k,v])=>[k,v.length])),
  standards:STANDARDS,
- generatedAt:'2026-09-15'
+ generatedAt:'2026-09-22'
 };

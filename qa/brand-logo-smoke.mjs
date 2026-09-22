@@ -14,10 +14,11 @@ const brand=read('assets/brand.js');
 const home=read('src/pages/index.astro');
 const manifest=read('site.webmanifest');
 const sw=read('sw.js');
+const calculatorGenerator=read('scripts/generate-calculator-pages.mjs');
 const vercel=JSON.parse(read('vercel.json'));
 
 check(sourceLogo===favicon,'favicon.svg must be an exact copy of the existing user-created PilotDesk aircraft/math logo');
-for(const [name,text] of [['BaseLayout',layout],['Header',header],['shared shell',shared],['brand runtime',brand],['homepage schema',home],['manifest',manifest],['service worker',sw]]){
+for(const [name,text] of [['BaseLayout',layout],['Header',header],['shared shell',shared],['brand runtime',brand],['homepage schema',home],['manifest',manifest],['service worker',sw],['calculator generator',calculatorGenerator]]){
   check(text.includes('/favicon.svg'),name+' does not use the canonical PilotDesk logo');
 }
 check(!layout.includes('/assets/icon.svg'),'BaseLayout still references the old logo URL');
@@ -25,7 +26,9 @@ check(!header.includes('/assets/icon.svg'),'Header still references the old logo
 check(!brand.includes('/assets/icon.svg'),'Brand runtime still references the old logo URL');
 check(!manifest.includes('/assets/icon.svg'),'Manifest still references the old logo URL');
 check(!home.includes('www.pilot-desk.com/assets/icon.svg'),'Organization schema still references the old logo URL');
-check(sw.includes("CACHE='pilotdesk-v56'"),'service worker cache was not advanced for the favicon change');
+check(!calculatorGenerator.includes('/assets/icon.svg'),'Calculator generator still emits the old logo URL');
+check(calculatorGenerator.includes('https://www.pilot-desk.com/favicon.svg'),'Calculator schema must use the canonical user-created logo');
+check(sw.includes("CACHE='pilotdesk-v57'"),'service worker cache was not advanced for the canonical logo rollout');
 check(!sw.includes("'/assets/icon.svg'"),'service worker still caches the old favicon URL');
 
 const ico=vercel.redirects?.find(x=>x.source==='/favicon.ico');

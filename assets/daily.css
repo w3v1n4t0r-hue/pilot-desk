@@ -61,3 +61,26 @@
 }
 .pd-daily-result-actions a,.pd-daily-result-actions button,.pd-daily-account-link,.pd-daily-error{border-radius:0!important}
 .pd-daily-error{border-color:#55555b!important;background:#0b0b0d!important;color:#b8b7b2!important}
+
+/* Claude Step 5 — final Daily briefing overrides. */
+.pd-daily-hero{padding:22px 0 14px!important;border:0!important;border-bottom:1px solid var(--line)!important;clip-path:none!important;background:#050607!important}
+.pd-daily-hero::after,.pd-daily-proof{display:none!important}
+.pd-daily-statusbar>div,.pd-daily-card,.pd-daily-sidecard,.pd-daily-result,.pd-daily-question,.pd-daily-option{
+  border-radius:0!important;background-image:none!important;box-shadow:none!important
+}
+.pd-daily-statusbar>div{background:#080b0e!important;border-color:var(--line)!important}
+.pd-daily-statusbar>div:first-child{border-color:var(--line-hi)!important}
+.pd-daily-rail::before{background:var(--accent)!important}
+.pd-daily-option:hover{transform:none!important}
+.pd-daily-option input:checked{background:var(--accent)!important;border-color:var(--accent)!important}
+.pd-daily-option:has(input:checked){border-color:var(--accent)!important;background:var(--accent-soft)!important}
+.pd-daily-submit{
+  border-color:var(--accent)!important;background:var(--accent)!important;color:#061018!important;
+  clip-path:none!important;filter:none!important;transform:none!important
+}
+.pd-daily-submit:hover:not(:disabled){filter:none!important;transform:none!important}
+.pd-daily-reward{color:var(--muted)!important}
+.pd-daily-account-link{border-color:var(--line-hi)!important;background:#080b0e!important;color:var(--text)!important}
+.pd-daily-account-link:hover{border-color:var(--accent)!important;background:var(--panel2)!important}
+.pd-daily-next-study{border-radius:0!important;background:#080b0e!important;border-color:var(--line)!important}
+.pd-daily-next-links a{border-radius:0!important;background:#07090b!important}

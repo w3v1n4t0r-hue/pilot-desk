@@ -46,6 +46,47 @@ async function cloudCounts(userId){
   return {aircraft:a.count||0,flights:f.count||0};
  }catch{return {aircraft:0,flights:0}}
 }
+function relativeTime(value){const t=new Date(value).getTime();if(!Number.isFinite(t))return'';const d=Math.max(0,Date.now()-t),m=Math.floor(d/60000);if(m<2)return'just now';if(m<60)return m+' min ago';const h=Math.floor(m/60);if(h<24)return h+' hr ago';const days=Math.floor(h/24);return days===1?'yesterday':days+' days ago'}
+function calcHref(slug){if(slug==='weight-balance-builder')return'/weight-balance.html';return slug?'/calculators/'+encodeURIComponent(slug)+'/':'/tools.html'}
+async function renderRecentActivity(){
+ const host=$('#pdAccountRecentActivity');if(!host||!state.session)return;
+ const rows=[];
+ try{
+  const {data,error}=await state.client.from('saved_calculations').select('id,tool_slug,title,created_at').eq('user_id',state.session.user.id).order('created_at',{ascending:false}).limit(4);
+  if(error)throw error;
+  (data||[]).forEach(x=>rows.push({time:x.created_at,title:x.title||String(x.tool_slug||'Calculation').replaceAll('-',' '),type:'CALCULATION · ACCOUNT',href:calcHref(x.tool_slug)}));
+ }catch(e){console.warn('[PilotDesk recent calculations]',e)}
+ const flights=localJson('pd-saved-flights',[]).slice().sort((a,b)=>Number(b.updatedAt||b.createdAt||0)-Number(a.updatedAt||a.createdAt||0)).slice(0,4);
+ flights.forEach(x=>rows.push({time:new Date(Number(x.updatedAt||x.createdAt||Date.now())).toISOString(),title:x.name||x.route||'Saved flight',type:'FLIGHT · THIS DEVICE',href:'/route-planner.html?flight='+encodeURIComponent(x.id||'')}));
+ rows.sort((a,b)=>new Date(b.time)-new Date(a.time));
+ if(!rows.length){window.PilotDeskStates?.empty(host,'No recent activity yet','Save a calculation or flight and it will appear here.',{href:'/tools.html',label:'Open calculators'});return}
+ host.innerHTML=rows.slice(0,5).map(x=>'<div class="pd-account-activity-row"><small>'+relativeTime(x.time)+' · '+x.type+'</small><b>'+String(x.title).replace(/[<>&]/g,'')+'</b><a href="'+x.href+'">Open →</a></div>').join('');
+}
+function currencyReminder(){
+ const data=localJson('pd-daily-currency-reminders',{}),defs=[['day','Day passenger'],['night','Night passenger'],['instrument','Instrument']],now=new Date();now.setHours(12,0,0,0);
+ const rows=defs.map(([key,label])=>{const v=data[key];if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(String(v||'')))return null;const d=new Date(v+'T12:00:00'),days=Math.ceil((d-now)/86400000);return{label,date:v,days}}).filter(Boolean).sort((a,b)=>a.days-b.days);
+ return rows[0]||null;
+}
+function renderCurrencyOverview(){
+ const box=$('#pdAccountCurrency');if(!box)return;const x=currencyReminder(),strong=$('strong',box),span=$('span',box);
+ if(!x){strong.textContent='—';span.innerHTML='No reminder configured. <a href="/daily/">Set one in Daily →</a>';box.dataset.state='';return}
+ box.dataset.state=x.days<0?'expired':x.days<=14?'soon':'ok';strong.textContent=x.days<0?Math.abs(x.days)+'d past':x.days===0?'Today':x.days+'d';span.textContent=x.label+' · pilot-entered '+x.date;
+}
+async function renderPrepOverview(profile){
+ const box=$('#pdAccountPrep');if(!box||!state.session)return;const strong=$('strong',box),span=$('span',box),goal=profile?.training_goal||'',track=['ppl','ira','cpl','cfi','cfii','atp'].includes(goal)?goal:(goal==='multi'?'cpl':localStorage.getItem('pd-written-track')||'ppl');
+ try{
+  const url=new URL(SUPABASE_URL+'/functions/v1/written-prep');url.searchParams.set('track',track);url.searchParams.set('difficulty','all');
+  const r=await fetch(url,{headers:edgeHeaders(),cache:'no-store'}),d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Written Prep unavailable');
+  strong.textContent=Number(d.totalAnswers||0)?String(d.accuracy||0)+'%':'—';
+  span.innerHTML=(Number(d.totalAnswers||0)?(Number(d.missed||0)+' missed · '+Number(d.coverage||0)+'% bank seen'):'No answers yet')+' · <a href="/written-prep.html?track='+encodeURIComponent(track)+'">Open prep →</a>';
+ }catch(e){strong.textContent='—';span.textContent='Written Prep progress is unavailable right now.'}
+}
+async function renderHomeOverview(profile){renderCurrencyOverview();await Promise.all([renderRecentActivity(),renderPrepOverview(profile)])}
+function renderInterfaceSettings(){
+ const p=window.PilotDeskPreferences?.get?.()||{};
+ if($('#pdSettingCompact'))$('#pdSettingCompact').checked=Boolean(p.compact);
+ if($('#pdSettingMotion'))$('#pdSettingMotion').checked=Boolean(p.reducedMotion);
+}
 async function renderAccountDashboard(profile){
  const host=$('#pdAccountDashboardGrid');if(!host)return;
  const aircraft=localJson('pd-aircraft',[]),flights=localJson('pd-saved-flights',[]),pins=localJson('pd-favorites',[]);
@@ -155,7 +196,7 @@ async function claimOwnerAccess(e){e?.preventDefault();if(!state.session)return;
 async function renderSignedIn(session){
  const user=session.user;show('#pdSignedOut',false);show('#pdSignedIn',true);$('#pdAccountRoot')?.classList.remove('pd-account-disabled');$('#pdUserEmail').textContent=user.email||'Signed in';
  let p=null;try{p=await fetchProfile(user)}catch(e){status('Signed in, but your profile could not be loaded yet.','warn')}
- const display=p?.display_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'Pilot';$('#pdUserName').textContent=display;$('#pdDisplayName').value=p?.display_name||'';$('#pdPilotStage').value=p?.pilot_stage||'';$('#pdHomeAirport').value=p?.home_airport||'';$('#pdXp').textContent=String(p?.xp??0);$('#pdLevel').textContent=String(p?.level??1);$('#pdStreak').textContent=String(p?.current_streak??0);$('#pdBestStreak').textContent=String(p?.longest_streak??0);renderAvatar(user,p);$('#pdTrainingGoal').value=p?.training_goal||'';$('#pdCheckrideDate').value=p?.checkride_date||'';try{renderBilling(await window.PilotDeskBilling?.refresh?.())}catch{renderBilling(null)}try{if(p?.training_goal)localStorage.setItem('pd-training-goal',p.training_goal);if(p?.checkride_date)localStorage.setItem('pd-training-date',p.checkride_date)}catch{}await renderAccountDashboard(p);ensureDailyCta(p);ensureWrittenPrepCta();await loadOwnerMetrics();
+ const display=p?.display_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'Pilot';$('#pdUserName').textContent=display;$('#pdDisplayName').value=p?.display_name||'';$('#pdPilotStage').value=p?.pilot_stage||'';$('#pdHomeAirport').value=p?.home_airport||'';renderAvatar(user,p);$('#pdTrainingGoal').value=p?.training_goal||'';$('#pdCheckrideDate').value=p?.checkride_date||'';try{renderBilling(await window.PilotDeskBilling?.refresh?.())}catch{renderBilling(null)}try{if(p?.training_goal)localStorage.setItem('pd-training-goal',p.training_goal);if(p?.checkride_date)localStorage.setItem('pd-training-date',p.checkride_date)}catch{}await renderAccountDashboard(p);await renderHomeOverview(p);renderInterfaceSettings();await loadOwnerMetrics();
  const next=safeNext();if(next&&!ownerView()){status('Signed in. Returning you to your PilotDesk tool…','good');setTimeout(()=>location.assign(next),450)}
 }
 async function renderSession(session){state.session=session||null;if(session)await renderSignedIn(session);else renderSignedOut()}
@@ -168,7 +209,7 @@ async function signInGithub(){status('Opening GitHub sign-in…');const {error}=
 async function saveProfile(e){e.preventDefault();if(!state.session)return;const updates={display_name:$('#pdDisplayName').value.trim().slice(0,80)||null,pilot_stage:$('#pdPilotStage').value||null,home_airport:cleanAirport($('#pdHomeAirport').value)||null,training_goal:$('#pdTrainingGoal').value||null,checkride_date:$('#pdCheckrideDate').value||null};status('Saving your profile…');const {error}=await state.client.from('profiles').update(updates).eq('id',state.session.user.id);if(error)return status(error.message,'bad');try{if(updates.training_goal)localStorage.setItem('pd-training-goal',updates.training_goal);else localStorage.removeItem('pd-training-goal');if(updates.checkride_date)localStorage.setItem('pd-training-date',updates.checkride_date);else localStorage.removeItem('pd-training-date')}catch{}status('Profile saved.','good');window.pdTrack?.('Account Profile Saved',{trainingGoal:updates.training_goal||'none',hasTargetDate:updates.checkride_date?'yes':'no'});await renderSignedIn(state.session)}
 async function signOut(){await state.client.auth.signOut();status('Signed out.','good');window.pdTrack?.('Account Signed Out')}
 async function deleteAccount(){if(!state.session)return;const answer=prompt('This permanently deletes your PilotDesk account and saved account data. Type DELETE to continue.');if(answer!=='DELETE')return;if(!confirm('Delete this PilotDesk account permanently? This cannot be undone.'))return;status('Deleting your account…');try{const r=await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:edgeHeaders()});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||'Unable to delete your account.','bad');await state.client.auth.signOut({scope:'local'}).catch(()=>{});state.session=null;state.profile=null;renderSignedOut();status('Your PilotDesk account was deleted.','good')}catch{status('Unable to delete your account right now.','bad')}}
-function bind(){$('#pdMagicForm')?.addEventListener('submit',sendMagicLink);$('#pdPasswordForm')?.addEventListener('submit',signInPassword);$('#pdCreateAccountForm')?.addEventListener('submit',createAccount);$('#pdForgotPassword')?.addEventListener('click',resetPassword);$('#pdGoogleSignIn')?.addEventListener('click',signInGoogle);$('#pdProfileForm')?.addEventListener('submit',saveProfile);$('#pdSignOut')?.addEventListener('click',signOut);$('#pdDeleteAccount')?.addEventListener('click',deleteAccount);$('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);$('#pdOwnerClaim')?.addEventListener('submit',claimOwnerAccess);$('#pdCloudBackupNow')?.addEventListener('click',backupDeviceToCloud);$('#pdCloudRestoreNow')?.addEventListener('click',restoreCloudToDevice);$('#pdManageBilling')?.addEventListener('click',openBillingPortal);$('#pdUpgradePro')?.addEventListener('click',upgradePro);$('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)})}
+function bind(){$('#pdMagicForm')?.addEventListener('submit',sendMagicLink);$('#pdPasswordForm')?.addEventListener('submit',signInPassword);$('#pdCreateAccountForm')?.addEventListener('submit',createAccount);$('#pdForgotPassword')?.addEventListener('click',resetPassword);$('#pdGoogleSignIn')?.addEventListener('click',signInGoogle);$('#pdProfileForm')?.addEventListener('submit',saveProfile);$('#pdSignOut')?.addEventListener('click',signOut);$('#pdDeleteAccount')?.addEventListener('click',deleteAccount);$('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);$('#pdOwnerClaim')?.addEventListener('submit',claimOwnerAccess);$('#pdCloudBackupNow')?.addEventListener('click',backupDeviceToCloud);$('#pdCloudRestoreNow')?.addEventListener('click',restoreCloudToDevice);$('#pdManageBilling')?.addEventListener('click',openBillingPortal);$('#pdUpgradePro')?.addEventListener('click',upgradePro);$('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)});$('#pdSettingCompact')?.addEventListener('change',e=>window.PilotDeskPreferences?.set?.('compact',e.target.checked));$('#pdSettingMotion')?.addEventListener('change',e=>window.PilotDeskPreferences?.set?.('motion',e.target.checked))}
 async function init(){bind();show('#pdGoogleSignIn',false);$('#pdAccountRoot')?.classList.add('pd-account-disabled');status('Loading your account…');try{await loadSupabase();const {data:{session},error}=await state.client.auth.getSession();if(error)throw error;state.client.auth.onAuthStateChange((_event,next)=>{setTimeout(()=>renderSession(next),0)});status('');await renderSession(session);const qp=new URL(location.href).searchParams;if(qp.get('billing')==='success'){billingStatus('Payment completed. PilotDesk is confirming the subscription with Stripe…','good');setTimeout(async()=>{try{renderBilling(await window.PilotDeskBilling?.refresh?.());billingStatus('Subscription status refreshed.','good')}catch{}},1200)}}catch(e){console.error('[PilotDesk account init]',e);renderSignedOut();$('#pdAccountRoot')?.classList.add('pd-account-disabled');status(e.message||'Accounts are temporarily unavailable.','warn')}}
 document.addEventListener('click',e=>{if(e.target?.id==='pdGithubSignIn')signInGithub()});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

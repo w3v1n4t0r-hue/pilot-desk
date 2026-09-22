@@ -23,10 +23,10 @@ const prefixes={ppl:['PA.'],ira:['IR.'],cpl:['CA.'],cfi:['FI.','AI.'],atp:['AA.'
 const all=Object.values(banks).flat();
 const ids=new Set();
 
-ok(bankManifest.acsQuestionCount===5000,`Expected exactly 5,000 ACS-linked items; got ${bankManifest.acsQuestionCount}`);
-for(const track of acsTracks)ok(banks[track]?.length===1000,`${track.toUpperCase()} must contain exactly 1,000 ACS-linked items`);
+ok(bankManifest.acsQuestionCount>=5015,`Expected at least 5,015 ACS-linked items after FAA sample seeding; got ${bankManifest.acsQuestionCount}`);
+for(const track of acsTracks){const floor=['ppl','ira','cpl'].includes(track)?1005:1000;ok(banks[track]?.length>=floor,`${track.toUpperCase()} must contain at least ${floor} ACS-linked items`)}
 ok(banks.cfii?.length>=250,'CFII should keep at least 250 PTS-linked supplemental items');
-ok(bankManifest.totalQuestionCount>=5250,`Expected at least 5,250 total items including CFII PTS; got ${bankManifest.totalQuestionCount}`);
+ok(bankManifest.totalQuestionCount>=5265,`Expected at least 5,265 total items including FAA samples and CFII PTS; got ${bankManifest.totalQuestionCount}`);
 
 for(const [track,items] of Object.entries(banks)){
  for(const q of items){
@@ -55,11 +55,16 @@ for(const [track,items] of Object.entries(banks)){
   ok(foundation>=200&&applied>=350&&advanced>=250,`${track.toUpperCase()} difficulty distribution is too narrow (${foundation}/${applied}/${advanced})`);
  }
 }
+const exactFaa=all.filter(q=>q.source==='faa-sample-exact');
+ok(exactFaa.length>=15,`Expected at least 15 exact FAA sample items; got ${exactFaa.length}`);
+for(const track of ['ppl','ira','cpl'])ok(banks[track].filter(q=>q.source==='faa-sample-exact').length>=5,`${track.toUpperCase()} must include at least five exact FAA sample questions`);
+ok(exactFaa.some(q=>q.figureRef?.url&&q.figureRef?.figure),'Exact FAA sample layer must include testing-supplement figure questions');
+for(const q of exactFaa){ok(Array.isArray(q.choiceExplanations)&&q.choiceExplanations.length===3,`${q.id} needs per-choice rationale`);ok(q.reviewedAt==='2026-09-22',`${q.id} must carry the current review date`)}
 ok(ids.size===all.length,'Question IDs must be globally unique');
 const uniquePrompts=new Set(all.map(q=>`${q.prompt}::${q.options.join('|')}`)).size;
 ok(uniquePrompts>=1400,`Question variants are not diverse enough (${uniquePrompts} unique prompt/choice sets)`);
 
-has(html,'5,000 ACS-linked','Written Prep must advertise the 5,000-item ACS question bank accurately');
+has(html,'5,000+ ACS-linked','Written Prep must advertise the expanded ACS question bank accurately');
 has(html,'exactly three answer choices','Three-choice exam format disclosure missing');
 has(html,'FAA-S-8081-9E','CFII PTS disclosure missing');
 has(html,'data-difficulty="foundation"','Foundation difficulty filter missing');
@@ -78,6 +83,9 @@ has(js,"if(r.status===401){renderGate()",'Client must fail closed to account gat
 has(js,'pd-written-difficulty','Difficulty selection must persist');
 has(js,"difficulty:state.difficulty",'Study sessions must send selected difficulty');
 has(js,"text('#pdPrepStandard'",'Question UI must render the ACS/PTS element');
+has(js,"return 'FAA SAMPLE'",'Exact FAA sample questions must be visibly labeled');
+has(js,'renderFigureRef(q)','FAA testing-supplement figure handoff missing');
+has(js,'pd-prep-choice-rationale','Per-choice rationale rendering missing');
 has(js,"text('#pdPrepGrade'",'Dashboard must render practice grade');
 has(js,"modeNames={learn:'WEAK-AREA REVIEW'",'Weak-area review label missing');
 ok(!/correct\s*:\s*[0-9]/.test(js),'Client must not contain answer keys');
@@ -86,6 +94,9 @@ has(bankWrapper,"standardCode:string",'Typed bank must expose standard code');
 has(bankWrapper,"difficulty:Difficulty",'Typed bank must expose difficulty');
 has(bankWrapper,"experienceLevel:Track",'Typed bank must expose experience level');
 has(bankWrapper,"bankManifest",'Typed bank must expose bank manifest');
+has(bankWrapper,"'faa-sample-exact'",'Typed bank must distinguish exact FAA sample questions');
+has(bankWrapper,'figureRef?:','Typed bank must support FAA figure references');
+has(bankWrapper,'choiceExplanations?:','Typed bank must support per-choice rationales');
 for(const [track,meta] of Object.entries({ppl:['PAR',60,120],ira:['IRA',60,120],cpl:['CAX',100,150],cfi:['FIA',100,150],cfii:['FII',50,150],atp:['ATM',125,210]})){
  const [code,count,minutes]=meta;ok(trackMeta[track].testCode===code&&trackMeta[track].officialQuestions===count&&trackMeta[track].officialMinutes===minutes&&trackMeta[track].passingScore===70,`${track.toUpperCase()} official test metadata mismatch`);
 }
@@ -94,6 +105,8 @@ has(edge,"return json(401,{error:'A free PilotDesk account is required to use Wr
 has(edge,'function prepareQuestion','Server answer-choice shuffle missing');
 has(edge,'validDifficulty','Difficulty filter must be enforced by the grading service');
 has(edge,'standardCode:q.standardCode','Question payload must include standards element');
+has(edge,'figureRef:q.figureRef||null','Question payload must include FAA figure references');
+has(edge,'choiceExplanations:Array.isArray(qq.choiceExplanations)','Answer feedback must include per-choice rationales');
 has(edge,'standardBreakdown','Dashboard must grade by standards element');
 has(edge,'difficultyBreakdown','Dashboard must grade by difficulty');
 has(edge,'passingScore:trackMeta[track].passingScore','Session result must use track passing score');

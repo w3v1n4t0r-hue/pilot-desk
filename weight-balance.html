@@ -51,6 +51,7 @@
     <div class="wb-toolbar-actions">
       <button class="utility-btn" id="wbLoadProfile" type="button">Load profile</button>
       <button class="utility-btn" id="wbSaveScenario" type="button">Save scenario</button>
+      <button class="utility-btn" id="wbSaveAccount" type="button">Save to account</button>
       <button class="utility-btn" id="wbOpenScenarios" type="button">Saved scenarios</button>
       <button class="utility-btn" id="wbPrint" type="button">Print</button>
       <button class="utility-btn" id="wbClear" type="button">New</button>
@@ -60,6 +61,24 @@
 
   <div class="wb-grid-layout">
     <section class="calc-box wb-main-card">
+      <div id="wbSafetyWarning" class="safety-warning" role="alert" aria-live="polite"></div>
+      <section class="wb-result-deck" aria-label="Weight and balance results">
+        <div class="wb-result-summary">
+          <span class="badge">RESULTS</span>
+          <h2>Departure and landing</h2>
+          <div class="wb-total-grid" aria-live="polite">
+        <div class="wb-phase"><h3>Departure</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbDepW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbDepM">—</strong></div><div class="result"><small>CG</small><strong id="wbDepCG">—</strong></div></div><div class="wb-envelope-state" id="wbDepEnvelope">No envelope entered</div></div>
+        <div class="wb-phase"><h3>Landing</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbLdgW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbLdgM">—</strong></div><div class="result"><small>CG</small><strong id="wbLdgCG">—</strong></div></div><div class="wb-envelope-state" id="wbLdgEnvelope">No envelope entered</div></div>
+      </div>
+        </div>
+        <div class="wb-result-graph">
+          <span class="badge">CG ENVELOPE</span>
+          <h2>Entered envelope</h2>
+          <p>The plotted points use only the boundary you enter from the approved source.</p>
+          <canvas id="wbChart" width="560" height="390" aria-label="Weight and balance envelope graph" role="img"></canvas>
+          <p class="fine" id="wbEnvelopeHint">No envelope is loaded. PilotDesk will calculate CG without judging limits.</p>
+        </div>
+      </section>
       <section class="wb-cabin-card" aria-labelledby="wbCabinTitle">
         <div class="wb-cabin-head">
           <div>
@@ -95,12 +114,6 @@
         </div>
       </details>
 
-      <div id="wbSafetyWarning" class="safety-warning" role="alert" aria-live="polite"></div>
-
-      <div class="wb-total-grid" aria-live="polite">
-        <div class="wb-phase"><h3>Departure</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbDepW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbDepM">—</strong></div><div class="result"><small>CG</small><strong id="wbDepCG">—</strong></div></div><div class="wb-envelope-state" id="wbDepEnvelope">No envelope entered</div></div>
-        <div class="wb-phase"><h3>Landing</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbLdgW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbLdgM">—</strong></div><div class="result"><small>CG</small><strong id="wbLdgCG">—</strong></div></div><div class="wb-envelope-state" id="wbLdgEnvelope">No envelope entered</div></div>
-      </div>
       <div class="notice">An “inside entered envelope” message means only that the calculated point is inside the boundary you supplied. It is not a determination that the aircraft is safe, legal, or within every applicable limitation.</div>
     </section>
 
@@ -121,8 +134,8 @@
         <p>Paste boundary points from the applicable approved CG envelope in order around the perimeter. Format each line as <b>CG inches, weight pounds</b>.</p>
         <textarea id="wbEnvelope" class="wb-envelope-input" aria-label="CG envelope boundary points" placeholder="82.0, 1950&#10;86.0, 2550&#10;93.0, 2550&#10;95.0, 1950"></textarea>
         <button class="utility-btn wb-full" id="wbApplyEnvelope" type="button">Apply entered envelope</button>
-        <canvas id="wbChart" width="560" height="390" aria-label="Weight and balance envelope graph" role="img"></canvas>
-        <p class="fine" id="wbEnvelopeHint">No envelope is loaded. PilotDesk will calculate CG without judging limits.</p>
+        
+        
       </section>
     </aside>
   </div>

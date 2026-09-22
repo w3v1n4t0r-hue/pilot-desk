@@ -26,7 +26,7 @@ async function fetchProfile(user){const {data,error}=await state.client.from('pr
 function ensureDailyCta(profile){
  const signed=$('#pdSignedIn');if(!signed)return;let box=$('#pdAccountDailyCta');if(!box){box=document.createElement('div');box.id='pdAccountDailyCta';box.className='pd-account-benefit';const stats=$('.pd-user-stats',signed);stats?.insertAdjacentElement('afterend',box)}
  const streak=Number(profile?.current_streak||0),done=Number(profile?.daily_completions||0),last=profile?.last_challenge_date||'';const today=new Date().toISOString().slice(0,10),completed=last===today;
- box.innerHTML=`<b>${completed?'Today’s PilotDesk Daily is complete':'PilotDesk Daily is ready'}</b><span>${completed?`🔥 ${streak}-day streak · ${done} saved challenge${done===1?'':'s'}`:'Three aviation questions. Save today’s XP and keep your streak moving.'}</span><div class="pd-account-actions"><a href="/daily/">${completed?'Review today’s challenge':'Play today’s challenge'} →</a></div>`;
+ box.innerHTML=`<b>${completed?'Today’s PilotDesk Daily is complete':'PilotDesk Daily is ready'}</b><span>${completed?`${streak}-day streak · ${done} saved challenge${done===1?'':'s'}`:'Three aviation questions. Save today’s XP and keep your streak moving.'}</span><div class="pd-account-actions"><a href="/daily/">${completed?'Review today’s challenge':'Play today’s challenge'} →</a></div>`;
 }
 function ensureWrittenPrepCta(){
  const signed=$('#pdSignedIn');if(!signed)return;let box=$('#pdAccountWrittenPrep');if(!box){box=document.createElement('div');box.id='pdAccountWrittenPrep';box.className='pd-account-benefit';const daily=$('#pdAccountDailyCta');(daily||$('.pd-user-stats',signed))?.insertAdjacentElement('afterend',box)}
@@ -48,10 +48,10 @@ async function cloudCounts(userId){
 }
 async function renderAccountDashboard(profile){
  const host=$('#pdAccountDashboardGrid');if(!host)return;
- const aircraft=localJson('pd-aircraft',[]),flights=localJson('pd-saved-flights',[]),pins=localJson('pd-favorites',[]);
+ const aircraft=localJson('pd-aircraft',[]),flights=localJson('pd-saved-flights',[]),pins=localJson('pd-favorites',[]),recent=localJson('pd-recent',[]);
  const today=new Date().toISOString().slice(0,10),dailyDone=profile?.last_challenge_date===today;
  const home=cleanAirport(profile?.home_airport||'');
- const cards=[];
+ const cards=[];const latestTool=Array.isArray(recent)&&recent.length?recent[0]:null;const latestFlight=Array.isArray(flights)&&flights.length?[...flights].sort((a,b)=>Number(b?.updatedAt||b?.createdAt||0)-Number(a?.updatedAt||a?.createdAt||0))[0]:null;
  const goal=profile?.training_goal||'',goalName=goalNames[goal]||'',days=daysUntil(profile?.checkride_date);
  if(goalName)cards.push({eyebrow:'CURRENT GOAL · ACCOUNT',title:goalName,copy:days===null?'Set a target date when you have one.':days>1?days+' days to your target date.':days===1?'Target date is tomorrow.':days===0?'Target date is today.':'Target date has passed — update it when your next milestone is scheduled.',href:goalLinks[goal]||'/flight-training.html',cta:'Continue '+goalName});
  cards.push(
@@ -61,6 +61,8 @@ async function renderAccountDashboard(profile){
   {eyebrow:'AIRCRAFT · THIS DEVICE',title:aircraft.length?aircraft.length+' aircraft saved':'Build your local Hangar',copy:'Aircraft profiles stay on this device today. Export them when you want a backup.',href:'/aircraft.html',cta:'Open Aircraft'},
   {eyebrow:'FLIGHTS · THIS DEVICE',title:flights.length?flights.length+' saved flight'+(flights.length===1?'':'s'):'No local flights yet',copy:'Saved routes and planning numbers remain in this browser.',href:'/flights.html',cta:'Open Saved Flights'}
  );
+ if(latestTool?.path)cards.unshift({eyebrow:'RECENT CALCULATION · THIS DEVICE',title:latestTool.title||'Recent calculator',copy:latestTool.usedAt?('Last used '+new Date(latestTool.usedAt).toLocaleDateString()):'Return to the last calculator you used.',href:latestTool.path,cta:'Open calculator'});
+ if(latestFlight?.id)cards.unshift({eyebrow:'RECENT ROUTE · THIS DEVICE',title:latestFlight.name||latestFlight.route||'Saved flight',copy:latestFlight.route||'Continue the saved route and planning values.',href:'/route-planner.html?flight='+encodeURIComponent(latestFlight.id),cta:'Resume route'});
  if(home)cards.push({eyebrow:'HOME AIRPORT · ACCOUNT',title:home,copy:'Jump back to your home-airport context and current PilotDesk tools.',href:'/airport.html?id='+encodeURIComponent(home),cta:'Open '+home});
  const cloud=await cloudCounts(state.session?.user?.id||'');
  if(cloud.aircraft||cloud.flights)cards.push({eyebrow:'CLOUD BACKUP · ACCOUNT',title:(cloud.aircraft+cloud.flights)+' backed-up item'+((cloud.aircraft+cloud.flights)===1?'':'s'),copy:cloud.aircraft+' aircraft · '+cloud.flights+' saved flights stored with your account.',href:'/pricing.html',cta:'Manage Pro'});

@@ -91,7 +91,7 @@
   .pd-nav-menu a{min-height:54px!important;padding:9px 10px!important;border-top:1px solid #1d2329!important}
   .pd-nav-menu a b{font-size:13px!important}
   .pd-nav-menu a span{font-size:10px!important}
-  .pd-header-actions{margin-left:6px!important;gap:5px!important}
+  .pd-header-actions{width:auto!important;order:initial!important;flex:0 0 auto!important;margin-left:6px!important;gap:5px!important}
   .pd-search-wrap,.pd-plans-link{display:none!important}
   .pd-account-link{min-width:46px!important;min-height:46px!important;justify-content:center!important;padding:0 8px!important}
 }

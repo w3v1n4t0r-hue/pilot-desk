@@ -61,6 +61,16 @@ cfii:{title:'CFII',standard:'Instrument instructor training',hub:'/training/cfii
  ['Holding instruction','Teach a hold so the learner can reason through a clearance they have never seen before.','Use clearance, protected side, entry choice, timing/distance, wind correction, and workload management.','Instrument Rating ACS · AIM'],
  ['Approach instruction','Have the learner brief, fly, and miss an approach while explaining the reasons behind each setup choice.','Tie chart data to avionics setup, altitude control, descent planning, minimums, runway environment, and the missed approach.','Instrument Rating ACS · AIM · current procedure'],
  ['Failures and partial panel','Teach a failure without creating more confusion than the failure itself.','Make the learner identify the bad information, stabilize the airplane, reduce automation/workload as needed, and pick a practical way out.','Instrument Rating ACS · Instrument Flying Handbook · POH/AFM']
+]},
+atp:{title:'ATP / Type Rating',standard:'FAA-S-ACS-11A',hub:'/training/atp.html',items:[
+ ['Transport aircraft systems','Choose a major aircraft system and explain normal architecture, redundancy, indications, and the effect of a significant failure.','Connect components to crew indications, degraded capability, checklist logic, and landing/dispatch consequences.','FAA-S-ACS-11A · AFM/FCOM/QRH'],
+ ['Performance and limitations','Build a heavy-departure performance picture and distinguish structural limits from performance-limited weight.','Discuss field length, V-speeds, climb, temperature, wind, runway condition, obstacles, and the approved performance source.','FAA-S-ACS-11A · AFM performance data'],
+ ['High-altitude aerodynamics','Explain the low-speed and high-speed buffet boundaries and what happens as their margin narrows.','Connect Mach effects, angle of attack, weight, altitude, bank/load factor, and the practical response.','FAA-S-ACS-11A · FAA high-altitude aerodynamics guidance'],
+ ['Air-carrier weather','Brief the weather for a transport flight and identify what changes route, alternate, fuel, or departure timing.','Use current observed/forecast weather, convection, icing, turbulence, trends, and operational escape options.','FAA-S-ACS-11A · Aviation Weather Handbook · current official weather'],
+ ['Air-carrier operations','Explain how the release, alternates, fuel requirements, company manuals, and operations specifications fit together.','Separate regulation, operations specifications, company procedure, dispatcher/PIC responsibilities, and published approach minima.','FAA-S-ACS-11A · 14 CFR Part 121 as applicable · operations specifications'],
+ ['CRM and threat management','A crewmember catches a setup error during a rushed operation. Explain how the crew should manage the threat.','Cover clear challenge/response, verification, workload management, task sharing, and stopping or going around when the operation is no longer stable.','FAA-S-ACS-11A · FAA CRM/human-factors guidance'],
+ ['Instrument procedures','Brief a complex arrival and approach with automation mode awareness and a defined missed-approach plan.','Include constraints, navigation requirements, FMA/mode verification, stabilized-approach criteria, minimums, and the missed approach.','FAA-S-ACS-11A · AIM · current procedures · AFM/FCOM'],
+ ['Emergency priorities','Talk through a significant system failure in IMC from immediate control through diversion and landing.','Stabilize the flight path, identify/verify, use memory/QRH items appropriately, share workload, and choose a suitable landing airport using current conditions.','FAA-S-ACS-11A · AFM/QRH · company procedures']
 ]}
 };
 const key='pd-oral-review-v1';
@@ -91,7 +101,7 @@ function renderPlan(t){
   const n=visibleCount(t);
   planLabel.textContent='FREE PREVIEW · '+n+' OF '+t.items.length;
   planTitle.textContent='Try the workflow before you subscribe.';
-  planCopy.textContent='Free includes '+n+' sample subjects in every rating. Pro includes all oral-prep subjects across the six checkride tracks, plus the other Pro planning benefits.';
+  planCopy.textContent='Free includes '+n+' sample subjects in every rating. Pro includes all oral-prep subjects across the seven training tracks, plus the other Pro planning benefits.';
   upgrade.hidden=false;upgrade.href=window.PilotDeskProAccess?.upgradeUrl?.('oral-exam')||'/pricing.html?from=oral-exam';
  }
 }

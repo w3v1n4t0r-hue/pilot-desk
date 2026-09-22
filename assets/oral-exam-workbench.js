@@ -84,19 +84,19 @@ function renderPlan(t){
  }
  if(access.isPro){
   planLabel.textContent=access.plan==='school'?'FLIGHT SCHOOL ACCESS':'PILOTDESK PRO';
-  planTitle.textContent='Full '+t.title+' oral prep unlocked.';
+  planTitle.textContent='Pro access · all '+t.title+' oral subjects available.';
   planCopy.textContent='All '+t.items.length+' subjects are available. Work them out loud, mark verified topics, and move between ratings without a Free-plan cap.';
   upgrade.hidden=true;
  }else{
   const n=visibleCount(t);
   planLabel.textContent='FREE PREVIEW · '+n+' OF '+t.items.length;
   planTitle.textContent='Try the workflow before you subscribe.';
-  planCopy.textContent='Free includes '+n+' sample subjects in every rating. Pro unlocks the complete oral-prep set across all six checkride tracks, plus the other Pro planning benefits.';
+  planCopy.textContent='Free includes '+n+' sample subjects in every rating. Pro includes all oral-prep subjects across the six checkride tracks, plus the other Pro planning benefits.';
   upgrade.hidden=false;upgrade.href=window.PilotDeskProAccess?.upgradeUrl?.('oral-exam')||'/pricing.html?from=oral-exam';
  }
 }
 function lockedRow(item,i){
- return `<article class="pd-oral-item pd-oral-item-locked" aria-label="${item[0]} locked for PilotDesk Pro"><div class="pd-oral-lock-row"><div><small>PRO · SUBJECT ${i+1}</small><b>${item[0]}</b><span>Full prompt, answer guidance, and source review unlock with PilotDesk Pro.</span></div><a href="${window.PilotDeskProAccess?.upgradeUrl?.('oral-topic')||'/pricing.html?from=oral-topic'}">Unlock →</a></div></article>`;
+ return `<article class="pd-oral-item pd-oral-item-locked" aria-label="${item[0]} locked for PilotDesk Pro"><div class="pd-oral-lock-row"><div><small>PRO · SUBJECT ${i+1}</small><b>${item[0]}</b><span>Full prompt, answer guidance, and source review are available with PilotDesk Pro.</span></div><a href="${window.PilotDeskProAccess?.upgradeUrl?.('oral-topic')||'/pricing.html?from=oral-topic'}">Pro access →</a></div></article>`;
 }
 function render(){
  const t=tracks[current],state=read(),limit=visibleCount(t),done=t.items.slice(0,limit).filter((_,i)=>state[current+':'+i]).length;

@@ -1,6 +1,6 @@
 importScripts('/assets/offline-precache.js');
 
-const CACHE='pilotdesk-v46';
+const CACHE='pilotdesk-v47';
 const GENERATED_CALCULATORS=Array.isArray(self.PILOTDESK_OFFLINE_CALCULATORS)?self.PILOTDESK_OFFLINE_CALCULATORS:[];
 const GENERATED_ASSETS=Array.isArray(self.PILOTDESK_OFFLINE_ASSETS)?self.PILOTDESK_OFFLINE_ASSETS:[];
 const CORE=[...new Set([
@@ -15,8 +15,8 @@ const CORE_PATHS=new Set(CORE);
 const MAX_RUNTIME_ENTRIES=140;
 const NETWORK_FIRST_ASSETS=new Set([
   '/assets/app-bootstrap.js','/assets/navigation-core.js','/assets/navigation-search.js','/assets/inventory-data.js','/assets/global-nav.js','/assets/icon.svg',
-  '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/pilotdesk-navigation-2026.css','/assets/calculators-2026.css','/assets/design-tokens.css',
-  '/assets/analytics.js','/assets/share-enhance.js','/assets/page-share.js'
+  '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/pilotdesk-navigation-2026.css','/assets/calculators-2026.css','/assets/planning-2026.css','/assets/design-tokens.css',
+  '/assets/analytics.js','/assets/share-enhance.js','/assets/page-share.js','/assets/weather.css','/assets/weather-fixed.js','/assets/weather-extra.js','/assets/offline-weather.js'
 ]);
 const cacheable=r=>r&&r.ok&&(r.type==='basic'||r.type==='default');
 const pathOf=req=>{try{return new URL(typeof req==='string'?req:req.url,self.location.origin).pathname}catch{return String(req||'')}};

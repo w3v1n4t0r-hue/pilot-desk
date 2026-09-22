@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PilotDesk Pro Checkride Lab | Adaptive Mock Oral</title>
+<meta name="description" content="PilotDesk Pro adaptive examiner practice, mock oral sessions, weak-area review, and downloadable checkride study packets for Private, Instrument, Commercial, Multi-Engine, CFI, and CFII.">
+<meta name="robots" content="noindex,follow"><meta name="theme-color" content="#08090b"><meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="/assets/styles.css"><link rel="stylesheet" href="/assets/checkride-lab.css"><link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<script defer src="/assets/site.js"></script><script defer src="/assets/billing.js"></script><script defer src="/assets/pro-access.js"></script><script defer src="/assets/checkride-lab-data.js"></script><script defer src="/assets/checkride-lab.js"></script>
+</head><body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header class="topbar"><a class="brand" href="/"><span class="brandmark" aria-hidden="true"><img src="/assets/icon.svg" alt="" width="40" height="40"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/tools.html">Calculators</a><a href="/planner.html">Plan</a><a href="/weather.html">Weather</a><a href="/flight-training.html">Training</a><a href="/pricing.html">Plans</a><a href="/account.html">Account</a></nav></header>
+<main class="shell pd-checkride-lab" id="main-content">
+<section class="pd-lab-hero"><span class="eyebrow">PILOTDESK PRO · CHECKRIDE LAB</span><h1>Practice answering like the examiner is sitting across from you.</h1><p>Type your answer in your own words. PilotDesk checks topic coverage against a curated study rubric, asks a follow-up when an important concept is missing, and shifts later questions toward weak areas. It is a study signal—not examiner grading.</p><div class="safety-strip"><strong>Use the current source.</strong> The ACS/PTS, regulations, AIM, FAA handbooks, current charts/weather, and your aircraft POH/AFM control. PilotDesk does not certify checkride readiness.</div></section>
+<section class="pd-lab-access" id="pdLabAccess" aria-live="polite"><div><span class="eyebrow">CHECKING PLAN</span><h2>Checking PilotDesk Pro access…</h2><p>The lab uses the verified subscription attached to your PilotDesk account.</p></div></section>
+<section class="pd-lab-setup" id="pdLabSetup" hidden>
+<div class="pd-lab-setup-head"><div><span class="eyebrow">SESSION SETUP</span><h2>Choose the rating and how you want to practice.</h2></div><a href="/learn/oral-exam/">Open oral study guide →</a></div>
+<div class="pd-lab-controls">
+<label>Rating<select id="pdLabTrack"><option value="private">Private Pilot</option><option value="instrument">Instrument Rating</option><option value="commercial">Commercial Pilot</option><option value="multi">Multi-Engine</option><option value="cfi">CFI</option><option value="cfii">CFII</option></select></label>
+<div class="pd-lab-mode-grid">
+<button type="button" data-lab-mode="adaptive"><small>ADAPTIVE DRILL</small><b>Examiner conversation</b><span>Feedback after each answer. Missing concepts trigger a focused probe and influence the next subject.</span></button>
+<button type="button" data-lab-mode="mock"><small>MOCK ORAL</small><b>Run it like a checkride</b><span>Work through the full subject spread. Feedback stays hidden until the debrief.</span></button>
+</div></div>
+<div class="pd-actions"><button class="pd-btn" type="button" id="pdLabStart">Start adaptive drill</button><button class="pd-btn secondary" type="button" id="pdLabPacket">Download blank checkride packet (PDF)</button></div>
+</section>
+<section class="pd-lab-session" id="pdLabSession" hidden aria-live="polite">
+<header class="pd-lab-session-head"><div><small id="pdLabSessionMode">ADAPTIVE DRILL</small><h2 id="pdLabSessionTitle">Private Pilot</h2></div><div class="pd-lab-progress"><b id="pdLabCount">1 / 6</b><span id="pdLabArea">Airworthiness</span></div></header>
+<div class="pd-lab-conversation" id="pdLabConversation"></div>
+<form id="pdLabAnswerForm" class="pd-lab-answer"><label for="pdLabAnswer">Your answer</label><textarea id="pdLabAnswer" rows="7" maxlength="5000" placeholder="Answer it out loud first if you can, then type the main points you covered." required></textarea><div class="pd-actions"><button class="pd-btn" type="submit">Submit answer</button><button class="pd-btn secondary" type="button" id="pdLabStop">End session</button></div></form>
+<div class="pd-lab-review" id="pdLabReview" hidden></div>
+</section>
+<section class="pd-lab-summary" id="pdLabSummary" hidden>
+<div class="pd-lab-summary-head"><div><span class="eyebrow">SESSION DEBRIEF</span><h2 id="pdLabSummaryTitle">Checkride practice summary</h2></div><strong id="pdLabSummaryScore">—</strong></div>
+<div class="pd-lab-summary-grid"><div><small>STRONGEST</small><b id="pdLabStrong">—</b></div><div><small>REVIEW FIRST</small><b id="pdLabWeak">—</b></div><div><small>QUESTIONS</small><b id="pdLabAnswered">—</b></div></div>
+<div id="pdLabBreakdown" class="pd-lab-breakdown"></div>
+<div class="pd-actions"><button class="pd-btn" id="pdLabDownloadResults" type="button">Download checkride packet (PDF)</button><button class="pd-btn secondary" id="pdLabAgain" type="button">Start another session</button><a class="pd-btn secondary" href="/skill-gap.html">Open Weak Subjects</a></div>
+<p class="fine">Coverage scores are based on PilotDesk’s curated concept rubric and the words in your response. They are useful for directing study, but they are not an FAA score or a prediction of practical-test outcome.</p>
+</section>
+</main>
+<footer class="pd-footer-2026"><div><b>PilotDesk</b><p>Pilot tools for planning, calculation, and study.</p></div><div class="footer-links"><a href="/about.html">About</a><a href="/feedback.html">Contact</a><a href="/legal/terms.html">Terms</a><a href="/legal/privacy.html">Privacy</a></div><p class="fine">PilotDesk supplements, but does not replace, current official weather, flight-planning information, regulations, charts, procedures, NOTAMs, or approved aircraft data.</p></footer>
+</body></html>

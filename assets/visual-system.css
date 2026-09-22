@@ -1196,4 +1196,17 @@ html.pd-streamlined-app footer{
   .pd-plan-links a{border-right:0;border-bottom:1px solid var(--line)}
   .pd-guides-index .pd-list .pd-card{grid-template-columns:1fr;gap:3px;padding:12px 0!important}
 }
+/* Five-pass maintenance: named layout helpers and compact directory controls. */
+.pd-field-span{grid-column:1/-1}
+.pd-file-button{cursor:pointer}
+.rp-navlog-panel{margin-top:18px}
+.pd-guide-grid{margin:20px 0!important}
+.pd-guide-filter{display:grid!important;grid-template-columns:minmax(240px,1fr) 180px auto!important;align-items:end!important;gap:10px!important;margin:18px 0 26px!important;padding:0 0 14px!important;border-bottom:1px solid var(--line)!important}
+.pd-guide-filter label{display:grid;gap:5px;color:var(--muted);font-size:11px}
+.pd-guide-filter input,.pd-guide-filter select{min-height:38px!important}
+#pdGuideCount{align-self:center;justify-self:end;color:var(--muted2);font:600 10px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+@media(max-width:700px){
+  .pd-guide-filter{grid-template-columns:1fr!important;align-items:stretch!important}
+  #pdGuideCount{justify-self:start}
+}
 

@@ -1,6 +1,9 @@
 (()=>{'use strict';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const KEY='pd-saved-flights',AC_KEY='pd-aircraft',STEPS=['aircraft','route','weather','loading','math','procedures','review'];
+async function proState(){try{return await window.PilotDeskProAccess?.snapshot?.()||{isPro:false,limits:{savedFlights:3}}}catch{return{isPro:false,limits:{savedFlights:3}}}}
+async function canAddFlight(count){try{return await window.PilotDeskProAccess?.canCreate?.('savedFlights',count)??count<3}catch{return count<3}}
+function proHref(){return window.PilotDeskProAccess?.upgradeUrl?.('saved-flights')||'/pricing.html?from=saved-flights'}
 function rawFlights(){try{const x=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(x)?x:[]}catch{return[]}}
 function flights(){return window.PilotDeskFlights?.list?.()||rawFlights()}
 function saveFlights(v){if(window.PilotDeskFlights?.write)window.PilotDeskFlights.write(v);else{localStorage.setItem(KEY,JSON.stringify(v));document.dispatchEvent(new CustomEvent('pilotdesk:flights-changed'))}}
@@ -47,7 +50,8 @@ function renderResume(all){
  const s=progressState(f),ac=aircraft().find(x=>x.id===f.aircraftId);host.hidden=false;
  host.innerHTML=`<div><small>RESUME PLANNING</small><h2>${esc(f.name||'Saved flight')}</h2><p>${esc(s.parts.join(' → ')||'Route not set')} · ${esc(ac?.name||'No aircraft')} · ${s.count}/7 steps</p></div><div class="pd-saved-flight-resume-progress"><span><i style="width:${s.percent}%"></i></span><b>${s.percent}%</b></div><a class="pd-btn" data-resume="${esc(f.id)}" href="${esc(resumeHref(f))}">Continue with ${esc(s.next==='math'?'Fuel & math':s.next.charAt(0).toUpperCase()+s.next.slice(1))} →</a>`;
 }
-function render(){
+async function renderPlan(){const note=$('#flightPlanNote');if(!note)return;const p=await proState();note.innerHTML=p.isPro?'PilotDesk Pro · no Free-plan saved-flight cap · cloud backup/restore available.':'Free includes up to 3 saved flights. Existing flights are preserved; <a href="'+proHref()+'">Pro removes the cap and adds cloud backup/restore</a>.'}
+function render(){renderPlan();
  const host=$('#savedFlights'),acs=aircraft(),q=String($('#flightSearch')?.value||'').trim().toLowerCase(),sort=$('#flightSort')?.value||'updated';
  let a=flights().filter(f=>{if(!q)return true;const ac=acs.find(x=>x.id===f.aircraftId);return `${f.name||''} ${f.route||''} ${f.notes||''} ${ac?.name||''} ${ac?.type||''}`.toLowerCase().includes(q)});
  if(sort==='date')a.sort((x,y)=>String(x.date||'9999-99-99').localeCompare(String(y.date||'9999-99-99'))||Number(y.updatedAt||0)-Number(x.updatedAt||0));
@@ -65,24 +69,26 @@ function render(){
 function reset(){const f=$('#flightForm');f.reset();$('#flightId').value='';populateAircraft();const active=activeAircraft();if(active){$('#flightAircraft').value=active.id;fillAircraft(active.id,true)}$('#flightWindDir').value='270';$('#flightWindSpeed').value='20';$('#flightVariation').value='0';$('#flightFormTitle').textContent='Save a flight'}
 function plannerIntoForm(){try{const p=JSON.parse(localStorage.getItem('pd-route-last')||'null');if(!p?.route)return false;$('#flightRoute').value=p.route;$('#flightTas').value=p.tas??'';$('#flightBurn').value=p.burn??'';$('#flightWindDir').value=p.wd??270;$('#flightWindSpeed').value=p.ws??20;$('#flightVariation').value=p.variation??0;$('#flightName').value=`${String(p.route).trim().split(/\s+/)[0]||''} to ${String(p.route).trim().split(/\s+/).at(-1)||''}`;return true}catch{return false}}
 function edit(id){const f=flights().find(x=>x.id===id);if(!f)return;$('#flightId').value=f.id;for(const [k,v] of Object.entries(f)){const el=$('#flightForm').elements[k];if(el)el.value=v??''}$('#flightFormTitle').textContent='Edit saved flight';scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
-function duplicate(f,forTomorrow=false){
+async function duplicate(f,forTomorrow=false){
+ const all=flights();
+ if(!(await canAddFlight(all.length))){const status=$('#flightStatus');if(status)status.innerHTML='Free includes up to 3 saved flights. <a href="'+proHref()+'">Unlock PilotDesk Pro</a> to duplicate or copy another flight.';window.pdTrack?.('Pro Limit Reached',{feature:'saved_flights'});return}
  const id=uid(),copy={...f,id,name:forTomorrow?(f.name||'Flight'): `${f.name||'Flight'} copy`,date:forTomorrow?tomorrow():f.date,lastReviewedAt:null,createdAt:Date.now(),updatedAt:Date.now()};
- delete copy.reviewedAt;saveFlights([copy,...flights().filter(x=>x.id!==id)]);localStorage.removeItem('pd-flight-progress:'+id);setActive(copy);window.pdTrack?.('Saved Flight Reused',{mode:forTomorrow?'tomorrow':'duplicate'});render()
+ delete copy.reviewedAt;saveFlights([copy,...all.filter(x=>x.id!==id)]);localStorage.removeItem('pd-flight-progress:'+id);setActive(copy);window.pdTrack?.('Saved Flight Reused',{mode:forTomorrow?'tomorrow':'duplicate'});render()
 }
 function init(){
  const p=new URLSearchParams(location.search),requestedAircraft=p.get('aircraft');if(requestedAircraft&&aircraft().some(x=>x.id===requestedAircraft))localStorage.setItem('pd-aircraft-active',requestedAircraft);
  populateAircraft();render();const route=p.get('route');if(route){$('#flightRoute').value=route.toUpperCase();const parts=route.trim().split(/\s+/);$('#flightName').value=parts.length>1?`${parts[0]} to ${parts.at(-1)}`:`Flight from ${parts[0]||''}`}
  $('#flightAircraft').addEventListener('change',e=>fillAircraft(e.target.value,true));
  $('#flightImportPlanner').addEventListener('click',()=>{$('#flightStatus').textContent=plannerIntoForm()?'Loaded the most recent Route Planner inputs.':'No recent Route Planner route is stored on this device.'});
- $('#flightForm').addEventListener('submit',e=>{e.preventDefault();const v=formData();if(v.error){$('#flightStatus').textContent=v.error;return}let a=flights(),id=$('#flightId').value||uid(),old=a.find(x=>x.id===id),obj={...(old||{}),...v.data,id,updatedAt:Date.now(),createdAt:old?.createdAt||Date.now()};a=[obj,...a.filter(x=>x.id!==id)];saveFlights(a);setActive(obj);$('#flightStatus').textContent='Flight saved locally and set active.';window.pdTrack?.('Saved Flight Action',{action:old?'updated':'created'});render();reset()});
+ $('#flightForm').addEventListener('submit',async e=>{e.preventDefault();const v=formData();if(v.error){$('#flightStatus').textContent=v.error;return}let a=flights(),id=$('#flightId').value||uid(),old=a.find(x=>x.id===id);if(!old&&!(await canAddFlight(a.length))){$('#flightStatus').innerHTML='Free includes up to 3 saved flights. Your existing flights are unchanged. <a href="'+proHref()+'">Unlock PilotDesk Pro</a> to save more.';window.pdTrack?.('Pro Limit Reached',{feature:'saved_flights'});return}const obj={...(old||{}),...v.data,id,updatedAt:Date.now(),createdAt:old?.createdAt||Date.now()};a=[obj,...a.filter(x=>x.id!==id)];saveFlights(a);setActive(obj);$('#flightStatus').textContent='Flight saved locally and set active.';window.pdTrack?.('Saved Flight Action',{action:old?'updated':'created'});render();reset()});
  $('#flightReset').addEventListener('click',reset);
  $('#flightSearch')?.addEventListener('input',render);$('#flightSort')?.addEventListener('change',render);
  $('#pdSavedFlightResume')?.addEventListener('click',e=>{const a=e.target.closest('[data-resume]');if(a){const f=flights().find(x=>x.id===a.dataset.resume);if(f)setActive(f);window.pdTrack?.('Saved Flight Resume',{source:'resume_card'})}});
- $('#savedFlights').addEventListener('click',e=>{
+ $('#savedFlights').addEventListener('click',async e=>{
   const a=e.target.closest('a[data-resume],a[data-review],a[data-load]');if(a){const id=a.dataset.resume||a.dataset.review||a.dataset.load,f=flights().find(x=>x.id===id);if(f)setActive(f);window.pdTrack?.('Saved Flight Resume',{source:a.dataset.review?'brief':a.dataset.load?'planner':'card'});return}
   const b=e.target.closest('button');if(!b)return;const id=b.dataset.tomorrow||b.dataset.dup||b.dataset.edit||b.dataset.del;if(!id)return;if(b.dataset.edit)return edit(id);
   const all=flights(),f=all.find(x=>x.id===id);if(!f)return;
-  if(b.dataset.tomorrow)return duplicate(f,true);if(b.dataset.dup)return duplicate(f,false);
+  if(b.dataset.tomorrow)return await duplicate(f,true);if(b.dataset.dup)return await duplicate(f,false);
   if(b.dataset.del&&confirm(`Delete ${f.name||'this saved flight'}?`)){saveFlights(all.filter(x=>x.id!==id));localStorage.removeItem('pd-flight-progress:'+id);if(localStorage.getItem('pd-active-flight')===id)localStorage.removeItem('pd-active-flight');window.pdTrack?.('Saved Flight Action',{action:'deleted'});render()}
  });
  document.addEventListener('pilotdesk:flights-changed',render);

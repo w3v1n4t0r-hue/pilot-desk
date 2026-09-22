@@ -23,20 +23,65 @@ function safeAvatarUrl(value){try{const u=new URL(String(value||''),location.ori
 function renderAvatar(user,profile){const host=$('#pdUserAvatar');if(!host)return;const src=safeAvatarUrl(profile?.avatar_url||user?.user_metadata?.avatar_url||'');host.replaceChildren();if(src){const img=document.createElement('img');img.alt='';img.src=src;img.referrerPolicy='no-referrer';host.appendChild(img)}else host.textContent=initials(profile?.display_name||user?.user_metadata?.full_name||user?.email)}
 async function fetchProfile(user){const {data,error}=await state.client.from('profiles').select('id,display_name,avatar_url,pilot_stage,home_airport,training_goal,checkride_date,xp,level,current_streak,longest_streak,daily_completions,last_challenge_date,created_at').eq('id',user.id).maybeSingle();if(error)throw error;state.profile=data||null;if(data)state.client.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',user.id).then(()=>{});return data}
 
-function ensureDailyCta(profile){
- const signed=$('#pdSignedIn');if(!signed)return;let box=$('#pdAccountDailyCta');if(!box){box=document.createElement('div');box.id='pdAccountDailyCta';box.className='pd-account-benefit';const stats=$('.pd-user-stats',signed);stats?.insertAdjacentElement('afterend',box)}
- const streak=Number(profile?.current_streak||0),done=Number(profile?.daily_completions||0),last=profile?.last_challenge_date||'';const today=new Date().toISOString().slice(0,10),completed=last===today;
- box.innerHTML=`<b>${completed?'Today’s PilotDesk Daily is complete':'PilotDesk Daily is ready'}</b><span>${completed?`🔥 ${streak}-day streak · ${done} saved challenge${done===1?'':'s'}`:'Three aviation questions. Save today’s XP and keep your streak moving.'}</span><div class="pd-account-actions"><a href="/daily/">${completed?'Review today’s challenge':'Play today’s challenge'} →</a></div>`;
-}
-function ensureWrittenPrepCta(){
- const signed=$('#pdSignedIn');if(!signed)return;let box=$('#pdAccountWrittenPrep');if(!box){box=document.createElement('div');box.id='pdAccountWrittenPrep';box.className='pd-account-benefit';const daily=$('#pdAccountDailyCta');(daily||$('.pd-user-stats',signed))?.insertAdjacentElement('afterend',box)}
- box.innerHTML='<b>Free FAA Written Prep</b><span>PPL · Instrument · CPL · CFI · CFII · ATP. Review weak subjects, missed questions and saved scores by FAA standard.</span><div class="pd-account-actions"><a href="/written-prep.html">Open my written prep →</a><a href="/skill-gap.html">Check my weak subjects →</a></div>';
-}
+function ensureDailyCta(){document.querySelector('#pdAccountDailyCta')?.remove()}
+function ensureWrittenPrepCta(){document.querySelector('#pdAccountWrittenPrep')?.remove()}
 
 function localJson(key,fallback=[]){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
 const goalNames={ppl:'Private Pilot',ira:'Instrument Rating',cpl:'Commercial Pilot',multi:'Multi-Engine',cfi:'CFI',cfii:'CFII',atp:'ATP'};
 const goalLinks={ppl:'/training/private-pilot.html',ira:'/training/instrument-rating.html',cpl:'/training/commercial-pilot.html',multi:'/training/multiengine.html',cfi:'/training/cfi.html',cfii:'/flight-training.html',atp:'/written-prep.html'};
 function daysUntil(value){if(!value)return null;const d=new Date(value+'T12:00:00'),now=new Date();now.setHours(12,0,0,0);return Math.ceil((d-now)/86400000)}
+const ACCOUNT_UI_KEY='pd-account-ui-settings';
+function accountUi(){const x=localJson(ACCOUNT_UI_KEY,{});return {recent:x.recent!==false,currency:x.currency!==false,compact:x.compact===true}}
+function applyAccountUi(){
+ const s=accountUi(),shell=$('.pd-account-shell');$('#pdSettingRecent')?.toggleAttribute('checked',s.recent);if($('#pdSettingRecent'))$('#pdSettingRecent').checked=s.recent;if($('#pdSettingCurrency'))$('#pdSettingCurrency').checked=s.currency;if($('#pdSettingCompact'))$('#pdSettingCompact').checked=s.compact;
+ $('#pdAccountRecent')?.toggleAttribute('hidden',!s.recent);$('#pdAccountCurrencyCard')?.toggleAttribute('hidden',!s.currency);shell?.classList.toggle('pd-account-compact',s.compact)
+}
+function saveAccountUi(){
+ const s={recent:Boolean($('#pdSettingRecent')?.checked),currency:Boolean($('#pdSettingCurrency')?.checked),compact:Boolean($('#pdSettingCompact')?.checked)};try{localStorage.setItem(ACCOUNT_UI_KEY,JSON.stringify(s))}catch{}applyAccountUi()
+}
+function currencyRows(){
+ const data=localJson('pd-daily-currency-reminders',{}),defs=[['day','Day passenger'],['night','Night passenger'],['instrument','Instrument']];
+ return defs.map(([key,label])=>({key,label,date:data[key]||'',days:daysUntil(data[key])})).filter(x=>x.days!==null).sort((a,b)=>a.days-b.days)
+}
+function renderCurrencyOverview(){
+ const rows=currencyRows(),card=$('#pdAccountCurrencyCard');if(!card)return;
+ if(!rows.length){$('#pdAccountCurrencyTitle').textContent='Not configured';$('#pdAccountCurrencyValue').textContent='—';$('#pdAccountCurrencyCopy').textContent='Add your own reminder dates in Daily. PilotDesk does not determine legal currency from these dates.';card.dataset.state='';return}
+ const x=rows[0],stateName=x.days<0?'expired':x.days<=14?'soon':'ok',value=x.days<0?`${Math.abs(x.days)} days past reminder`:x.days===0?'Reminder date today':x.days===1?'1 day to reminder':`${x.days} days to reminder`;
+ $('#pdAccountCurrencyTitle').textContent=x.label;$('#pdAccountCurrencyValue').textContent=value;$('#pdAccountCurrencyCopy').textContent=`Pilot-entered date ${x.date}. Verify your logbook and applicable rules before relying on passenger or instrument privileges.`;card.dataset.state=stateName
+}
+function writtenTrack(profile){
+ const valid=['ppl','ira','cpl','cfi','cfii','atp'],saved=localStorage.getItem('pd-written-track')||'',goal=String(profile?.training_goal||'');return valid.includes(saved)?saved:valid.includes(goal)?goal:'ppl'
+}
+async function renderPrepOverview(profile){
+ const card=$('#pdAccountPrepCard'),title=$('#pdAccountPrepTitle'),value=$('#pdAccountPrepValue'),copy=$('#pdAccountPrepCopy'),link=$('#pdAccountPrepLink');if(!card||!state.session)return;
+ const track=writtenTrack(profile),label={ppl:'Private Pilot',ira:'Instrument',cpl:'Commercial',cfi:'CFI',cfii:'CFII',atp:'ATP'}[track]||'Written Prep';if(link)link.href='/written-prep.html?track='+encodeURIComponent(track);
+ title.textContent=label;value.textContent='…';copy.textContent='Checking saved Written Prep progress.';
+ try{
+  const url=new URL(SUPABASE_URL+'/functions/v1/written-prep');url.searchParams.set('track',track);url.searchParams.set('difficulty','all');
+  const r=await fetch(url,{headers:edgeHeaders(),cache:'no-store'}),d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Study progress unavailable');
+  const answers=Number(d.totalAnswers||0),weak=d.skillAreas?.[0]?.area||'No weak subject yet';value.textContent=answers?`${Number(d.accuracy||0)}% accuracy`:'No answers yet';copy.textContent=answers?`${Number(d.missed||0)} currently missed · ${Number(d.standardCoverage||0)}% of FAA elements seen · weakest: ${weak}.`:'Start a session to build subject and FAA-element progress.';card.dataset.state=answers?'ok':''
+ }catch{value.textContent='Unavailable';copy.textContent='Written Prep progress could not be reached. Your saved study data was not changed.';card.dataset.state=''}
+}
+function relativeTime(v){
+ const t=typeof v==='number'?v:new Date(v||0).getTime();if(!Number.isFinite(t)||!t)return '';const min=Math.max(0,Math.round((Date.now()-t)/60000));if(min<1)return'just now';if(min<60)return min+' min ago';const h=Math.round(min/60);if(h<24)return h+' hr ago';const d=Math.round(h/24);return d+' day'+(d===1?'':'s')+' ago'
+}
+function calculationHref(slug){
+ const s=String(slug||'');if(s==='weight-balance-builder')return'/weight-balance.html';return s?'/calculators/'+encodeURIComponent(s)+'/':'/tools.html'
+}
+async function renderRecentActivity(){
+ const host=$('#pdAccountRecentList');if(!host||!state.session)return;window.PilotDeskState?.render(host,{kind:'loading',title:'Loading recent activity',detail:'Checking saved calculations, flights, and tools.'});
+ const items=[],calc=localJson('pd-calculation-history',[]).slice(0,4),flights=localJson('pd-saved-flights',[]).slice().sort((a,b)=>Number(b.updatedAt||b.createdAt||0)-Number(a.updatedAt||a.createdAt||0)).slice(0,4),recent=localJson('pd-recent',[]).slice(0,4);
+ calc.forEach(x=>items.push({type:'CALCULATION · THIS DEVICE',title:x.title||'Calculator result',href:x.path||'/history.html',at:Number(x.at)||0}));
+ flights.forEach(x=>items.push({type:'SAVED FLIGHT · THIS DEVICE',title:x.name||x.route||'Saved flight',href:'/route-planner.html?flight='+encodeURIComponent(x.id||''),at:Number(x.updatedAt||x.createdAt)||0}));
+ recent.forEach(x=>items.push({type:'RECENT TOOL · THIS DEVICE',title:x.title||'PilotDesk tool',href:x.path||'/tools.html',at:Number(x.usedAt)||0}));
+ try{
+  const {data,error}=await state.client.from('saved_calculations').select('id,tool_slug,title,created_at').eq('user_id',state.session.user.id).order('created_at',{ascending:false}).limit(4);if(error)throw error;
+  (data||[]).forEach(x=>items.push({type:'SAVED CALCULATION · ACCOUNT',title:x.title||x.tool_slug||'Saved calculation',href:calculationHref(x.tool_slug),at:new Date(x.created_at).getTime()}))
+ }catch{}
+ const seen=new Set(),list=items.sort((a,b)=>b.at-a.at).filter(x=>{const k=x.type+'|'+x.title+'|'+x.href;if(seen.has(k))return false;seen.add(k);return true}).slice(0,7);
+ if(!list.length){window.PilotDeskState?.render(host,{kind:'empty',title:'No recent activity yet',detail:'Run a calculator or save a flight and it will show up here.',actionHref:'/tools.html',actionLabel:'Open calculators'});return}
+ host.innerHTML=list.map(x=>`<a class="pd-account-recent-item" href="${x.href}"><small>${x.type}</small><b>${x.title}</b><span>${relativeTime(x.at)}</span></a>`).join('')
+}
 async function cloudCounts(userId){
  try{
   const [a,f]=await Promise.all([
@@ -55,7 +100,7 @@ async function renderAccountDashboard(profile){
  const goal=profile?.training_goal||'',goalName=goalNames[goal]||'',days=daysUntil(profile?.checkride_date);
  if(goalName)cards.push({eyebrow:'CURRENT GOAL · ACCOUNT',title:goalName,copy:days===null?'Set a target date when you have one.':days>1?days+' days to your target date.':days===1?'Target date is tomorrow.':days===0?'Target date is today.':'Target date has passed — update it when your next milestone is scheduled.',href:goalLinks[goal]||'/flight-training.html',cta:'Continue '+goalName});
  cards.push(
-  {eyebrow:'DAILY · ACCOUNT',title:dailyDone?'Today complete':'Today is ready',copy:dailyDone?((profile?.current_streak||0)+'-day streak saved to your account.'):'Three questions to keep the streak moving.',href:'/daily/',cta:dailyDone?'Review Daily':'Play Daily'},
+  {eyebrow:'DAILY · ACCOUNT',title:dailyDone?'Today complete':'Today is ready',copy:dailyDone?'Today’s short aviation check is saved.':'Route weather, reminders, and today’s short knowledge check.',href:'/daily/',cta:dailyDone?'Review Daily':'Open Daily'},
   {eyebrow:'WRITTEN PREP · ACCOUNT',title:'Keep studying',copy:'Your written-prep scores, misses, and FAA-standard progress follow your sign-in.',href:'/written-prep.html',cta:'Open Written Prep'},
   {eyebrow:'PINNED · THIS DEVICE',title:pins.length?pins.length+' pinned tool'+(pins.length===1?'':'s'):'Pin your go-to tools',copy:pins.length?'Your calculator shortcuts are ready in this browser.':'Pin calculators you use often so they are easier to find again.',href:'/tools.html',cta:'Open calculators'},
   {eyebrow:'AIRCRAFT · THIS DEVICE',title:aircraft.length?aircraft.length+' aircraft saved':'Build your local Hangar',copy:'Aircraft profiles stay on this device today. Export them when you want a backup.',href:'/aircraft.html',cta:'Open Aircraft'},
@@ -155,7 +200,7 @@ async function claimOwnerAccess(e){e?.preventDefault();if(!state.session)return;
 async function renderSignedIn(session){
  const user=session.user;show('#pdSignedOut',false);show('#pdSignedIn',true);$('#pdAccountRoot')?.classList.remove('pd-account-disabled');$('#pdUserEmail').textContent=user.email||'Signed in';
  let p=null;try{p=await fetchProfile(user)}catch(e){status('Signed in, but your profile could not be loaded yet.','warn')}
- const display=p?.display_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'Pilot';$('#pdUserName').textContent=display;$('#pdDisplayName').value=p?.display_name||'';$('#pdPilotStage').value=p?.pilot_stage||'';$('#pdHomeAirport').value=p?.home_airport||'';$('#pdXp').textContent=String(p?.xp??0);$('#pdLevel').textContent=String(p?.level??1);$('#pdStreak').textContent=String(p?.current_streak??0);$('#pdBestStreak').textContent=String(p?.longest_streak??0);renderAvatar(user,p);$('#pdTrainingGoal').value=p?.training_goal||'';$('#pdCheckrideDate').value=p?.checkride_date||'';try{renderBilling(await window.PilotDeskBilling?.refresh?.())}catch{renderBilling(null)}try{if(p?.training_goal)localStorage.setItem('pd-training-goal',p.training_goal);if(p?.checkride_date)localStorage.setItem('pd-training-date',p.checkride_date)}catch{}await renderAccountDashboard(p);ensureDailyCta(p);ensureWrittenPrepCta();await loadOwnerMetrics();
+ const display=p?.display_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'Pilot';$('#pdUserName').textContent=display;$('#pdDisplayName').value=p?.display_name||'';$('#pdPilotStage').value=p?.pilot_stage||'';$('#pdHomeAirport').value=p?.home_airport||'';$('#pdXp').textContent=String(p?.xp??0);$('#pdLevel').textContent=String(p?.level??1);$('#pdStreak').textContent=String(p?.current_streak??0);$('#pdBestStreak').textContent=String(p?.longest_streak??0);renderAvatar(user,p);$('#pdTrainingGoal').value=p?.training_goal||'';$('#pdCheckrideDate').value=p?.checkride_date||'';try{renderBilling(await window.PilotDeskBilling?.refresh?.())}catch{renderBilling(null)}try{if(p?.training_goal)localStorage.setItem('pd-training-goal',p.training_goal);if(p?.checkride_date)localStorage.setItem('pd-training-date',p.checkride_date)}catch{}applyAccountUi();renderCurrencyOverview();await Promise.all([renderAccountDashboard(p),renderPrepOverview(p),renderRecentActivity()]);ensureDailyCta(p);ensureWrittenPrepCta();await loadOwnerMetrics();
  const next=safeNext();if(next&&!ownerView()){status('Signed in. Returning you to your PilotDesk tool…','good');setTimeout(()=>location.assign(next),450)}
 }
 async function renderSession(session){state.session=session||null;if(session)await renderSignedIn(session);else renderSignedOut()}
@@ -168,7 +213,7 @@ async function signInGithub(){status('Opening GitHub sign-in…');const {error}=
 async function saveProfile(e){e.preventDefault();if(!state.session)return;const updates={display_name:$('#pdDisplayName').value.trim().slice(0,80)||null,pilot_stage:$('#pdPilotStage').value||null,home_airport:cleanAirport($('#pdHomeAirport').value)||null,training_goal:$('#pdTrainingGoal').value||null,checkride_date:$('#pdCheckrideDate').value||null};status('Saving your profile…');const {error}=await state.client.from('profiles').update(updates).eq('id',state.session.user.id);if(error)return status(error.message,'bad');try{if(updates.training_goal)localStorage.setItem('pd-training-goal',updates.training_goal);else localStorage.removeItem('pd-training-goal');if(updates.checkride_date)localStorage.setItem('pd-training-date',updates.checkride_date);else localStorage.removeItem('pd-training-date')}catch{}status('Profile saved.','good');window.pdTrack?.('Account Profile Saved',{trainingGoal:updates.training_goal||'none',hasTargetDate:updates.checkride_date?'yes':'no'});await renderSignedIn(state.session)}
 async function signOut(){await state.client.auth.signOut();status('Signed out.','good');window.pdTrack?.('Account Signed Out')}
 async function deleteAccount(){if(!state.session)return;const answer=prompt('This permanently deletes your PilotDesk account and saved account data. Type DELETE to continue.');if(answer!=='DELETE')return;if(!confirm('Delete this PilotDesk account permanently? This cannot be undone.'))return;status('Deleting your account…');try{const r=await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:edgeHeaders()});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||'Unable to delete your account.','bad');await state.client.auth.signOut({scope:'local'}).catch(()=>{});state.session=null;state.profile=null;renderSignedOut();status('Your PilotDesk account was deleted.','good')}catch{status('Unable to delete your account right now.','bad')}}
-function bind(){$('#pdMagicForm')?.addEventListener('submit',sendMagicLink);$('#pdPasswordForm')?.addEventListener('submit',signInPassword);$('#pdCreateAccountForm')?.addEventListener('submit',createAccount);$('#pdForgotPassword')?.addEventListener('click',resetPassword);$('#pdGoogleSignIn')?.addEventListener('click',signInGoogle);$('#pdProfileForm')?.addEventListener('submit',saveProfile);$('#pdSignOut')?.addEventListener('click',signOut);$('#pdDeleteAccount')?.addEventListener('click',deleteAccount);$('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);$('#pdOwnerClaim')?.addEventListener('submit',claimOwnerAccess);$('#pdCloudBackupNow')?.addEventListener('click',backupDeviceToCloud);$('#pdCloudRestoreNow')?.addEventListener('click',restoreCloudToDevice);$('#pdManageBilling')?.addEventListener('click',openBillingPortal);$('#pdUpgradePro')?.addEventListener('click',upgradePro);$('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)})}
+function bind(){$('#pdMagicForm')?.addEventListener('submit',sendMagicLink);$('#pdPasswordForm')?.addEventListener('submit',signInPassword);$('#pdCreateAccountForm')?.addEventListener('submit',createAccount);$('#pdForgotPassword')?.addEventListener('click',resetPassword);$('#pdGoogleSignIn')?.addEventListener('click',signInGoogle);$('#pdProfileForm')?.addEventListener('submit',saveProfile);$('#pdSignOut')?.addEventListener('click',signOut);$('#pdDeleteAccount')?.addEventListener('click',deleteAccount);$('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);$('#pdOwnerClaim')?.addEventListener('submit',claimOwnerAccess);$('#pdCloudBackupNow')?.addEventListener('click',backupDeviceToCloud);$('#pdCloudRestoreNow')?.addEventListener('click',restoreCloudToDevice);$('#pdManageBilling')?.addEventListener('click',openBillingPortal);$('#pdUpgradePro')?.addEventListener('click',upgradePro);$('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)});['pdSettingRecent','pdSettingCurrency','pdSettingCompact'].forEach(id=>$('#'+id)?.addEventListener('change',saveAccountUi))}
 async function init(){bind();show('#pdGoogleSignIn',false);$('#pdAccountRoot')?.classList.add('pd-account-disabled');status('Loading your account…');try{await loadSupabase();const {data:{session},error}=await state.client.auth.getSession();if(error)throw error;state.client.auth.onAuthStateChange((_event,next)=>{setTimeout(()=>renderSession(next),0)});status('');await renderSession(session);const qp=new URL(location.href).searchParams;if(qp.get('billing')==='success'){billingStatus('Payment completed. PilotDesk is confirming the subscription with Stripe…','good');setTimeout(async()=>{try{renderBilling(await window.PilotDeskBilling?.refresh?.());billingStatus('Subscription status refreshed.','good')}catch{}},1200)}}catch(e){console.error('[PilotDesk account init]',e);renderSignedOut();$('#pdAccountRoot')?.classList.add('pd-account-disabled');status(e.message||'Accounts are temporarily unavailable.','warn')}}
 document.addEventListener('click',e=>{if(e.target?.id==='pdGithubSignIn')signInGithub()});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

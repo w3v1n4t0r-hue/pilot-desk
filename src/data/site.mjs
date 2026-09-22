@@ -40,7 +40,7 @@ const sectionDefinitions = [
       ['/skill-gap.html', 'Weak subjects', 'Find subjects that need more work'],
       ['/flight-training.html', 'Flight training', 'Study material organized by certificate'],
       ['/guides.html', 'Pilot guides', 'Checkride, systems, weather, and flight-planning guides'],
-      ['/daily/', 'Daily challenge', 'Three questions to keep learning'],
+      ['/daily/', 'Daily briefing', 'Route weather, reminders, and a short knowledge check'],
       ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons'],
       ['/training/acs-far-reference.html', 'ACS & FAR reference', 'Official FAA study sources by rating'],
       ['/training/certificates-ratings.html', 'Certificates & ratings', 'See the FAA certificate path and ratings'],
@@ -77,7 +77,7 @@ export const homeActions = [
   ['/route-planner.html', 'Plan a Flight', 'Route, weather, procedures, and aircraft.', 'M5 18h22M16 4v24M9 18l3-8h8l3 8M11 24h10'],
   ['/tools.html', 'Use a Calculator', 'Flight math, performance, fuel, W&B, and E6B.', 'M7 4h18v24H7zM10 9h12M11 15h2m3 0h2m3 0h1M11 20h2m3 0h2m3 0h1M11 24h2m3 0h6'],
   ['/written-prep.html', 'Study for a Written', 'Written prep, weak areas, FAA standards, and review.', 'M5 7c4-2 8-1 11 2v18c-3-3-7-4-11-2V7Zm22 0c-4-2-8-1-11 2v18c3-3 7-4 11-2V7Z'],
-  ['/daily/', 'Play Daily', 'Three aviation questions. New challenge every day.', 'M7 25V17h4v8M14 25V11h4v14M21 25V6h4v19']
+  ['/daily/', 'Open Daily', 'A quick aviation check-in with route weather, reminders, and study.', 'M7 25V17h4v8M14 25V11h4v14M21 25V6h4v19']
 ];
 
 export const popularTools = [
@@ -99,14 +99,10 @@ export const homeCategories = [
 ];
 
 export const footerLinks = [
-  ['/pricing.html', 'Plans'],
-  ['/for-flight-schools.html', 'Flight Schools'],
   ['/about.html', 'About'],
-  ['/sources.html', 'Sources'],
-  ['/legal/privacy.html', 'Privacy'],
+  ['/feedback.html', 'Contact'],
   ['/legal/terms.html', 'Terms'],
-  ['/feedback.html', 'Feedback'],
-  ['/legal/safety.html', 'Safety']
+  ['/legal/privacy.html', 'Privacy']
 ];
 
 import inventory from './inventory.json' with { type: 'json' };

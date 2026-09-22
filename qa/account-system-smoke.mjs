@@ -16,7 +16,7 @@ const checks=[
   ['clients cannot award daily XP',/grant select on public\.daily_progress to authenticated/i.test(sql)&&!/grant select, insert, update on public\.daily_progress/i.test(sql)],
   ['new auth users get profiles',/on_auth_user_created/.test(sql)&&/handle_new_user/.test(sql)],
   ['account is always visible in the global header',nav.includes('data-pd-account-link')&&nav.includes('href="/account.html"')&&nav.includes("text.textContent='Sign in'")&&nav.includes("text.textContent='Account'")],
-  ['account page distinguishes synced and device-local data',account.includes('Account synced')&&account.includes('Device local')&&account.includes('Aircraft & saved flights · this device')],
+  ['account page distinguishes synced and device-local data',account.includes('Account synced')&&account.includes('Device local')&&account.includes('Aircraft & saved flights · local by default')],
   ['signed-in account has a useful dashboard',account.includes('pdAccountDashboardGrid')&&client.includes('renderAccountDashboard')],
   ['account dashboard surfaces Daily and Written Prep',client.includes("eyebrow:'DAILY · ACCOUNT'")&&client.includes("eyebrow:'WRITTEN PREP · ACCOUNT'")],
   ['account dashboard reads device-local aircraft flights and pins',client.includes("localJson('pd-aircraft'")&&client.includes("localJson('pd-saved-flights'")&&client.includes("localJson('pd-favorites'")],

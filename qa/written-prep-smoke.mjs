@@ -23,10 +23,10 @@ const prefixes={ppl:['PA.'],ira:['IR.'],cpl:['CA.'],cfi:['FI.','AI.'],atp:['AA.'
 const all=Object.values(banks).flat();
 const ids=new Set();
 
-ok(bankManifest.acsQuestionCount>=5015,`Expected at least 5,015 ACS-linked items after FAA sample seeding; got ${bankManifest.acsQuestionCount}`);
+ok(bankManifest.acsQuestionCount>=5028,`Expected at least 5,028 ACS-linked items after FAA sample + curated figure families; got ${bankManifest.acsQuestionCount}`);
 for(const track of acsTracks){const floor=['ppl','ira','cpl'].includes(track)?1005:1000;ok(banks[track]?.length>=floor,`${track.toUpperCase()} must contain at least ${floor} ACS-linked items`)}
 ok(banks.cfii?.length>=250,'CFII should keep at least 250 PTS-linked supplemental items');
-ok(bankManifest.totalQuestionCount>=5265,`Expected at least 5,265 total items including FAA samples and CFII PTS; got ${bankManifest.totalQuestionCount}`);
+ok(bankManifest.totalQuestionCount>=5278,`Expected at least 5,278 total items including FAA samples, curated figure families, and CFII PTS; got ${bankManifest.totalQuestionCount}`);
 
 for(const [track,items] of Object.entries(banks)){
  for(const q of items){
@@ -60,6 +60,14 @@ ok(exactFaa.length>=15,`Expected at least 15 exact FAA sample items; got ${exact
 for(const track of ['ppl','ira','cpl'])ok(banks[track].filter(q=>q.source==='faa-sample-exact').length>=5,`${track.toUpperCase()} must include at least five exact FAA sample questions`);
 ok(exactFaa.some(q=>q.figureRef?.url&&q.figureRef?.figure),'Exact FAA sample layer must include testing-supplement figure questions');
 for(const q of exactFaa){ok(Array.isArray(q.choiceExplanations)&&q.choiceExplanations.length===3,`${q.id} needs per-choice rationale`);ok(q.reviewedAt==='2026-09-22',`${q.id} must carry the current review date`)}
+const figureParallel=all.filter(q=>q.source==='pilotdesk-faa-parallel');
+ok(figureParallel.length>=13,`Expected at least 13 curated FAA-figure parallel items; got ${figureParallel.length}`);
+for(const q of figureParallel){
+ ok(q.authoring==='curated-manual',`${q.id} must be manually curated`);
+ ok(Boolean(q.figureRef?.supplement&&q.figureRef?.figure&&q.figureRef?.url),`${q.id} must carry an exact FAA figure reference`);
+ ok(Array.isArray(q.choiceExplanations)&&q.choiceExplanations.length===3,`${q.id} needs three per-choice rationales`);
+ ok(typeof q.calibratedFrom==='string'&&q.calibratedFrom.startsWith('FAA '),`${q.id} must identify the FAA sample used for calibration`);
+}
 ok(ids.size===all.length,'Question IDs must be globally unique');
 const uniquePrompts=new Set(all.map(q=>`${q.prompt}::${q.options.join('|')}`)).size;
 ok(uniquePrompts>=1400,`Question variants are not diverse enough (${uniquePrompts} unique prompt/choice sets)`);
@@ -95,6 +103,8 @@ has(bankWrapper,"difficulty:Difficulty",'Typed bank must expose difficulty');
 has(bankWrapper,"experienceLevel:Track",'Typed bank must expose experience level');
 has(bankWrapper,"bankManifest",'Typed bank must expose bank manifest');
 has(bankWrapper,"'faa-sample-exact'",'Typed bank must distinguish exact FAA sample questions');
+has(bankWrapper,"'pilotdesk-faa-parallel'",'Typed bank must distinguish curated FAA-figure parallel questions');
+has(bankWrapper,"authoring?:'curated-manual'",'Typed bank must expose manual-curation provenance');
 has(bankWrapper,'figureRef?:','Typed bank must support FAA figure references');
 has(bankWrapper,'choiceExplanations?:','Typed bank must support per-choice rationales');
 for(const [track,meta] of Object.entries({ppl:['PAR',60,120],ira:['IRA',60,120],cpl:['CAX',100,150],cfi:['FIA',100,150],cfii:['FII',50,150],atp:['ATM',125,210]})){

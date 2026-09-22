@@ -39,7 +39,7 @@ ok(header.includes('navSections.map')&&header.includes('data-pd-astro-shell'),'s
 const experience=read('assets/experience.css');
 for(const s of ['.pd-home-actions{','.pd-popular-grid{','.pd-home-section{','.pd-home-action{','@media(max-width:800px)','@media(max-width:480px)','min-height:44px'])ok(experience.includes(s),`current homepage experience missing ${s}`);
 const tokens=read('assets/design-tokens.css');
-for(const s of ['--bg:#050505','--panel:#0d0d0f','--text:#f4f3ee','--accent:#f0efe9','body:before{','animation:none'])ok(tokens.includes(s),`current design-token/motion layer missing ${s}`);
+for(const s of ['--bg:#050607','--panel:#0c1014','--text:#f2f3f3','--accent:#6faed1','body:before{','animation:none'])ok(tokens.includes(s),`current design-token/motion layer missing ${s}`);
 
 const manifest=JSON.parse(read('site.webmanifest'));
 ok(manifest.start_url==='/', 'PWA should open at dashboard/home');
@@ -58,7 +58,7 @@ const sw=read('sw.js');
 const swVersion=Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0);
 ok(swVersion>=38,'service worker cache version is behind the offline reliability release');
 ok(sw.includes("importScripts('/assets/offline-precache.js')")&&sw.includes('...GENERATED_CALCULATORS'),'service worker must consume the generated calculator offline manifest');
-for(const s of ['/assets/experience.css','/assets/design-tokens.css','/assets/navigation-core.js','/assets/global-nav.js'])ok(sw.includes(s),`service worker missing current shared asset ${s}`);
+for(const s of ['/assets/experience.css','/assets/pilotdesk-navigation-2026.css','/assets/design-tokens.css','/assets/navigation-core.js','/assets/global-nav.js'])ok(sw.includes(s),`service worker missing current shared asset ${s}`);
 ok(!sw.includes("'/assets/navigation-data.js'")&&!sw.includes("'/assets/flight-store.js'"),'service worker calculator core must stay free of full navigation and saved-flight payloads');
 ok(sw.includes('migrateCalculatorEntries')&&sw.includes('networkOnlyPath'),'service worker must preserve calculator caches while keeping live APIs network-only');
 

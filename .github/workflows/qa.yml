@@ -47,6 +47,8 @@ jobs:
         run: node qa/unified-ui-smoke.mjs
       - name: Run site chassis checks
         run: node qa/site-chassis-smoke.mjs
+      - name: Run Claude Step 1 homepage and navigation checks
+        run: node qa/claude-step1-home-nav-smoke.mjs
       - name: Audit every built page surface
         run: node qa/page-surface-smoke.mjs
       - name: Run five-pass copy and design audit

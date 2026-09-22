@@ -18,12 +18,12 @@ check(css.includes('@media(prefers-reduced-motion:reduce)'),'experience.css must
 check(css.includes(':focus-visible'),'experience.css must preserve visible keyboard focus');
 check(css.includes('min-height:44px'),'current UI must preserve touch-friendly control sizing');
 
-for(const token of ['--bg:#050505','--panel:#0d0d0f','--text:#f4f3ee','--line:#29292d','--pd-cut:9px','--pd-good:#c8c7c2'])check(tokens.includes(token),`design token layer missing ${token}`);
+for(const token of ['--bg:#050607','--panel:#0c1014','--text:#f2f3f3','--line:#293038','--accent:#6faed1','--pd-cut:9px','--pd-good:#8fb39a'])check(tokens.includes(token),`design token layer missing ${token}`);
 for(const guard of ['body:before{','animation:none','clip-path:polygon','@keyframes pd-menu-in','@media(prefers-reduced-motion:reduce)','.pd-live-dot'])check(tokens.includes(guard),`design token/motion layer missing ${guard}`);
 check(entry.trim().endsWith('@import url("/assets/design-tokens.css");'),'design-tokens.css must remain the final shared cascade authority');
 check(tokens.includes('Resend-inspired restraint')&&tokens.includes('square controls and clipped corners'),'shared visual system must preserve the Resend/aviation geometry brief');
 check(tokens.includes('border-radius:0!important')&&tokens.includes('--pd-radius:3px'),'visual system should avoid generic rounded dashboard cards');
-check(tokens.includes('background:#f0efe9!important')&&tokens.includes('color:#070707!important'),'primary action treatment should use the eggshell/iron material palette');
+check(tokens.includes('background:var(--accent)!important')&&tokens.includes('color:#061018!important'),'primary action treatment should use the restrained aviation-blue accent token');
 check(tokens.includes('HARD-SQUARE GEOMETRY RESET')&&tokens.includes('border-radius:0!important'),'all shared product chrome must remain square/chamfered with no rounded UI');
 const icon=read('assets/icon.svg');
 check(!icon.includes('rx=')&&icon.includes('M12 3H116L125 12'),'canonical PilotDesk logo container must use clipped square geometry, not a rounded rectangle');
@@ -42,4 +42,4 @@ check(brand.includes("img.src='/assets/icon.svg'")&&brand.includes("word.textCon
 for(const asset of ['/assets/styles.css','/assets/experience.css','/assets/design-tokens.css','/assets/crosswind-mfd.js'])check(sw.includes(`'${asset}'`),`service worker missing current visual asset ${asset}`);
 
 if(failures.length){console.error(`Professional visual checks failed with ${failures.length} issue(s):`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log('Professional visual checks passed: current shared experience layer, canonical tokens, accessibility, restrained motion, brand, and calculator visualization are intact without retired UI stacks.');
+console.log('Professional visual checks passed: current shared experience layer, cockpit-dark tokens, restrained aviation accent, accessibility, restrained motion, brand, and calculator visualization are intact without retired UI stacks.');

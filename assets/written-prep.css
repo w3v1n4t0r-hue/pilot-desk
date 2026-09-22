@@ -62,3 +62,28 @@
   }
   .pd-prep-tracks button:hover,.pd-prep-modes button:hover{transform:translateY(-1px)}
 }
+
+/* Claude Step 5 — Written Prep is a study desk, not a game dashboard. */
+:root{--prep-accent:var(--accent)!important;--prep-blue:var(--accent)!important}
+.pd-prep-primary,.pd-prep-answer,.pd-prep-next,.pd-prep-resume button{
+  border-color:var(--accent)!important;background:var(--accent)!important;color:#061018!important;clip-path:none!important
+}
+.pd-prep-tracks button.active,.pd-prep-difficulty button.active{
+  border-color:var(--accent)!important;background:#0a1218!important;box-shadow:inset 2px 0 0 var(--accent)!important
+}
+.pd-prep-statusbar,.pd-prep-dashboard,.pd-prep-skillmap,.pd-prep-standards{border-radius:0!important}
+.pd-prep-readiness-ring{border-radius:0!important;border-color:var(--line-hi)!important;background:#07090b!important}
+.pd-prep-readiness-ring strong{color:var(--accent)!important}
+.pd-prep-skill-track,.pd-prep-progress{border-radius:0!important;background:#20272e!important}
+.pd-prep-skill-track i,.pd-prep-progress i{border-radius:0!important;background:var(--accent)!important}
+.pd-prep-modes{gap:1px!important;background:var(--line)!important}
+.pd-prep-modes button{border:0!important;background:#080b0e!important}
+.pd-prep-modes button:hover{background:var(--panel2)!important}
+.pd-prep-modes button span{color:var(--accent)!important}
+.pd-prep-kpis{gap:1px!important;background:var(--line)!important}
+.pd-prep-kpis>div{border:0!important;background:#080b0e!important}
+.pd-prep-kpis strong{font-family:ui-monospace,SFMono-Regular,Consolas,monospace!important}
+.pd-prep-skill-grid,.pd-prep-standard-grid,.pd-prep-difficulty-grid{gap:1px!important;background:var(--line)!important}
+.pd-prep-skill,.pd-prep-standard,.pd-prep-diff-card{border:0!important;background:#080b0e!important}
+.pd-prep-question,.pd-prep-option,.pd-prep-feedback,.pd-prep-summary{background:#080b0e!important}
+.pd-prep-option:hover{transform:none!important}

@@ -8,6 +8,8 @@ const edgeHeaders=()=>({apikey:SUPABASE_PUBLISHABLE_KEY,...(state.session?.acces
 const escapeHtml=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 const guestKey=date=>`pd-daily-guest-${date}`;
 const historyKey='pd-daily-local-history';
+const currencyKey='pd-daily-currency-reminders';
+const routeWeatherKey='pd-daily-route-weather-v1';
 const STUDY_LINKS={
  weather:[['/weather.html','Check current aviation weather'],['/guides/metar-taf.html','METAR & TAF guide'],['/guides/aviation-weather-reference.html','Weather reference']],
  performance:[['/tools.html?category=Performance','Performance calculators'],['/guides/aircraft-performance-reference.html','Aircraft performance reference'],['/weight-balance.html','Weight & balance']],
@@ -29,7 +31,43 @@ function renderWeek(){
  for(let i=6;i>=0;i--){const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-i));const key=d.toISOString().slice(0,10);days.push({key,label:d.toLocaleDateString(undefined,{weekday:'narrow',timeZone:'UTC'}),entry:byDate.get(key)})}
  host.innerHTML=days.map(d=>'<div class="pd-daily-day'+(d.entry?' done':'')+'" title="'+escapeHtml(d.key)+(d.entry?' · '+d.entry.score+'/'+d.entry.max:'')+'"><span>'+escapeHtml(d.label)+'</span><i>'+(d.entry?d.entry.score:'·')+'</i></div>').join('');
  const completed=days.filter(d=>d.entry).length;
- if(copy)copy.textContent=completed?completed+' of the last 7 daily challenges completed on this device.':'Complete today’s challenge to start a local activity trail.';
+ if(copy)copy.textContent=completed?completed+' of the last 7 daily checks completed on this device.':'Complete today’s check to start a local activity trail.';
+}
+function readJson(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
+function daysUntilDate(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(String(v||'')))return null;const target=new Date(v+'T12:00:00'),now=new Date();now.setHours(12,0,0,0);return Math.ceil((target-now)/86400000)}
+function renderCurrencyReminders(){
+ const data=readJson(currencyKey,{}),defs=[['day','Day passenger'],['night','Night passenger'],['instrument','Instrument']],rows=defs.map(([key,label])=>({key,label,date:data[key]||'',days:daysUntilDate(data[key])})).filter(x=>x.days!==null).sort((a,b)=>a.days-b.days),card=$('#pdDailyCurrencyCard');
+ for(const [key] of defs){const input=$('#pdCurrency'+key[0].toUpperCase()+key.slice(1));if(input)input.value=data[key]||''}
+ if(!rows.length){setText('#pdDailyCurrencyTitle','Not configured');setText('#pdDailyCurrencyValue','—');setText('#pdDailyCurrencyCopy','Add your own reminder dates if you want Daily to flag one that is getting close. PilotDesk does not determine legal currency from these dates.');if(card)card.dataset.state='';return}
+ const x=rows[0],stateName=x.days<0?'expired':x.days<=14?'soon':'ok',value=x.days<0?`${Math.abs(x.days)} days past reminder`:x.days===0?'Reminder date today':x.days===1?'1 day to reminder':`${x.days} days to reminder`;
+ setText('#pdDailyCurrencyTitle',x.label);setText('#pdDailyCurrencyValue',value);setText('#pdDailyCurrencyCopy',`Pilot-entered reminder date ${x.date}. Verify your actual logbook, applicable rules, and required experience before acting on it.`);if(card)card.dataset.state=stateName;
+}
+function saveCurrencyReminders(){
+ const value=id=>$('#'+id)?.value||'',data={day:value('pdCurrencyDay'),night:value('pdCurrencyNight'),instrument:value('pdCurrencyInstrument')};
+ try{localStorage.setItem(currencyKey,JSON.stringify(data))}catch{}renderCurrencyReminders();window.pdTrack?.('Daily Currency Reminder Saved',{configured:Object.values(data).filter(Boolean).length})
+}
+function utcDate(offset=0){const d=new Date();d.setUTCDate(d.getUTCDate()+offset);return d.toISOString().slice(0,10)}
+function stationFromRoute(route){return String(route||'').trim().split(/\s+/).filter(x=>/^[A-Z0-9]{3,4}$/.test(x.toUpperCase())).map(x=>x.toUpperCase())}
+function weatherSnapshot(){return readJson(routeWeatherKey,{today:null,previous:null})}
+function weatherCompare(prev,cur){
+ if(!prev)return 'No prior Daily snapshot for comparison.';
+ const changes=[];if(prev.fltCat&&cur.fltCat&&prev.fltCat!==cur.fltCat)changes.push(`${prev.fltCat} → ${cur.fltCat}`);
+ const pw=Number(prev.wspd),cw=Number(cur.wspd);if(Number.isFinite(pw)&&Number.isFinite(cw)&&Math.abs(cw-pw)>=5)changes.push(`wind ${pw} → ${cw} kt`);
+ return changes.length?changes.join(' · '):'No major category/wind change.';
+}
+async function loadDailyRouteWeather(){
+ const card=$('#pdDailyWeatherCard'),host=$('#pdDailyRouteWeather');if(!host)return;
+ let flights=[];try{const x=JSON.parse(localStorage.getItem('pd-saved-flights')||'[]');flights=Array.isArray(x)?x:[]}catch{}
+ const stations=[...new Set(flights.slice().sort((a,b)=>Number(b.updatedAt||b.createdAt||0)-Number(a.updatedAt||a.createdAt||0)).slice(0,3).flatMap(f=>{const p=stationFromRoute(f.route);return p.length?[p[0],p.at(-1)]:[]}))].filter(Boolean).slice(0,4);
+ if(!stations.length){setText('#pdDailyWeatherTitle','No saved route airports');host.innerHTML='<p>Save a route with airport identifiers and Daily can compare its endpoint weather between check-ins.</p>';if(card)card.dataset.state='';return}
+ if(!navigator.onLine){setText('#pdDailyWeatherTitle','Current weather unavailable offline');host.innerHTML='<p>PilotDesk will not reuse an older weather snapshot as current. Reconnect to check saved-route weather.</p>';if(card)card.dataset.state='';return}
+ setText('#pdDailyWeatherTitle','Requesting current endpoint weather…');host.innerHTML='<p>Checking saved route endpoints from the weather source.</p>';
+ const stored=weatherSnapshot(),today=utcDate(),baseline=stored.today?.date===today?stored.previous:stored.today,results={};
+ await Promise.all(stations.map(async id=>{try{const r=await fetch('/api/weather?station='+encodeURIComponent(id),{headers:{Accept:'application/json'},cache:'no-store'}),j=await r.json().catch(()=>({}));if(!r.ok||!j.metar)return;const m=j.metar,obsRaw=m.obsTime??m.reportTime,d=new Date((typeof obsRaw==='number'&&obsRaw<1e12)?obsRaw*1000:obsRaw),age=Number.isFinite(d.getTime())?Math.max(0,Math.round((Date.now()-d.getTime())/60000)):null;results[id]={fltCat:m.fltCat||'—',wdir:m.wdir??null,wspd:m.wspd??null,obsTime:Number.isFinite(d.getTime())?d.toISOString():null,age}}catch{}}));
+ const entries=Object.entries(results);if(!entries.length){setText('#pdDailyWeatherTitle','Endpoint weather unavailable');host.innerHTML='<p>No current endpoint METARs were returned. Open Weather to retry or verify at the source.</p>';return}
+ host.innerHTML=entries.map(([id,x])=>{if(x.age==null)return `<div class="pd-daily-weather-line"><b>${id}</b><span>METAR time unavailable — do not treat as current without checking Weather.</span></div>`;if(x.age>90)return `<div class="pd-daily-weather-line"><b>${id}</b><span>Returned METAR is about ${x.age} min old — verify current conditions.</span></div>`;return `<div class="pd-daily-weather-line"><b>${id} · ${escapeHtml(x.fltCat)}</b><span>${escapeHtml(weatherCompare(baseline?.stations?.[id],x))} · ${x.age} min old</span></div>`}).join('');
+ const baselineDate=baseline?.date;setText('#pdDailyWeatherTitle',baselineDate===utcDate(-1)?'Changes since yesterday':'Current saved-route endpoints');
+ const next=stored.today?.date===today?{today:{date:today,stations:results},previous:stored.previous}:{today:{date:today,stations:results},previous:stored.today||stored.previous};try{localStorage.setItem(routeWeatherKey,JSON.stringify(next))}catch{}
 }
 function studyBucket(category=''){
  const s=String(category).toLowerCase();
@@ -69,16 +107,16 @@ async function loadSupabase(){
  state.client.auth.onAuthStateChange((_e,next)=>{state.session=next||null;setTimeout(()=>refreshIdentity(),0)});
 }
 async function refreshIdentity(){
- if(!state.session){state.profile=null;setText('#pdDailyAccountState','Guest');setText('#pdDailyXp','—');setText('#pdDailyStreak','—');setText('#pdDailyLevel','—');setText('#pdDailyProgressTitle','Play first. Sign in later.');setText('#pdDailyProgressText','No account is required to answer today’s questions. Sign in only when you want to save your score, XP and streak across devices.');$('#pdDailyAccountLink').textContent='Create a free account →';return}
+ if(!state.session){state.profile=null;setText('#pdDailyAccountState','Guest');setText('#pdDailyProgressTitle','A small daily habit.');setText('#pdDailyProgressText','No account is required. Sign in only if you want Daily completions and study progress saved across devices.');$('#pdDailyAccountLink').textContent='Create a free account →';return}
  setText('#pdDailyAccountState','Signed in');$('#pdDailyAccountLink').textContent='Open my account →';$('#pdDailyAccountLink').href='/account.html';
  const {data}=await state.client.from('profiles').select('xp,level,current_streak,longest_streak,daily_completions,last_challenge_date').eq('id',state.session.user.id).maybeSingle();
- state.profile=data||null;if(data){setText('#pdDailyXp',data.xp??0);setText('#pdDailyStreak',data.current_streak??0);setText('#pdDailyLevel',data.level??1);setText('#pdDailyProgressTitle',`${data.current_streak||0}-day streak`);setText('#pdDailyProgressText',`${data.daily_completions||0} saved daily challenge${Number(data.daily_completions||0)===1?'':'s'}. Keep the streak alive by completing today’s puzzle.`)}
+ state.profile=data||null;if(data){setText('#pdDailyProgressTitle',`${data.current_streak||0}-day Daily streak`);setText('#pdDailyProgressText',`${data.daily_completions||0} saved daily check${Number(data.daily_completions||0)===1?'':'s'}. Use the activity trail as a reminder, not a score to chase.`)}
 }
 
 function renderChallenge(data){
  state.data=data;const c=data.challenge;renderWeek();
  setText('#pdDailyDate',formatDate(data.date));setText('#pdDailyCategory',c.category);setText('#pdDailyDifficulty',c.difficulty);setText('#pdDailyTitle',c.title);setText('#pdDailyDeck',c.deck);
- setText('#pdDailyAttempts',data.attemptsToday>0?data.attemptsToday:'0');
+ setText('#pdDailyAttempts',data.attemptsToday>0?data.attemptsToday:'0');setText('#pdDailyQuestionTitle',c.category||'Today’s question');setText('#pdDailyQuestionPreview',c.questions?.[0]?.prompt||'Open today’s check below.');
  const host=$('#pdDailyQuestions');host.innerHTML='';
  c.questions.forEach((q,idx)=>{
   const fs=document.createElement('fieldset');fs.className='pd-daily-question';fs.dataset.question=q.id;
@@ -119,10 +157,9 @@ function renderResult(result,saved){
  $('#pdDailyScoreChip').hidden=false;setText('#pdDailyScore',`${result.score}/${result.maxScore}`);
  const box=$('#pdDailyResult');box.hidden=false;const perfect=result.score===result.maxScore;
  const headline=perfect?'Perfect score.':(result.review||[]).length?(result.score>0?'Challenge complete.':'Challenge complete — review it below.'):'Challenge complete.';
- const reward=saved?`+${result.xpAwarded||0} XP${result.streak?` · 🔥 ${result.streak}`:''}`:'Guest score';
- box.innerHTML=`<div class="pd-daily-result-head"><div><h3>${headline}</h3><p>${saved?'Your score, XP and streak are saved.':'Create a free account to save XP and build a daily streak.'}</p></div><div class="pd-daily-reward">${escapeHtml(reward)}</div></div><div class="pd-daily-review">${reviewHtml(result)}</div><div class="pd-daily-result-actions"><button type="button" id="pdDailyShare">Challenge another pilot</button>${saved?'<a href="/account.html">View account →</a>':'<a href="/account.html?next=%2Fdaily%2F">Create account →</a>'}</div>`;
- $('#pdDailyShare')?.addEventListener('click',()=>shareResult(result));
- if(saved){setText('#pdDailyXp',result.xp??state.profile?.xp??'—');setText('#pdDailyStreak',result.streak??state.profile?.current_streak??'—');setText('#pdDailyLevel',result.level??state.profile?.level??'—');setText('#pdDailyProgressTitle',`${result.streak||0}-day streak`);setText('#pdDailyProgressText',`Today is saved. You earned ${result.xpAwarded||0} XP. Come back after the UTC reset for the next challenge.`)}
+ const reward=saved?'Saved to account':'Guest result';
+ box.innerHTML=`<div class="pd-daily-result-head"><div><h3>${headline}</h3><p>${saved?'Today’s result is saved. Review the explanation and move into the subject that needs work.':'Guest result. Create a free account only if you want future Daily completions saved.'}</p></div><div class="pd-daily-reward">${escapeHtml(reward)}</div></div><div class="pd-daily-review">${reviewHtml(result)}</div><div class="pd-daily-result-actions">${saved?'<a href="/written-prep.html">Open Written Prep →</a><a href="/account.html">Account →</a>':'<a href="/written-prep.html">Open Written Prep →</a><a href="/account.html?next=%2Fdaily%2F">Create account →</a>'}</div>`;
+ if(saved){setText('#pdDailyProgressTitle',`${result.streak||0}-day Daily streak`);setText('#pdDailyProgressText','Today is saved. Come back after the UTC reset for the next check-in.')}
  saveLocalHistory(state.data?.date,result);renderNextStudy();
  window.pdTrack?.('PilotDesk Daily Completed',{saved:Boolean(saved),score:result.score,max:result.maxScore,category:state.data?.challenge?.category||'unknown'});
 }
@@ -164,8 +201,8 @@ async function loadChallenge(){
  try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{headers:edgeHeaders()});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load today’s challenge.');renderChallenge(d)}catch(err){$('#pdDailyQuestions').innerHTML=`<div class="pd-daily-error">${escapeHtml(err.message||'PilotDesk Daily is temporarily unavailable.')}</div>`;setText('#pdDailyFormNote','Try again shortly.')}
 }
 async function init(){
- countdown();setInterval(countdown,1000);renderWeek();$('#pdDailyForm')?.addEventListener('submit',submit);applyIncomingChallenge();
- await loadSupabase();await refreshIdentity();await loadChallenge();
+ countdown();setInterval(countdown,1000);renderWeek();renderCurrencyReminders();$('#pdCurrencySave')?.addEventListener('click',saveCurrencyReminders);$('#pdDailyForm')?.addEventListener('submit',submit);applyIncomingChallenge();
+ const weatherPromise=loadDailyRouteWeather();await loadSupabase();await refreshIdentity();await loadChallenge();await weatherPromise;
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

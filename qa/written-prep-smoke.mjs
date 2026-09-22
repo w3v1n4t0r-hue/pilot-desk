@@ -24,10 +24,10 @@ const all=Object.values(banks).flat();
 const ids=new Set();
 
 ok(bankManifest.legacyGeneratedFamiliesExcluded===true,'Legacy generated question families must remain excluded from the live bank');
-ok(bankManifest.acsQuestionCount===43,`Expected 43 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
+ok(bankManifest.acsQuestionCount===40,`Expected 40 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
 ok(bankManifest.supplementalPtsQuestionCount===8,`Expected 8 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
-ok(bankManifest.totalQuestionCount===51,`Expected 51 total curated live questions; got ${bankManifest.totalQuestionCount}`);
-const minimumByTrack={ppl:7,ira:9,cpl:8,cfi:10,cfii:8,atp:9};
+ok(bankManifest.totalQuestionCount===48,`Expected 48 total curated live questions; got ${bankManifest.totalQuestionCount}`);
+const minimumByTrack={ppl:6,ira:8,cpl:7,cfi:10,cfii:8,atp:9};
 for(const [track,min] of Object.entries(minimumByTrack))ok(banks[track]?.length>=min,`${track.toUpperCase()} curated bank fell below ${min} questions`);
 
 for(const [track,items] of Object.entries(banks)){
@@ -65,13 +65,13 @@ ok(exactFaa.length>=20,`Expected at least 20 exact FAA sample items; got ${exact
 ok(exactFaa.some(q=>q.figureRef?.url&&q.figureRef?.figure),'Exact FAA sample layer must include testing-supplement figure questions');
 
 const figureParallel=all.filter(q=>q.source==='pilotdesk-faa-parallel');
-ok(figureParallel.length===13,`Expected 13 manually curated FAA-figure parallel items; got ${figureParallel.length}`);
+ok(figureParallel.length===10,`Expected 10 manually curated FAA-figure parallel live items after removing foundation variants; got ${figureParallel.length}`);
 for(const q of figureParallel){
  ok(Boolean(q.figureRef?.supplement&&q.figureRef?.figure&&q.figureRef?.url),`${q.id} must carry an exact FAA figure reference`);
  ok(typeof q.calibratedFrom==='string'&&q.calibratedFrom.startsWith('FAA '),`${q.id} must identify the FAA sample used for calibration`);
 }
 const figureQuestions=all.filter(q=>q.figureRef?.url&&q.figureRef?.figure);
-ok(figureQuestions.length>=25,`At least 25 live questions should require an official FAA figure; got ${figureQuestions.length}`);
+ok(figureQuestions.length>=23,`At least 23 live questions should require an official FAA figure; got ${figureQuestions.length}`);
 ok(figureQuestions.length/all.length>=0.45,'At least 45% of the live bank should be FAA-figure based');
 
 has(html,'Quality before question count.','Written Prep quality-first disclosure missing');

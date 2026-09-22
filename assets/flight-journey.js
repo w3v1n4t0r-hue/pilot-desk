@@ -52,11 +52,14 @@ function render(){
  $$('.pd-flight-nav,.pd-flight-journey,.pd-flight-context[data-pd-old-flight-context]').forEach(x=>x.remove());
  const f=flight(),current=STEPS.findIndex(([p])=>p===path),parts=routeParts(f),dst=parts.at(-1)||'',ac=aircraftName(f);
  if(f){try{localStorage.setItem('pd-active-flight',f.id);if(f.aircraftId)localStorage.setItem('pd-aircraft-active',f.aircraftId)}catch{}}
- const existingSub=$('.pd-flight-subnav');if(existingSub)existingSub.remove();
- const sub=document.createElement('nav');sub.className='pd-flight-subnav';sub.setAttribute('aria-label','Flight planning tools');
- SUBAPP.forEach(([href,label])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(path===href)a.setAttribute('aria-current','page');sub.append(a)});
+ const inSubapp=SUBAPP.some(([p])=>p===path)||path==='/planner.html',existingSub=$('.pd-flight-subnav');if(existingSub)existingSub.remove();
  const hero=$('.pd-flight-hero,.wx-hero,.calc-hero,.pd-page-hero',main)||main.firstElementChild;
- if(hero)hero.insertAdjacentElement('afterend',sub);else main.prepend(sub);
+ let sub=null;
+ if(inSubapp){
+  sub=document.createElement('nav');sub.className='pd-flight-subnav';sub.setAttribute('aria-label','Flight planning tools');
+  SUBAPP.forEach(([href,label])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(path===href)a.setAttribute('aria-current','page');sub.append(a)});
+  if(hero)hero.insertAdjacentElement('afterend',sub);else main.prepend(sub);
+ }
  if(!STEPS.some(([p])=>p===path))return;
  const wrap=document.createElement('section');wrap.className='pd-flight-journey';wrap.setAttribute('aria-label','Flight planning workflow');
  const top=document.createElement('div');top.className='pd-flight-journey-head';
@@ -84,7 +87,7 @@ function render(){
   const a=document.createElement('a');a.href=targetFor(next,f);a.textContent='Continue →';a.dataset.pdFlightContinue=next[2];
   bar.append(copy,a);wrap.append(bar);
  }
- sub.insertAdjacentElement('afterend',wrap);
+ if(sub)sub.insertAdjacentElement('afterend',wrap);else if(hero)hero.insertAdjacentElement('afterend',wrap);else main.prepend(wrap);
  wrap.addEventListener('click',e=>{const a=e.target.closest('a[data-step],a[data-pd-flight-continue]');if(!a)return;window.pdTrack?.('Flight Workflow Step',{step:a.dataset.step||a.dataset.pdFlightContinue||'unknown',hasSavedFlight:f?'yes':'no'})});
 }
 function signal(key){const f=flight();if(!f)return;mark(f,key);render()}

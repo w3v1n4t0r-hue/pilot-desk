@@ -44,9 +44,10 @@ check(pricing.includes('pd-pricing-school-note')&&pricing.includes('No school ch
 check(step6.includes('.pd-plan-grid{grid-template-columns:1fr 1fr!important'),'Pricing comparison is not reduced to two factual columns');
 
 // Footer = minimal utility links + clear supplemental disclaimer.
-for(const file of [experience,footerAstro,site]){
+for(const file of [experience,site]){
   for(const label of ['About','Contact','Terms','Privacy'])check(file.includes(label),'Shared footer missing '+label);
 }
+check(footerAstro.includes('footerLinks.map'),'Astro footer no longer renders the shared footer link model');
 check(!experience.includes("['/sources.html','Sources']")&&!experience.includes("['/legal/safety.html','Safety']"),'Legacy footer still builds the old link wall');
 check(site.includes("['/feedback.html', 'Contact']"),'Astro footer does not expose Contact');
 check(footerAstro.includes('supplements, but does not replace'),'Astro footer disclaimer is not explicit');

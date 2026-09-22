@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/assets/styles.css">
   <link rel="stylesheet" href="/assets/planner-suite.css">
   <link rel="stylesheet" href="/assets/hub.css">
-  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="/site.webmanifest">
   <script defer src="/assets/site.js"></script>
   <script defer src="/assets/product-nav.js"></script>
@@ -25,7 +25,7 @@
 <script src="/assets/flight-store.js"></script></head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
-<header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true"><img src="/assets/icon.svg" alt="" width="40" height="40"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/tools.html">Calculators</a><a href="/airport.html">Airports</a><a href="/planner.html">Planner</a><a href="/flights.html" aria-current="page">Flights</a><a href="/aircraft.html">Hangar</a><a href="/guides.html">Guides</a></nav></header>
+<header class="topbar"><a class="brand" href="/" aria-label="PilotDesk home"><span class="brandmark" aria-hidden="true"><img src="/favicon.svg" alt="" width="40" height="40"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><button aria-label="Open menu" class="menu-btn" data-menu>☰</button><nav><a href="/tools.html">Calculators</a><a href="/airport.html">Airports</a><a href="/planner.html">Planner</a><a href="/flights.html" aria-current="page">Flights</a><a href="/aircraft.html">Hangar</a><a href="/guides.html">Guides</a></nav></header>
 <main class="shell content-page" id="main-content">
   <section class="pd-flight-hero"><span class="badge">SAVED ON THIS DEVICE</span><h1>Saved Flights</h1><p>Reuse a flight instead of rebuilding it. Resume the seven-step planning workflow, update tomorrow's copy, or reopen a reviewed brief with the same aircraft and route context.</p><p class="fine" id="flightPlanNote">Free includes up to 3 saved flights. Pro removes the Free-plan cap and adds cloud backup/restore.</p></section>
   <section class="pd-saved-flight-resume" id="pdSavedFlightResume" hidden aria-live="polite"></section>
@@ -51,7 +51,7 @@
     </form>
   </section>
   <section class="pd-panel">
-    <div class="pd-card-head"><div><h2>Your flights</h2><p id="flightCount">Stored only on this device.</p></div><a class="pd-btn secondary" href="/flight-brief.html">Open latest brief</a></div>
+    <div class="pd-card-head"><div><h2>Your flights</h2><p id="flightCount">Stored only on this device.</p></div><div class="pd-actions"><a class="pd-btn secondary" href="/flight-brief.html">Free Flight Brief</a><a class="pd-btn secondary" href="/preflight-brief.html">Pro Preflight</a></div></div>
     <div class="pd-saved-flight-toolbar">
       <label class="pd-site-search"><span aria-hidden="true">⌕</span><input id="flightSearch" type="search" autocomplete="off" placeholder="Search route, name, aircraft…" aria-label="Search saved flights"></label>
       <select id="flightSort" aria-label="Sort saved flights"><option value="updated">Recently updated</option><option value="date">Planned date</option><option value="progress">Planning progress</option></select>

@@ -23,6 +23,6 @@ const checks=[
   ['account includes functional interface settings',account.includes('pdSettingCompact')&&account.includes('pdSettingMotion')&&client.includes('PilotDeskPreferences')],
   ['account dashboard actions are measurable',analytics.includes('Account Dashboard Action')&&client.includes('pdAccountAction')],
   ['account dashboard has a mobile layout',accountCss.includes('.pd-account-dashboard-grid')&&accountCss.includes('@media(max-width:620px)')],
-  ['account-adjacent pages use official PilotDesk branding',[aircraft,flights,history].every(x=>x.includes('/assets/icon.svg')&&!x.includes('data-pd-wireframe="1"')&&!x.includes('viewBox="0 0 64 40"'))]
+  ['account-adjacent pages use official PilotDesk branding',[aircraft,flights,history].every(x=>x.includes('/favicon.svg')&&!x.includes('data-pd-wireframe="1"')&&!x.includes('viewBox="0 0 64 40"'))]
 ];
 let failed=0;for(const [name,ok] of checks){if(ok)console.log(`✓ ${name}`);else{failed++;console.error(`✗ ${name}`)}}if(failed)process.exit(1);console.log('Account system smoke checks passed.');

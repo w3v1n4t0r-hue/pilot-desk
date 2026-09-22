@@ -3,7 +3,7 @@ const sectionDefinitions = [
     label: 'Tools',
     paths: ['/tools.html', '/calculators/', '/weight-balance.html', '/e6b-flight-computer.html', '/flight-planning-workspace.html', '/history.html'],
     items: [
-      ['/tools.html', 'All calculators', 'Browse every PilotDesk calculator by subject'],
+      ['/tools.html', 'Free aviation calculators', 'Browse every PilotDesk calculator by subject'],
       ['/e6b-flight-computer.html', 'E6B flight computer', 'Flight math in one place'],
       ['/weight-balance.html', 'Weight & balance', 'Build and save a loading scenario'],
       ['/flight-planning-workspace.html', 'Flight math', 'Wind, time, fuel, and descent calculations'],
@@ -50,7 +50,7 @@ const sectionDefinitions = [
 ];
 
 const featuredSearch = [
-  ['All calculators', '/tools.html', 'calculator tools directory'],
+  ['Free aviation calculators', '/tools.html', 'calculator tools directory'],
   ['Crosswind calculator', '/calculators/crosswind/', 'calculator wind component runway'],
   ['Density altitude', '/calculators/density-altitude/', 'calculator performance weather'],
   ['Glide distance', '/calculators/glide-range/', 'calculator emergency performance'],

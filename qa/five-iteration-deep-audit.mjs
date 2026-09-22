@@ -183,7 +183,7 @@ const weatherSource=sourceRead('weather.html');
 if(weatherSource.indexOf('class="pd-panel"')>weatherSource.indexOf('pd-weather-read'))add(hard,2,'weather.html','weather lookup must stay ahead of explanatory material');
 const trainingSource=sourceRead('flight-training.html');
 if(trainingSource.includes('pd-seo-cluster-strip')||trainingSource.includes('class="pd-list"'))add(hard,2,'flight-training.html','duplicate/SEO-style training catalog returned');
-if(!trainingSource.includes('data-pd-core-depth="1"'))add(hard,2,'flight-training.html','hand-edited training layout is no longer protected from generated boilerplate');
+if(!trainingSource.includes('class="pd-training-scenario"')||!trainingSource.includes('USE A REAL SCENARIO'))add(hard,2,'flight-training.html','hand-edited training scenario layout is missing');
 
 const siteJs=sourceRead('assets/site.js');
 if(siteJs.includes("const items=$('.tool-card")||siteJs.includes('.pd-reveal')||siteJs.includes('IntersectionObserver'))add(hard,3,'assets/site.js','decorative reveal runtime or single-element forEach bug returned');

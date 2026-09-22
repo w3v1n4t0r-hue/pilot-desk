@@ -15,7 +15,7 @@ const STUDY_LINKS={
  performance:[['/tools.html?category=Performance','Performance calculators'],['/guides/aircraft-performance-reference.html','Aircraft performance reference'],['/weight-balance.html','Weight & balance']],
  systems:[['/guides.html?q=systems','Systems guides'],['/checklist-trainer.html','Checklist trainer'],['/flight-training.html','Training hub']],
  airport:[['/airport.html','Airport information'],['/guides.html?q=airport','Airport operations guides'],['/route-planner.html','Route planner']],
- decision:[['/skill-gap.html','Check weak subjects'],['/learn/oral-exam/','Practice oral answers'],['/flight-training.html','Training hub']]
+ decision:[['/skill-gap.html','See Weak Subjects'],['/learn/oral-exam/','Practice oral answers'],['/flight-training.html','Training hub']]
 };
 function localHistory(){try{return JSON.parse(localStorage.getItem(historyKey)||'[]')}catch{return []}}
 function saveLocalHistory(date,result){
@@ -152,36 +152,10 @@ function renderResult(result,saved){
 function renderSavedCompletion(data){
  const c=data.completion;renderResult({score:c.score,maxScore:c.max_score,perfect:c.perfect,review:[],streak:state.profile?.current_streak},true);lockWithoutReveal();setText('#pdDailyFormNote','Already completed today. New challenge at 00:00 UTC.');
 }
-async function makeDailyShareCard(result){
- const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1080;const ctx=canvas.getContext('2d');
- ctx.fillStyle='#08090b';ctx.fillRect(0,0,1080,1080);ctx.strokeStyle='#34383f';ctx.lineWidth=3;ctx.fillStyle='#0d1014';ctx.beginPath();ctx.roundRect(54,54,972,972,28);ctx.fill();ctx.stroke();
- ctx.fillStyle='#9ea4ad';ctx.font='700 26px Arial, sans-serif';ctx.fillText('PILOTDESK DAILY',96,126);
- ctx.fillStyle='#f2f4f7';ctx.font='800 86px Arial, sans-serif';ctx.fillText(String(result.score)+'/'+String(result.maxScore),96,254);
- ctx.font='700 70px Arial, sans-serif';ctx.fillText(scoreGrid(result),96,365);
- ctx.fillStyle='#d7b45c';ctx.font='700 28px Arial, sans-serif';const streak=result.streak?result.streak+'-DAY STREAK':'DAILY AVIATION CHALLENGE';ctx.fillText(streak,96,434);
- ctx.fillStyle='#c5c7cc';ctx.font='34px Arial, sans-serif';ctx.fillText('Three questions. Two minutes. Every day.',96,548);
- ctx.fillStyle='#8f939b';ctx.font='26px Arial, sans-serif';ctx.fillText('Think you can beat this score?',96,620);
- ctx.fillStyle='#f2f4f7';ctx.font='700 28px Arial, sans-serif';ctx.fillText('pilot-desk.com/daily',96,892);
- ctx.fillStyle='#737a84';ctx.font='22px Arial, sans-serif';ctx.fillText('Free aviation training challenge · no sign-in required',96,944);
- return new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.92));
-}
-async function shareResult(result){
- const streak=result.streak?`\n🔥 ${result.streak}-day streak`:'';
- const url=referralUrl(result);
- const text=`PilotDesk Daily ${result.score}/${result.maxScore}\n${scoreGrid(result)}${streak}\n\nThink you can beat it?`;
- try{
-  const blob=await makeDailyShareCard(result),file=blob?new File([blob],'pilotdesk-daily.png',{type:'image/png'}):null;
-  const canFileShare=file&&navigator.canShare?.({files:[file]});
-  window.pdTrack?.('PilotDesk Daily Shared',{score:result.score,max:result.maxScore,streak:result.streak||0,method:canFileShare?'image':'link'});
-  if(navigator.share&&canFileShare)await navigator.share({title:'PilotDesk Daily — beat my score',text,url,files:[file]});
-  else if(navigator.share)await navigator.share({title:'PilotDesk Daily — beat my score',text,url});
-  else{await navigator.clipboard.writeText(`${text}\n${url}`);$('#pdDailyShare').textContent='Challenge link copied'}
- }catch(e){if(e?.name!=='AbortError'){try{await navigator.clipboard.writeText(`${text}\n${url}`);$('#pdDailyShare').textContent='Challenge link copied'}catch{}}}
-}
 async function submit(e){
  e.preventDefault();if(state.submitted||!state.data)return;const answers=state.data.challenge.questions.map((_,i)=>Number(document.querySelector(`input[name="q${i}"]:checked`)?.value));if(answers.some(x=>!Number.isInteger(x)))return;
  $('#pdDailySubmit').disabled=true;$('#pdDailySubmit').textContent='Scoring…';setText('#pdDailyFormNote','Checking today’s answers…');
- try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{method:'POST',headers:{...edgeHeaders(),'Content-Type':'application/json'},body:JSON.stringify({answers})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to score challenge.');if(!d.saved){try{localStorage.setItem(guestKey(d.date),JSON.stringify(d))}catch{}}renderResult(d,Boolean(d.saved));if(d.saved)await refreshIdentity()}catch(err){$('#pdDailySubmit').disabled=false;$('#pdDailySubmit').textContent='Submit answers';setText('#pdDailyFormNote',err.message||'Unable to score right now.');state.submitted=false;updateSubmitState()}
+ try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{method:'POST',headers:{...edgeHeaders(),'Content-Type':'application/json'},body:JSON.stringify({answers})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to score challenge.');if(!d.saved){try{localStorage.setItem(guestKey(d.date),JSON.stringify(d))}catch{}}renderResult(d,Boolean(d.saved));if(d.saved)await refreshIdentity()}catch(err){$('#pdDailySubmit').disabled=false;$('#pdDailySubmit').textContent='Check all three';setText('#pdDailyFormNote',err.message||'Unable to score right now.');state.submitted=false;updateSubmitState()}
 }
 async function loadChallenge(){
  try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{headers:edgeHeaders()});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load today’s challenge.');renderChallenge(d)}catch(err){$('#pdDailyQuestions').innerHTML=`<div class="pd-daily-error">${escapeHtml(err.message||'PilotDesk Daily is temporarily unavailable.')}</div>`;setText('#pdDailyFormNote','Try again shortly.')}

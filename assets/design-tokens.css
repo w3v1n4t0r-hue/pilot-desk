@@ -8,9 +8,9 @@
   --bg:#050505;--bg2:#0d0d0f;--panel:#0d0d0f;--panel2:#17171a;--panel3:#1d1d21;
   --text:#f4f3ee;--muted:#aaa9a5;--muted2:#77777f;
   --line:#29292d;--line-hi:#505057;--silver:#e5e4df;--silver2:#faf9f4;
-  --accent:#f0efe9;--accent-soft:rgba(240,239,233,.08);
-  --pd-blue:#c8c7c2;--pd-blue-soft:rgba(240,239,233,.06);
-  --pd-good:#c8c7c2;--pd-warn:#aaa9a5;--pd-bad:#8f8e89;--pd-amber:#aaa9a5;--pd-danger:#8f8e89;
+  --accent:#6db9d6;--accent-soft:rgba(109,185,214,.10);
+  --pd-blue:#6db9d6;--pd-blue-soft:rgba(109,185,214,.10);
+  --pd-good:#87b99a;--pd-warn:#d1ad62;--pd-bad:#d97b7b;--pd-amber:#d1ad62;--pd-danger:#d97b7b;
   --pd-panel:var(--panel);--pd-panel2:var(--panel2);--pd-line:var(--line);--pd-soft:var(--muted);
   --pd-text:var(--text);--pd-accent:var(--accent);
   --pd-radius-sm:2px;--pd-radius:3px;--pd-radius-lg:4px;--pd-cut:9px;
@@ -39,7 +39,7 @@ body:before{animation:none}
 }
 :where(.calc-btn,.pd-btn,button.primary,.pd-auth-btn){
   border:1px solid #f4f3ee!important;border-radius:0!important;
-  background:#f0efe9!important;color:#070707!important;box-shadow:none!important;
+  background:#6db9d6!important;color:#061016!important;box-shadow:none!important;
   clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
 }
 :where(.pd-btn.secondary,.pd-auth-btn.secondary){
@@ -53,7 +53,7 @@ body:before{animation:none}
 :where(.pd-flightcat-pill,.pd-chip,.pd-product-nav a,.pd-product-nav button){
   background:#0a0a0c!important;color:#c8c7c2!important;border-color:#45454b!important;border-radius:0!important;
 }
-.pd-live-dot{display:inline-block;width:6px;height:6px;border-radius:0;background:#d8d7d2;box-shadow:none}
+.pd-live-dot{display:inline-block;width:6px;height:6px;border-radius:0;background:#6db9d6;box-shadow:none}
 
 @keyframes pd-menu-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pd-surface-in{from{opacity:.01;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -78,7 +78,7 @@ html[data-pd-theme="dark"]{
   --text:#f4f3ee!important;--muted:#aaa9a5!important;--muted2:#77777f!important;
   --line:#29292d!important;--line-hi:#505057!important;
   --silver:#e5e4df!important;--silver2:#faf9f4!important;
-  --accent:#f0efe9!important;--accent-soft:rgba(240,239,233,.08)!important;
+  --accent:#6db9d6!important;--accent-soft:rgba(109,185,214,.10)!important;
 }
 html[data-pd-theme="light"] body,
 html[data-pd-theme="night-red"] body,

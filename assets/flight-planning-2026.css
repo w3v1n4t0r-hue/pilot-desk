@@ -1,0 +1,151 @@
+/* PilotDesk Step 3 — connected flight planning.
+   Flat EFB workspace, persistent context, visible route math, reusable saved routes. */
+
+.pd-flight-shell,.rp-shell{max-width:1500px}
+.pd-flight-subnav{
+  display:flex!important;gap:1px!important;flex-wrap:wrap!important;margin:14px 0 10px!important;
+  padding:0!important;border:1px solid var(--line)!important;background:var(--line)!important
+}
+.pd-flight-subnav a{
+  min-height:40px!important;display:inline-flex!important;align-items:center!important;padding:0 12px!important;
+  border:0!important;border-radius:0!important;background:#080b0e!important;color:var(--muted)!important;
+  font-size:10px!important;font-weight:650!important;text-decoration:none!important
+}
+.pd-flight-subnav a:hover{background:var(--panel2)!important;color:var(--text)!important}
+.pd-flight-subnav a[aria-current="page"]{
+  background:#0b1217!important;color:var(--text)!important;box-shadow:inset 0 -2px 0 var(--accent)!important
+}
+.pd-planning-context{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;padding:10px 12px;
+  border:1px solid #33404a;border-left:2px solid var(--accent);background:#080b0e
+}
+.pd-planning-context>div{min-width:0;display:grid;gap:2px}
+.pd-planning-context small{color:var(--accent)!important;font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:.1em}
+.pd-planning-context b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-planning-context span{color:var(--muted2);font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-planning-context>a{color:var(--muted);font-size:9px;white-space:nowrap}
+.pd-planning-context>a:hover{color:var(--accent)}
+
+/* Route planner working scan: route math never leaves view while editing. */
+.rp-live-summary{
+  position:sticky;top:64px;z-index:80;display:grid;
+  grid-template-columns:minmax(180px,1.5fr) repeat(4,minmax(90px,.62fr));
+  gap:1px;margin:10px 0 12px;border:1px solid #34404a;background:#34404a
+}
+.rp-live-summary>div{min-width:0;padding:10px 12px;background:#080b0e}
+.rp-live-summary small{
+  display:block;color:var(--muted2);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em
+}
+.rp-live-summary strong{
+  display:block;margin-top:4px;color:var(--text);font:700 18px/1.08 ui-monospace,SFMono-Regular,Consolas,monospace;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.rp-live-summary>div:not(:first-child) strong{color:var(--accent)}
+.rp-live-summary .rp-summary-route strong{font-size:13px;color:var(--text)}
+.rp-live-summary .rp-summary-route span{display:block;margin-top:4px;color:var(--muted2);font-size:8px}
+.rp-live-summary[data-state="working"]{border-color:#52616c}
+.rp-live-summary[data-state="error"]{border-color:var(--pd-danger)}
+
+.rp-grid{grid-template-columns:minmax(310px,.36fr) minmax(0,.64fr)!important;gap:12px!important}
+.rp-panel,.rp-procedure-section{background:var(--panel)!important;border-color:var(--line)!important}
+.rp-map-card{border-color:#343e47!important}
+.rp-map-toolbar,.rp-chart-note{background:#080b0e!important}
+.rp-map{background:#0a0e12!important}
+.rp-panel input,.rp-panel textarea,.rp-panel select{
+  border-color:#35404a!important;background:#080b0e!important;color:var(--text)!important
+}
+.rp-panel input:focus,.rp-panel textarea:focus,.rp-panel select:focus{border-color:var(--accent)!important}
+#rpBuild{margin-top:4px}
+.rp-auto-note{margin:5px 0 0;color:var(--muted2);font-size:8px}
+.rp-aircraft-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:end}
+.rp-aircraft-row>a{min-height:42px;display:flex;align-items:center;padding:0 9px;border:1px solid var(--line);color:var(--muted);font-size:9px}
+.rp-aircraft-row>a:hover{border-color:var(--accent);color:var(--text)}
+
+/* Saved routes stay inside the route workspace. */
+.rp-saved-routes{
+  margin:16px 0 14px;padding-top:12px;border-top:1px solid var(--line)
+}
+.rp-saved-routes-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px}
+.rp-saved-routes-head h2{margin:0;font-size:13px}
+.rp-saved-routes-head a{font-size:9px;color:var(--muted)}
+.rp-saved-routes-list{display:grid;gap:1px;background:var(--line)}
+.rp-saved-route{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px;background:#080b0e
+}
+.rp-saved-route>div{min-width:0}
+.rp-saved-route b{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rp-saved-route small{display:block;margin-top:2px;color:var(--muted2);font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rp-saved-route-actions{display:flex;gap:4px}
+.rp-saved-route-actions a,.rp-saved-route-actions button{
+  min-height:32px;padding:0 7px;border:1px solid #35404a;background:#0b0f13;color:var(--muted);font-size:8px;cursor:pointer
+}
+.rp-saved-route-actions a:hover,.rp-saved-route-actions button:hover{border-color:var(--accent);color:var(--text)}
+.rp-saved-routes-empty{padding:10px;background:#080b0e;color:var(--muted2);font-size:9px}
+
+/* Compact route weather: context only, never a replacement for Weather. */
+.rp-leg-weather-panel{margin:12px 0 0}
+.rp-leg-weather-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:7px}
+.rp-leg-weather-head h2{margin:0;font-size:13px}
+.rp-leg-weather-head span{color:var(--muted2);font-size:8px}
+.rp-leg-weather{display:flex;gap:1px;overflow:auto;background:var(--line);border:1px solid var(--line)}
+.rp-leg-wx{
+  min-width:190px;display:grid;gap:4px;padding:9px 10px;background:#080b0e
+}
+.rp-leg-wx-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.rp-leg-wx b{font-size:9px}
+.rp-leg-wx-cat{
+  min-width:34px;text-align:center;padding:3px 5px;border:1px solid #3c4750;color:var(--text);
+  font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace
+}
+.rp-leg-wx span,.rp-leg-wx small{color:var(--muted2);font-size:8px;line-height:1.35}
+.rp-leg-wx small{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.rp-leg-wx[data-state="error"] .rp-leg-wx-cat{border-color:#5a4145;color:#d8a8ad}
+
+/* Saved flights are operational rows, not decorative cards. */
+.pd-flight-list{display:grid!important;gap:1px!important;background:var(--line)!important}
+.pd-saved-flight-card{
+  min-height:0!important;padding:14px!important;border:0!important;background:var(--bg)!important;clip-path:none!important;transform:none!important
+}
+.pd-saved-flight-card:after{display:none!important}
+.pd-saved-flight-card:hover{background:var(--panel)!important;transform:none!important}
+.pd-saved-flight-actions [data-dup]{border-color:#42515c!important}
+.pd-saved-flight-actions [data-dup]:after{content:" & edit"}
+.pd-saved-flight-actions [data-edit]{display:none!important}
+
+/* Planner landing becomes an operations index, not a card showcase. */
+.pd-plan-primary{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:1px!important;background:var(--line)!important}
+.pd-plan-primary .pd-hub-card{
+  min-height:120px!important;border:0!important;background:var(--bg)!important;clip-path:none!important;transform:none!important
+}
+.pd-plan-primary .pd-hub-card:hover{background:var(--panel2)!important;transform:none!important}
+.pd-plan-flow ol{gap:1px!important;background:var(--line)!important}
+.pd-plan-flow li{background:var(--panel)!important;border:0!important;border-radius:0!important}
+
+/* Shared planning pages stay flat and dense. */
+.pd-proc-panel,.pd-proc-group,.pd-route-pack-item,.pd-empty{border-radius:0!important}
+.pd-proc-group,.pd-route-pack-item{background:var(--panel)!important}
+.pd-source-chip{border-radius:0!important}
+.pd-source-chip:before{border-radius:0!important;background:var(--accent)!important}
+.pd-flight-card{transform:none!important}
+
+@media(max-width:980px){
+  .rp-live-summary{top:60px;grid-template-columns:repeat(4,1fr)}
+  .rp-live-summary .rp-summary-route{grid-column:1/-1}
+  .rp-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:700px){
+  .pd-flight-subnav{display:grid!important;grid-template-columns:repeat(3,1fr)!important}
+  .pd-flight-subnav a{justify-content:center!important;padding-inline:7px!important}
+  .pd-planning-context{align-items:flex-start;flex-direction:column}
+  .rp-live-summary{position:static;grid-template-columns:1fr 1fr}
+  .rp-live-summary .rp-summary-route{grid-column:1/-1}
+  .rp-live-summary>div{padding:8px 9px}
+  .rp-live-summary strong{font-size:15px}
+  .rp-saved-route{grid-template-columns:1fr}
+  .rp-saved-route-actions{width:100%}
+  .rp-saved-route-actions a,.rp-saved-route-actions button{flex:1;text-align:center;justify-content:center}
+  .pd-plan-primary{grid-template-columns:1fr!important}
+}
+@media(max-width:430px){
+  .pd-flight-subnav{grid-template-columns:1fr 1fr!important}
+}

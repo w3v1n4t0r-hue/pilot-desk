@@ -8,7 +8,7 @@ const site=read('assets/site.js'),boot=read('assets/app-bootstrap.js'),sw=read('
 check(gap.includes('This is not another quiz.'),'Weak Subjects still reads like a second diagnostic');
 check(gap.includes('WRITTEN PREP · WEAK SUBJECTS')&&gap.includes('pdGapWeakList'),'Weak Subjects written-prep view missing');
 for(const track of ['ppl','ira','cpl','cfi','cfii','atp'])check(gap.includes('data-track="'+track+'"'),'Weak Subjects missing '+track);
-check(gapJs.includes('/functions/v1/written-prep')&&!gapJs.includes('/functions/v1/pilot-skill-gap'),'Weak Subjects is not driven only by Written Prep history');
+check(gapJs.includes("functions.invoke(name,{method:'GET'})")&&gapJs.includes("'written-prep?track='")&&!gapJs.includes('/functions/v1/pilot-skill-gap'),'Weak Subjects is not driven only by Written Prep history');
 check(gapJs.includes('x.mastery<80||x.misses>0'),'Weak Subjects does not filter to review signals');
 check(prep.includes('pdPrepWeakLink'),'Written Prep does not link prominently to Weak Subjects');
 check(step7.includes('OPEN WEAK SUBJECTS')&&step7.includes('pdPrepSummary'),'Written Prep result handoff to Weak Subjects missing');

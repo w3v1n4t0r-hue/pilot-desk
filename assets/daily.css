@@ -84,3 +84,91 @@
 .pd-daily-account-link:hover{border-color:var(--accent)!important;background:var(--panel2)!important}
 .pd-daily-next-study{border-radius:0!important;background:#080b0e!important;border-color:var(--line)!important}
 .pd-daily-next-links a{border-radius:0!important;background:#07090b!important}
+
+
+/* Claude Step 8 — Daily: satisfying return loop without game-show energy. */
+.pd-daily-question-progress{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 128px;gap:1px;
+  border-bottom:1px solid var(--line);background:var(--line)
+}
+.pd-daily-question-progress>div,.pd-daily-question-progress>p{
+  min-height:52px;margin:0;padding:9px 12px;background:#080b0e
+}
+.pd-daily-question-progress>div{display:flex;align-items:center;gap:8px;border-bottom:2px solid transparent}
+.pd-daily-question-progress>div span{color:var(--muted2);font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-daily-question-progress>div b{color:var(--muted);font-size:8px;letter-spacing:.08em}
+.pd-daily-question-progress>div[data-state="answered"]{border-bottom-color:var(--accent);background:#091017}
+.pd-daily-question-progress>div[data-state="answered"] span,.pd-daily-question-progress>div[data-state="answered"] b{color:var(--text)}
+.pd-daily-question-progress>div[data-state="review"]{border-bottom-color:var(--line-hi)}
+.pd-daily-question-progress>p{display:grid;align-content:center;justify-items:end}
+.pd-daily-question-progress>p strong{font:700 13px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-daily-question-progress>p small{margin-top:4px;color:var(--muted2);font-size:8px;text-transform:uppercase;letter-spacing:.08em}
+
+.pd-daily-card{border-top:2px solid var(--line-hi)!important}
+.pd-daily-title{padding-bottom:16px!important}
+.pd-daily-question{position:relative;padding:18px 18px 18px 20px!important;border-left:2px solid var(--line)!important}
+.pd-daily-question[data-state="answered"]{border-left-color:var(--accent)!important}
+.pd-daily-qnum{color:var(--accent)!important}
+.pd-daily-option{grid-template-columns:16px 24px minmax(0,1fr)!important;min-height:52px!important;padding:10px 12px!important}
+.pd-daily-option>i{
+  display:grid;place-items:center;width:22px;height:22px;border:1px solid var(--line-hi);
+  color:var(--muted);font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;font-style:normal
+}
+.pd-daily-option:has(input:checked)>i{border-color:var(--accent);color:var(--text);background:#091017}
+.pd-daily-option[data-state="correct"]>i{border-color:var(--accent);color:var(--text)}
+.pd-daily-option[data-state="wrong"]>i{border-color:var(--pd-danger)}
+.pd-daily-actions{padding-top:4px;border-top:1px solid var(--line)}
+.pd-daily-actions>span{margin-left:auto}
+
+.pd-daily-result{
+  margin-top:18px!important;padding:18px!important;border:1px solid var(--line-hi)!important;border-top:2px solid var(--accent)!important;background:#07090b!important
+}
+.pd-daily-result-head{padding-bottom:14px;border-bottom:1px solid var(--line)}
+.pd-daily-result-head h3{margin-top:6px!important;font-size:22px!important}
+.pd-daily-reward{padding:5px 7px;border:1px solid var(--line);color:var(--muted)!important;font-size:8px!important;letter-spacing:.08em;text-transform:uppercase}
+.pd-daily-review{gap:1px!important;background:var(--line);border:1px solid var(--line);margin-top:14px!important}
+.pd-daily-review-item{margin:0!important;padding:12px!important;border:0!important;background:#080b0e}
+.pd-daily-review-item[data-state="review"]{box-shadow:inset 2px 0 0 var(--pd-warn)}
+.pd-daily-review-item[data-state="correct"]{box-shadow:inset 2px 0 0 var(--accent)}
+.pd-daily-review-item strong{display:flex!important;align-items:center;gap:8px}
+.pd-daily-review-item strong span{color:var(--accent);font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-daily-review-item p{margin:7px 0 0!important;color:var(--text)!important;font-size:10px!important}
+.pd-daily-review-item small{display:block;margin-top:5px;color:var(--muted);font-size:9px;line-height:1.55}
+
+.pd-daily-result-next{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;
+  margin-top:14px;padding:14px;border:1px solid var(--line);background:#080b0e
+}
+.pd-daily-result-next span{display:block;color:var(--accent);font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
+.pd-daily-result-next b{display:block;margin-top:6px;font-size:12px}
+.pd-daily-result-next small{display:block;margin-top:5px;max-width:650px;color:var(--muted2);font-size:9px;line-height:1.45}
+.pd-daily-result-primary{
+  min-height:40px;display:inline-flex;align-items:center;justify-content:center;padding:0 13px;
+  border:1px solid var(--accent)!important;background:var(--accent)!important;color:#061018!important;
+  font:750 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;text-decoration:none
+}
+.pd-daily-result-actions{padding-top:12px;border-top:1px solid var(--line)}
+.pd-daily-result-actions a{border-color:var(--line)!important;background:#080b0e!important;color:var(--muted)!important}
+.pd-daily-result-actions a:hover{border-color:var(--line-hi)!important;color:var(--text)!important}
+.pd-daily-return-line{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)
+}
+.pd-daily-return-line span{color:var(--muted2);font:700 7px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
+.pd-daily-return-line strong{color:var(--muted);font:650 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace}
+
+.pd-daily-sidecard:first-child{border-color:var(--line)!important}
+.pd-daily-weak-card{box-shadow:inset 2px 0 0 var(--accent)!important}
+.pd-daily-week{gap:1px!important;background:var(--line);border:1px solid var(--line)}
+.pd-daily-day{border:0!important;background:#080b0e!important;padding:8px 2px!important}
+.pd-daily-day i{width:18px!important;height:18px!important;background:transparent!important;color:var(--muted2)!important;border:1px solid var(--line)!important}
+.pd-daily-day.done i{border-color:var(--accent)!important;color:var(--accent)!important}
+.pd-daily-next-links a[data-primary="1"]{border-color:var(--accent)!important;color:var(--text)!important;background:#091017!important}
+
+@media(max-width:720px){
+ .pd-daily-question-progress{grid-template-columns:repeat(3,1fr)}
+ .pd-daily-question-progress>p{grid-column:1/-1;justify-items:start;min-height:42px}
+ .pd-daily-option{grid-template-columns:16px 24px minmax(0,1fr)!important}
+ .pd-daily-result-next{grid-template-columns:1fr}
+ .pd-daily-result-primary{justify-self:start}
+ .pd-daily-actions>span{margin-left:0}
+}

@@ -13,15 +13,15 @@
   "background_color":"#08090b",
   "theme_color":"#08090b",
   "categories":["navigation","utilities","education"],
-  "icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
+  "icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
   "shortcuts":[
-    {"name":"Free FAA Written Prep","short_name":"Written Prep","description":"PPL, Instrument, CPL, CFI, CFII, and ATP written-test study with missed-question review and saved scores.","url":"/written-prep.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Search PilotDesk","short_name":"Search","description":"Search calculators, guides, and flight-training pages.","url":"/?search=1","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Flight Training","short_name":"Training","description":"Private, instrument, commercial, multi-engine, and CFI study pages.","url":"/flight-training.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Airport Search","short_name":"Airports","description":"Search airports, weather, runways, nearby stations, and FAA procedures.","url":"/airport.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Route Planner","short_name":"Planner","description":"Open the route planner and navlog.","url":"/route-planner.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Flight Planning","short_name":"Flight Math","description":"Work wind, groundspeed, time, fuel, and descent planning in one place.","url":"/flight-planning-workspace.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Airport Weather","short_name":"Weather","description":"Open current METAR and TAF reports.","url":"/weather.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Weight & Balance","short_name":"W&B","description":"Open the Weight & Balance Builder.","url":"/weight-balance.html","icons":[{"src":"/assets/icon.svg","sizes":"any","type":"image/svg+xml"}]}
+    {"name":"Free FAA Written Prep","short_name":"Written Prep","description":"PPL, Instrument, CPL, CFI, CFII, and ATP written-test study with missed-question review and saved scores.","url":"/written-prep.html","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Search PilotDesk","short_name":"Search","description":"Search calculators, guides, and flight-training pages.","url":"/?search=1","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Flight Training","short_name":"Training","description":"Private, instrument, commercial, multi-engine, and CFI study pages.","url":"/flight-training.html","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Airport Search","short_name":"Airports","description":"Search airports, weather, runways, nearby stations, and FAA procedures.","url":"/airport.html","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Route Planner","short_name":"Planner","description":"Open the route planner and navlog.","url":"/route-planner.html","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Flight Planning","short_name":"Flight Math","description":"Work wind, groundspeed, time, fuel, and descent planning in one place.","url":"/flight-planning-workspace.html","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Airport Weather","short_name":"Weather","description":"Open current METAR and TAF reports.","url":"/weather.html","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Weight & Balance","short_name":"W&B","description":"Open the Weight & Balance Builder.","url":"/weight-balance.html","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }

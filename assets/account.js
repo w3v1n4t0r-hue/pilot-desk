@@ -23,15 +23,8 @@ function safeAvatarUrl(value){try{const u=new URL(String(value||''),location.ori
 function renderAvatar(user,profile){const host=$('#pdUserAvatar');if(!host)return;const src=safeAvatarUrl(profile?.avatar_url||user?.user_metadata?.avatar_url||'');host.replaceChildren();if(src){const img=document.createElement('img');img.alt='';img.src=src;img.referrerPolicy='no-referrer';host.appendChild(img)}else host.textContent=initials(profile?.display_name||user?.user_metadata?.full_name||user?.email)}
 async function fetchProfile(user){const {data,error}=await state.client.from('profiles').select('id,display_name,avatar_url,pilot_stage,home_airport,training_goal,checkride_date,xp,level,current_streak,longest_streak,daily_completions,last_challenge_date,created_at').eq('id',user.id).maybeSingle();if(error)throw error;state.profile=data||null;if(data)state.client.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',user.id).then(()=>{});return data}
 
-function ensureDailyCta(profile){
- const signed=$('#pdSignedIn');if(!signed)return;let box=$('#pdAccountDailyCta');if(!box){box=document.createElement('div');box.id='pdAccountDailyCta';box.className='pd-account-benefit';const stats=$('.pd-user-stats',signed);stats?.insertAdjacentElement('afterend',box)}
- const streak=Number(profile?.current_streak||0),done=Number(profile?.daily_completions||0),last=profile?.last_challenge_date||'';const today=new Date().toISOString().slice(0,10),completed=last===today;
- box.innerHTML=`<b>${completed?'Today’s PilotDesk Daily is complete':'PilotDesk Daily is ready'}</b><span>${completed?`🔥 ${streak}-day streak · ${done} saved challenge${done===1?'':'s'}`:'Three aviation questions. Save today’s XP and keep your streak moving.'}</span><div class="pd-account-actions"><a href="/daily/">${completed?'Review today’s challenge':'Play today’s challenge'} →</a></div>`;
-}
-function ensureWrittenPrepCta(){
- const signed=$('#pdSignedIn');if(!signed)return;let box=$('#pdAccountWrittenPrep');if(!box){box=document.createElement('div');box.id='pdAccountWrittenPrep';box.className='pd-account-benefit';const daily=$('#pdAccountDailyCta');(daily||$('.pd-user-stats',signed))?.insertAdjacentElement('afterend',box)}
- box.innerHTML='<b>Free FAA Written Prep</b><span>PPL · Instrument · CPL · CFI · CFII · ATP. Review weak subjects, missed questions and saved scores by FAA standard.</span><div class="pd-account-actions"><a href="/written-prep.html">Open my written prep →</a><a href="/skill-gap.html">Check my weak subjects →</a></div>';
-}
+function ensureDailyCta(){document.querySelector('#pdAccountDailyCta')?.remove()}
+function ensureWrittenPrepCta(){document.querySelector('#pdAccountWrittenPrep')?.remove()}
 
 function localJson(key,fallback=[]){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
 const goalNames={ppl:'Private Pilot',ira:'Instrument Rating',cpl:'Commercial Pilot',multi:'Multi-Engine',cfi:'CFI',cfii:'CFII',atp:'ATP'};

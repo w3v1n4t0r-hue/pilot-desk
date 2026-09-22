@@ -1,13 +1,13 @@
 ---
 import { footerLinks } from '../data/site.mjs';
 ---
-<footer>
+<footer class="pd-footer-2026">
   <div>
     <b>PilotDesk</b>
-    <p>Aviation tools for planning and training.</p>
+    <p>Pilot tools for planning, calculation, and study.</p>
   </div>
   <div class="footer-links">
     {footerLinks.map(([href, label]) => <a href={href}>{label}</a>)}
   </div>
-  <p class="fine">Planning aid only. Verify operational information with current approved sources.</p>
+  <p class="fine">PilotDesk supplements, but does not replace, current official weather, flight-planning information, regulations, charts, procedures, NOTAMs, or approved aircraft data.</p>
 </footer>

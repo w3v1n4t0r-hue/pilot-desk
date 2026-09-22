@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 if(location.pathname!=='/learn/coverage/'&&location.pathname!=='/learn/coverage/index.html')return;
-const data=window.PilotDeskTrainingStandards,$=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));
+const data=window.PilotDeskTrainingStandards,$=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 if(!data)return;
 const order=['ppl','ira','cpl','multi','cfi','cfii','atp'];let current='ppl';
 function sourceName(s){try{const u=new URL(s);return u.hostname==='www.faa.gov'?'FAA source':s}catch{return s}}

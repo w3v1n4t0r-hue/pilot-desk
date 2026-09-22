@@ -58,6 +58,12 @@
     <p class="fine wb-toolbar-note" id="wbAutosaveStatus">Changes autosave only on this device.</p>
   </section>
 
+      <div class="wb-total-grid wb-output-deck" aria-live="polite">
+        <div class="wb-phase"><h3>Departure</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbDepW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbDepM">—</strong></div><div class="result"><small>CG</small><strong id="wbDepCG">—</strong></div></div><div class="wb-envelope-state" id="wbDepEnvelope">No envelope entered</div></div>
+        <div class="wb-phase"><h3>Landing</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbLdgW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbLdgM">—</strong></div><div class="result"><small>CG</small><strong id="wbLdgCG">—</strong></div></div><div class="wb-envelope-state" id="wbLdgEnvelope">No envelope entered</div></div>
+      </div>
+      <div class="notice">An “inside entered envelope” message means only that the calculated point is inside the boundary you supplied. It is not a determination that the aircraft is safe, legal, or within every applicable limitation.</div>
+
   <div class="wb-grid-layout">
     <section class="calc-box wb-main-card">
       <section class="wb-cabin-card" aria-labelledby="wbCabinTitle">
@@ -97,11 +103,6 @@
 
       <div id="wbSafetyWarning" class="safety-warning" role="alert" aria-live="polite"></div>
 
-      <div class="wb-total-grid" aria-live="polite">
-        <div class="wb-phase"><h3>Departure</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbDepW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbDepM">—</strong></div><div class="result"><small>CG</small><strong id="wbDepCG">—</strong></div></div><div class="wb-envelope-state" id="wbDepEnvelope">No envelope entered</div></div>
-        <div class="wb-phase"><h3>Landing</h3><div class="results wb-results"><div class="result primary"><small>Total weight</small><strong id="wbLdgW">—</strong></div><div class="result"><small>Total moment</small><strong id="wbLdgM">—</strong></div><div class="result"><small>CG</small><strong id="wbLdgCG">—</strong></div></div><div class="wb-envelope-state" id="wbLdgEnvelope">No envelope entered</div></div>
-      </div>
-      <div class="notice">An “inside entered envelope” message means only that the calculated point is inside the boundary you supplied. It is not a determination that the aircraft is safe, legal, or within every applicable limitation.</div>
     </section>
 
     <aside class="wb-side">

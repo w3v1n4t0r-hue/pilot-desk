@@ -27,13 +27,15 @@
 <main class="shell content-page" id="main-content">
   <section class="pd-flight-hero"><span class="badge">AVIATION WEATHER TOOL</span><h1>METAR Decoder</h1><p>Paste a METAR and PilotDesk will explain each coded group. Or enter a station identifier and load the current report first.</p></section>
   <section class="info-card" data-pd-core-depth="1"><h2>Decode it yourself first.</h2><p>Read the station, time, wind, visibility, weather, clouds, temperature/dew point, and altimeter before opening the plain-language decode. Then compare the two and go back to the raw report if anything looks wrong.</p><div class="source-links"><a href="/guides/metar-taf.html">METAR / TAF guide</a><a href="/calculators/crosswind/">Crosswind</a><a href="/calculators/density-altitude/">Density altitude</a></div></section><div class="safety-strip"><strong>Training aid only.</strong> METAR coding includes exceptions and supplemental groups. Keep the original report visible and use current official weather references for operational decisions.</div>
+  <div class="pd-metar-decode-grid">
   <section class="pd-panel">
-    <div class="pd-search-shell"><div class="pd-field"><label for="metarStation">Load current station METAR</label><input id="metarStation" maxlength="4" placeholder="KMCO" autocapitalize="characters"></div><button class="pd-btn" id="metarLoad" type="button">Load live METAR</button></div>
+    <div class="pd-search-shell"><div class="pd-field"><label for="metarStation">Load station METAR</label><input id="metarStation" maxlength="4" placeholder="KMCO" autocapitalize="characters"></div><button class="pd-btn" id="metarLoad" type="button">Load station METAR</button></div>
     <p id="metarStatus" class="notice" role="status" aria-live="polite">You can also paste any METAR below.</p>
     <div class="pd-field"><label for="metarRaw">METAR report</label><textarea id="metarRaw" rows="4">METAR KGFK 101553Z 19010KT 10SM BKN200 22/12 A2989 RMK AO2</textarea></div>
-    <div class="pd-actions"><button class="pd-btn" id="metarDecode" type="button">Decode METAR</button><a class="pd-btn secondary" href="/weather.html">Open live weather</a></div>
+    <div class="pd-actions"><button class="pd-btn" id="metarDecode" type="button">Decode METAR</button><a class="pd-btn secondary" href="/weather.html">Open weather</a></div>
   </section>
   <section class="pd-panel"><div class="pd-card-head"><div><h2>Group-by-group explanation</h2><p>Each code stays next to its plain-language meaning.</p></div></div><div id="metarTokens" class="pd-token-list"></div></section>
+  </div>
   <div class="ad-wrap"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="content"><span>Ad space</span></div></div>
   <article class="info-card pd-seo-copy">
     <h2>How to read a METAR</h2>

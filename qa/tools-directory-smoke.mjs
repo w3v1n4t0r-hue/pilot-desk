@@ -8,7 +8,7 @@ const css=fs.readFileSync('assets/calculators-2026.css','utf8');
 const inventory=JSON.parse(fs.readFileSync('src/data/inventory.json','utf8'));
 const calculators=inventory.filter(x=>x.type==='Calculator');
 
-check(page.includes('robots="index,follow"'),'Tools directory should be indexable');
+check(/robots="index,follow(?:,[^"]*)?"/.test(page),'Tools directory should be indexable');
 check(page.includes('pdToolDirectorySearch'),'Task-first calculator search missing');
 check(page.includes('pdToolChips'),'Quick category filters missing');
 check(page.includes('pdToolPersonal'),'Pinned/recent tools section missing');

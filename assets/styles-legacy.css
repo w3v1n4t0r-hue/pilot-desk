@@ -357,9 +357,6 @@ html[data-pd-theme="light"] .brand b{color:#0d151b}
   .topbar{height:62px;padding-inline:14px}
   .brandmark{width:36px!important;height:36px!important}
   .brand b{font-size:16px}.brand small{font-size:9px}
-  .topbar nav:not(.pd-global-nav){position:fixed;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));z-index:90;display:flex!important;gap:4px;padding:6px;border:1px solid var(--line-hi);border-radius:15px;background:rgba(7,11,15,.94);box-shadow:0 18px 55px rgba(0,0,0,.55);backdrop-filter:blur(20px);overflow-x:auto;scrollbar-width:none}
-  .topbar nav:not(.pd-global-nav)::-webkit-scrollbar{display:none}
-  .topbar nav:not(.pd-global-nav) a{display:flex!important;flex:0 0 auto;min-height:42px;padding:0 12px!important;font-size:12px!important;white-space:nowrap}
   .shell{padding:34px 16px 112px}
   .hero{padding:46px 0 38px}.hero p{font-size:17px}
   .content-page h1{font-size:clamp(38px,10vw,56px)}

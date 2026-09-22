@@ -1,17 +1,46 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Free Aviation Calculators for Pilots',
+  url: 'https://www.pilot-desk.com/tools.html',
+  description: 'Free browser-based aviation calculators for pilots and flight students.',
+  isPartOf: { '@type': 'WebSite', name: 'PilotDesk', url: 'https://www.pilot-desk.com/' },
+  mainEntity: {
+    '@type': 'ItemList',
+    name: 'Popular PilotDesk aviation calculators',
+    itemListElement: [
+      ['Crosswind Component Calculator','https://www.pilot-desk.com/calculators/crosswind/'],
+      ['Density Altitude Calculator','https://www.pilot-desk.com/calculators/density-altitude/'],
+      ['Aircraft CG Calculator','https://www.pilot-desk.com/calculators/moment-cg/'],
+      ['Rate 1 Turn Calculator','https://www.pilot-desk.com/calculators/rate-of-turn/'],
+      ['ISA Temperature Calculator','https://www.pilot-desk.com/calculators/isa-temperature/'],
+      ['3 Degree Descent Rate Calculator','https://www.pilot-desk.com/calculators/three-degree-descent/']
+    ].map(([name,url],i)=>({ '@type':'ListItem', position:i+1, name, url }))
+  }
+};
 ---
 <BaseLayout
-  title="Aviation Calculators | PilotDesk"
-  description="Browse PilotDesk aviation calculators for flight planning, performance, navigation, weather, weight and balance, and conversions."
+  title="Free Aviation Calculators for Pilots | 47 Flight Tools | PilotDesk"
+  description="Free aviation calculators for pilots and flight students: crosswind, density altitude, E6B, weight and balance, fuel, descent, turn, navigation, and conversions."
   canonical="/tools.html"
-  robots="index,follow"
+  robots="index,follow,max-image-preview:large"
+  schema={schema}
 >
   <section class="pd-page-hero">
-    <div class="eyebrow">AVIATION CALCULATORS</div>
-    <h1>Find the calculation you need.</h1>
-    <p>Search by what you're trying to solve—not by remembering a calculator name. Flight planning, performance, navigation, weather, weight and balance, and conversions are all here.</p>
+    <div class="eyebrow">FREE AVIATION CALCULATORS</div>
+    <h1>Aviation calculators for pilots and flight students.</h1>
+    <p>Search 47 browser-based tools by what you're trying to solve: crosswind, density altitude, flight planning, performance, navigation, weight and balance, turns, fuel, descent, and conversions.</p>
   </section>
+  <section class="pd-seo-tool-intro" aria-label="Popular aviation calculators">
+    <div><span class="eyebrow">POPULAR PILOT CALCULATORS</span><h2>Start with the calculations pilots search for most.</h2><p>These tools are free, work in a browser, and link to the formula or training reference behind the result.</p></div>
+    <div class="pd-seo-tool-links">
+      <a href="/calculators/crosswind/">Crosswind component</a><a href="/calculators/density-altitude/">Density altitude</a><a href="/e6b-flight-computer.html">Online E6B</a><a href="/calculators/moment-cg/">Aircraft CG</a><a href="/calculators/isa-temperature/">ISA temperature</a><a href="/calculators/rate-of-turn/">Rate of turn</a><a href="/calculators/three-degree-descent/">3° descent rate</a><a href="/weight-balance.html">Weight &amp; balance</a>
+    </div>
+  </section>
+
   <section class="pd-tool-finder" aria-labelledby="pdToolFinderTitle">
     <div class="pd-tool-finder-head">
       <div><h2 id="pdToolFinderTitle">What do you need to calculate?</h2><p>Try “crosswind,” “fuel,” “CG,” “ft/NM,” “groundspeed,” or “descent.”</p></div>
@@ -33,5 +62,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </section>
 
   <div id="pdToolDirectory" aria-live="polite"></div>
+  <section class="pd-seo-tool-footer">
+    <div><span class="eyebrow">PILOT MATH &amp; TRAINING</span><h2>Need the explanation, not just the number?</h2><p>Use the calculator for the arithmetic, then open the supporting guide or FAA-based study material to understand what the result means and where the limits come from.</p></div>
+    <div class="pd-seo-tool-links"><a href="/guides/pilot-math-formulas.html">Pilot math formulas</a><a href="/guides/aircraft-performance-reference.html">Aircraft performance</a><a href="/guides/navigation-reference.html">Navigation reference</a><a href="/guides/aviation-weather-reference.html">Aviation weather</a><a href="/flight-training.html">Checkride study hubs</a><a href="/written-prep.html">FAA written prep</a></div>
+  </section>
   <script slot="scripts" is:inline defer src="/assets/tools-directory.js"></script>
 </BaseLayout>

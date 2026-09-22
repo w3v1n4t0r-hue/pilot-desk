@@ -95,6 +95,8 @@ jobs:
         run: node qa/pro-freemium-smoke.mjs
       - name: Run Checkride Lab checks
         run: node qa/checkride-lab-smoke.mjs
+      - name: Run integrated FAA training and Pro workflow checks
+        run: node qa/integrated-training-pro-smoke.mjs
       - name: Run Daily retention checks
         run: node qa/daily-retention-smoke.mjs
       - name: Run Pilot Skill Gap checks

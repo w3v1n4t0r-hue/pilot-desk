@@ -143,6 +143,8 @@ jobs:
         run: node qa/search-ctr-smoke.mjs
       - name: Run SEO and marketing growth checks
         run: node qa/seo-marketing-growth-smoke.mjs
+      - name: Run SEO Sprint 2 authority checks
+        run: node qa/seo-sprint2-authority-smoke.mjs
       - name: Run growth + retention checks
         run: node qa/growth-retention-smoke.mjs
       - name: Run organic sharing checks

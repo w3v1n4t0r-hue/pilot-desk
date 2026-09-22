@@ -33,12 +33,12 @@ for(const retired of ['professional-polish.css','avionics-architecture.css','avi
 check(!bootstrap.includes('pd-ui-booting')&&!bootstrap.includes('visibility:hidden'),'current shell must not hide static content behind a boot gate');
 check(bootstrap.includes('/assets/crosswind-mfd.js'),'crosswind calculator should retain its focused instrument visualization');
 check(read('assets/site.js').includes("polishInteractions();document.documentElement.classList.add('pd-ready')"),'shared motion system must initialize the one-shot interaction polish');
-check(read('scripts/shared-shell.mjs').includes('/assets/icon.svg'),'shared shell must use the canonical PilotDesk aircraft/math logo');
+check(read('scripts/shared-shell.mjs').includes('/favicon.svg'),'shared shell must use the canonical PilotDesk aircraft/math logo');
 
 for(const sentinel of ['RUNWAY / WIND VECTOR','data-runway-group','data-wind-group','gustSpeed','Math.sin(rad)','Math.cos(rad)','15 KTS IS NOT A UNIVERSAL AIRCRAFT LIMIT'])check(crosswind.includes(sentinel),`crosswind MFD missing ${sentinel}`);
 
 check(!brand.includes('addStyle('),'brand module must not inject a second visual stylesheet stack');
-check(brand.includes("img.src='/assets/icon.svg'")&&brand.includes("word.textContent='PilotDesk'")&&brand.includes("tag.textContent='FLIGHT TOOLS'"),'brand module must normalize the PilotDesk identity');
+check(brand.includes("img.src='/favicon.svg'")&&brand.includes("word.textContent='PilotDesk'")&&brand.includes("tag.textContent='FLIGHT TOOLS'"),'brand module must normalize the PilotDesk identity');
 for(const asset of ['/assets/styles.css','/assets/experience.css','/assets/design-tokens.css','/assets/crosswind-mfd.js'])check(sw.includes(`'${asset}'`),`service worker missing current visual asset ${asset}`);
 
 if(failures.length){console.error(`Professional visual checks failed with ${failures.length} issue(s):`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}

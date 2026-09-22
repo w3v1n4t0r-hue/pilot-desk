@@ -25,7 +25,7 @@ check(core.includes('<loc>https://www.pilot-desk.com/tools.html</loc>'),'Core si
 check(home.includes('Free aviation calculators →'),'Homepage calculator anchor is not search descriptive');
 check(siteData.includes("'Free aviation calculators'"),'Canonical site navigation/search data lost calculator anchor wording');
 
-check(schools.includes('<title>Free Aviation Tools for Flight Schools & CFIs | PilotDesk</title>'),'Flight-school marketing title missing');
+check(schools.includes('<title>PilotDesk for Flight Schools & CFIs | Free Student Resources</title>'),'Flight-school marketing title missing');
 check(schools.includes('Free aviation tools for flight schools, CFIs, and students.'),'Flight-school marketing H1 missing');
 check(schools.includes('INSTRUCTOR RESOURCE PACK'),'Instructor resource pack missing');
 for(const href of ['/tools.html','/e6b-flight-computer.html','/written-prep.html','/flight-training.html','/embed.html'])

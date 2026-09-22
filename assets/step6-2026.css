@@ -32,8 +32,8 @@
 }
 .pd-shared-loading{position:relative;padding-left:58px!important}
 .pd-shared-loading:before{
-  content:"";position:absolute;left:12px;top:50%;width:30px;height:22px;transform:translateY(-50%);
-  border:1px solid var(--line-hi);background:repeating-linear-gradient(90deg,#3d474f 0 3px,transparent 3px 6px)
+  content:"";position:absolute;left:12px;top:50%;width:4px;height:8px;transform:translateY(-50%);
+  background:#3d474f;box-shadow:7px -5px #4a555e,14px -9px #62717c,21px -3px #4a555e
 }
 .pd-shared-error{border-color:#584045!important}
 

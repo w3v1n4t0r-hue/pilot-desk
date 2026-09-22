@@ -44,7 +44,7 @@ const sectionDefinitions = [
       ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons'],
       ['/training/acs-far-reference.html', 'ACS & FAR reference', 'Official FAA study sources by rating'],
       ['/training/certificates-ratings.html', 'Certificates & ratings', 'See the FAA certificate path and ratings'],
-      ['/learn/oral-exam/', 'FAA Oral Exam', 'Know it, say it, apply it, verify it']
+      ['/learn/oral-exam/', 'Oral exam guide', 'Practice checkride subjects by rating']
     ]
   }
 ];

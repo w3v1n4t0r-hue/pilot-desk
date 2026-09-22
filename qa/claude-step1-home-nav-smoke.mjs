@@ -6,6 +6,7 @@ const read=p=>fs.readFileSync(p,'utf8');
 
 const home=read('src/pages/index.astro');
 const homeCss=read('assets/home-desk.css');
+const siteData=read('src/data/site.mjs');
 const nav=read('assets/global-nav.js');
 const navCore=read('assets/navigation-core.js');
 const navCss=read('assets/pilotdesk-navigation-2026.css');
@@ -16,11 +17,11 @@ const sw=read('sw.js');
 
 for(const phrase of [
   'Do the flight math. Check the weather. Study the next rating.',
-  'Plan a Flight','Use a Calculator','Study for a Written',
   'Calculators + planning','No install','Sources shown',
   'Common pilot calculations','PILOTDESK DAILY','Study by certificate or rating.',
   'OPTIONAL ACCOUNT','SOURCES','Common questions'
 ]) check(home.includes(phrase),'Homepage structure/copy changed or missing: '+phrase);
+for(const phrase of ['Plan a Flight','Use a Calculator','Study for a Written']) check(siteData.includes(phrase),'Homepage quick-start action missing: '+phrase);
 check(home.includes('id="pdHomeSearch"')&&home.includes('<kbd>/</kbd>'),'Homepage slash-search shortcut missing');
 check(home.includes('id="pdHomeDesk"')&&home.includes('Pick up where you left off'),'Returning-user resume desk missing');
 check(homeCss.includes('border-left:2px solid var(--accent)'),'Returning-user desk does not have restrained active-state emphasis');

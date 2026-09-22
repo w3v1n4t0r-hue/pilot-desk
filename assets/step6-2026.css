@@ -1,0 +1,140 @@
+/* Claude Step 6 — account, footer, and shared system states. */
+
+.pd-system-state{
+  display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:center;
+  min-height:82px;padding:13px;border:1px solid var(--line);background:#080b0e;color:var(--text)
+}
+.pd-system-state>div:last-child{display:grid;gap:4px}
+.pd-system-state small{color:var(--accent);font:700 7px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.11em}
+.pd-system-state b{font-size:12px}
+.pd-system-state span{color:var(--muted);font-size:9px;line-height:1.45}
+.pd-state-instrument{
+  width:48px;height:48px;display:grid;grid-template-columns:repeat(4,1fr);gap:3px;align-items:end;
+  padding:7px;border:1px solid var(--line-hi);background:#050709
+}
+.pd-state-instrument i{display:block;height:35%;background:#46515a}
+.pd-system-state[data-state="loading"] .pd-state-instrument i:nth-child(2){height:60%}
+.pd-system-state[data-state="loading"] .pd-state-instrument i:nth-child(3){height:82%}
+.pd-system-state[data-state="loading"] .pd-state-instrument i:nth-child(4){height:48%}
+.pd-system-state[data-state="empty"] .pd-state-instrument i{height:20%;background:#343c43}
+.pd-system-state[data-state="error"]{border-color:#584045}
+.pd-system-state[data-state="error"] small{color:var(--pd-danger)}
+.pd-system-state[data-state="error"] .pd-state-instrument{border-color:#584045}
+.pd-state-action{
+  width:max-content;min-height:32px;display:inline-flex;align-items:center;margin-top:4px;padding:0 9px;
+  border:1px solid var(--line-hi);background:#07090b;color:var(--text);font-size:8px;text-decoration:none;cursor:pointer
+}
+.pd-state-action:hover{border-color:var(--accent);color:var(--text)}
+
+.pd-shared-empty,.pd-shared-loading,.pd-shared-error{
+  min-height:56px;padding:12px!important;border:1px solid var(--line)!important;background:#080b0e!important;
+  color:var(--muted)!important;font-size:10px!important;line-height:1.5!important
+}
+.pd-shared-loading{position:relative;padding-left:58px!important}
+.pd-shared-loading:before{
+  content:"";position:absolute;left:12px;top:50%;width:4px;height:8px;transform:translateY(-50%);
+  background:#3d474f;box-shadow:7px -5px #4a555e,14px -9px #62717c,21px -3px #4a555e
+}
+.pd-shared-error{border-color:#584045!important}
+
+html.pd-compact-ui .shell,html.pd-compact-ui main.shell{padding-top:28px}
+html.pd-compact-ui .pd-panel,html.pd-compact-ui .calc-box,html.pd-compact-ui .info-card{padding:14px!important}
+html.pd-compact-ui .pd-account-dashboard-card{padding:10px!important}
+html.pd-compact-ui .pd-flight-subnav a,html.pd-compact-ui .pd-learn-subnav a{min-height:38px!important}
+html.pd-reduced-motion *,html.pd-reduced-motion *:before,html.pd-reduced-motion *:after{
+  animation:none!important;transition:none!important;scroll-behavior:auto!important;transform:none!important
+}
+
+/* Account home-base hierarchy */
+.pd-account-homegrid{
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:1px;
+  margin:18px 0;background:var(--line);border:1px solid var(--line)
+}
+.pd-account-homepanel{min-width:0;padding:15px;background:#080b0e}
+.pd-account-homepanel>small,.pd-account-settings>small{
+  display:block;color:var(--accent);font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em
+}
+.pd-account-homepanel h2,.pd-account-settings h2{margin:5px 0 7px;font-size:17px}
+.pd-account-homepanel>p,.pd-account-settings>p{margin:0;color:var(--muted);font-size:10px;line-height:1.5}
+.pd-account-activity{display:grid;margin-top:10px}
+.pd-account-activity-row{
+  display:grid;grid-template-columns:115px minmax(0,1fr) auto;gap:10px;align-items:center;
+  min-height:44px;padding:7px 0;border-top:1px solid #222a31
+}
+.pd-account-activity-row:first-child{border-top:0}
+.pd-account-activity-row small{color:var(--muted2);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-account-activity-row b{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-account-activity-row a{font-size:8px;color:var(--accent);text-decoration:none}
+.pd-account-activity-row a:hover{text-decoration:underline}
+.pd-account-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:10px;background:var(--line)}
+.pd-account-mini{padding:12px;background:#07090b}
+.pd-account-mini small{display:block;color:var(--muted2);font:700 7px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
+.pd-account-mini strong{display:block;margin-top:6px;color:var(--text);font:700 18px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
+.pd-account-mini span{display:block;margin-top:5px;color:var(--muted);font-size:8px;line-height:1.4}
+.pd-account-mini[data-state="soon"]{box-shadow:inset 2px 0 0 var(--pd-warn)}
+.pd-account-mini[data-state="expired"]{box-shadow:inset 2px 0 0 var(--pd-danger)}
+.pd-account-mini[data-state="ok"]{box-shadow:inset 2px 0 0 var(--accent)}
+.pd-account-settings{
+  margin:18px 0;padding:15px;border:1px solid var(--line);background:#080b0e
+}
+.pd-toggle-list{display:grid;margin-top:10px}
+.pd-toggle{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;
+  min-height:54px;padding:9px 0;border-top:1px solid #222a31
+}
+.pd-toggle:first-child{border-top:0}
+.pd-toggle b,.pd-toggle span{display:block}
+.pd-toggle b{font-size:10px}.pd-toggle span{margin-top:3px;color:var(--muted);font-size:8px;line-height:1.4}
+.pd-toggle input{position:absolute;opacity:0;pointer-events:none}
+.pd-toggle-switch{
+  position:relative;width:42px;height:24px;border:1px solid var(--line-hi);background:#050709;cursor:pointer
+}
+.pd-toggle-switch:before{
+  content:"";position:absolute;top:4px;left:4px;width:14px;height:14px;background:#616b73
+}
+.pd-toggle input:checked+.pd-toggle-switch{border-color:var(--accent);background:#08131a}
+.pd-toggle input:checked+.pd-toggle-switch:before{left:22px;background:var(--accent)}
+
+/* Pricing is a factual comparison, not a SaaS sales wall. */
+.pd-pricing-hero{padding:34px 0 22px!important}
+.pd-pricing-hero h1{max-width:760px!important;font-size:clamp(34px,4.5vw,52px)!important;line-height:1!important}
+.pd-pricing-hero>p{max-width:720px!important;font-size:14px!important}
+.pd-pricing-note{margin-top:18px!important;padding:10px 0!important}
+.pd-plan-grid{grid-template-columns:1fr 1fr!important;margin:24px 0!important}
+.pd-plan-card{padding:20px!important;background:#080b0e!important}
+.pd-plan-card.featured{background:#0a1015!important;box-shadow:inset 0 2px 0 var(--accent)!important}
+.pd-plan-card.featured:before{display:none!important}
+.pd-plan-card:hover{background:#0c1014!important}
+.pd-plan-card h2{font-size:34px!important}
+.pd-plan-card>small,.pd-plan-card.featured small{color:var(--accent)!important}
+.pd-pricing-school-note{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;
+  margin:0 0 34px;padding:14px;border:1px solid var(--line);background:#080b0e
+}
+.pd-pricing-school-note h2{margin:3px 0 5px;font-size:15px}
+.pd-pricing-school-note p{margin:0;color:var(--muted);font-size:10px}
+.pd-pricing-school-note a{font-size:9px;color:var(--accent)}
+
+/* Footer: compact, utilitarian, and consistent. */
+footer.pd-footer-2026{
+  display:grid!important;grid-template-columns:minmax(220px,1fr) auto!important;gap:14px 24px!important;
+  border-top:1px solid var(--line)!important
+}
+footer.pd-footer-2026>div:first-child p{margin:4px 0 0;color:var(--muted);font-size:10px}
+footer.pd-footer-2026 .footer-links{gap:8px 16px!important}
+footer.pd-footer-2026 .footer-links a{font-size:9px!important;color:var(--muted)!important}
+footer.pd-footer-2026 .footer-links a:hover{color:var(--text)!important}
+footer.pd-footer-2026 .fine{grid-column:1/-1;margin:0!important;color:var(--muted2)!important;font-size:9px!important;line-height:1.5!important}
+footer.pd-footer-2026 .pd-settings{display:none!important}
+
+@media(max-width:850px){
+  .pd-account-homegrid{grid-template-columns:1fr}
+  .pd-plan-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:620px){
+  .pd-account-activity-row{grid-template-columns:1fr auto}
+  .pd-account-activity-row small{grid-column:1/-1}
+  .pd-account-mini-grid{grid-template-columns:1fr}
+  .pd-pricing-school-note{grid-template-columns:1fr}
+  footer.pd-footer-2026{grid-template-columns:1fr!important}
+}

@@ -118,7 +118,7 @@ has(siteData,"['/written-prep.html', 'Study for a Written'",'Written Prep missin
 has(astroHome,'homeActions.slice(0,3).map','Astro homepage must render the shared primary action model');
 has(astroHome,"data-pd-launch={index === 2 ? 'written-prep' : undefined}",'Written Prep primary action marker missing from Astro homepage renderer');
 has(training,'href="/written-prep.html"','Written Prep missing from training hub');
-has(account,'ensureWrittenPrepCta','Written Prep missing from signed-in account dashboard');
+has(account,'renderPrepOverview','Written Prep progress missing from signed-in account home base');
 has(account,"ensureOwnerMetric('pdMetricPrepToday'",'Owner dashboard must track Written Prep usage');
 
 if(failures.length){console.error('Written Prep checks failed:\n- '+failures.join('\n- '));process.exit(1)}

@@ -4,7 +4,7 @@ const page=read('skill-gap.html'),client=read('assets/skill-gap.js'),css=read('a
 const failures=[];const need=(t,n,l)=>{if(!t.includes(n))failures.push(`${l}: missing ${n}`)};
 
 for(const n of ['https://www.pilot-desk.com/skill-gap.html','WRITTEN PREP · WEAK SUBJECTS','This is not another quiz.','data-track="ppl"','data-track="ira"','data-track="cpl"','data-track="cfi"','data-track="cfii"','data-track="atp"','/assets/skill-gap.js'])need(page,n,'weak-subjects page');
-for(const n of ['/functions/v1/written-prep','pd-written-track','missedByArea','skillAreas','Weak Subjects Viewed'])need(client,n,'weak-subjects client');
+for(const n of ["functions.invoke(name,{method:'GET'})","'written-prep?track='",'pd-written-track','missedByArea','skillAreas','Weak Subjects Viewed'])need(client,n,'weak-subjects client');
 if(client.includes('/functions/v1/pilot-skill-gap'))failures.push('weak-subjects client: must not run a second diagnostic');
 
 for(const n of ['FAA_PAR','FAA_CAX','FAA_ATM','faa-sample-derived','pilotdesk-acs','record_skill_gap_attempt','publicQuestion','ppl:[','cpl:[','atp:['])need(edge,n,'legacy skill-gap edge');

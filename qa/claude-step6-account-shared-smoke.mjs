@@ -51,7 +51,7 @@ check(pricingJs.includes("note('Checking the account plan and Stripe availabilit
 check(pricingJs.includes("kind==='bad'?'error'"),'Pricing errors do not use the shared calm error state');
 
 // Shared states.
-for(const marker of ["kind==='loading'","kind==='empty'","kind==='error'",'pd-state-scan','data-pd-state-retry'])
+for(const marker of ["['loading','empty','error','ready'].includes(opts.kind)","kind==='loading'","kind==='error'",'pd-state-scan','data-pd-state-retry'])
  check(states.includes(marker),'Shared state helper missing '+marker);
 check(!/spinner|border-radius:\s*50%/i.test(states),'Shared loading state regressed to a generic spinner');
 check(history.includes('No calculation history on this device')&&history.includes('href="/tools.html"'),'Calculation History empty state lacks one clear action');

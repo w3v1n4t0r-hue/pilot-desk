@@ -1,5 +1,6 @@
 (()=>{
 'use strict';
+if(window.PilotDeskState)return;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function render(host,{kind='empty',title='',detail='',actionLabel='',actionHref='' }={}){
  if(typeof host==='string')host=document.querySelector(host);if(!host)return null;

@@ -20,7 +20,7 @@ for(const needle of ['What are you studying for today?','Written prep','Oral exa
 }
 check(!hub.includes('style="margin:22px 0"'),'Old inline training-grid spacing returned');
 check(hub.includes('/training/cfii.html'),'CFII study page is not discoverable from training');
-for(const track of ['private','instrument','commercial','multi','cfi','cfii'])check(oral.includes(`data-track="${track}"`)&&oralJs.includes(`${track}:{title:`),`Oral guide missing ${track} track`);
+for(const track of ['private','instrument','commercial','multi','cfi','cfii','atp'])check(oral.includes(`data-track="${track}"`)&&oralJs.includes(`${track}:{title:`),`Oral guide missing ${track} track`);
 check(oral.includes('Reviewed with the source')||oralJs.includes('Reviewed with the source'),'Oral guide lost source-review progress');
 
 for(const file of ratingPages){

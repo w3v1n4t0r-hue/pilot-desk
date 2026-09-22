@@ -9,7 +9,7 @@ if(!vercel.includes('"source": "/ads.txt"')&&!vercel.includes('"source":"/ads.tx
 for(const url of ['https://www.pilot-desk.com/ads.txt','https://pilot-desk.com/ads.txt'])if(!productionWatch.includes(url))fail('production watch missing '+url);
 if(!ads.includes('scheduleAds()')||!ads.includes("isCalc?10000:7000")||!ads.includes("requestIdleCallback"))fail('AdSense lazy-start guard missing');
 if(!theme.includes("localStorage.setItem('pd-theme','dark')")||!theme.includes("dataset.pdTheme='dark'")||!theme.includes("colorScheme='dark'"))fail('dark-only brand theme guard missing');
-for(const x of ['--bg:#050505','--panel:#0d0d0f','--text:#f4f3ee','--muted:#aaa9a5','--muted2:#77777f'])if(!tokens.includes(x))fail('monochrome contrast token missing '+x);
+for(const x of ['--bg:#050607','--panel:#0c1014','--text:#f2f3f3','--muted:#b0b5ba','--muted2:#747b82','--accent:#6faed1'])if(!tokens.includes(x))fail('cockpit contrast token missing '+x);
 if(!site.includes("if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();"))fail('legacy homepage workspace-shell CLS guard missing');
 if(!site.includes('No recent tools yet.'))fail('recent-tools stable empty state missing');
 if(!bootstrap.includes("serviceWorker.register('/sw.js')")||!bootstrap.includes('requestIdleCallback')||!bootstrap.includes('timeout:1500'))fail('service worker early idle registration guard missing');

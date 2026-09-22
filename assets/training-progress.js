@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const $=s=>document.querySelector(s);
 const names={ppl:'Private Pilot',ira:'Instrument Rating',cpl:'Commercial Pilot',multi:'Multi-Engine',cfi:'CFI',cfii:'CFII',atp:'ATP'};
-const links={ppl:'/training/private-pilot.html',ira:'/training/instrument-rating.html',cpl:'/training/commercial-pilot.html',multi:'/training/multiengine.html',cfi:'/training/cfi.html',cfii:'/training/cfii.html',atp:'/written-prep.html'};
+const links={ppl:'/training/private-pilot.html',ira:'/training/instrument-rating.html',cpl:'/training/commercial-pilot.html',multi:'/training/multiengine.html',cfi:'/training/cfi.html',cfii:'/training/cfii.html',atp:'/training/atp.html'};
 const prep={ppl:'ppl',ira:'ira',cpl:'cpl',multi:'cpl',cfi:'cfi',cfii:'cfii',atp:'atp'};
 const oral={ppl:'private',ira:'instrument',cpl:'commercial',multi:'multi',cfi:'cfi',cfii:'cfii'};
 const get=(k)=>{try{return localStorage.getItem(k)||''}catch{return''}};

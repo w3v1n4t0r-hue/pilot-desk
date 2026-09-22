@@ -17,10 +17,10 @@ check(page.includes('study signal—not examiner grading'),'Checkride Lab gradin
 check(page.includes('data-lab-mode="adaptive"')&&page.includes('data-lab-mode="mock"'),'Examiner drill and mock oral modes missing');
 check(page.includes('Download blank checkride packet (PDF)')&&page.includes('Download checkride packet (PDF)'),'PDF packet actions missing');
 
-for(const track of ['private','instrument','commercial','multi','cfi','cfii'])
+for(const track of ['private','instrument','commercial','multi','cfi','cfii','atp'])
  check(data.includes(track+':{title:'),'Curated examiner data missing '+track);
-check((data.match(/concepts:\[/g)||[]).length>=48,'Checkride Lab does not have concept rubrics across the full oral set');
-check((data.match(/probes:\[/g)||[]).length>=48,'Examiner follow-up probes are not populated across the full oral set');
+check((data.match(/concepts:\[/g)||[]).length >=56,'Checkride Lab does not have concept rubrics across the full oral set');
+check((data.match(/probes:\[/g)||[]).length >=56,'Examiner follow-up probes are not populated across the full oral set');
 
 check(js.includes('scoreAnswer(answer,q)'),'Typed-answer coverage scoring missing');
 check(js.includes("coverage.score<45?2:coverage.score<75?1:0"),'Follow-up depth is not driven by response coverage');
@@ -29,6 +29,8 @@ check(js.includes('pdfBlob(lines)')&&js.includes("type:'application/pdf'"),'Clie
 check(js.includes("a.download='pilotdesk-'"),'PDF packet download filename missing');
 check(js.includes('PilotDeskProAccess.snapshot()'),'Checkride Lab Pro gate is not enforced');
 check(js.includes('localStorage.setItem(\'pd-checkride-last\''),'Checkride session debrief is not retained locally');
+check(js.includes("pd-checkride-history-v1"),'Checkride Lab must retain rolling history for study planning');
+check(page.includes('<option value="atp">'),'ATP must be selectable in Checkride Lab');
 
 check(css.includes('.pd-lab-conversation')&&css.includes('.pd-lab-summary-grid'),'Checkride Lab cockpit UI surfaces missing');
 for(const bad of ['linear-gradient','radial-gradient','backdrop-filter'])check(!css.includes(bad),'Checkride Lab introduced prohibited decoration: '+bad);
@@ -42,4 +44,4 @@ for(const asset of ['/assets/checkride-lab-data.js','/assets/checkride-lab.js','
  check(sw.includes("'"+asset+"'"),'Checkride Lab asset missing from network-first cache: '+asset);
 
 if(failures.length){console.error('Checkride Lab smoke failed ('+failures.length+')');failures.forEach(x=>console.error(' - '+x));process.exit(1)}
-console.log('Checkride Lab smoke passed: Pro gate, examiner follow-up probes, mock oral debrief, six-track rubrics, and real PDF packet generation verified.');
+console.log('Checkride Lab smoke passed: Pro gate, examiner follow-up probes, mock oral debrief, seven-track rubrics, and real PDF packet generation verified.');

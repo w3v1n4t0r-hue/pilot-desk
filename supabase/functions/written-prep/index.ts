@@ -5,7 +5,7 @@ const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"au
 const json=(status:number,body:unknown)=>new Response(JSON.stringify(body),{status,headers:cors});
 const validTrack=(v:unknown):Track=>['ppl','ira','cpl','cfi','cfii','atp'].includes(String(v))?String(v) as Track:'ppl';
 const validMode=(v:unknown)=>['learn','random','missed','marked','exam'].includes(String(v))?String(v):'learn';
-const validDifficulty=(v:unknown):Difficulty|'all'=>['foundation','applied','advanced'].includes(String(v))?String(v) as Difficulty:'all';
+const validDifficulty=(v:unknown):Difficulty|'all'=>['applied','advanced'].includes(String(v))?String(v) as Difficulty:'all';
 const nowIso=()=>new Date().toISOString();
 const enc=(v:string)=>encodeURIComponent(v);
 const grade=(v:number)=>v>=90?'A':v>=80?'B':v>=70?'C':v>=60?'D':'F';

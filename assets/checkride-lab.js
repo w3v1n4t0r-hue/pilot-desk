@@ -15,8 +15,8 @@ function addTurn(role,label,title,body=''){
  const host=$('#pdLabConversation'),div=document.createElement('div');div.className='pd-lab-turn '+role;
  div.innerHTML='<small>'+esc(label)+'</small><b>'+esc(title)+'</b>'+(body?'<p>'+esc(body)+'</p>':'');host.append(div);div.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
 }
-function modeLabel(){return state.mode==='mock'?'MOCK ORAL':'ADAPTIVE DRILL'}
-function updateSetup(){const b=$('#pdLabStart');if(b)b.textContent=state.mode==='mock'?'Start mock oral':'Start adaptive drill';document.querySelectorAll('[data-lab-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.labMode===state.mode)))}
+function modeLabel(){return state.mode==='mock'?'MOCK ORAL':'EXAMINER DRILL'}
+function updateSetup(){const b=$('#pdLabStart');if(b)b.textContent=state.mode==='mock'?'Start mock oral':'Start examiner drill';document.querySelectorAll('[data-lab-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.labMode===state.mode)))}
 function selectTrack(){state.track=$('#pdLabTrack')?.value||'private';return data[state.track]}
 function makeSession(){
  const t=selectTrack(),base=shuffle(t.items),target=state.mode==='mock'?base.length:Math.min(6,base.length);
@@ -71,7 +71,7 @@ function summary(){
 }
 function finish(){
  const s=state.session;if(!s)return;s.finishedAt=Date.now();$('#pdLabSession').hidden=true;$('#pdLabSummary').hidden=false;
- const x=summary(),t=data[s.track];$('#pdLabSummaryTitle').textContent=t.title+' '+(s.mode==='mock'?'mock oral':'adaptive drill');
+ const x=summary(),t=data[s.track];$('#pdLabSummaryTitle').textContent=t.title+' '+(s.mode==='mock'?'mock oral':'examiner drill');
  $('#pdLabSummaryScore').textContent=x.avg+'%';$('#pdLabStrong').textContent=x.strong?.area||'—';$('#pdLabWeak').textContent=x.weak?.area||'—';$('#pdLabAnswered').textContent=String(x.rows.length);
  $('#pdLabBreakdown').innerHTML=x.rows.map(r=>'<div class="pd-lab-breakdown-row"><b>'+esc(r.title)+'</b><strong>'+r.score+'%</strong><span>'+(r.missing.length?'Review: '+esc(r.missing.join(' · ')):'Core concepts detected')+'</span></div>').join('');
  try{localStorage.setItem('pd-checkride-last',JSON.stringify({track:s.track,mode:s.mode,finishedAt:s.finishedAt,avg:x.avg,rows:x.rows}))}catch{}
@@ -102,8 +102,8 @@ function downloadPacket(withResults=false){
 }
 async function gate(){
  const host=$('#pdLabAccess');let access={isPro:false};try{access=await window.PilotDeskProAccess.snapshot()}catch{}state.access=access;
- if(access.isPro){host.innerHTML='<div><span class="eyebrow">'+(access.isSchool?'FLIGHT SCHOOL ACCESS':'PILOTDESK PRO')+'</span><h2>Checkride Lab available.</h2><p>Adaptive examiner practice, mock oral sessions, and PDF packets are active on this account.</p></div>';$('#pdLabSetup').hidden=false}
- else{host.innerHTML='<div class="pd-lab-lock"><div><span class="eyebrow">PILOTDESK PRO</span><h2>Checkride Lab is a Pro feature.</h2><p>Free PilotDesk still includes the oral-prep preview. Pro adds adaptive examiner conversations, full mock-orals, debriefs, and PDF study packets.</p></div><a class="pd-btn" href="/pricing.html?from=checkride-lab">View Pro plan</a></div>';$('#pdLabSetup').hidden=true}
+ if(access.isPro){host.innerHTML='<div><span class="eyebrow">'+(access.isSchool?'FLIGHT SCHOOL ACCESS':'PILOTDESK PRO')+'</span><h2>Checkride Lab available.</h2><p>Examiner follow-up practice, mock oral sessions, and PDF packets are active on this account.</p></div>';$('#pdLabSetup').hidden=false}
+ else{host.innerHTML='<div class="pd-lab-lock"><div><span class="eyebrow">PILOTDESK PRO</span><h2>Checkride Lab is a Pro feature.</h2><p>Free PilotDesk still includes the oral-prep preview. Pro adds examiner follow-up conversations, full mock-orals, debriefs, and PDF study packets.</p></div><a class="pd-btn" href="/pricing.html?from=checkride-lab">View Pro plan</a></div>';$('#pdLabSetup').hidden=true}
 }
 function init(){
  const q=new URLSearchParams(location.search),track=q.get('track');if(data[track]){$('#pdLabTrack').value=track;state.track=track}

@@ -18,7 +18,7 @@ if(!fs.existsSync(dist)){
 }
 walk(dist);
 
-const officialLogo='/assets/icon.svg';
+const officialLogo='/favicon.svg';
 for(const file of htmlFiles){
   const html=fs.readFileSync(file,'utf8');
   if(!/<meta\s+name=["']viewport["'][^>]*width=device-width/i.test(html)){

@@ -18,8 +18,9 @@ const checks=[
   ['account is always visible in the global header',nav.includes('data-pd-account-link')&&nav.includes('href="/account.html"')&&nav.includes("text.textContent='Sign in'")&&nav.includes("text.textContent='Account'")],
   ['account page distinguishes synced and device-local data',account.includes('Account synced')&&account.includes('Device local')&&account.includes('Aircraft & saved flights · this device')],
   ['signed-in account has a useful dashboard',account.includes('pdAccountDashboardGrid')&&client.includes('renderAccountDashboard')],
-  ['account dashboard surfaces Daily and Written Prep',client.includes("eyebrow:'DAILY · ACCOUNT'")&&client.includes("eyebrow:'WRITTEN PREP · ACCOUNT'")],
+  ['account home base surfaces recent activity, currency reminders and Written Prep',account.includes('pdAccountRecentActivity')&&account.includes('pdAccountCurrency')&&account.includes('pdAccountPrep')&&client.includes('renderRecentActivity')&&client.includes('renderPrepOverview')],
   ['account dashboard reads device-local aircraft flights and pins',client.includes("localJson('pd-aircraft'")&&client.includes("localJson('pd-saved-flights'")&&client.includes("localJson('pd-favorites'")],
+  ['account includes functional interface settings',account.includes('pdSettingCompact')&&account.includes('pdSettingMotion')&&client.includes('PilotDeskPreferences')],
   ['account dashboard actions are measurable',analytics.includes('Account Dashboard Action')&&client.includes('pdAccountAction')],
   ['account dashboard has a mobile layout',accountCss.includes('.pd-account-dashboard-grid')&&accountCss.includes('@media(max-width:620px)')],
   ['account-adjacent pages use official PilotDesk branding',[aircraft,flights,history].every(x=>x.includes('/assets/icon.svg')&&!x.includes('data-pd-wireframe="1"')&&!x.includes('viewBox="0 0 64 40"'))]

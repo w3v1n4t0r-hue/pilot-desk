@@ -141,6 +141,8 @@ jobs:
         run: node qa/internal-seo-architecture-smoke.mjs
       - name: Run Search Console CTR checks
         run: node qa/search-ctr-smoke.mjs
+      - name: Run SEO and marketing growth checks
+        run: node qa/seo-marketing-growth-smoke.mjs
       - name: Run growth + retention checks
         run: node qa/growth-retention-smoke.mjs
       - name: Run organic sharing checks

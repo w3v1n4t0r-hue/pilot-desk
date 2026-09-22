@@ -19,7 +19,17 @@ function show(sel,on){const el=$(sel);if(el)el.hidden=!on}
 function notice(msg,kind=''){const el=$('#pdPrepNotice');if(!el)return;el.textContent=msg;el.dataset.kind=kind;el.hidden=!msg;if(msg)setTimeout(()=>{if(el.textContent===msg)el.hidden=true},4500)}
 function band(v){return v>=80?'strong':v>=60?'developing':'gap'}
 function sourceLabel(q){if(q?.source==='faa-sample-exact')return 'FAA SAMPLE';if(q?.source==='pilotdesk-faa-parallel')return 'FAA FIGURE';if(q?.source==='pilotdesk-curated')return 'CURATED';return q?.standardType==='PTS'?'PTS-LINKED':'ACS-LINKED'}
-function renderFigureRef(q){let box=$('#pdPrepFigureRef');if(!box){box=document.createElement('div');box.id='pdPrepFigureRef';box.className='pd-prep-figure-ref';$('#pdPrepPrompt')?.insertAdjacentElement('afterend',box)}if(!q?.figureRef){box.hidden=true;box.innerHTML='';return}box.hidden=false;box.innerHTML=`<div><small>OFFICIAL FAA FIGURE</small><b>${esc(q.figureRef.supplement)} · Figure ${esc(q.figureRef.figure)}</b><span>Open the FAA testing supplement and use the referenced figure to answer this item.</span></div><a href="${esc(q.figureRef.url)}" target="_blank" rel="noopener">OPEN FIGURE ↗</a>`}
+function renderFigureRef(q){
+ let box=$('#pdPrepFigureRef');
+ if(!box){box=document.createElement('section');box.id='pdPrepFigureRef';box.className='pd-prep-figure-ref';$('#pdPrepPrompt')?.insertAdjacentElement('afterend',box)}
+ if(!q?.figureRef){box.hidden=true;box.innerHTML='';return}
+ const label=(q.figureRef.supplement||'FAA testing supplement')+' · Figure '+(q.figureRef.figure||'');
+ const src=String(q.figureRef.url||'');
+ box.hidden=false;
+ box.innerHTML='<div class="pd-prep-figure-head"><div><small>OFFICIAL FAA FIGURE</small><b>'+esc(label)+'</b><span>Use the same FAA testing-supplement material referenced by the question. PilotDesk does not redraw or reinterpret the source figure.</span></div><div class="pd-prep-figure-actions"><button type="button" class="pd-btn secondary" data-figure-toggle>Show FAA supplement</button><a class="pd-btn secondary" href="'+esc(src)+'" target="_blank" rel="noopener">Open FAA PDF ↗</a></div></div><div class="pd-prep-figure-viewer" data-figure-viewer hidden><p class="fine">Navigate to '+esc(label)+'. Page placement can change when the FAA republishes a supplement, so PilotDesk identifies the official figure instead of guessing a PDF page number.</p><iframe title="'+esc(label)+' official FAA testing supplement" loading="lazy" referrerpolicy="no-referrer" data-src="'+esc(src)+'#view=FitH"></iframe></div>';
+ const toggle=box.querySelector('[data-figure-toggle]'),viewer=box.querySelector('[data-figure-viewer]'),frame=box.querySelector('iframe');
+ toggle?.addEventListener('click',()=>{const next=viewer.hidden;viewer.hidden=!next;toggle.textContent=next?'Hide FAA supplement':'Show FAA supplement';if(next&&!frame.src)frame.src=frame.dataset.src||src});
+}
 function lockUI(on){$$('[data-mode],[data-track],[data-difficulty]').forEach(b=>b.disabled=on)}
 
 async function loadSupabase(){const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');state.client=mod.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const {data:{session}}=await state.client.auth.getSession();state.auth=session||null;state.client.auth.onAuthStateChange((_event,s)=>{state.auth=s||null;renderIdentity();if(state.auth)loadDashboard();else renderGate()})}

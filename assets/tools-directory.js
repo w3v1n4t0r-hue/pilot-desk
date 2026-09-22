@@ -139,25 +139,34 @@ function init(){
   });
 
   function itemByPath(path){return items.find(x=>x.href===path||x.href.replace(/\/$/,'')===String(path||'').replace(/\/$/,''))}
+  function recency(at){
+    const n=Number(at);if(!Number.isFinite(n))return 'Recently used';
+    const days=Math.max(0,Math.floor((Date.now()-n)/86400000));
+    return days===0?'Last used today':days===1?'Last used 1 day ago':`Last used ${days} days ago`;
+  }
   function renderPersonal(){
     if(!personal||!personalGrid)return;
-    const pinned=read('pd-favorites',[]).map(x=>itemByPath(x.path)).filter(Boolean);
-    const recent=read('pd-recent',[]).map(x=>itemByPath(x.path)).filter(Boolean);
-    const merged=dedupe([...pinned,...recent]).slice(0,8);
     personalGrid.replaceChildren();
-    if(!merged.length){personal.hidden=true;return}
+    if(document.documentElement.dataset.pdAuth!=='signed-in'){personal.hidden=true;return}
+    const raw=read('pd-recent',[]);
+    const recent=raw.map(entry=>{const tool=itemByPath(entry.path);return tool?{...tool,lastUsed:entry.at}:null}).filter(Boolean).slice(0,8);
+    if(!recent.length){personal.hidden=true;return}
     personal.hidden=false;
-    for(const x of merged){
+    for(const x of recent){
       const a=document.createElement('a');a.className='pd-tool-personal-card';a.href=x.href;
-      const source=pinned.some(p=>p.href===x.href)?'Pinned':'Recent';
-      a.innerHTML=`<small>${source}</small><b>${x.title}</b><span>${x.category}</span>`;
-      a.addEventListener('click',()=>window.pdTrack?.('Tool Directory Open',{tool:x.slug,source:source.toLowerCase()}));
+      a.innerHTML=`<small>RECENT</small><b>${x.title}</b><span>${x.category}</span><em class="pd-tool-last-used">${recency(x.lastUsed)}</em>`;
+      a.addEventListener('click',()=>window.pdTrack?.('Tool Directory Open',{tool:x.slug,source:'recent'}));
       personalGrid.append(a);
     }
   }
 
+  function iconFor(category){
+    const path=category==='Weight & Balance'?'M12 3v18M5 7h14M7 7l-3 9h6L7 7Zm10 0-3 9h6l-3-9Z':category==='Navigation'||category==='Flight Planning'?'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm-3 13 2-6 5-2-2 6-5 2Z':category==='Atmosphere & Weather'?'M4 9h11c3 0 3-4 0-4-1 0-2 .5-2.5 1.5M4 13h14c3 0 3 4 0 4-1.5 0-2.5-.7-3-1.7M4 17h7':'M5 4h14v16H5zM8 8h8M8 12h3m2 0h3M8 16h3m2 0h3';
+    return `<span class="pd-directory-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="${path}"/></svg></span>`;
+  }
   function cardFor(x){
     const a=document.createElement('a');a.className='tool-card pd-directory-card';a.href=x.href;
+    a.insertAdjacentHTML('afterbegin',iconFor(x.category));
     const title=document.createElement('b');title.textContent=x.title;
     const meta=document.createElement('small');meta.className='pd-directory-card-meta';meta.textContent=x.category;
     const desc=document.createElement('p');
@@ -214,6 +223,7 @@ function init(){
   groupSelect.addEventListener('change',()=>{render();window.pdTrack?.('Tool Directory Filter',{category:groupSelect.value||'all'})});
   clear?.addEventListener('click',reset);
   addEventListener('keydown',e=>{if(e.key==='/'&&!/input|textarea|select/i.test(document.activeElement?.tagName||'')){e.preventDefault();input.focus()}});
+  document.addEventListener('pilotdesk:auth-state',renderPersonal);
   renderPersonal();render();
 }
 if(window.PILOTDESK_INVENTORY||window.PILOTDESK_NAV?.inventory)init();else{const s=document.createElement('script');s.src='/assets/inventory-data.js';s.onload=init;document.head.append(s)}

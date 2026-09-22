@@ -6,7 +6,7 @@ const GENERATED_ASSETS=Array.isArray(self.PILOTDESK_OFFLINE_ASSETS)?self.PILOTDE
 const CORE=[...new Set([
   '/','/index.html','/offline.html','/404.html','/tools.html',
   ...GENERATED_CALCULATORS,
-  '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/visual-system.css','/assets/pilotdesk-navigation-2026.css','/assets/design-tokens.css',
+  '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/visual-system.css','/assets/pilotdesk-navigation-2026.css','/assets/calculators-2026.css','/assets/design-tokens.css',
   '/assets/site.js','/assets/safety.js','/assets/app-bootstrap.js','/assets/calculation-account.js','/assets/home-desk.js','/assets/home-desk.css','/assets/navigation-core.js','/assets/global-nav.js','/assets/theme.js','/assets/features.js','/assets/calculator-ux.js','/assets/crosswind-mfd.js','/assets/pilotdesk-plus.js','/assets/experience.js','/assets/errors.js','/assets/analytics.js','/assets/update.js','/assets/ad-config.js','/assets/ads.js','/assets/share-enhance.js','/assets/inventory-data.js',
   ...GENERATED_ASSETS,
   '/assets/icon.svg','/assets/hero-flightline.svg','/site.webmanifest'
@@ -15,7 +15,7 @@ const CORE_PATHS=new Set(CORE);
 const MAX_RUNTIME_ENTRIES=140;
 const NETWORK_FIRST_ASSETS=new Set([
   '/assets/app-bootstrap.js','/assets/navigation-core.js','/assets/navigation-search.js','/assets/inventory-data.js','/assets/global-nav.js','/assets/icon.svg',
-  '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/pilotdesk-navigation-2026.css','/assets/design-tokens.css',
+  '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/pilotdesk-navigation-2026.css','/assets/calculators-2026.css','/assets/design-tokens.css',
   '/assets/analytics.js','/assets/share-enhance.js','/assets/page-share.js'
 ]);
 const cacheable=r=>r&&r.ok&&(r.type==='basic'||r.type==='default');

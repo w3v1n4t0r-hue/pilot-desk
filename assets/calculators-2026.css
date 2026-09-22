@@ -1,0 +1,185 @@
+/* PilotDesk Step 2 — calculator directory + calculator workbench.
+   Dense, instrument-like, output-first, and token-driven. */
+
+/* Calculator hub */
+.pd-tool-finder{
+  margin:18px 0 16px;padding:16px;border:1px solid var(--line);background:var(--panel);
+}
+.pd-tool-finder-head{
+  display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:12px;
+}
+.pd-tool-finder-head h2{margin:0 0 4px;font-size:20px}
+.pd-tool-finder-head p{margin:0;font-size:12px}
+.pd-tool-finder-head>span{color:var(--muted2);font:700 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+.pd-tool-search-row{
+  display:grid;grid-template-columns:minmax(260px,1fr) minmax(170px,240px) auto;gap:8px;align-items:center;
+}
+.pd-tool-search-row input,.pd-tool-search-row select{
+  width:100%;min-height:48px;border:1px solid var(--line-hi)!important;background:#080b0e!important;color:var(--text)!important;padding:0 12px;
+}
+.pd-tool-search-row input:focus,.pd-tool-search-row select:focus{border-color:var(--accent)!important;outline:1px solid var(--accent)!important;outline-offset:1px!important}
+.pd-tool-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.pd-tool-chip{
+  min-height:36px;padding:0 10px;border:1px solid var(--line);background:#080b0e;color:var(--muted);font-size:10px
+}
+.pd-tool-chip:hover,.pd-tool-chip[aria-pressed="true"]{border-color:var(--accent);color:var(--text)}
+.pd-tool-chip[aria-pressed="true"]{box-shadow:inset 2px 0 0 var(--accent)!important}
+
+.pd-tool-personal{
+  margin:18px 0 28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#07090b
+}
+.pd-tool-personal-head{
+  display:flex;justify-content:space-between;gap:18px;align-items:end;padding:12px 0 10px
+}
+.pd-tool-personal-head h2{margin:2px 0 0;font-size:17px}
+.pd-tool-personal-head>span{color:var(--muted2);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+.pd-tool-personal-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line)
+}
+.pd-tool-personal-card{
+  min-width:0;display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px;align-items:center;padding:12px;background:var(--bg);color:var(--text);text-decoration:none
+}
+.pd-tool-personal-card:hover{background:var(--panel2);text-decoration:none}
+.pd-tool-personal-copy{min-width:0;display:grid;gap:2px}
+.pd-tool-personal-copy small{color:var(--accent)!important;font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-tool-personal-copy b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-tool-personal-copy>span{color:var(--muted2);font-size:9px}
+.pd-directory-icon{
+  width:30px;height:30px;display:grid;place-items:center;border:1px solid #303841;background:#080b0e;color:#aeb6bc;flex:0 0 auto
+}
+.pd-directory-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:square;stroke-linejoin:miter}
+.pd-tool-personal-card:hover .pd-directory-icon,.pd-directory-card:hover .pd-directory-icon{border-color:var(--accent);color:var(--accent)}
+
+.pd-directory-group{margin:0 0 26px!important}
+.pd-directory-group .category-head{margin-bottom:8px!important;padding-bottom:7px;border-bottom:1px solid var(--line)}
+.pd-directory-group .category-head h2{font-size:17px}
+.pd-directory-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:1px!important;background:var(--line)!important
+}
+.pd-directory-card{
+  min-height:86px!important;display:grid!important;grid-template-columns:34px minmax(0,1fr)!important;align-items:center!important;gap:12px!important;
+  padding:12px 14px!important;border:0!important;background:var(--bg)!important;color:var(--text)!important
+}
+.pd-directory-card:hover{background:var(--panel2)!important;text-decoration:none!important}
+.pd-directory-card-copy{min-width:0;display:grid;gap:3px}
+.pd-directory-card-copy>b{font-size:13px!important;font-weight:650!important}
+.pd-directory-card-copy p{margin:0!important;color:var(--muted)!important;font-size:10.5px!important;line-height:1.45!important}
+.pd-directory-card-topline{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.pd-directory-card-meta,.pd-directory-last-used{
+  font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:.07em!important;text-transform:uppercase
+}
+.pd-directory-card-meta{color:var(--muted2)!important}
+.pd-directory-last-used{color:var(--accent)!important;white-space:nowrap}
+
+/* Generic calculator workbench */
+.calc-box.pd-calc-shell{
+  padding:0!important;border:0!important;background:transparent!important;clip-path:none!important;box-shadow:none!important
+}
+.pd-calc-workbench{
+  display:grid;grid-template-columns:minmax(300px,.86fr) minmax(360px,1.14fr);gap:12px;align-items:start;margin:0 0 12px
+}
+.pd-calc-input-panel,.pd-calc-output-panel{
+  min-width:0;border:1px solid var(--line);background:var(--panel);padding:16px
+}
+.pd-calc-input-panel{border-top:2px solid #3a434b}
+.pd-calc-output-panel{
+  position:sticky;top:82px;border-top:2px solid var(--accent);background:#080c10
+}
+.pd-calc-section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 0 10px}
+.pd-calc-section-head b{font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.pd-calc-section-head span{color:var(--muted2);font-size:9px}
+.pd-calc-quick-help{margin:0 0 14px;padding:9px 10px;border-left:2px solid #46515a;background:#090d11}
+.pd-calc-quick-help b{display:block;margin-bottom:3px;font-size:10px;color:var(--text)}
+.pd-calc-quick-help span{display:block;color:var(--muted);font-size:10px;line-height:1.45}
+.pd-calc-input-panel .fields{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+.pd-calc-input-panel .field{min-width:0}
+.pd-calc-input-panel .input-wrap{min-height:48px!important}
+.pd-calc-input-panel>.calc-btn{width:100%;margin-top:12px!important;min-height:46px!important}
+.pd-calc-output-panel .results{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:1px!important;margin:0!important;background:var(--line)!important
+}
+.pd-calc-output-panel .result{
+  min-height:108px!important;display:grid!important;align-content:center!important;gap:4px!important;padding:14px!important;border:0!important;background:#0a0e12!important
+}
+.pd-calc-output-panel .result.primary{
+  grid-column:1/-1!important;min-height:144px!important;background:#09131a!important
+}
+.pd-calc-output-panel .result small{
+  color:var(--muted2)!important;font:700 9px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:.08em!important;text-transform:uppercase
+}
+.pd-calc-output-panel .result strong{
+  color:var(--text)!important;font:700 25px/1.1 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:-.03em!important
+}
+.pd-calc-output-panel .result.primary strong{color:var(--accent)!important;font-size:38px!important}
+.pd-calc-result-summary{margin-top:8px;padding:10px 11px;border:1px solid #2f3942;background:#070a0d}
+.pd-calc-result-summary small{display:block;color:var(--muted2);font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em}
+.pd-calc-result-summary strong{display:block;margin-top:4px;font-size:11px;color:var(--text)}
+.calc-actions{
+  display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:wrap!important;margin:10px 0!important
+}
+.calc-actions>button,.calc-actions>details>summary,.calc-actions>a{
+  min-height:40px!important;display:inline-flex!important;align-items:center!important;padding:0 10px!important;border:1px solid var(--line)!important;background:#080b0e!important;color:var(--muted)!important;font-size:10px!important
+}
+.calc-actions>button:hover,.calc-actions>details>summary:hover,.calc-actions>a:hover{border-color:var(--line-hi)!important;color:var(--text)!important}
+.calc-actions>.pd-calc-save{border-color:var(--accent)!important;background:var(--accent)!important;color:#061018!important;font-weight:700!important}
+.pd-export-menu{position:relative;border:0!important;background:transparent!important}
+.pd-export-menu>summary{list-style:none}.pd-export-menu>summary::-webkit-details-marker{display:none}
+.pd-export-menu[open]{display:flex!important;gap:6px!important;flex-wrap:wrap!important}
+.pd-export-menu[open]>summary{border-color:var(--line-hi)!important}
+.pd-export-menu[open]>button,.pd-export-menu[open]>a{
+  min-height:40px!important;padding:0 10px!important;border:1px solid var(--line)!important;background:#080b0e!important;color:var(--muted)!important;font-size:10px!important
+}
+
+/* Existing local-scenario helper stays secondary to account-backed Save calculation. */
+.pd-scenario-panel{margin-top:10px!important;padding:12px!important;border:1px solid var(--line)!important;background:#080b0e!important}
+.pd-scenario-head h3:after{content:" · THIS DEVICE";color:var(--muted2);font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
+
+/* Weight & Balance: outputs and envelope graph are the top working surface. */
+.wb-result-deck{
+  display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:12px;margin-bottom:14px
+}
+.wb-result-summary,.wb-result-graph{
+  min-width:0;border:1px solid var(--line);background:#080c10;padding:14px
+}
+.wb-result-summary{border-top:2px solid var(--accent)}
+.wb-result-graph{border-top:2px solid #46515a}
+.wb-result-deck .wb-total-grid{margin:0!important;grid-template-columns:1fr!important;gap:8px!important}
+.wb-result-deck .wb-phase{padding:10px!important;background:#090d11!important}
+.wb-result-deck .wb-results{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:1px!important;background:var(--line)!important}
+.wb-result-deck .wb-results .result{min-height:82px!important;border:0!important;background:#0a0e12!important;display:grid!important;align-content:center!important}
+.wb-result-deck .wb-results .result.primary{grid-column:1/-1!important;min-height:104px!important;background:#09131a!important}
+.wb-result-deck .wb-results .result strong{font:700 19px/1.1 ui-monospace,SFMono-Regular,Consolas,monospace!important}
+.wb-result-deck .wb-results .result.primary strong{font-size:30px!important;color:var(--accent)!important}
+.wb-result-deck .wb-envelope-state{border-radius:0!important}
+.wb-result-graph h2{margin:0 0 4px;font-size:15px}
+.wb-result-graph p{margin:0 0 8px;font-size:10px}
+.wb-result-graph #wbChart{margin-top:8px!important;max-height:310px}
+.wb-toolbar{border-radius:0!important;background:var(--panel)!important}
+.wb-toolbar-actions #wbSaveAccount{border-color:var(--accent)!important;background:var(--accent)!important;color:#061018!important;font-weight:700}
+.wb-cabin-card,.wb-advanced,.wb-side .side-card{border-color:var(--line)!important;background:var(--panel)!important}
+.wb-envelope-state[data-state="inside"]{border-color:#4f6857!important;color:#b9d2c0!important}
+.wb-envelope-state[data-state="outside"]{border-color:var(--pd-danger)!important;color:#e5b8b8!important;background:#130b0d!important}
+#wbSafetyWarning.show{border-left:2px solid var(--pd-danger)!important;background:#120b0d!important;color:#e4b8b8!important}
+
+/* Genuine alerts get alert colors; normal active/result states stay blue/silver. */
+.safety-warning.show{border-left-color:var(--pd-danger)!important}
+.pd-calc-output-panel .safety-warning.show{color:#e4b8b8!important}
+
+@media(max-width:980px){
+  .pd-tool-personal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pd-calc-workbench{grid-template-columns:1fr}
+  .pd-calc-output-panel{position:static;grid-row:1}
+  .wb-result-deck{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+  .pd-tool-finder{padding:12px}
+  .pd-tool-finder-head{display:block}.pd-tool-finder-head>span{display:block;margin-top:6px}
+  .pd-tool-search-row{grid-template-columns:1fr}
+  .pd-tool-personal-grid,.pd-directory-grid{grid-template-columns:1fr!important}
+  .pd-directory-card{min-height:82px!important}
+  .pd-directory-card-topline{align-items:flex-start;flex-direction:column;gap:2px}
+  .pd-calc-input-panel .fields{grid-template-columns:1fr!important}
+  .pd-calc-output-panel .result.primary strong{font-size:32px!important}
+  .wb-result-deck .wb-results{grid-template-columns:1fr!important}
+  .wb-result-deck .wb-results .result.primary{grid-column:auto!important}
+}

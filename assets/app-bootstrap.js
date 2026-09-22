@@ -27,5 +27,5 @@ if(path==='/procedures.html')load('/assets/procedure-pro.js');
 if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js');
 if(!isAstroNative)load('/assets/experience.js');
 if(['/aircraft.html','/route-planner.html','/weather.html','/weight-balance.html','/flight-planning-workspace.html','/procedures.html','/flight-brief.html'].includes(path))load('/assets/flight-journey.js');
-load('/assets/errors.js');load('/assets/analytics.js');load('/assets/update.js');
+load('/assets/errors.js');load('/assets/analytics.js');load('/assets/efb-brief.js');load('/assets/update.js');
 })();

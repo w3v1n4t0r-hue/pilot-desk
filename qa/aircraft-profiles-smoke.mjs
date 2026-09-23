@@ -4,6 +4,7 @@ const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 const read=p=>fs.readFileSync(p,'utf8');
 
+
 const page=read('aircraft.html');
 const hub=read('assets/aircraft-profile-hub.js');
 const aircraft=read('assets/aircraft-v2.js');
@@ -15,6 +16,7 @@ const poh=read('assets/poh-chart-studio.js');
 const checklist=read('assets/checklist-trainer.js');
 const bootstrap=read('assets/app-bootstrap.js');
 const css=read('assets/experience.css');
+
 
 check(page.includes('pdAircraftActiveHub')&&page.includes('Your airplane can drive the rest of PilotDesk.'),'Active-aircraft command center missing from Hangar');
 check(page.includes('name="tailNumber"')&&page.includes('Profile name')&&page.includes('Tail / registration'),'Hangar must keep profile name, registration, and model as separate fields');

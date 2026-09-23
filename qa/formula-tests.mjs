@@ -2,18 +2,38 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const nodes=new Map();
-const head={appendChild(){}};
+const head={appendChild(){},append(){}};
 const document={
-  addEventListener(){},querySelector(){return null},querySelectorAll(){return []},
+  addEventListener(){},querySelector(){return null},querySelectorAll(selector){if(selector==='[data-calc-input]')return [...nodes.values()].filter(x=>x?.dataset?.calcInput);if(selector==='[id^=\"out\"]')return [...nodes.entries()].filter(([id])=>id.startsWith('out')).map(([,x])=>x);return[]},
   getElementById(id){return nodes.get(id)||null},
-  createElement(tag){return{tagName:String(tag).toUpperCase(),rel:'',href:'',src:'',defer:false,classList:{add(){},remove(){},toggle(){}}}},
-  head,body:{dataset:{}},
+  createElement(tag){return{tagName:String(tag).toUpperCase(),rel:'',href:'',src:'',defer:false,dataset:{},classList:{add(){},remove(){},toggle(){}}}},
+  head,scripts:[],body:{dataset:{}},
 };
 const context={document,window:{},navigator:{},location:{protocol:'http:',pathname:'/'},localStorage:{getItem(){return null},setItem(){}},console,setTimeout,clearTimeout};
 vm.createContext(context);
 vm.runInContext(fs.readFileSync('assets/site.js','utf8')+'\nglobalThis.__F=F;',context);
 const F=context.__F;
 if(!F)throw new Error('Calculator function table not available');
+const configContext={window:{}};
+vm.runInNewContext(fs.readFileSync('assets/calculator-config.js','utf8'),configContext);
+const allCalcs=configContext.window.PD_CALCS||[];
+if(allCalcs.length!==47)throw new Error(`Expected 47 calculator definitions, found ${allCalcs.length}`);
+function extractFunction(source,name){
+  const start=source.indexOf(`function ${name}(`);
+  if(start<0)throw new Error(`Missing function ${name}`);
+  const open=source.indexOf('{',start);let depth=0;
+  for(let i=open;i<source.length;i++){if(source[i]==='{')depth++;else if(source[i]==='}'&&--depth===0)return source.slice(start,i+1)}
+  throw new Error(`Unclosed function ${name}`);
+}
+const wbSource=fs.readFileSync('assets/weight-balance.js','utf8');
+const geometry={};
+vm.runInNewContext(extractFunction(wbSource,'pointInPolygon')+';globalThis.contains=pointInPolygon;',geometry);
+const envelope=[[10,1000],[20,1000],[20,2000],[10,2000]];
+if(!geometry.contains(15,1500,envelope))throw new Error('CG point inside entered envelope was rejected');
+if(geometry.contains(25,1500,envelope))throw new Error('CG point outside entered envelope was accepted');
+for(const point of [[10,1500],[20,1500],[15,1000],[15,2000]])if(!geometry.contains(...point,envelope))throw new Error(`CG point on entered envelope boundary was rejected: ${point}`);
+
+
 
 function run(key,inputs){nodes.clear();for(const [id,value] of Object.entries(inputs))nodes.set(id,{value:String(value)});for(let i=0;i<4;i++)nodes.set('out'+i,{textContent:'—'});F[key]();return [0,1,2,3].map(i=>nodes.get('out'+i)?.textContent)}
 const n=s=>Number(String(s).replace(/,/g,'').match(/[-+]?\d*\.?\d+/)?.[0]);
@@ -29,5 +49,42 @@ o=run('weightConv',{lb:100});near(n(o[0]),45.36,.02,'Pounds to kg');
 o=run('trueMag',{direction:270,variation:8});near(n(o[0]),262,.1,'True to magnetic');near(n(o[1]),278,.1,'Magnetic to true');
 o=run('stallBank',{vs:50,bank:60});near(n(o[0]),70.7,.2,'Accelerated stall');
 o=run('greatCircle',{lat1:47.95,lon1:-97.18,lat2:47.95,lon2:-97.18});near(n(o[0]),0,.1,'Zero great-circle distance');
+
+
+const safetyWarning={textContent:'',classList:{toggle(){}}};
+nodes.clear();
+for(const [id,value] of Object.entries({runway:180,windDir:220,windSpeed:20,gustSpeed:''})){
+  nodes.set(id,{id,value:String(value),dataset:{calcInput:true,...(id==='gustSpeed'?{optional:'true'}:{})},closest(){return{querySelector(){return{textContent:id}}}}});
+}
+nodes.set('safetyWarning',safetyWarning);
+const crosswindMfd=fs.readFileSync('assets/crosswind-mfd.js','utf8');
+if(!crosswindMfd.includes('data-optional=\"true\"'))throw new Error('Injected gust input must be marked optional');
+vm.runInContext(fs.readFileSync('assets/safety.js','utf8'),context);
+const safety=context.window.PilotDeskSafety;
+if(!safety.validate('crosswind'))throw new Error('Blank optional gust speed must not block crosswind calculation');
+for(const [slug,key,, ,fields] of allCalcs){
+  nodes.clear();
+  for(const [id,,value] of fields)nodes.set(id,{id,value:String(value),dataset:{calcInput:true},closest(){return{querySelector(){return{textContent:id}}}}});
+  nodes.set('safetyWarning',safetyWarning);
+  if(!safety.validate(key))throw new Error(`${slug} shipped defaults fail validation: ${safetyWarning.textContent}`);
+  const [firstId, , firstValue]=fields[0];
+  nodes.get(firstId).value='';
+  if(safety.validate(key))throw new Error(`${slug} accepts a blank required input`);
+  nodes.get(firstId).value='Infinity';
+  if(safety.validate(key))throw new Error(`${slug} accepts Infinity as an input`);
+}
+nodes.clear();
+for(const [id,value] of Object.entries({runway:180,windDir:220,windSpeed:20,gustSpeed:''})){
+  nodes.set(id,{id,value:String(value),dataset:{calcInput:true,...(id==='gustSpeed'?{optional:'true'}:{})},closest(){return{querySelector(){return{textContent:id}}}}});
+}
+nodes.set('safetyWarning',safetyWarning);
+
+nodes.get('gustSpeed').value='30';
+if(!safety.validate('crosswind'))throw new Error('A valid gust speed must pass crosswind validation');
+nodes.get('gustSpeed').value='301';
+if(safety.validate('crosswind'))throw new Error('Out-of-range gust speed must be rejected');
+nodes.get('gustSpeed').value='';
+nodes.get('runway').value='';
+if(safety.validate('crosswind'))throw new Error('Blank required runway heading must be rejected');
 
 console.log('PilotDesk formula regression tests passed.');

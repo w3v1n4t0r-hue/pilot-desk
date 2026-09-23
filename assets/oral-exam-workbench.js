@@ -79,8 +79,16 @@ const write=v=>{try{localStorage.setItem(key,JSON.stringify(v))}catch{}};
 const params=new URLSearchParams(location.search);
 let current=tracks[params.get('track')]?params.get('track'):'private';
 let access={isPro:false,plan:'free',limits:{oralTopicsPerTrack:2}},accessReady=false;
+let mode='study',query='';
+const answers=window.PilotDeskOralAnswers||{};
+const practiceKey='pd-oral-practice-v1';
+const readPractice=()=>{try{return JSON.parse(localStorage.getItem(practiceKey)||'{}')}catch{return{}}};
+const writePractice=v=>{try{localStorage.setItem(practiceKey,JSON.stringify(v))}catch{}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const standardLinks={private:'https://www.faa.gov/training_testing/testing/acs/private_airplane_acs_6.pdf',instrument:'https://www.faa.gov/training_testing/testing/acs/instrument_rating_airplane_acs_8.pdf',commercial:'https://www.faa.gov/training_testing/testing/acs/commercial_airplane_acs_7.pdf',multi:'https://www.faa.gov/training_testing/testing/acs/commercial_airplane_acs_7.pdf',cfi:'https://www.faa.gov/training_testing/testing/acs/cfi_airplane_acs_25.pdf',cfii:'https://www.faa.gov/training_testing/testing/acs/cfi_instrument_pts_9.pdf',atp:'https://www.faa.gov/training_testing/testing/acs'};
 const trackHost=document.querySelector('#pdOralTracks'),list=document.querySelector('#pdOralList'),title=document.querySelector('#pdOralTrackTitle'),standard=document.querySelector('#pdOralTrackStandard'),progress=document.querySelector('#pdOralProgress'),hub=document.querySelector('#pdOralRatingHub');
 const planLabel=document.querySelector('#pdOralPlanLabel'),planTitle=document.querySelector('#pdOralPlanTitle'),planCopy=document.querySelector('#pdOralPlanCopy'),upgrade=document.querySelector('#pdOralUpgrade');
+const search=document.querySelector('#pdOralSearch'),searchStatus=document.querySelector('#pdOralSearchStatus'),modeHelp=document.querySelector('#pdOralModeHelp');
 if(!trackHost||!list)return;
 function previewLimit(){return Math.max(1,Number(access?.limits?.oralTopicsPerTrack||2))}
 function visibleCount(t){return access.isPro?t.items.length:Math.min(previewLimit(),t.items.length)}
@@ -105,25 +113,52 @@ function renderPlan(t){
   upgrade.hidden=false;upgrade.href=window.PilotDeskProAccess?.upgradeUrl?.('oral-exam')||'/pricing.html?from=oral-exam';
  }
 }
-function lockedRow(item,i){
- return `<article class="pd-oral-item pd-oral-item-locked" aria-label="${item[0]} locked for PilotDesk Pro"><div class="pd-oral-lock-row"><div><small>PRO · SUBJECT ${i+1}</small><b>${item[0]}</b><span>Full prompt, answer guidance, and source review are available with PilotDesk Pro.</span></div><a href="${window.PilotDeskProAccess?.upgradeUrl?.('oral-topic')||'/pricing.html?from=oral-topic'}">Pro access →</a></div></article>`;
+function lockedRow(item,i,rating){
+ return `<article class="pd-oral-item pd-oral-item-locked" aria-label="${esc(item[0])} locked for PilotDesk Pro"><div class="pd-oral-lock-row"><div><small>${esc(rating)} · PRO SUBJECT ${i+1}</small><b>${esc(item[0])}</b><span>Full prompt, answer guidance, and source review are available with PilotDesk Pro.</span></div><a href="${window.PilotDeskProAccess?.upgradeUrl?.('oral-topic')||'/pricing.html?from=oral-topic'}">Pro access →</a></div></article>`;
 }
 function render(){
- const t=tracks[current],state=read(),limit=visibleCount(t),done=t.items.slice(0,limit).filter((_,i)=>state[current+':'+i]).length;
+ const t=tracks[current],state=read(),practice=readPractice(),limit=visibleCount(t),done=t.items.slice(0,limit).filter((_,i)=>state[current+':'+i]).length;
  title.textContent=t.title;
  standard.textContent=t.standard;
  progress.innerHTML=access.isPro?`<b>${done}/${t.items.length}</b><span>topics reviewed</span>`:`<b>${done}/${limit}</b><span>free preview reviewed</span>`;
  hub.href=t.hub;
  hub.textContent='Open '+t.title+' study page';
- list.innerHTML=t.items.map((item,i)=>{
-   if(!access.isPro&&i>=limit)return lockedRow(item,i);
-   const id=current+':'+i,checked=Boolean(state[id]);
-   return `<details class="pd-oral-item"><summary><b>${i+1}. ${item[0]}</b><span>${item[1]}</span></summary><div class="pd-oral-body"><h3>What a solid answer should cover</h3><p>${item[2]}</p><h3>Check it in</h3><p class="pd-oral-source">${item[3]}</p><div class="pd-oral-review"><input type="checkbox" id="oral-${current}-${i}" data-review="${id}" ${checked?'checked':''}><label for="oral-${current}-${i}">Reviewed with the source</label></div></div></details>`;
- }).join('');
+ const searchMatches=[];
+ Object.entries(tracks).forEach(([track,group])=>group.items.forEach((item,i)=>{
+  const detail=answers[track]?.[i],id=track+':'+i;
+  const haystack=[group.title,...item,detail?.short,detail?.why,detail?.area,detail?.task,...(detail?.sources||[]).flat()].join(' ').toLowerCase();
+  if(query&&!haystack.includes(query))return;
+  if(!query&&track!==current)return;
+  if(mode==='quiz'&&i>=Math.min(5,visibleCount(group)))return;
+  if(mode==='weak'&&practice[id]?.result!=='review')return;
+  searchMatches.push({track,group,item,i,detail,id,locked:!access.isPro&&i>=visibleCount(group)});
+ }));
+ const quizRows=t.items.slice(0,Math.min(5,limit)).map((_,i)=>practice[current+':'+i]?.result),quizCorrect=quizRows.filter(x=>x==='correct').length,quizAnswered=quizRows.filter(Boolean).length;
+ if(modeHelp)modeHelp.textContent=mode==='study'?'Study shows the answer notes and FAA links. Mark reviewed after checking the source.':mode==='oral'?'Answer out loud, then reveal the source notes.':mode==='quiz'?`Small self-scored set: ${quizCorrect}/${quizAnswered} marked correct (${quizRows.length} available questions). Reveal the answer and compare before scoring; this is not an examiner grade.`:'Only topics you marked Needs review appear here. Search can include other ratings.';
+ if(searchStatus)searchStatus.textContent=query?`${searchMatches.length} matching ${searchMatches.length===1?'topic':'topics'} across Learn ratings.`:mode==='weak'?`${searchMatches.length} topics to review in ${t.title}.`:'';
+ document.querySelectorAll('[data-oral-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.oralMode===mode)));
+ list.innerHTML=searchMatches.length?searchMatches.map(({track,group,item,i,detail,id,locked})=>{
+   if(locked)return lockedRow(item,i,group.title);
+   const checked=Boolean(state[id]),result=practice[id]?.result||'',bookmarked=Boolean(practice[id]?.bookmark);
+   const sourceLinks=detail?.sources||[[group.standard,standardLinks[track]]];
+   const sourceHtml=sourceLinks.map(([label,url])=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`).join('');
+   const answerHtml=detail?`<h3>Short answer</h3><p>${esc(detail.short)}</p><h3>Why</h3><p>${esc(detail.why)}</p><h3>FAA source</h3><p class="pd-oral-source-links">${sourceHtml}</p><h3>Related follow-up</h3><p>${esc(detail.follow)}</p>`:`<h3>Answer checkpoints</h3><p>${esc(item[2])}</p><h3>Verify in the controlling source</h3><p class="pd-oral-source">${esc(item[3])}</p><p class="pd-oral-source-links">${sourceHtml}</p>`;
+   return `<details class="pd-oral-item" data-topic="${id}" ${mode==='study'?'open':''}><summary><small>${esc(group.title)}${detail?' · '+esc(detail.area)+' / '+esc(detail.task):''}</small><b>${i+1}. ${esc(item[0])}</b><span>${esc(item[1])}</span></summary><div class="pd-oral-body">${answerHtml}<div class="pd-oral-actions"><button type="button" data-bookmark="${id}" aria-pressed="${bookmarked}">${bookmarked?'Bookmarked':'Bookmark'}</button><button type="button" data-score="correct" data-id="${id}" aria-pressed="${result==='correct'}">Correct on review</button><button type="button" data-score="review" data-id="${id}" aria-pressed="${result==='review'}">Needs review</button></div><div class="pd-oral-review"><input type="checkbox" id="oral-${track}-${i}" data-review="${id}" ${checked?'checked':''}><label for="oral-${track}-${i}">Reviewed with the source</label></div></div></details>`;
+ }).join(''):`<p class="pd-oral-empty">${mode==='weak'?'No topics marked for review yet. Use “Needs review” on a topic to collect it here.':'No topics match that search. Try a regulation number, rating, or subject.'}</p>`;
  renderTracks();renderPlan(t);
 }
 trackHost.addEventListener('click',e=>{const a=e.target.closest('[data-track]');if(!a)return;e.preventDefault();current=a.dataset.track;const u=new URL(location.href);u.searchParams.set('track',current);history.replaceState(null,'',u);render();title.scrollIntoView({block:'nearest'});});
 list.addEventListener('change',e=>{const box=e.target.closest('[data-review]');if(!box)return;const state=read();if(box.checked)state[box.dataset.review]=true;else delete state[box.dataset.review];write(state);render();});
+list.addEventListener('click',e=>{
+ const bookmark=e.target.closest('[data-bookmark]'),score=e.target.closest('[data-score]');if(!bookmark&&!score)return;
+ const id=bookmark?.dataset.bookmark||score?.dataset.id,state=readPractice(),entry=state[id]||{};
+ if(bookmark)entry.bookmark=!entry.bookmark;
+ if(score)entry.result=entry.result===score.dataset.score?'':score.dataset.score;
+ if(entry.bookmark||entry.result)state[id]=entry;else delete state[id];
+ writePractice(state);render();
+});
+search?.addEventListener('input',()=>{query=search.value.trim().toLowerCase();render()});
+document.querySelectorAll('[data-oral-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.oralMode;render()}));
 async function init(){
  render();
  try{access=await (window.PilotDeskProAccess?.snapshot?.()||Promise.resolve(access))}catch{}

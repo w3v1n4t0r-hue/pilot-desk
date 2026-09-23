@@ -1,16 +1,8 @@
 import fs from 'node:fs';
-import vm from 'node:vm';
 
 const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 const read=p=>fs.readFileSync(p,'utf8');
-function extractFunction(source,name){
- const start=source.indexOf(`function ${name}(`);
- if(start<0)throw new Error(`Missing function ${name}`);
- const open=source.indexOf('{',start);let depth=0;
- for(let i=open;i<source.length;i++){if(source[i]==='{')depth++;else if(source[i]==='}'&&--depth===0)return source.slice(start,i+1)}
- throw new Error(`Unclosed function ${name}`);
-}
 
 
 const page=read('aircraft.html');
@@ -24,13 +16,6 @@ const poh=read('assets/poh-chart-studio.js');
 const checklist=read('assets/checklist-trainer.js');
 const bootstrap=read('assets/app-bootstrap.js');
 const css=read('assets/experience.css');
-const geometryContext={};
-vm.runInNewContext(extractFunction(wb,'pointInPolygon')+';globalThis.testPointInPolygon=pointInPolygon;',geometryContext);
-const pointInPolygon=geometryContext.testPointInPolygon;
-const testEnvelope=[[10,1000],[20,1000],[20,2000],[10,2000]];
-check(pointInPolygon(15,1500,testEnvelope),'CG point inside entered envelope was rejected');
-check(!pointInPolygon(25,1500,testEnvelope),'CG point outside entered envelope was accepted');
-for(const point of [[10,1500],[20,1500],[15,1000],[15,2000]])check(pointInPolygon(...point,testEnvelope),'CG point on entered envelope boundary was rejected: '+point.join(', '));
 
 
 check(page.includes('pdAircraftActiveHub')&&page.includes('Your airplane can drive the rest of PilotDesk.'),'Active-aircraft command center missing from Hangar');

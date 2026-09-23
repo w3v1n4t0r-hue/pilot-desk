@@ -35,8 +35,8 @@ function enhanceOral(){
  let strip=$('#pdOralSubjectStrip');
  if(!strip){strip=document.createElement('div');strip.id='pdOralSubjectStrip';strip.className='pd-oral-subject-strip';strip.setAttribute('aria-label','Subjects in this rating');list.insertAdjacentElement('beforebegin',strip)}
  const render=()=>{
-   const items=$$('.pd-oral-item',list);if(!items.length)return;
-   strip.innerHTML=items.map((item,i)=>{const label=item.querySelector('summary b')?.textContent?.replace(/^\d+\.\s*/,'')||('Subject '+(i+1));return '<button type="button" data-step7-subject="'+i+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+label+'</b></button>'}).join('');
+   const items=$$('.pd-oral-item',list);strip.hidden=!items.length;
+   strip.innerHTML=items.map((item,i)=>{const label=item.querySelector('summary b,.pd-oral-lock-row b')?.textContent?.replace(/^\d+\.\s*/,'')||('Subject '+(i+1));return '<button type="button" data-step7-subject="'+i+'"><span>'+String(i+1).padStart(2,'0')+'</span><b>'+label+'</b></button>'}).join('');
  };
  strip.addEventListener('click',e=>{const b=e.target.closest('[data-step7-subject]');if(!b)return;$$('.pd-oral-item',list)[Number(b.dataset.step7Subject)]?.scrollIntoView({behavior:'smooth',block:'start'})});
  new MutationObserver(render).observe(list,{childList:true,subtree:false});render();
@@ -58,3 +58,4 @@ function enhanceGuide(){
 function init(){enhanceWrittenPrep();enhanceChecklist();enhanceOral();enhanceGuide()}
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
 })();
+

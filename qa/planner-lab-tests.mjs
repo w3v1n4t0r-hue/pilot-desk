@@ -126,7 +126,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
 {
   let duplicate=false,limited=false;
   const feature=(lat,lon)=>({type:'Feature',properties:{IDENT:'GEP',NAME_TXT:'GOPHER',CITY:'MINNEAPOLIS',STATE:'MN',STATUS:'RESTRICTED'},geometry:{type:'Point',coordinates:[lon,lat]}});
-  const fetch=async url=>({ok:true,json:async()=>String(url).includes('aviationweather.gov')?[]:limited?{error:{code:429,message:'Too many requests'}}:{type:'FeatureCollection',features:String(url).includes('NAVAIDSystem')?[feature(45.15,-93.37),...(duplicate?[feature(46.15,-94.37)]:[])]:[]}});
+  const fetch=async url=>({ok:true,json:async()=>String(url).includes('aviationweather.gov')?[]:limited?{error:{code:429,message:'Too many requests'}}:{type:'FeatureCollection',features:String(url).includes('NAVAIDSystem')?[feature(45.15,-93.37),...(duplicate?[feature(46.15,-94.37)]:[])]:[feature(45.15,-93.37)]}});
   const mod={exports:{}};
   vm.runInNewContext(fs.readFileSync('api/navdata.js','utf8'),{module:mod,fetch,AbortController,URLSearchParams,setTimeout,clearTimeout});
   const response=()=>{const result={status:200,body:null};return{result,res:{setHeader:()=>{},status(code){result.status=code;return this},json(body){result.body=body;return body}}}};

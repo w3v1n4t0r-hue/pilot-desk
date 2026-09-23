@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createRequire} from 'node:module';
+import {createHash} from 'node:crypto';
 
 const require=createRequire(import.meta.url);
 const nav=require('../assets/navlog-core.js');
@@ -29,6 +30,15 @@ if(!pcs.includes('function interp')||!pcs.includes('xCal')||!pcs.includes('yCal'
 const rp=fs.readFileSync('route-planner.html','utf8');
 const rpjs=fs.readFileSync('assets/route-planner.js','utf8');
 const rpCss=fs.readFileSync('assets/route-planner.css','utf8');
+if(fs.existsSync('.astro-public/route-planner.html')){
+  const prepared=fs.readFileSync('.astro-public/route-planner.html','utf8');
+  for(const extension of ['css','js']){
+    const source=fs.readFileSync(`assets/route-planner.${extension}`);
+    const hash=createHash('sha256').update(source).digest('hex').slice(0,12);
+    const asset=`/assets/route-planner.${hash}.${extension}`;
+    if(!prepared.includes(asset)||!fs.existsSync(`.astro-public${asset}`))throw new Error(`Planner ${extension} is not fingerprinted for returning visitors`);
+  }
+}
 if(!rpCss.includes('#rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important'))throw new Error('Sitewide media sizing must not collapse Leaflet route vectors');
 const plannerPro=fs.readFileSync('assets/planner-pro.js','utf8');
 if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');

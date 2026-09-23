@@ -87,6 +87,7 @@ body:before{display:none}
 .pd-training-next{padding:18px 0 22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .pd-training-next .pd-training-section-head{margin-bottom:12px}
 @media(max-width:760px){.pd-training-goal-grid{grid-template-columns:1fr}.pd-training-section-head{display:block}.pd-training-section-head p{text-align:left;margin-top:6px}.pd-training-path{overflow-x:auto;flex-wrap:nowrap}.pd-training-path a{white-space:nowrap}}
+@media(max-width:760px){.pd-training-path a{min-height:44px}}
 
 /* Pass 12: CFI teaching workspace and student handoffs. */
 .pd-cfi-quickbar{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 30px}

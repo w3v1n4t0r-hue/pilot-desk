@@ -35,7 +35,7 @@ const efb=fs.readFileSync('assets/efb-layers.js','utf8');
 for(const s of ['Auto by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
 if(!rp.includes('/assets/efb-layers.js'))throw new Error('Route planner does not load the EFB layer controller');
 if(!rp.includes('id="rpWaypointSearch"')||!rp.includes('id="rpWaypointResults"')||!rpjs.includes('/api/airport-search?q=')||!rpjs.includes('/api/navdata?ident='))throw new Error('Route waypoint search is not connected');
-if(!fs.readFileSync('api/navdata.js','utf8').includes('Promise.all(products.map'))throw new Error('Navigation lookup is too slow for interactive search');
+if(!fs.readFileSync('api/navdata.js','utf8').includes("faaMatches('NAVAIDSystem'")||!fs.readFileSync('api/navdata.js','utf8').includes("faaMatches('DesignatedPoints'"))throw new Error('FAA navigation fallback missing');
 if(!plannerPro.includes("localStorage.getItem('pd-aircraft-active')")||!plannerPro.includes("!params.get('flight')&&!hasSavedRoute"))throw new Error('New route plans no longer inherit the active aircraft safely');
 if(/border-radius:(?:9|10)px/.test(plannerPro))throw new Error('Planner profile/summary panels regressed to rounded cards');
 if(!rp.includes('Before you save the flight')||rp.includes('Turn a route line into a usable navlog'))throw new Error('Route planner task copy regressed to generic filler');
@@ -114,6 +114,23 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   if(window.pdNavlogResult!==null||el('#rpSummaryDistance').textContent!=='— NM'||!el('#rpNavlog').innerHTML.includes('No route built yet'))throw new Error('Editing a route left stale calculated results visible');
   el('#rpClearRoute').listeners.click();
   if(storage.has('pd-route-last')||el('#rpRoute').value)throw new Error('Clear did not remove the restored route');
+}
+
+
+// A current FAA NAVAID must still resolve when the AWC endpoint has no record.
+{
+  let duplicate=false;
+  const feature=(lat,lon)=>({type:'Feature',properties:{IDENT:'GEP',NAME_TXT:'GOPHER',CITY:'MINNEAPOLIS',STATE:'MN'},geometry:{type:'Point',coordinates:[lon,lat]}});
+  const fetch=async url=>({ok:true,json:async()=>String(url).includes('aviationweather.gov')?[]:{type:'FeatureCollection',features:String(url).includes('NAVAIDSystem')?[feature(45.15,-93.37),...(duplicate?[feature(46.15,-94.37)]:[])]:[]}});
+  const mod={exports:{}};
+  vm.runInNewContext(fs.readFileSync('api/navdata.js','utf8'),{module:mod,fetch,AbortController,URLSearchParams,setTimeout,clearTimeout});
+  const response=()=>{const result={status:200,body:null};return{result,res:{setHeader:()=>{},status(code){result.status=code;return this},json(body){result.body=body;return body}}}};
+  let r=response();
+  await mod.exports({method:'GET',query:{ident:'GEP'}},r.res);
+  if(r.result.status!==200||r.result.body?.point?.source!=='faa-navaid'||r.result.body.point.lat!==45.15)throw new Error('FAA NAVAID fallback failed');
+  duplicate=true;r=response();
+  await mod.exports({method:'GET',query:{ident:'GEP',search:'1'}},r.res);
+  if(r.result.status!==200||r.result.body?.matches?.length!==2)throw new Error('Ambiguous FAA navigation results were discarded');
 }
 
 console.log('PilotDesk planner, FAA chart, procedure viewer, training library, navigation, and weather tests passed.');

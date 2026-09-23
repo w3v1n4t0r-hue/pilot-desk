@@ -95,7 +95,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   const document={readyState:'loading',querySelector:s=>s.startsWith('#')?el(s):null,querySelectorAll:()=>[],addEventListener:(type,fn)=>{documentListeners[type]=fn},dispatchEvent:()=>{}};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)};
   const window={PilotDeskNavlog:nav,PilotDeskFlights:{list:()=>[]}};
-  const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
+  const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:url.includes('ident=GEP')?{point:{id:'GEP',name:'Gopher',lat:45.1457,lon:-93.3732,source:'faa-navaid',status:'RESTRICTED'}}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
   vm.runInNewContext(rpjs,{window,document,localStorage,fetch,AbortController,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true});
   documentListeners.DOMContentLoaded();
   if(typeof window.PilotDeskRoutePlanner?.rebuild!=='function')throw new Error('Route engine became unavailable when chart library failed');
@@ -114,6 +114,9 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   el('#rpRoute').value='A,47,-97 C,49,-97';
   el('#rpRoute').listeners.input();
   if(window.pdNavlogResult!==null||el('#rpSummaryDistance').textContent!=='— NM'||!el('#rpNavlog').innerHTML.includes('No route built yet'))throw new Error('Editing a route left stale calculated results visible');
+  el('#rpRoute').value='A,47,-97 GEP B,48,-97';
+  await window.PilotDeskRoutePlanner.rebuild();
+  if(!el('#rpStatus').textContent.includes('GEP RESTRICTED'))throw new Error('Restricted FAA facility status was hidden from the built route');
   el('#rpClearRoute').listeners.click();
   if(storage.has('pd-route-last')||el('#rpRoute').value)throw new Error('Clear did not remove the restored route');
 }

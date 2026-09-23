@@ -37,6 +37,8 @@ for(const [id,value] of Object.entries({runway:180,windDir:220,windSpeed:20,gust
   nodes.set(id,{id,value:String(value),dataset:{calcInput:true,...(id==='gustSpeed'?{optional:'true'}:{})},closest(){return{querySelector(){return{textContent:id}}}}});
 }
 nodes.set('safetyWarning',safetyWarning);
+const crosswindMfd=fs.readFileSync('assets/crosswind-mfd.js','utf8');
+if(!crosswindMfd.includes('data-optional=\"true\"'))throw new Error('Injected gust input must be marked optional');
 vm.runInContext(fs.readFileSync('assets/safety.js','utf8'),context);
 const safety=context.window.PilotDeskSafety;
 if(!safety.validate('crosswind'))throw new Error('Blank optional gust speed must not block crosswind calculation');

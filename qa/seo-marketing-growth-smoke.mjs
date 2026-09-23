@@ -11,7 +11,7 @@ const generator=read('scripts/generate-calculator-pages.mjs');
 const sitemap=read('sitemap.xml');
 const core=read('sitemap-core.xml');
 
-check(toolsAstro.includes('Free Aviation Calculators for Pilots | 47 Flight Tools | PilotDesk'),'Native tools title is not search-intent focused');
+check(toolsAstro.includes('Free Aviation Calculators for Pilots | PilotDesk'),'Native tools title is not search-intent focused');
 check(toolsAstro.includes('robots="index,follow,max-image-preview:large"'),'Native tools page is not explicitly indexable');
 check(toolsAstro.includes("name: 'Free Aviation Calculators for Pilots'")&&toolsAstro.includes("'@type': 'ItemList'"),'Native tools CollectionPage/ItemList schema missing');
 for(const href of ['/calculators/crosswind/','/calculators/density-altitude/','/calculators/moment-cg/','/calculators/isa-temperature/','/calculators/rate-of-turn/','/calculators/three-degree-descent/'])

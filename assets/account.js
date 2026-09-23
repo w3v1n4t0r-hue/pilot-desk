@@ -31,8 +31,8 @@ function updateResend(){const button=$('#pdResendConfirmation');if(!button)retur
 function showVerification(email){state.pendingEmail=email||'';$('#pdConfirmationEmail').value=state.pendingEmail;show('#pdVerificationPanel',true);updateResend()}
 
 async function loadSupabase(){
-  const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
-  state.client=window.__pilotDeskSupabase||mod.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});window.__pilotDeskSupabase=state.client;
+  const {getPilotDeskClient}=await import('/assets/supabase-client.js');
+  state.client=await getPilotDeskClient();
   try{const r=await fetch(`${SUPABASE_URL}/auth/v1/settings`,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});if(r.ok){const d=await r.json();show('#pdGoogleSignIn',d?.external?.google===true);show('#pdGithubSignIn',d?.external?.github===true)}}catch{}
 }
 function renderSignedOut(){clearTimeout(state.redirectTimer);state.redirectTimer=null;show('#pdSignedOut',true);show('#pdSignedIn',false);show('#pdRecoveryPanel',false);show('#pdOwnerMetrics',false);$('#pdAccountRoot')?.classList.remove('pd-account-disabled')}

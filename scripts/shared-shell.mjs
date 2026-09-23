@@ -36,6 +36,7 @@ export function sharedShell(html){
  if(!html.includes('src="/assets/navigation-core.js"'))html=html.replace('</body>','<script defer src="/assets/navigation-core.js"></script></body>');
  if(!html.includes('src="/assets/global-nav.js"'))html=html.replace('</body>','<script defer src="/assets/global-nav.js"></script></body>');
  if(!html.includes('src="/assets/app-bootstrap.js"'))html=html.replace('</body>','<script defer src="/assets/app-bootstrap.js"></script></body>');
+ html=html.replace(/src=["']\/assets\/app-bootstrap\.js(?:\?[^"']*)?["']/g,'src="/assets/app-bootstrap.js?v=run6-fingerprint"');
  if(!html.includes('/_vercel/insights/script.js'))html=html.replace('</body>','<script defer src="/_vercel/insights/script.js"></script></body>');
  return staticSocialMetadata(html);
 }

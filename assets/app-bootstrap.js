@@ -5,7 +5,7 @@ const path=location.pathname,calc=path.startsWith('/calculators/')&&!path.includ
 const isAstroNative=document.documentElement.dataset.pdAstroNative==='1';
 // Static content stays visible even when optional enhancements fail.
 window.__pdTrackQueue=window.__pdTrackQueue||[];window.pdTrack=window.pdTrack||((name,data={})=>window.__pdTrackQueue.push([name,data]));
-function load(src){if([...document.scripts].some(s=>new URL(s.src||location.href).pathname===src))return;const s=document.createElement('script');s.src=['/assets/crosswind-mfd.js','/assets/calculation-account.js'].includes(src)?src+'?v=run6':src;s.async=false;document.head.append(s)}
+function load(src){if([...document.scripts].some(s=>new URL(s.src||location.href).pathname===src))return;const s=document.createElement('script');s.src=src;s.async=false;document.head.append(s)}
 function registerServiceWorkerEarly(){
  const localSecure=['localhost','127.0.0.1','::1'].includes(location.hostname);
  if(!('serviceWorker'in navigator)||(location.protocol!=='https:'&&!localSecure))return;

@@ -367,7 +367,7 @@ function start(RP,L){
     if(key==='obstacles')return L.circleMarker(ll,{pane,radius:3,weight:1.2,color:'#e6bd62',fillColor:'#09090b',fillOpacity:1});
     const klass=key==='airports'?'airport':key==='navaids'?'navaid':key==='fixes'?'fix':'nav';
     const icon=L.divIcon({className:'rp-map-symbol rp-map-symbol-'+klass,html:'<span></span>',iconSize:[12,12],iconAnchor:[6,6]});
-    return L.marker(ll,{pane,icon,interactive:true});
+    return L.marker(ll,{pane,icon,interactive:true,keyboard:false});
   }
   function popupFor(key,feature){
     const p=feature.properties||{};

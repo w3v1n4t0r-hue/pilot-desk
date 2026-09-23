@@ -120,14 +120,14 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
 // A current FAA NAVAID must still resolve when the AWC endpoint has no record.
 {
   let duplicate=false;
-  const feature=(lat,lon)=>({type:'Feature',properties:{IDENT:'GEP',NAME_TXT:'GOPHER',CITY:'MINNEAPOLIS',STATE:'MN'},geometry:{type:'Point',coordinates:[lon,lat]}});
+  const feature=(lat,lon)=>({type:'Feature',properties:{IDENT:'GEP',NAME_TXT:'GOPHER',CITY:'MINNEAPOLIS',STATE:'MN',STATUS:'RESTRICTED'},geometry:{type:'Point',coordinates:[lon,lat]}});
   const fetch=async url=>({ok:true,json:async()=>String(url).includes('aviationweather.gov')?[]:{type:'FeatureCollection',features:String(url).includes('NAVAIDSystem')?[feature(45.15,-93.37),...(duplicate?[feature(46.15,-94.37)]:[])]:[]}});
   const mod={exports:{}};
   vm.runInNewContext(fs.readFileSync('api/navdata.js','utf8'),{module:mod,fetch,AbortController,URLSearchParams,setTimeout,clearTimeout});
   const response=()=>{const result={status:200,body:null};return{result,res:{setHeader:()=>{},status(code){result.status=code;return this},json(body){result.body=body;return body}}}};
   let r=response();
   await mod.exports({method:'GET',query:{ident:'GEP'}},r.res);
-  if(r.result.status!==200||r.result.body?.point?.source!=='faa-navaid'||r.result.body.point.lat!==45.15)throw new Error('FAA NAVAID fallback failed');
+  if(r.result.status!==200||r.result.body?.point?.source!=='faa-navaid'||r.result.body.point.lat!==45.15||r.result.body.point.status!=='RESTRICTED')throw new Error('FAA NAVAID fallback failed');
   duplicate=true;r=response();
   await mod.exports({method:'GET',query:{ident:'GEP',search:'1'}},r.res);
   if(r.result.status!==200||r.result.body?.matches?.length!==2)throw new Error('Ambiguous FAA navigation results were discarded');

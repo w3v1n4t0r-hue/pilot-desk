@@ -18,6 +18,21 @@ const configContext={window:{}};
 vm.runInNewContext(fs.readFileSync('assets/calculator-config.js','utf8'),configContext);
 const allCalcs=configContext.window.PD_CALCS||[];
 if(allCalcs.length!==47)throw new Error(`Expected 47 calculator definitions, found ${allCalcs.length}`);
+function extractFunction(source,name){
+  const start=source.indexOf(`function ${name}(`);
+  if(start<0)throw new Error(`Missing function ${name}`);
+  const open=source.indexOf('{',start);let depth=0;
+  for(let i=open;i<source.length;i++){if(source[i]==='{')depth++;else if(source[i]==='}'&&--depth===0)return source.slice(start,i+1)}
+  throw new Error(`Unclosed function ${name}`);
+}
+const wbSource=fs.readFileSync('assets/weight-balance.js','utf8');
+const geometry={};
+vm.runInNewContext(extractFunction(wbSource,'pointInPolygon')+';globalThis.contains=pointInPolygon;',geometry);
+const envelope=[[10,1000],[20,1000],[20,2000],[10,2000]];
+if(!geometry.contains(15,1500,envelope))throw new Error('CG point inside entered envelope was rejected');
+if(geometry.contains(25,1500,envelope))throw new Error('CG point outside entered envelope was accepted');
+for(const point of [[10,1500],[20,1500],[15,1000],[15,2000]])if(!geometry.contains(...point,envelope))throw new Error(`CG point on entered envelope boundary was rejected: ${point}`);
+
 
 
 function run(key,inputs){nodes.clear();for(const [id,value] of Object.entries(inputs))nodes.set(id,{value:String(value)});for(let i=0;i<4;i++)nodes.set('out'+i,{textContent:'—'});F[key]();return [0,1,2,3].map(i=>nodes.get('out'+i)?.textContent)}

@@ -57,4 +57,3 @@
 .pd-oral-lock-row a{flex:0 0 auto;color:var(--text);text-decoration:none;font-size:12px}
 .pd-oral-lock-row a:hover{text-decoration:underline}
 @media(max-width:680px){.pd-oral-plan-panel,.pd-oral-lock-row{align-items:flex-start;flex-direction:column}.pd-oral-plan-panel .pd-btn{width:100%;justify-content:center}}
-

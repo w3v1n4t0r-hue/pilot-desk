@@ -125,6 +125,11 @@
   .rp-shell .pd-flight-subnav{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:thin}
   .rp-shell .pd-flight-subnav a{flex:0 0 auto!important;min-height:38px!important}
   .rp-shell .pd-flight-journey{display:none}
+  .rp-shell .pd-flight-hero .rp-intro{display:none}
+  .rp-shell .rp-live-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .rp-shell .rp-live-summary>.rp-live-route{grid-column:1/-1}
+  .rp-shell .rp-live-summary>div{padding:8px}
+  .rp-shell .rp-live-summary strong{font-size:14px}
   .rp-map-card{display:flex;flex-direction:column}
   .rp-map-card .rp-map{order:0}
   .rp-map-card .rp-map-toolbar{order:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}

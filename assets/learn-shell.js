@@ -22,4 +22,3 @@ function init(){
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
 })();
-

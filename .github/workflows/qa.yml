@@ -143,6 +143,8 @@ jobs:
         run: node qa/seo-hardening.mjs
       - name: Run full-site SEO audit
         run: node qa/full-site-seo-audit.mjs
+      - name: Run Run 6 regression checks
+        run: node qa/run6-regression.mjs
       - name: Run SEO growth cluster checks
         run: node qa/seo-growth-cluster.mjs
       - name: Run internal SEO architecture checks

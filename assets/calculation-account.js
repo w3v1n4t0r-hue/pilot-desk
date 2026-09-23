@@ -5,7 +5,7 @@ const SUPABASE_URL='https://hqqgcfiaxcrzyuhtkzqg.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_Mj4GgPXqlild6Z_4k47Ypg_TeUvlyfQ';
 let clientPromise;
 async function client(){
-  if(!clientPromise)clientPromise=import('https://esm.sh/@supabase/supabase-js@2.57.4').then(mod=>mod.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}));
+  if(!clientPromise)clientPromise=import('/assets/supabase-client.js').then(mod=>mod.getPilotDeskClient());
   return clientPromise;
 }
 function nextUrl(){return '/account.html?next='+encodeURIComponent(location.pathname+location.search)}

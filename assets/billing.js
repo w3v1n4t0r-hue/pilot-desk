@@ -25,9 +25,8 @@ function apply(){
 }
 async function client(){
  if(state.client)return state.client;
- const mod=await import('https://esm.sh/@supabase/supabase-js@2.57.4');
- state.client=window.__pilotDeskSupabase||mod.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
- window.__pilotDeskSupabase=state.client;return state.client;
+ const {getPilotDeskClient}=await import('/assets/supabase-client.js');
+  state.client=await getPilotDeskClient();return state.client;
 }
 async function config(){
  try{

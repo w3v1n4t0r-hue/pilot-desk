@@ -116,6 +116,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   el('#rpRoute').value='A,47,-97 C,49,-97';
   el('#rpRoute').listeners.input();
   if(window.pdNavlogResult!==null||el('#rpSummaryDistance').textContent!=='— NM'||!el('#rpNavlog').innerHTML.includes('No route built yet'))throw new Error('Editing a route left stale calculated results visible');
+  if(el('#rpStatus').textContent.includes('Route built:'))throw new Error('Editing a route left stale success status visible');
   el('#rpRoute').value='A,47,-97 GEP B,48,-97';
   await window.PilotDeskRoutePlanner.rebuild();
   if(!el('#rpStatus').textContent.includes('GEP RESTRICTED'))throw new Error('Restricted FAA facility status was hidden from the built route');

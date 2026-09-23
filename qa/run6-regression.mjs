@@ -23,6 +23,7 @@ assert.doesNotMatch(read('assets/styles-legacy.css'),/@view-transition\{navigati
 const clients=['global-nav.js','account.js','billing.js','calculation-account.js','daily.js','written-prep.js'];
 for(const file of clients)assert.match(read('assets/'+file),/supabase-client\.js/,'shared client required in '+file);
 assert.equal(count(read('assets/supabase-client.js'),/createClient\(/g),1,'one Supabase client creation site');
+for(const page of ['index.html','route-planner.html'])assert.match(read('dist/'+page),/src="\/assets\/app-bootstrap\.js\?v=run6-fingerprint"/,'fresh bootstrap URL required on '+page);
 const builtBootstrap=read('dist/assets/app-bootstrap.js');
 const builtPlanner=read('dist/route-planner.html');
 for(const name of ['crosswind-mfd','calculation-account']){

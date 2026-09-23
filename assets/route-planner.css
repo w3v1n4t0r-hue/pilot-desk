@@ -35,6 +35,8 @@
 
 /* EFB ROUTE WORKSPACE */
 .rp-map-card{position:relative}
+.rp-map .leaflet-bar a{width:44px!important;height:44px!important;line-height:44px!important}
+@media(max-width:650px){.rp-saved-routes .pd-card-head a{display:inline-flex;align-items:center;min-height:44px}}
 .rp-map{position:relative;overflow:hidden}
 .rp-layers-toggle[aria-expanded="true"],#rpBriefToggle[aria-expanded="true"]{background:#efeee9!important;color:#09090b!important;border-color:#efeee9!important}
 .rp-efb-panel{position:absolute;z-index:900;top:12px;right:12px;width:min(330px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:#08080a;border:1px solid #35353a;color:#efeee9;box-shadow:0 18px 50px rgba(0,0,0,.5);backdrop-filter:none}

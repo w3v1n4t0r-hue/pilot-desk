@@ -68,3 +68,16 @@
 
 
 .pd-account-billing{margin:18px 0;padding:18px;border:1px solid var(--line);background:#0b0b0d;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px))}.pd-account-billing h2{margin:3px 0 0}.pd-account-billing>p{margin:8px 0 0;color:var(--muted);font-size:11px;line-height:1.55}.pd-account-actions button:disabled{opacity:.42;cursor:not-allowed}.pd-account-actions a.pd-text-button{background:transparent;border:0;text-decoration:underline}.pd-account-billing [aria-busy="true"]{opacity:.55;pointer-events:none}
+.pd-account-card>.pd-account-status{margin:0 0 18px;font-size:13px;line-height:1.5}
+.pd-create-account{margin-top:24px}
+.pd-verification,.pd-recovery,.pd-account-security{margin-top:18px;padding:16px;border:1px solid #3b3b40;background:#0b0b0d}
+.pd-verification h3,.pd-recovery h2{margin:0 0 7px;font-size:18px}
+.pd-verification p,.pd-recovery p,.pd-account-security span{display:block;margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.5}
+.pd-account-security{margin:0 0 18px}
+.pd-account-security b{display:block;margin-bottom:5px;font-size:14px}
+.pd-account-security .pd-text-button,.pd-verification .pd-text-button,#pdForgotPassword{min-height:44px;padding:10px 4px;font-size:13px}
+.pd-auth-btn:disabled,.pd-text-button:disabled{opacity:.55;cursor:wait}
+.pd-account-field label{font-size:12px}
+.pd-account-note,.pd-account-benefit span{font-size:12px}
+.pd-account-actions button,.pd-account-actions a{min-height:44px;font-size:12px}
+@media(max-width:620px){.pd-account-shell{padding:16px 14px 56px}.pd-account-card{padding:16px}.pd-account-hero h1{font-size:clamp(30px,8vw,40px)}.pd-account-layout{gap:14px;margin-top:18px}.pd-user-head{align-items:flex-start}.pd-user-head .pd-auth-btn{min-width:88px}}

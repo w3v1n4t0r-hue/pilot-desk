@@ -137,3 +137,6 @@
   .rp-map-card .rp-map-toolbar button,.rp-map-card .rp-edit-route{min-width:0;min-height:40px}
   .rp-map-card .rp-chart-note{order:2}
 }
+
+/* Leaflet's overlay pane has no layout width; the sitewide media max-width rule collapsed route vectors. */
+#rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}

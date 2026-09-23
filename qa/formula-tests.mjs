@@ -2,12 +2,12 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const nodes=new Map();
-const head={appendChild(){}};
+const head={appendChild(){},append(){}};
 const document={
   addEventListener(){},querySelector(){return null},querySelectorAll(selector){if(selector==='[data-calc-input]')return [...nodes.values()].filter(x=>x?.dataset?.calcInput);if(selector==='[id^=\"out\"]')return [...nodes.entries()].filter(([id])=>id.startsWith('out')).map(([,x])=>x);return[]},
   getElementById(id){return nodes.get(id)||null},
-  createElement(tag){return{tagName:String(tag).toUpperCase(),rel:'',href:'',src:'',defer:false,classList:{add(){},remove(){},toggle(){}}}},
-  head,body:{dataset:{}},
+  createElement(tag){return{tagName:String(tag).toUpperCase(),rel:'',href:'',src:'',defer:false,dataset:{},classList:{add(){},remove(){},toggle(){}}}},
+  head,scripts:[],body:{dataset:{}},
 };
 const context={document,window:{},navigator:{},location:{protocol:'http:',pathname:'/'},localStorage:{getItem(){return null},setItem(){}},console,setTimeout,clearTimeout};
 vm.createContext(context);

@@ -5,6 +5,7 @@ const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 const read=p=>fs.readFileSync(p,'utf8');
 
 const home=read('src/pages/index.astro');
+const toolsPage=read('src/pages/tools.astro');
 const homeCss=read('assets/home-desk.css');
 const siteData=read('src/data/site.mjs');
 const nav=read('assets/global-nav.js');
@@ -24,6 +25,7 @@ for(const phrase of [
 ]) check(home.includes(phrase),'Homepage structure/copy changed or missing: '+phrase);
 for(const phrase of ['Plan a Flight','Use a Calculator','Study for a Written']) check(siteData.includes(phrase),'Homepage quick-start action missing: '+phrase);
 check(home.includes('id="pdHomeSearch"')&&home.includes('<kbd>/</kbd>'),'Homepage slash-search shortcut missing');
+check(!/47 Flight Tools|Search 47 browser-based tools/i.test(toolsPage),'Tools directory must not advertise a stale hardcoded inventory count');
 check(home.includes('id="pdHomeDesk"')&&home.includes('Pick up where you left off'),'Returning-user resume desk missing');
 check(homeCss.includes('border-left:2px solid var(--accent)'),'Returning-user desk does not have restrained active-state emphasis');
 check(homeCss.includes('.pd-home-command:hover')&&homeCss.includes('border-color:var(--accent)'),'Slash-search control is not visually discoverable');

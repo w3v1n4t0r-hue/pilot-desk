@@ -58,4 +58,3 @@ function enhanceGuide(){
 function init(){enhanceWrittenPrep();enhanceChecklist();enhanceOral();enhanceGuide()}
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
 })();
-

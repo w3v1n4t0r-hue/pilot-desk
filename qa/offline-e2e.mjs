@@ -118,6 +118,7 @@ try{
   },coldRoute);
   check(cachedBeforeVisit,`${coldRoute} was not precached before its first navigation`);
 
+  failedRequests.length=0;
   await context.setOffline(true);
   const offlinePage=await context.newPage();
   offlinePage.on('requestfailed',request=>{

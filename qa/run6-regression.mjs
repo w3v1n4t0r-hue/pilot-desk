@@ -23,4 +23,7 @@ assert.doesNotMatch(read('assets/styles-legacy.css'),/@view-transition\{navigati
 const clients=['global-nav.js','account.js','billing.js','calculation-account.js','daily.js','written-prep.js'];
 for(const file of clients)assert.match(read('assets/'+file),/supabase-client\.js/,'shared client required in '+file);
 assert.equal(count(read('assets/supabase-client.js'),/createClient\(/g),1,'one Supabase client creation site');
+assert.match(read('assets/app-bootstrap.js'),/crosswind-mfd\.js'[^\n]*\?v=run6/,'crosswind repair must bypass an older service worker cache');
+assert.match(read('route-planner.html'),/efb-layers\.js\?v=run6/,'map repair must bypass an older service worker cache');
+for(const asset of ['crosswind-mfd.js','calculation-account.js','efb-layers.js','supabase-client.js'])assert.match(read('sw.js'),new RegExp("NETWORK_FIRST_ASSETS[\\s\\S]*'/assets/"+asset.replaceAll('.','\\.')+"'"),'network-first release asset '+asset);
 console.log('Run 6 regression PASS: initial header, social metadata, map keyboard order, crosswind invalid state, navigation transitions, auth client.');

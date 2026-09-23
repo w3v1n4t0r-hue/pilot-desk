@@ -1,6 +1,6 @@
 importScripts('/assets/offline-precache.js');
 
-const CACHE='pilotdesk-v60';
+const CACHE='pilotdesk-v61';
 const GENERATED_CALCULATORS=Array.isArray(self.PILOTDESK_OFFLINE_CALCULATORS)?self.PILOTDESK_OFFLINE_CALCULATORS:[];
 const GENERATED_ASSETS=Array.isArray(self.PILOTDESK_OFFLINE_ASSETS)?self.PILOTDESK_OFFLINE_ASSETS:[];
 const CORE=[...new Set([
@@ -14,7 +14,7 @@ const CORE=[...new Set([
 const CORE_PATHS=new Set(CORE);
 const MAX_RUNTIME_ENTRIES=140;
 const NETWORK_FIRST_ASSETS=new Set([
-  '/assets/app-bootstrap.js','/assets/navigation-core.js','/assets/navigation-search.js','/assets/inventory-data.js','/assets/global-nav.js','/favicon.svg',
+  '/assets/app-bootstrap.js','/assets/navigation-core.js','/assets/navigation-search.js','/assets/inventory-data.js','/assets/global-nav.js','/assets/crosswind-mfd.js','/assets/calculation-account.js','/assets/efb-layers.js','/assets/supabase-client.js','/favicon.svg',
   '/assets/styles.css','/assets/styles-legacy.css','/assets/hub.css','/assets/experience.css','/assets/consistency.css','/assets/pilotdesk-navigation-2026.css','/assets/calculators-2026.css','/assets/planning-2026.css','/assets/design-tokens.css',
   '/assets/analytics.js','/assets/billing.js','/assets/pro-access.js','/assets/training-standards-data.js','/assets/training-coverage.js','/assets/training-coverage.css','/assets/study-plan.js','/assets/study-plan.css','/assets/pro-preflight.js','/assets/pro-preflight.css','/assets/checkride-lab-data.js','/assets/checkride-lab.js','/assets/checkride-lab.css','/assets/share-enhance.js','/assets/page-share.js','/assets/learn-step7.js','/assets/weather.css','/assets/weather-fixed.js','/assets/weather-extra.js','/assets/offline-weather.js','/assets/learn-shell.js','/assets/learn-2026.css','/assets/step6-2026.css','/assets/user-preferences.js','/assets/system-states.js','/assets/written-prep.js','/assets/written-prep.css','/assets/daily.js','/assets/daily.css','/assets/skill-gap.js','/assets/account.js','/assets/account.css'
 ]);
@@ -95,7 +95,7 @@ async function networkFirst(req,preloadPromise){
 
 async function staleWhileRevalidate(event,req){
   const cache=await caches.open(CACHE),hit=await match(cache,req);
-  const fresh=fetch(req).then(r=>put(cache,req,r)).catch(()=>null);
+  const fresh=fetch(req,{cache:'no-store'}).then(r=>put(cache,req,r)).catch(()=>null);
   if(hit){
     event.waitUntil(fresh.then(()=>{}));
     return hit;

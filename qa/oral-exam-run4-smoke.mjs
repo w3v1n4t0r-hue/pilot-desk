@@ -32,4 +32,3 @@ check(bootstrap.includes("path.startsWith('/learn/')"),'Learn navigation is not 
 
 if(failures.length){console.error(failures.join('\n'));process.exit(1)}
 console.log('Run 4 oral guide source, rating, mode, search, progress, and Learn navigation checks passed.');
-

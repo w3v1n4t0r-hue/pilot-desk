@@ -26,4 +26,3 @@ window.PilotDeskOralAnswers = {
     1: {area:'Instrument flight instruction',task:'Attitude instrument flying',short:'I would have the learner verbalize the flight path, the supporting instruments, and the next small control correction. If they fixate on one display, I reduce task load, restore a reliable scan, and then reintroduce the task.',why:'The lesson should reveal the scan error before a large deviation develops and give the learner a repeatable way to detect it.',follow:'The learner keeps chasing the vertical-speed indication. Which other indications would you have them cross-check?',sources:[['Instrument Flying Handbook','https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/instrument_flying_handbook'],['CFII Practical Test Standards','https://www.faa.gov/training_testing/testing/acs/cfi_instrument_pts_9.pdf']]}
   }
 };
-

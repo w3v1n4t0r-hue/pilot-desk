@@ -34,14 +34,20 @@ try{
           const nav=document.querySelector('header.topbar nav.pd-main-nav');
           const menu=document.querySelector('header.topbar [data-menu]');
           const account=document.querySelector('header.topbar .pd-account-link');
-          return {native:document.documentElement.dataset.pdAstroNative==='1',navDisplay:getComputedStyle(nav).display,navPosition:getComputedStyle(nav).position,menuDisplay:getComputedStyle(menu).display,menuExpanded:menu.getAttribute('aria-expanded'),accountVisible:!!account&&getComputedStyle(account).display!=='none',navWidth:nav.getBoundingClientRect().width,viewportWidth:document.documentElement.clientWidth};
+          const accountText=account?.querySelector('.pd-account-text');
+          const accountAvatar=account?.querySelector('.pd-account-avatar');
+          const accountRect=account?.getBoundingClientRect();
+          const textVisible=!!accountText&&getComputedStyle(accountText).display!=='none'&&accountText.getBoundingClientRect().width>0&&accountText.textContent.trim().length>0;
+          const avatarVisible=!!accountAvatar&&!accountAvatar.hidden&&getComputedStyle(accountAvatar).display!=='none'&&accountAvatar.getBoundingClientRect().width>0;
+          const accountVisible=!!account&&getComputedStyle(account).display!=='none'&&getComputedStyle(account).visibility!=='hidden'&&accountRect.width>=42&&accountRect.height>=42&&(textVisible||avatarVisible);
+          return {native:document.documentElement.dataset.pdAstroNative==='1',navDisplay:getComputedStyle(nav).display,navPosition:getComputedStyle(nav).position,menuDisplay:getComputedStyle(menu).display,menuExpanded:menu.getAttribute('aria-expanded'),accountVisible,account:{html:account?.outerHTML,rect:accountRect&&{x:accountRect.x,y:accountRect.y,width:accountRect.width,height:accountRect.height},display:account&&getComputedStyle(account).display,visibility:account&&getComputedStyle(account).visibility,text:accountText?.textContent,textDisplay:accountText&&getComputedStyle(accountText).display,textRect:accountText&&{width:accountText.getBoundingClientRect().width,height:accountText.getBoundingClientRect().height},avatarHidden:accountAvatar?.hidden,actions:account?.parentElement?.getBoundingClientRect().toJSON(),header:account?.closest('header')?.getBoundingClientRect().toJSON(),styles:[...document.styleSheets].map(s=>s.href).filter(Boolean)},navWidth:nav.getBoundingClientRect().width,viewportWidth:document.documentElement.clientWidth};
         });
         check(initial.native===(route==='/'||route==='/tools.html'),`${route} was served by the unexpected shell at ${width}px`);
         if(width<=820){
           check(initial.navDisplay==='none',`mobile navigation was visible before opening on ${route} at ${width}px`);
           check(initial.menuDisplay!=='none',`mobile menu control was hidden on ${route} at ${width}px`);
           check(initial.menuExpanded==='false',`mobile menu did not start collapsed on ${route} at ${width}px`);
-          check(initial.accountVisible,`account control was hidden on ${route} at ${width}px`);
+          check(initial.accountVisible,`account control was hidden on ${route} at ${width}px (${JSON.stringify(initial.account)})`);
           await page.locator('header.topbar [data-menu]').click();
           await page.waitForFunction(()=>document.querySelector('header.topbar nav.pd-main-nav')?.classList.contains('open'),{timeout:5000});
           const opened=await page.evaluate(()=>{
@@ -112,6 +118,7 @@ try{
   },coldRoute);
   check(cachedBeforeVisit,`${coldRoute} was not precached before its first navigation`);
 
+  failedRequests.length=0;
   await context.setOffline(true);
   const offlinePage=await context.newPage();
   offlinePage.on('requestfailed',request=>{

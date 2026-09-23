@@ -340,7 +340,6 @@ textarea{resize:vertical}
 @media (max-width:430px){
   :root{--pd-mobile-gutter:13px}
   .brandmark{width:32px!important;height:32px!important}
-  .pd-account-text{display:none!important}
   .pd-home-hero{padding-inline:var(--pd-mobile-gutter)!important}
   .pd-home-hero h1,
   .content-page h1,

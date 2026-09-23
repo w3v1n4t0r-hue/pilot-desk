@@ -28,6 +28,8 @@ if(!pcs.includes('function interp')||!pcs.includes('xCal')||!pcs.includes('yCal'
 
 const rp=fs.readFileSync('route-planner.html','utf8');
 const rpjs=fs.readFileSync('assets/route-planner.js','utf8');
+const rpCss=fs.readFileSync('assets/route-planner.css','utf8');
+if(!rpCss.includes('#rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important'))throw new Error('Sitewide media sizing must not collapse Leaflet route vectors');
 const plannerPro=fs.readFileSync('assets/planner-pro.js','utf8');
 if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
 for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!rpjs.includes(s))throw new Error(`Route optimization/integration missing ${s}`);

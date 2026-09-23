@@ -34,7 +34,13 @@ try{
           const nav=document.querySelector('header.topbar nav.pd-main-nav');
           const menu=document.querySelector('header.topbar [data-menu]');
           const account=document.querySelector('header.topbar .pd-account-link');
-          return {native:document.documentElement.dataset.pdAstroNative==='1',navDisplay:getComputedStyle(nav).display,navPosition:getComputedStyle(nav).position,menuDisplay:getComputedStyle(menu).display,menuExpanded:menu.getAttribute('aria-expanded'),accountVisible:!!account&&getComputedStyle(account).display!=='none',navWidth:nav.getBoundingClientRect().width,viewportWidth:document.documentElement.clientWidth};
+          const accountText=account?.querySelector('.pd-account-text');
+          const accountAvatar=account?.querySelector('.pd-account-avatar');
+          const accountRect=account?.getBoundingClientRect();
+          const textVisible=!!accountText&&getComputedStyle(accountText).display!=='none'&&accountText.getBoundingClientRect().width>0&&accountText.textContent.trim().length>0;
+          const avatarVisible=!!accountAvatar&&!accountAvatar.hidden&&getComputedStyle(accountAvatar).display!=='none'&&accountAvatar.getBoundingClientRect().width>0;
+          const accountVisible=!!account&&getComputedStyle(account).display!=='none'&&getComputedStyle(account).visibility!=='hidden'&&accountRect.width>=42&&accountRect.height>=42&&(textVisible||avatarVisible);
+          return {native:document.documentElement.dataset.pdAstroNative==='1',navDisplay:getComputedStyle(nav).display,navPosition:getComputedStyle(nav).position,menuDisplay:getComputedStyle(menu).display,menuExpanded:menu.getAttribute('aria-expanded'),accountVisible,navWidth:nav.getBoundingClientRect().width,viewportWidth:document.documentElement.clientWidth};
         });
         check(initial.native===(route==='/'||route==='/tools.html'),`${route} was served by the unexpected shell at ${width}px`);
         if(width<=820){

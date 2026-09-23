@@ -48,6 +48,7 @@ try{
           check(initial.menuDisplay!=='none',`mobile menu control was hidden on ${route} at ${width}px`);
           check(initial.menuExpanded==='false',`mobile menu did not start collapsed on ${route} at ${width}px`);
           check(initial.accountVisible,`account control was hidden on ${route} at ${width}px (${JSON.stringify(initial.account)})`);
+          await page.waitForFunction(()=>document.documentElement.classList.contains('pd-ready'),undefined,{timeout:15000});
           await page.locator('header.topbar [data-menu]').click();
           await page.waitForFunction(()=>document.querySelector('header.topbar nav.pd-main-nav')?.classList.contains('open'),{timeout:5000});
           const opened=await page.evaluate(()=>{

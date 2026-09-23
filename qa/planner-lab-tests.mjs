@@ -35,6 +35,7 @@ const efb=fs.readFileSync('assets/efb-layers.js','utf8');
 for(const s of ['Auto by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
 if(!rp.includes('/assets/efb-layers.js'))throw new Error('Route planner does not load the EFB layer controller');
 if(!rp.includes('id="rpWaypointSearch"')||!rp.includes('id="rpWaypointResults"')||!rpjs.includes('/api/airport-search?q=')||!rpjs.includes('/api/navdata?ident='))throw new Error('Route waypoint search is not connected');
+if(!rpjs.includes('Observation time unavailable')||!rpjs.includes("return 'Observed '+d.toISOString()"))throw new Error('Endpoint METAR time provenance is missing');
 if(!fs.readFileSync('api/navdata.js','utf8').includes("faaMatches('NAVAIDSystem'")||!fs.readFileSync('api/navdata.js','utf8').includes("faaMatches('DesignatedPoints'"))throw new Error('FAA navigation fallback missing');
 if(!plannerPro.includes("localStorage.getItem('pd-aircraft-active')")||!plannerPro.includes("!params.get('flight')&&!hasSavedRoute"))throw new Error('New route plans no longer inherit the active aircraft safely');
 if(/border-radius:(?:9|10)px/.test(plannerPro))throw new Error('Planner profile/summary panels regressed to rounded cards');
@@ -97,6 +98,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
   vm.runInNewContext(rpjs,{window,document,localStorage,fetch,AbortController,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true});
   documentListeners.DOMContentLoaded();
+  if(typeof window.PilotDeskRoutePlanner?.rebuild!=='function')throw new Error('Route engine became unavailable when chart library failed');
   if(el('#rpSummaryDistance').textContent!=='— NM'||el('#rpNavlog').innerHTML)throw new Error('Restored route showed unverified totals before rebuild');
   if(timers.size!==1)throw new Error('Restored route was not scheduled for rebuild');
   const restoreTimer=[...timers.values()][0];timers.clear();restoreTimer();

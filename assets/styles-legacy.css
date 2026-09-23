@@ -77,11 +77,6 @@ footer{border-top:1px solid #25282d;max-width:1240px;margin:auto;padding:34px 22
   --pd-shadow-soft:0 14px 38px rgba(0,0,0,.24);
 }
 
-@view-transition{navigation:auto}
-::view-transition-old(root){animation:pd-page-out .16s cubic-bezier(.4,0,1,1) both}
-::view-transition-new(root){animation:pd-page-in .28s cubic-bezier(.2,.8,.2,1) both}
-@keyframes pd-page-out{to{opacity:0;transform:translateY(-5px)}}
-@keyframes pd-page-in{from{opacity:0;transform:translateY(8px)}}
 @keyframes pd-grid-drift{to{background-position:0 84px,84px 0,0 0}}
 @keyframes pd-beacon{0%,100%{opacity:.35;transform:scale(.86)}50%{opacity:1;transform:scale(1)}}
 @keyframes pd-sheen{0%{transform:translateX(-120%) skewX(-18deg)}55%,100%{transform:translateX(340%) skewX(-18deg)}}

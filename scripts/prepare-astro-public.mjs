@@ -1,6 +1,7 @@
 import { sharedShell } from './shared-shell.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 
 const root = process.cwd();
 const target = path.join(root, '.astro-public');
@@ -44,6 +45,22 @@ function applyShell(dir){
   }
 }
 applyShell(target);
+
+// Give returning visitors fresh planner assets even while an older service worker controls the page.
+const routePage=path.join(target,'route-planner.html');
+let routeHtml=fs.readFileSync(routePage,'utf8');
+for(const extension of ['css','js']){
+  const name=`route-planner.${extension}`;
+  const source=path.join(target,'assets',name);
+  const bytes=fs.readFileSync(source);
+  const hash=createHash('sha256').update(bytes).digest('hex').slice(0,12);
+  const fingerprinted=`route-planner.${hash}.${extension}`;
+  fs.copyFileSync(source,path.join(target,'assets',fingerprinted));
+  const reference=new RegExp(`/assets/route-planner\\.${extension}(?:\\?v=[^"']*)?`,'g');
+  if(!reference.test(routeHtml)) throw new Error(`Missing ${name} reference in route-planner.html`);
+  routeHtml=routeHtml.replace(reference,`/assets/${fingerprinted}`);
+}
+fs.writeFileSync(routePage,routeHtml);
 
 function collectCalculatorOfflineManifest(){
   const calculatorRoot=path.join(target,'calculators');

@@ -35,7 +35,7 @@ async function ensureSearchData(){
  return searchable;
 }
 function ensureStyle(href,key){if([...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>{try{return new URL(l.href,location.href).pathname===href}catch{return false}}))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset[key]='1';document.head.appendChild(l)}
-function ensureUnifiedStyle(){ensureStyle('/assets/experience.css','pdExperience')}
+function ensureUnifiedStyle(){const hasSharedStyles=[...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>{try{return new URL(l.href,location.href).pathname==='/assets/styles.css'}catch{return false}});if(!hasSharedStyles)ensureStyle('/assets/experience.css','pdExperience')}
 function markStandaloneApp(){const p=location.pathname;const app=APP_PATHS.has(p)||p.startsWith('/calculators/')||p.startsWith('/training/')||p.startsWith('/learn/oral-exam/')||p.startsWith('/guides/')||p==='/guides.html';if(!app)return;document.documentElement.classList.add('pd-streamlined-app');const main=document.querySelector('main.shell,main.pd-account-shell');if(main){main.classList.add('pd-streamlined-shell');const hero=main.querySelector(':scope > .pd-flight-hero,:scope > .wx-hero,:scope > .pd-account-hero,:scope > .pd-page-hero,:scope > .pd-prep-hero');if(hero)hero.classList.add('pd-page-hero')}}
 function sectionCurrent(section,path){return section.paths.some(p=>p.endsWith('/')?path.startsWith(p):path===p)}
 function iconSearch(){return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'}
@@ -60,6 +60,7 @@ function renderSearchResults(host,q){
  host.hidden=false;
 }
 function closeMenus(header){header.querySelectorAll('[data-pd-nav-item].open').forEach(x=>{x.classList.remove('open');x.querySelector('button')?.setAttribute('aria-expanded','false')})}
+function setMobileNavOpen(nav,menu,open){nav.classList.toggle('open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')}
 function bindHeader(header){
  const astroShell=header.hasAttribute('data-pd-astro-shell');
  const nav=header.querySelector(':scope > nav')||document.createElement('nav');
@@ -89,10 +90,10 @@ function bindHeader(header){
  document.addEventListener('keydown',e=>{if(e.key==='/'&&!/input|textarea|select/i.test(document.activeElement?.tagName||'')){e.preventDefault();search.focus()}});
  
  nav.querySelectorAll('[data-pd-nav-item]>.pd-nav-button').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const item=btn.parentElement,open=!item.classList.contains('open');closeMenus(header);if(open){item.classList.add('open');btn.setAttribute('aria-expanded','true')}}));
- menu.addEventListener('click',e=>{e.stopPropagation();const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')});
- nav.addEventListener('click',e=>{if(e.target.closest('a')){nav.classList.remove('open');menu.setAttribute('aria-expanded','false')}});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenus(header);nav.classList.remove('open');menu.setAttribute('aria-expanded','false');results.hidden=true}});
- document.addEventListener('click',e=>{if(!header.contains(e.target)){closeMenus(header);nav.classList.remove('open');menu.setAttribute('aria-expanded','false');results.hidden=true}});
+ menu.addEventListener('click',e=>{e.stopPropagation();setMobileNavOpen(nav,menu,!nav.classList.contains('open'))});
+ nav.addEventListener('click',e=>{if(e.target.closest('a')){setMobileNavOpen(nav,menu,false)}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenus(header);setMobileNavOpen(nav,menu,false);results.hidden=true}});
+ document.addEventListener('click',e=>{if(!header.contains(e.target)){closeMenus(header);setMobileNavOpen(nav,menu,false);results.hidden=true}});
 }
 function initials(user){const name=user?.user_metadata?.full_name||user?.email||'';const parts=String(name).trim().split(/[\s@._-]+/).filter(Boolean);return(parts.slice(0,2).map(x=>x[0]).join('')||'PD').toUpperCase()}
 function hydrateHomeAccount(session){const box=document.querySelector('[data-pd-home-account]');if(!box)return;const title=box.querySelector('[data-pd-home-account-title]'),copy=box.querySelector('[data-pd-home-account-copy]'),actions=box.querySelector('[data-pd-home-account-actions]');if(session){if(title)title.textContent='Your PilotDesk account is ready';if(copy)copy.textContent='Pick up your written prep, Daily streak, training goal, or account workspace.';if(actions)actions.innerHTML='<a class="primary" href="/written-prep.html">Continue studying</a><a href="/account.html">Open account</a>'}else{if(title)title.textContent='Sign in to save your progress';if(copy)copy.textContent='Keep written-prep scores, streaks, your training goal, and optional cloud backups tied to your account.';if(actions)actions.innerHTML='<a class="primary" href="/account.html?next=%2F">Sign in</a><a href="/account.html?next=%2F">Create a free account</a>'}}

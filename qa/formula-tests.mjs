@@ -4,7 +4,7 @@ import vm from 'node:vm';
 const nodes=new Map();
 const head={appendChild(){}};
 const document={
-  addEventListener(){},querySelector(){return null},querySelectorAll(){return []},
+  addEventListener(){},querySelector(){return null},querySelectorAll(selector){if(selector==='[data-calc-input]')return [...nodes.values()].filter(x=>x?.dataset?.calcInput);if(selector==='[id^=\"out\"]')return [...nodes.entries()].filter(([id])=>id.startsWith('out')).map(([,x])=>x);return[]},
   getElementById(id){return nodes.get(id)||null},
   createElement(tag){return{tagName:String(tag).toUpperCase(),rel:'',href:'',src:'',defer:false,classList:{add(){},remove(){},toggle(){}}}},
   head,body:{dataset:{}},
@@ -29,5 +29,23 @@ o=run('weightConv',{lb:100});near(n(o[0]),45.36,.02,'Pounds to kg');
 o=run('trueMag',{direction:270,variation:8});near(n(o[0]),262,.1,'True to magnetic');near(n(o[1]),278,.1,'Magnetic to true');
 o=run('stallBank',{vs:50,bank:60});near(n(o[0]),70.7,.2,'Accelerated stall');
 o=run('greatCircle',{lat1:47.95,lon1:-97.18,lat2:47.95,lon2:-97.18});near(n(o[0]),0,.1,'Zero great-circle distance');
+
+
+const safetyWarning={textContent:'',classList:{toggle(){}}};
+nodes.clear();
+for(const [id,value] of Object.entries({runway:180,windDir:220,windSpeed:20,gustSpeed:''})){
+  nodes.set(id,{id,value:String(value),dataset:{calcInput:true,...(id==='gustSpeed'?{optional:'true'}:{})},closest(){return{querySelector(){return{textContent:id}}}}});
+}
+nodes.set('safetyWarning',safetyWarning);
+vm.runInContext(fs.readFileSync('assets/safety.js','utf8'),context);
+const safety=context.window.PilotDeskSafety;
+if(!safety.validate('crosswind'))throw new Error('Blank optional gust speed must not block crosswind calculation');
+nodes.get('gustSpeed').value='30';
+if(!safety.validate('crosswind'))throw new Error('A valid gust speed must pass crosswind validation');
+nodes.get('gustSpeed').value='301';
+if(safety.validate('crosswind'))throw new Error('Out-of-range gust speed must be rejected');
+nodes.get('gustSpeed').value='';
+nodes.get('runway').value='';
+if(safety.validate('crosswind'))throw new Error('Blank required runway heading must be rejected');
 
 console.log('PilotDesk formula regression tests passed.');

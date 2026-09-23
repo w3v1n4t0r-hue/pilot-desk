@@ -32,4 +32,3 @@ if(!isAstroNative)load('/assets/experience.js');
 if(['/planner.html','/airport.html','/aircraft.html','/route-planner.html','/flights.html','/weather.html','/weight-balance.html','/flight-planning-workspace.html','/procedures.html','/flight-brief.html'].includes(path))load('/assets/flight-journey.js');
 load('/assets/system-states.js');load('/assets/errors.js');load('/assets/analytics.js');load('/assets/update.js');
 })();
-

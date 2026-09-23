@@ -14,6 +14,11 @@ vm.createContext(context);
 vm.runInContext(fs.readFileSync('assets/site.js','utf8')+'\nglobalThis.__F=F;',context);
 const F=context.__F;
 if(!F)throw new Error('Calculator function table not available');
+const configContext={window:{}};
+vm.runInNewContext(fs.readFileSync('assets/calculator-config.js','utf8'),configContext);
+const allCalcs=configContext.window.PD_CALCS||[];
+if(allCalcs.length!==47)throw new Error(`Expected 47 calculator definitions, found ${allCalcs.length}`);
+
 
 function run(key,inputs){nodes.clear();for(const [id,value] of Object.entries(inputs))nodes.set(id,{value:String(value)});for(let i=0;i<4;i++)nodes.set('out'+i,{textContent:'—'});F[key]();return [0,1,2,3].map(i=>nodes.get('out'+i)?.textContent)}
 const n=s=>Number(String(s).replace(/,/g,'').match(/[-+]?\d*\.?\d+/)?.[0]);
@@ -42,6 +47,23 @@ if(!crosswindMfd.includes('data-optional=\"true\"'))throw new Error('Injected gu
 vm.runInContext(fs.readFileSync('assets/safety.js','utf8'),context);
 const safety=context.window.PilotDeskSafety;
 if(!safety.validate('crosswind'))throw new Error('Blank optional gust speed must not block crosswind calculation');
+for(const [slug,key,, ,fields] of allCalcs){
+  nodes.clear();
+  for(const [id,,value] of fields)nodes.set(id,{id,value:String(value),dataset:{calcInput:true},closest(){return{querySelector(){return{textContent:id}}}}});
+  nodes.set('safetyWarning',safetyWarning);
+  if(!safety.validate(key))throw new Error(`${slug} shipped defaults fail validation: ${safetyWarning.textContent}`);
+  const [firstId, , firstValue]=fields[0];
+  nodes.get(firstId).value='';
+  if(safety.validate(key))throw new Error(`${slug} accepts a blank required input`);
+  nodes.get(firstId).value='Infinity';
+  if(safety.validate(key))throw new Error(`${slug} accepts Infinity as an input`);
+}
+nodes.clear();
+for(const [id,value] of Object.entries({runway:180,windDir:220,windSpeed:20,gustSpeed:''})){
+  nodes.set(id,{id,value:String(value),dataset:{calcInput:true,...(id==='gustSpeed'?{optional:'true'}:{})},closest(){return{querySelector(){return{textContent:id}}}}});
+}
+nodes.set('safetyWarning',safetyWarning);
+
 nodes.get('gustSpeed').value='30';
 if(!safety.validate('crosswind'))throw new Error('A valid gust speed must pass crosswind validation');
 nodes.get('gustSpeed').value='301';

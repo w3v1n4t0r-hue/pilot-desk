@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import vm from 'node:vm';
 import {createRequire} from 'node:module';
 
 const require=createRequire(import.meta.url);
@@ -27,12 +28,17 @@ if(!pcs.includes('function interp')||!pcs.includes('xCal')||!pcs.includes('yCal'
 
 const rp=fs.readFileSync('route-planner.html','utf8');
 const rpjs=fs.readFileSync('assets/route-planner.js','utf8');
+const rpCss=fs.readFileSync('assets/route-planner.css','utf8');
+if(!rpCss.includes('#rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important'))throw new Error('Sitewide media sizing must not collapse Leaflet route vectors');
 const plannerPro=fs.readFileSync('assets/planner-pro.js','utf8');
 if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
 for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!rpjs.includes(s))throw new Error(`Route optimization/integration missing ${s}`);
 const efb=fs.readFileSync('assets/efb-layers.js','utf8');
 for(const s of ['Auto by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
 if(!rp.includes('/assets/efb-layers.js'))throw new Error('Route planner does not load the EFB layer controller');
+if(!rp.includes('id="rpWaypointSearch"')||!rp.includes('id="rpWaypointResults"')||!rpjs.includes('/api/airport-search?q=')||!rpjs.includes('/api/navdata?ident='))throw new Error('Route waypoint search is not connected');
+if(!rpjs.includes('Observation time unavailable')||!rpjs.includes("return 'Observed '+d.toISOString()"))throw new Error('Endpoint METAR time provenance is missing');
+if(!fs.readFileSync('api/navdata.js','utf8').includes("faaMatches('NAVAIDSystem'")||!fs.readFileSync('api/navdata.js','utf8').includes("faaMatches('DesignatedPoints'"))throw new Error('FAA navigation fallback missing');
 if(!plannerPro.includes("localStorage.getItem('pd-aircraft-active')")||!plannerPro.includes("!params.get('flight')&&!hasSavedRoute"))throw new Error('New route plans no longer inherit the active aircraft safely');
 if(/border-radius:(?:9|10)px/.test(plannerPro))throw new Error('Planner profile/summary panels regressed to rounded cards');
 if(!rp.includes('Before you save the flight')||rp.includes('Turn a route line into a usable navlog'))throw new Error('Route planner task copy regressed to generic filler');
@@ -81,4 +87,60 @@ if(!sw.includes('const networkOnlyPath=')||!sw.includes("pathname.startsWith('/a
 
 const sitemap=fs.readFileSync('sitemap.xml','utf8');
 if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missing from sitemap');
+
+// A restored route must be recalculated before totals or a navlog are shown.
+{
+  const elements=new Map(),timers=new Map(),storage=new Map([['pd-route-last',JSON.stringify({route:'A,47,-97 B,48,-97',tas:120,burn:10,wd:270,ws:0,variation:0,totalDistance:0,totalHours:0,totalFuel:0})]]);
+  let timerId=0;
+  const el=selector=>{if(!elements.has(selector)){const listeners={};elements.set(selector,{value:'',textContent:'',innerHTML:'',disabled:false,listeners,addEventListener:(type,fn)=>{listeners[type]=fn},setAttribute:()=>{},focus:()=>{},classList:{toggle:()=>{}},dataset:{}})}return elements.get(selector)};
+  const documentListeners={};
+  const document={readyState:'loading',querySelector:s=>s.startsWith('#')?el(s):null,querySelectorAll:()=>[],addEventListener:(type,fn)=>{documentListeners[type]=fn},dispatchEvent:()=>{}};
+  const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)};
+  const window={PilotDeskNavlog:nav,PilotDeskFlights:{list:()=>[]}};
+  const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:url.includes('ident=GEP')?{point:{id:'GEP',name:'Gopher',lat:45.1457,lon:-93.3732,source:'faa-navaid',status:'RESTRICTED'}}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
+  vm.runInNewContext(rpjs,{window,document,localStorage,fetch,AbortController,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true});
+  documentListeners.DOMContentLoaded();
+  if(typeof window.PilotDeskRoutePlanner?.rebuild!=='function')throw new Error('Route engine became unavailable when chart library failed');
+  if(el('#rpSummaryDistance').textContent!=='— NM'||el('#rpNavlog').innerHTML)throw new Error('Restored route showed unverified totals before rebuild');
+  if(timers.size!==1)throw new Error('Restored route was not scheduled for rebuild');
+  const restoreTimer=[...timers.values()][0];timers.clear();restoreTimer();
+  await new Promise(setImmediate);
+  if(!(window.pdNavlogResult?.totalDistance>0)||el('#rpSummaryDistance').textContent==='— NM')throw new Error('Restored route did not rebuild its navlog');
+  el('#rpWaypointSearch').value='GFK';
+  el('#rpWaypointSearch').listeners.input();
+  const searchTimer=[...timers.values()][0];timers.clear();searchTimer();
+  await new Promise(setImmediate);
+  if(!el('#rpWaypointResults').innerHTML.includes('Grand Forks VOR')||el('#rpWaypointResults').innerHTML.includes('KFAKE'))throw new Error('Waypoint search did not render real airport/NAVAID results safely');
+  el('#rpWaypointResults').listeners.click({target:{closest:()=>({dataset:{rpAdd:'GFK'}})}});
+  if(!el('#rpRoute').value.endsWith(' GFK'))throw new Error('Waypoint search did not add a result to the route');
+  el('#rpRoute').value='A,47,-97 C,49,-97';
+  el('#rpRoute').listeners.input();
+  if(window.pdNavlogResult!==null||el('#rpSummaryDistance').textContent!=='— NM'||!el('#rpNavlog').innerHTML.includes('No route built yet'))throw new Error('Editing a route left stale calculated results visible');
+  el('#rpRoute').value='A,47,-97 GEP B,48,-97';
+  await window.PilotDeskRoutePlanner.rebuild();
+  if(!el('#rpStatus').textContent.includes('GEP RESTRICTED'))throw new Error('Restricted FAA facility status was hidden from the built route');
+  el('#rpClearRoute').listeners.click();
+  if(storage.has('pd-route-last')||el('#rpRoute').value)throw new Error('Clear did not remove the restored route');
+}
+
+
+// A current FAA NAVAID must still resolve when the AWC endpoint has no record.
+{
+  let duplicate=false,limited=false;
+  const feature=(lat,lon)=>({type:'Feature',properties:{IDENT:'GEP',NAME_TXT:'GOPHER',CITY:'MINNEAPOLIS',STATE:'MN',STATUS:'RESTRICTED'},geometry:{type:'Point',coordinates:[lon,lat]}});
+  const fetch=async url=>({ok:true,json:async()=>String(url).includes('aviationweather.gov')?[]:limited?{error:{code:429,message:'Too many requests'}}:{type:'FeatureCollection',features:String(url).includes('NAVAIDSystem')?[feature(45.15,-93.37),...(duplicate?[feature(46.15,-94.37)]:[])]:[feature(45.15,-93.37)]}});
+  const mod={exports:{}};
+  vm.runInNewContext(fs.readFileSync('api/navdata.js','utf8'),{module:mod,fetch,AbortController,URLSearchParams,setTimeout,clearTimeout});
+  const response=()=>{const result={status:200,body:null};return{result,res:{setHeader:()=>{},status(code){result.status=code;return this},json(body){result.body=body;return body}}}};
+  let r=response();
+  await mod.exports({method:'GET',query:{ident:'GEP'}},r.res);
+  if(r.result.status!==200||r.result.body?.point?.source!=='faa-navaid'||r.result.body.point.lat!==45.15||r.result.body.point.status!=='RESTRICTED')throw new Error('FAA NAVAID fallback failed');
+  duplicate=true;r=response();
+  await mod.exports({method:'GET',query:{ident:'GEP',search:'1'}},r.res);
+  if(r.result.status!==200||r.result.body?.matches?.length!==2)throw new Error('Ambiguous FAA navigation results were discarded');
+  limited=true;r=response();
+  await mod.exports({method:'GET',query:{ident:'GEP'}},r.res);
+  if(r.result.status!==503||!r.result.body?.error?.includes('temporarily unavailable'))throw new Error('FAA rate limit was incorrectly reported as a missing waypoint');
+}
+
 console.log('PilotDesk planner, FAA chart, procedure viewer, training library, navigation, and weather tests passed.');

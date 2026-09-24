@@ -27,7 +27,7 @@ gradientAngle(){let a=num('angle')*Math.PI/180,g=6076.11549*Math.tan(a),g2=num('
 glide(){let ft=num('alt')*num('ratio'),nm=ft/6076.11549;set(0,`${fmt(nm,1)} NM`);set(1,`${fmt(ft,0)} ft`);set(2,`${fmt(nm*1.150779,1)} mi`)},
 vaWeight(){let va=num('va'),mw=num('maxWeight'),w=num('weight'),r=w/mw,o=va*Math.sqrt(r);set(0,`${fmt(o,1)} kt`);set(1,`${fmt(r*100,1)}%`);set(2,`${fmt(o-va,1)} kt`)},
 stallBank(){let vs=num('vs'),b=num('bank')*Math.PI/180,lf=1/Math.cos(b),o=vs*Math.sqrt(lf);set(0,`${fmt(o,1)} kt`);set(1,`${fmt(lf,2)} G`);set(2,`+${fmt(((o/vs)-1)*100,1)}%`)},
-hydro(){let p=num('psi'),v=9*Math.sqrt(p);set(0,`${fmt(v,1)} kt`);set(1,`${fmt(p,1)} psi`);set(2,'Initial dynamic hydroplaning estimate')},
+hydro(){let p=num('psi'),v=8.6*Math.sqrt(p);set(0,`${fmt(v,1)} kt`);set(1,`${fmt(p,1)} psi`);set(2,'FAA minimum dynamic hydroplaning estimate')},
 wingLoading(){let w=num('weight'),a=num('area'),x=w/a;set(0,`${fmt(x,2)} lb/ft²`);set(1,`${fmt(w,0)} lb`);set(2,`${fmt(a,1)} ft²`)},
 powerLoading(){let w=num('weight'),hp=num('hp');set(0,`${fmt(w/hp,2)} lb/hp`);set(1,`${fmt(hp/(w/1000),1)} hp/1000 lb`);set(2,`${fmt(hp,0)} hp`)},
 obstacleGradient(){let h=num('obstacle')+num('margin'),d=num('distance'),g=h/d,a=Math.atan(g/6076.11549)*180/Math.PI;set(0,`${fmt(g,0)} ft/NM`);set(1,`${fmt(g/60.76115,2)}%`);set(2,`${fmt(a,2)}°`)},

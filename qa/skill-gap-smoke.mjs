@@ -14,7 +14,8 @@ for(const n of ['create table if not exists public.skill_gap_stats','alter table
 need(daily,'/skill-gap.html','daily discovery');
 for(const n of ['/skill-gap.html','Weak Subjects','Written Prep history'])need(training,n,'training hub discovery');
 need(nav,"'/skill-gap.html'",'global nav app coverage');
-need(sitemap,'https://www.pilot-desk.com/skill-gap.html','retention sitemap');
+if(!/<meta name="robots" content="noindex,follow">/i.test(page))failures.push('weak-subjects page: personalized study dashboard should be noindex');
+if(sitemap.includes('https://www.pilot-desk.com/skill-gap.html'))failures.push('retention sitemap: personalized study dashboard must stay excluded');
 for(const n of ['pd-gap-tracks','pd-gap-map-fill'])need(css,n,'skill-gap visual base');
 
 if(failures.length){console.error('Weak Subjects checks failed:\n- '+failures.join('\n- '));process.exit(1)}

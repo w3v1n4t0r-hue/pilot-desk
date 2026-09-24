@@ -37,8 +37,8 @@ for(const file of htmlFiles){
     if(header.includes('viewBox="0 0 64 40"')) failures.push(`${file}: retired inline airplane logo remains in header`);
     const navCount=(header.match(/<nav\b/gi)||[]).length;
     if(navCount>1) failures.push(`${file}: duplicate navigation blocks in header`);
-    if(!html.includes('/assets/styles.css')) failures.push(`${file}: shared stylesheet entrypoint missing`);
-    if(!html.includes('/assets/app-bootstrap.js')&&!html.includes('data-pd-astro-native="1"')){
+    if(!/\/assets\/styles(?:\.[a-f0-9]{12})?\.css/.test(html)) failures.push(`${file}: shared stylesheet entrypoint missing`);
+    if(!/\/assets\/app-bootstrap(?:\.[a-f0-9]{12})?\.js/.test(html)&&!html.includes('data-pd-astro-native="1"')){
       failures.push(`${file}: shared app bootstrap missing`);
     }
   }

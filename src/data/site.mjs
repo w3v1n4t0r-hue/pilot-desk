@@ -29,7 +29,7 @@ const sectionDefinitions = [
     items: [
       ['/weather.html', 'METAR & TAF', 'Current airport weather'],
       ['/metar-decoder.html', 'METAR decoder', 'Break down an aviation weather report'],
-      ['/airport.html', 'Airport weather', 'Weather in airport context']
+      ['/guides/metar-taf.html', 'Read METARs & TAFs', 'Worked report examples and forecast changes']
     ]
   },
   {
@@ -70,6 +70,9 @@ const featuredSearch = [
   ['Pilot guides', '/guides.html', 'guides checkride aviation'],
   ['PilotDesk Daily', '/daily/', 'daily questions challenge'],
   ['Account', '/account.html', 'sign in profile progress'],
+  ['IFR alternate requirements', '/guides/ifr-alternate-requirements.html', 'alternates alternate minimums 91.169 123 rule instrument'],
+  ['Required aircraft equipment — 91.205', '/learn/oral-exam/?q=91.205', '91.205 required equipment atomatoflames vfr day night ifr'],
+  ['Wind triangle', '/calculators/wind-triangle/', 'heading groundspeed wind correction wca'],
   ['PilotDesk plans', '/pricing.html', 'free pro flight school pricing sync training']
 ];
 
@@ -101,6 +104,7 @@ export const homeCategories = [
 export const footerLinks = [
   ['/about.html', 'About'],
   ['/feedback.html', 'Contact'],
+  ['/sources.html', 'Sources & methods'],
   ['/legal/terms.html', 'Terms'],
   ['/legal/privacy.html', 'Privacy']
 ];

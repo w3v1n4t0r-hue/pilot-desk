@@ -22,18 +22,9 @@ function publicUrl(file){
   return SITE+'/'+file;
 }
 
-function historyRef(){
-  const head=process.env.GITHUB_HEAD_REF?.trim();
-  if(!head) return 'HEAD';
-  for(const ref of [`origin/${head}`,head]){
-    try{
-      execFileSync('git',['rev-parse','--verify',ref],{stdio:'ignore'});
-      return ref;
-    }catch{}
-  }
-  return 'HEAD';
-}
-const HISTORY_REF=historyRef();
+// Generate the same dates locally and in CI from the checked-out tree. A PR
+// branch ref can be absent, shallow, or point at a different history snapshot.
+const HISTORY_REF='HEAD';
 
 function lastModified(file){
   const today=new Date().toISOString().slice(0,10);

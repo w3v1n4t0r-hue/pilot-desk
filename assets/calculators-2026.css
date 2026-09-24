@@ -63,7 +63,7 @@
 .pd-directory-card:hover{background:var(--panel2)!important;text-decoration:none!important}
 .pd-directory-card-copy{min-width:0;display:grid;gap:3px}
 .pd-directory-card-copy>b{font-size:13px!important;font-weight:650!important}
-.pd-directory-card-copy p{margin:0!important;color:var(--muted)!important;font-size:10.5px!important;line-height:1.45!important}
+.pd-directory-card-copy p{margin:0!important;color:var(--muted)!important;font-size:12px!important;line-height:1.5!important}
 .pd-directory-card-topline{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
 .pd-directory-card-meta,.pd-directory-last-used{
   font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:.07em!important;text-transform:uppercase
@@ -168,7 +168,7 @@
 @media(max-width:980px){
   .pd-tool-personal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .pd-calc-workbench{grid-template-columns:1fr}
-  .pd-calc-output-panel{position:static;grid-row:1}
+  .pd-calc-output-panel{position:static;grid-row:auto}
   .wb-result-deck{grid-template-columns:1fr}
 }
 @media(max-width:650px){

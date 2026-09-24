@@ -1,6 +1,17 @@
 (()=>{
 'use strict';
 if(!['/','/index.html'].includes(location.pathname))return;
+const wind=document.getElementById('pdHomeWind');
+if(wind){
+  const update=()=>{
+    const speed=Number(wind.value);
+    document.getElementById('pdHomeWindValue').textContent=speed+' kt';
+    document.getElementById('pdHomeCross').textContent=(speed*Math.sin(Math.PI/6)).toFixed(1)+' kt';
+    document.getElementById('pdHomeHead').textContent=(speed*Math.cos(Math.PI/6)).toFixed(1)+' kt';
+    document.getElementById('pdHomeWindLink').href='/calculators/crosswind/?runway=350&windDir=320&windSpeed='+speed;
+  };
+  wind.addEventListener('input',update);update();
+}
 const section=document.getElementById('pdHomeDesk');
 const host=document.getElementById('pdHomeDeskItems');
 if(!section||!host)return;

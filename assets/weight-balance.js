@@ -7,6 +7,8 @@ const depW=qs('#wbDepW'),depM=qs('#wbDepM'),depCG=qs('#wbDepCG'),ldgW=qs('#wbLdg
 const warn=qs('#wbSafetyWarning'), depEnv=qs('#wbDepEnvelope'),ldgEnv=qs('#wbLdgEnvelope'),chart=qs('#wbChart');
 const profileSelect=qs('#wbAircraftProfile'),fuelStation=qs('#wbFuelStation'),envelopeInput=qs('#wbEnvelope'),scenarioName=qs('#wbScenarioName');
 let rows=[], envelope=[], autosaveTimer=0, undoRow=null;
+let cgFrame=0,cgDomain='',cgPositions={};
+const cgReducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
 const uid=()=>globalThis.crypto?.randomUUID?.()||('r'+Date.now().toString(36)+Math.random().toString(36).slice(2));
 const n=v=>{if(String(v??'').trim()==='')return NaN;const x=Number(v);return Number.isFinite(x)?x:NaN};
 const fmt=(v,d=1)=>Number.isFinite(v)?v.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
@@ -35,11 +37,29 @@ function validRow(r){const dw=n(r.dep),lw=n(r.ldg),a=n(r.arm);if(!r.name.trim())
 function totals(phase){let W=0,M=0;for(const r of rows){const v=validRow(r);if(!v.ok)return {ok:false,msg:v.msg};const w=phase==='dep'?v.dw:v.lw;W+=w;M+=w*v.a}if(!(W>0))return {ok:false,msg:'Total weight must be greater than zero.'};return {ok:true,W,M,cg:M/W}}
 function pointInPolygon(x,y,poly){let inside=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1],dx=xj-xi,dy=yj-yi,scale=Math.max(1,Math.hypot(dx,dy)),eps=1e-9*Math.max(1,Math.abs(x),Math.abs(y),Math.abs(xi),Math.abs(yi),Math.abs(xj),Math.abs(yj)),cross=(x-xi)*dy-(y-yi)*dx;if(Math.abs(cross)<=eps*scale&&x>=Math.min(xi,xj)-eps&&x<=Math.max(xi,xj)+eps&&y>=Math.min(yi,yj)-eps&&y<=Math.max(yi,yj)+eps)return true;const crossesRay=((yi>y)!==(yj>y))&&(x<(dx*(y-yi))/dy+xi);if(crossesRay)inside=!inside}return inside}
 function envelopeState(t,el){if(!t.ok){el.textContent='Unable to evaluate';el.dataset.state='';return}if(envelope.length<3){el.textContent='No envelope entered';el.dataset.state='';return}const inside=pointInPolygon(t.cg,t.W,envelope);el.textContent=inside?'Inside entered envelope':'Outside entered envelope';el.dataset.state=inside?'inside':'outside'}
-function draw(dep,ldg){if(!chart)return;const ctx=chart.getContext('2d');const W=chart.width,H=chart.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#090b0d';ctx.fillRect(0,0,W,H);const pts=[...envelope];if(dep?.ok)pts.push([dep.cg,dep.W]);if(ldg?.ok)pts.push([ldg.cg,ldg.W]);if(!pts.length){ctx.fillStyle='#777b82';ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText('Enter an envelope to graph CG',W/2,H/2);return}
+function draw(dep,ldg){if(!chart)return;cancelAnimationFrame(cgFrame);const ctx=chart.getContext('2d');const W=chart.width,H=chart.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#090b0d';ctx.fillRect(0,0,W,H);const pts=[...envelope];if(dep?.ok)pts.push([dep.cg,dep.W]);if(ldg?.ok)pts.push([ldg.cg,ldg.W]);if(!pts.length){cgPositions={};cgDomain='';ctx.fillStyle='#777b82';ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText('Enter an envelope to graph CG',W/2,H/2);return}
 let xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),xmin=Math.min(...xs),xmax=Math.max(...xs),ymin=Math.min(...ys),ymax=Math.max(...ys);let xp=Math.max(2,(xmax-xmin)*.12),yp=Math.max(50,(ymax-ymin)*.12);xmin-=xp;xmax+=xp;ymin=Math.max(0,ymin-yp);ymax+=yp;const L=58,R=18,T=20,B=42,sx=x=>L+(x-xmin)/(xmax-xmin||1)*(W-L-R),sy=y=>H-B-(y-ymin)/(ymax-ymin||1)*(H-T-B);
 ctx.strokeStyle='#2f3339';ctx.lineWidth=1;ctx.fillStyle='#8d9198';ctx.font='14px system-ui';ctx.textAlign='right';for(let i=0;i<=4;i++){let y=ymin+(ymax-ymin)*i/4,py=sy(y);ctx.beginPath();ctx.moveTo(L,py);ctx.lineTo(W-R,py);ctx.stroke();ctx.fillText(Math.round(y),L-8,py+5)}ctx.textAlign='center';for(let i=0;i<=4;i++){let x=xmin+(xmax-xmin)*i/4,px=sx(x);ctx.beginPath();ctx.moveTo(px,T);ctx.lineTo(px,H-B);ctx.stroke();ctx.fillText(x.toFixed(1),px,H-16)}ctx.save();ctx.translate(15,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('Weight (lb)',0,0);ctx.restore();ctx.fillText('CG (in)',(L+W-R)/2,H-2);
 if(envelope.length>=3){ctx.beginPath();envelope.forEach((p,i)=>{const x=sx(p[0]),y=sy(p[1]);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath();ctx.fillStyle='rgba(180,185,192,.08)';ctx.fill();ctx.strokeStyle='#9fa4ab';ctx.lineWidth=2;ctx.stroke()}
-const dot=(t,label,shape)=>{if(!t?.ok)return;ctx.fillStyle=shape==='dep'?'#f2f3f5':'#a9afb8';ctx.beginPath();ctx.arc(sx(t.cg),sy(t.W),7,0,Math.PI*2);ctx.fill();ctx.font='bold 13px system-ui';ctx.textAlign='left';ctx.fillText(label,sx(t.cg)+10,sy(t.W)-9)};dot(dep,'Departure','dep');dot(ldg,'Landing','ldg')}
+// Keep axes fixed during motion. A changed envelope or scale renders immediately.
+const domain=JSON.stringify([W,H,xmin,xmax,ymin,ymax,envelope]);
+const targets={};if(dep?.ok)targets.dep=[sx(dep.cg),sy(dep.W)];if(ldg?.ok)targets.ldg=[sx(ldg.cg),sy(ldg.W)];
+const start=domain===cgDomain?cgPositions:{};cgDomain=domain;
+const moving=!cgReducedMotion.matches&&Object.keys(targets).some(k=>start[k]&&(start[k][0]!==targets[k][0]||start[k][1]!==targets[k][1]));
+const background=moving?ctx.getImageData(0,0,W,H):null;
+const began=performance.now();
+function paint(now){
+ const progress=!moving||cgReducedMotion.matches?1:Math.min(1,(now-began)/180),ease=1-(1-progress)**3;
+ if(background)ctx.putImageData(background,0,0);
+ cgPositions={};
+ for(const [key,target] of Object.entries(targets)){
+  const from=start[key]||target,x=from[0]+(target[0]-from[0])*ease,y=from[1]+(target[1]-from[1])*ease;cgPositions[key]=[x,y];
+  ctx.fillStyle=key==='dep'?'#f2f3f5':'#a9afb8';ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fill();ctx.font='bold 13px system-ui';ctx.textAlign='left';ctx.fillText(key==='dep'?'Departure':'Landing',x+10,y-9);
+ }
+ if(progress<1)cgFrame=requestAnimationFrame(paint);
+}
+paint(began);
+}
 function calculate(doSave=true){readDOM();let firstErr='';qsa('.wb-row',rowsHost).forEach(el=>{const r=rows.find(x=>x.id===el.dataset.id),v=r?validRow(r):{ok:false};el.classList.toggle('wb-invalid',!v.ok);if(v.ok){qs('[data-dep-moment]',el).textContent=fmt(v.dw*v.a,0);qs('[data-ldg-moment]',el).textContent=fmt(v.lw*v.a,0)}else{qs('[data-dep-moment]',el).textContent='—';qs('[data-ldg-moment]',el).textContent='—';if(!firstErr)firstErr=v.msg||'Check station inputs.'}});
 const d=totals('dep'),l=totals('ldg');if(!d.ok||!l.ok){setWarn(firstErr||d.msg||l.msg);[depW,depM,depCG,ldgW,ldgM,ldgCG].forEach(e=>e.textContent='—');envelopeState(d,depEnv);envelopeState(l,ldgEnv);draw(d,l);if(doSave)scheduleSave();return}
 setWarn('');depW.textContent=fmt(d.W,1)+' lb';depM.textContent=fmt(d.M,0)+' lb-in';depCG.textContent=fmt(d.cg,2)+' in';ldgW.textContent=fmt(l.W,1)+' lb';ldgM.textContent=fmt(l.M,0)+' lb-in';ldgCG.textContent=fmt(l.cg,2)+' in';envelopeState(d,depEnv);envelopeState(l,ldgEnv);if(envelope.length>=3){const depOutside=!pointInPolygon(d.cg,d.W,envelope),ldgOutside=!pointInPolygon(l.cg,l.W,envelope);if(depOutside||ldgOutside)setWarn((depOutside&&ldgOutside?'Departure and landing points are':depOutside?'Departure point is':'Landing point is')+' outside the entered CG envelope. Verify the boundary and loading against the approved source.')}draw(d,l);recordRecentWb();document.dispatchEvent(new CustomEvent('pilotdesk:wb-calculated',{detail:{departureWeight:d.W,departureCg:d.cg,landingWeight:l.W,landingCg:l.cg}}));if(doSave)scheduleSave()}

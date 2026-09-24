@@ -35,8 +35,8 @@ function init(){
  copyBtn.addEventListener('click',()=>copy(referralUrl('copy-link'),copyBtn));
  shareBtn.addEventListener('click',()=>share(shareBtn));
  bar.append(label,copyBtn,shareBtn);
- const hero=h1.closest('.pd-page-hero,.pd-flight-hero,.calc-hero')||h1.parentElement;
- hero.insertAdjacentElement('afterend',bar);
+ // Sharing follows the resource; it must not push inputs below the first screen.
+ main.appendChild(bar);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

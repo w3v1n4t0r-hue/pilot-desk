@@ -25,7 +25,7 @@ for(const item of ['Airport Search','Route Planner','Procedures','Aircraft','Sav
 for(const path of ['/planner.html','/airport.html','/route-planner.html','/flights.html','/procedures.html','/aircraft.html','/flight-brief.html'])
   check(bootstrap.includes("'"+path+"'"),'Flight journey is not loaded on '+path);
 check(journey.includes("sub.className='pd-flight-subnav'"),'Shared planning sub-navigation is not injected');
-check(css.includes('grid-template-columns:repeat(6,minmax(0,1fr))'),'Desktop planning sub-navigation is not a six-item EFB strip');
+check(css.includes('flex-wrap:nowrap')&&css.includes('overflow-x:auto'),'Planning sub-navigation must keep every destination in a scrollable strip');
 check(css.includes('box-shadow:inset 0 -2px 0 var(--accent)'),'Planning active state does not use restrained aviation accent');
 
 // Route builder + persistent data.

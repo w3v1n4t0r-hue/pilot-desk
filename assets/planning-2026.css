@@ -2,13 +2,13 @@
    Route, airport, procedures, aircraft, saved flights and brief should read as one EFB sub-app. */
 
 .pd-flight-subnav{
-  display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;
   gap:1px!important;margin:14px 0 18px!important;padding:0!important;
   border:1px solid var(--line)!important;background:var(--line)!important;
 }
 .pd-flight-subnav a{
   min-height:44px!important;display:flex!important;align-items:center!important;justify-content:center!important;
-  padding:8px 10px!important;border:0!important;border-radius:0!important;background:#080b0e!important;
+  flex:1 0 auto!important;padding:8px 12px!important;border:0!important;border-radius:0!important;background:#080b0e!important;
   color:var(--muted)!important;font:650 10px/1.2 system-ui!important;text-decoration:none!important;text-align:center!important;
 }
 .pd-flight-subnav a:hover{background:var(--panel2)!important;color:var(--text)!important}

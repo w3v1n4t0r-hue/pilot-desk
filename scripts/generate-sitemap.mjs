@@ -22,18 +22,13 @@ function publicUrl(file){
   return SITE+'/'+file;
 }
 
-function historyRef(){
-  const head=process.env.GITHUB_HEAD_REF?.trim();
-  if(!head) return 'HEAD';
-  for(const ref of [`origin/${head}`,head]){
-    try{
-      execFileSync('git',['rev-parse','--verify',ref],{stdio:'ignore'});
-      return ref;
-    }catch{}
-  }
-  return 'HEAD';
-}
-const HISTORY_REF=historyRef();
+// Generate the same dates locally and in CI from the checked-out tree. A PR
+// branch ref can be absent, shallow, or point at a different history snapshot.
+const HISTORY_REF='HEAD';
+const previousLastModified=new Map(
+  [...fs.readFileSync('sitemap.xml','utf8').matchAll(/<url>\s*<loc>([^<]+)<\/loc><lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/g)]
+    .map(([,url,date])=>[url,date])
+);
 
 function lastModified(file){
   const today=new Date().toISOString().slice(0,10);
@@ -57,7 +52,11 @@ for(const file of files){
   if(!normalized.startsWith(SITE+'/')) continue;
   const expected=publicUrl(file);
   if(normalized.replace(/\/$/,'')!==expected.replace(/\/$/,'')) continue;
-  urls.push({url:normalized,file,lastmod:lastModified(file)});
+  const sourceDate=lastModified(file);
+  // Preserve a newer committed lastmod if CI's merge checkout has a shorter
+  // file history than the branch that authored the existing sitemap.
+  const priorDate=previousLastModified.get(normalized)||'';
+  urls.push({url:normalized,file,lastmod:priorDate>sourceDate?priorDate:sourceDate});
 }
 
 const byUrl=new Map();

@@ -15,7 +15,8 @@
   --pd-text:var(--text);--pd-accent:var(--accent);
   --pd-radius-sm:2px;--pd-radius:3px;--pd-radius-lg:4px;--pd-cut:9px;
   --shadow:none;--pd-shadow:none;--pd-shadow-soft:none;
-  --pd-ease:cubic-bezier(.22,.72,.18,1);--pd-fast:140ms;--pd-medium:260ms;
+  --pd-ease:cubic-bezier(.22,.72,.18,1);--pd-fast:140ms;--pd-medium:220ms;
+  --pd-shell-width:1260px;--pd-reading-width:820px;--pd-space-section:32px;--pd-space-panel:20px;
 }
 html,body{background:#050505;color:var(--text)}
 body:before{animation:none}
@@ -55,13 +56,6 @@ body:before{animation:none}
 }
 .pd-live-dot{display:inline-block;width:6px;height:6px;border-radius:0;background:#d8d7d2;box-shadow:none}
 
-@keyframes pd-menu-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pd-surface-in{from{opacity:.01;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pd-metal-shimmer{0%{background-position:120% 0}100%{background-position:-20% 0}}
-@media(prefers-reduced-motion:no-preference){
-  .pd-nav-item.open .pd-nav-menu{animation:pd-menu-in 150ms var(--pd-ease) both}
-  .pd-ready main>section,.pd-ready main>.hero,.pd-ready main>.calculator-layout,.pd-ready main>.category,.pd-ready main>.pd-account-layout{animation:pd-surface-in 300ms var(--pd-ease) both}
-}
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
 }

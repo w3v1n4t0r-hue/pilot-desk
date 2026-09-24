@@ -10,6 +10,7 @@ function favorites(){try{const x=JSON.parse(localStorage.getItem(FAV_KEY)||'[]')
 function saveFavorites(v){try{localStorage.setItem(FAV_KEY,JSON.stringify(v.slice(0,20)))}catch{}}
 function renderFavorites(){
  const host=$('#weatherFavorites');if(!host)return;const a=favorites();
+ const section=host.closest('.wx-favorites');if(section)section.hidden=!a.length;
  if(!a.length){host.innerHTML='<div class="pd-empty">No favorite airports yet. Load a station below and save it here.</div>';return}
  host.innerHTML=a.map(x=>`<button class="wx-favorite" type="button" data-weather-favorite="${esc(x.id)}"><span><b>${esc(x.id)}</b><small>${esc(x.name||'Saved airport')}</small></span><em>LOAD FRESH</em></button>`).join('');
 }

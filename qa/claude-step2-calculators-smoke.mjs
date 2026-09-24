@@ -33,7 +33,7 @@ for(const marker of ['pd-calc-workbench','pd-calc-input-panel','pd-calc-output-p
 check(css.includes('grid-template-columns:minmax(300px,.86fr) minmax(360px,1.14fr)'),'Desktop calculator workbench hierarchy missing');
 check(css.includes('.pd-calc-output-panel .result.primary')&&css.includes('font-size:38px'),'Primary numeric output is not visually dominant');
 check(css.includes('position:sticky;top:82px'),'Desktop outputs do not remain visible while working inputs');
-check(css.includes('@media(max-width:980px)')&&css.includes('.pd-calc-output-panel{position:static;grid-row:1}'),'Mobile/tablet output-first order missing');
+check(css.includes('@media(max-width:980px)')&&css.includes('.pd-calc-output-panel{position:static;grid-row:auto}'),'Mobile/tablet input-first order missing');
 check(account.includes("from('saved_calculations').insert"),'Save calculation does not write to the account table');
 check(account.includes("reason:'signin'")&&account.includes('/account.html?next='),'Guest Save calculation does not route through sign-in');
 check(migration.includes('create table if not exists public.saved_calculations'),'Account schema does not support saved calculations');

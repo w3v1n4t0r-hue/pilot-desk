@@ -13,7 +13,7 @@ for(const x of ['--bg:#050607','--panel:#0c1014','--text:#f2f3f3','--muted:#b0b5
 if(!site.includes("if(!['/','/index.html'].includes(location.pathname))loadWorkspaceShell();"))fail('legacy homepage workspace-shell CLS guard missing');
 if(!site.includes('No recent tools yet.'))fail('recent-tools stable empty state missing');
 if(!bootstrap.includes("serviceWorker.register('/sw.js')")||!bootstrap.includes('requestIdleCallback')||!bootstrap.includes('timeout:1500'))fail('service worker early idle registration guard missing');
-const nativeHomeGuard=astroHome.includes('<BaseLayout')&&astroHome.includes('pd-home-actions')&&bootstrap.includes('isAstroNative')&&!bootstrap.includes('/assets/product-nav.js');
+const nativeHomeGuard=astroHome.includes('<BaseLayout')&&astroHome.includes('pd-home-example')&&bootstrap.includes('isAstroNative')&&!bootstrap.includes('/assets/product-nav.js');
 if(!nativeHomeGuard)fail('native Astro homepage CLS guard missing');
 const canonicalNav=header.includes("import { navSections }")&&syncNav.includes("from '../src/data/site.mjs'")&&nav.includes('window.PILOTDESK_NAV')&&nav.includes("data-pd-astro-shell")&&siteData.includes("label: 'Tools'")&&siteData.includes("label: 'Plan'")&&siteData.includes("label: 'Weather'")&&siteData.includes("label: 'Learn'");
 if(!canonicalNav)fail('stable canonical nav guard missing');

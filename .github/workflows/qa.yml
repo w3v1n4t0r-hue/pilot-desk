@@ -123,6 +123,8 @@ jobs:
         run: node qa/planner-lab-tests.mjs
       - name: Run calculator formula regression tests
         run: node qa/formula-tests.mjs
+      - name: Check motion behavior and consolidated guide routes
+        run: node qa/design-motion-content.mjs
       - name: Run core calculator UX checks
         run: node qa/core-calculator-ux-smoke.mjs
       - name: Run site integrity checks

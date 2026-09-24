@@ -1,6 +1,6 @@
 importScripts('/assets/offline-precache.js');
 
-const CACHE='pilotdesk-v61';
+const CACHE='pilotdesk-v62';
 const GENERATED_CALCULATORS=Array.isArray(self.PILOTDESK_OFFLINE_CALCULATORS)?self.PILOTDESK_OFFLINE_CALCULATORS:[];
 const GENERATED_ASSETS=Array.isArray(self.PILOTDESK_OFFLINE_ASSETS)?self.PILOTDESK_OFFLINE_ASSETS:[];
 const CORE=[...new Set([
@@ -89,7 +89,7 @@ async function networkFirst(req,preloadPromise){
     const res=await fetch(req,{cache:'no-store'});
     return put(cache,req,res);
   }catch{
-    return (await match(cache,req))||(await cache.match('/offline.html'))||(await cache.match('/index.html'));
+    return (await match(cache,req))||(req.mode==='navigate'?((await cache.match('/offline.html'))||(await cache.match('/index.html'))):Response.error());
   }
 }
 

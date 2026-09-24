@@ -102,9 +102,9 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
 {
   const elements=new Map(),timers=new Map(),storage=new Map([['pd-route-last',JSON.stringify({route:'A,47,-97 B,48,-97',tas:120,burn:10,wd:270,ws:0,variation:0,totalDistance:0,totalHours:0,totalFuel:0})]]);
   let timerId=0;
-  const el=selector=>{if(!elements.has(selector)){const listeners={};elements.set(selector,{value:'',textContent:'',innerHTML:'',disabled:false,listeners,addEventListener:(type,fn)=>{listeners[type]=fn},setAttribute:()=>{},focus:()=>{},classList:{toggle:()=>{}},dataset:{}})}return elements.get(selector)};
+  const el=selector=>{if(!elements.has(selector)){const listeners={};elements.set(selector,{value:'',textContent:'',innerHTML:'',disabled:false,listeners,addEventListener:(type,fn)=>{listeners[type]=fn},setAttribute:()=>{},focus:()=>{},insertAdjacentElement:(_position,node)=>elements.set('#'+node.id,node),remove:()=>elements.delete(selector),classList:{toggle:()=>{}},dataset:{}})}return elements.get(selector)};
   const documentListeners={};
-  const document={readyState:'loading',querySelector:s=>s.startsWith('#')?el(s):null,querySelectorAll:()=>[],addEventListener:(type,fn)=>{documentListeners[type]=fn},dispatchEvent:()=>{}};
+  const document={readyState:'loading',querySelector:s=>s.startsWith('#')?el(s):null,querySelectorAll:()=>[],createElement:()=>({setAttribute:()=>{},remove(){elements.delete('#'+this.id)},textContent:'',id:''}),addEventListener:(type,fn)=>{documentListeners[type]=fn},dispatchEvent:()=>{}};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)};
   const window={PilotDeskNavlog:nav,PilotDeskFlights:{list:()=>[]}};
   const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:url.includes('ident=GEP')?{point:{id:'GEP',name:'Gopher',lat:45.1457,lon:-93.3732,source:'faa-navaid',status:'RESTRICTED'}}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
@@ -112,10 +112,10 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   documentListeners.DOMContentLoaded();
   if(typeof window.PilotDeskRoutePlanner?.rebuild!=='function')throw new Error('Route engine became unavailable when chart library failed');
   if(el('#rpSummaryDistance').textContent!=='— NM'||el('#rpNavlog').innerHTML)throw new Error('Restored route showed unverified totals before rebuild');
-  if(timers.size!==1)throw new Error('Restored route was not scheduled for rebuild');
-  const restoreTimer=[...timers.values()][0];timers.clear();restoreTimer();
-  await new Promise(setImmediate);
-  if(!(window.pdNavlogResult?.totalDistance>0)||el('#rpSummaryDistance').textContent==='— NM')throw new Error('Restored route did not rebuild its navlog');
+  if(timers.size!==0||window.pdNavlogResult)throw new Error('Restored draft calculated without pilot review');
+  if(!el('#rpDraftNotice').textContent.includes('Rebuild to refresh results'))throw new Error('Restored draft did not explain the needed rebuild');
+  await window.PilotDeskRoutePlanner.rebuild();
+  if(!(window.pdNavlogResult?.totalDistance>0)||el('#rpSummaryDistance').textContent==='— NM')throw new Error('Reviewed route did not build its navlog');
   el('#rpWaypointSearch').value='GFK';
   el('#rpWaypointSearch').listeners.input();
   const searchTimer=[...timers.values()][0];timers.clear();searchTimer();
@@ -131,7 +131,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   await window.PilotDeskRoutePlanner.rebuild();
   if(!el('#rpStatus').textContent.includes('GEP RESTRICTED'))throw new Error('Restricted FAA facility status was hidden from the built route');
   el('#rpClearRoute').listeners.click();
-  if(storage.has('pd-route-last')||el('#rpRoute').value)throw new Error('Clear did not remove the restored route');
+  if(storage.has('pd-route-last')||storage.has('pd-route-draft-v1')||el('#rpRoute').value)throw new Error('Clear did not remove the restored route and draft');
 }
 
 

@@ -20,7 +20,7 @@ for(const label of ['ACTIVE AIRCRAFT','LATEST FLIGHT','PINNED TOOL','RECENT TOOL
 }
 check(desk.includes("window.pdTrack?.('Home Desk Open'"),'Home desk analytics missing');
 check(css.includes('.pd-home-desk-grid'),'Home desk layout styling missing');
-check(css.includes('scroll-snap-type:x proximity'),'Home desk mobile horizontal flow missing');
+check(css.includes('grid-template-columns:1fr 1fr')&&desk.includes('section.hidden=items.length===0'),'Home desk must fit mobile and stay hidden without real activity');
 check(sw.includes('/assets/home-desk.js')&&sw.includes('/assets/home-desk.css'),'Home desk is not available in the offline shell');
 
 if(failures.length){

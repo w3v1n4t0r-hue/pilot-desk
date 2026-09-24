@@ -15,7 +15,7 @@ const analytics=read('assets/analytics.js');
 for(const n of ['Calculator Abandoned','Returning Visitor','External Visit'])ok(analytics.includes(n),`analytics missing ${n}`);
 ok(analytics.includes('now-last<700'),'analytics event de-duplication missing');
 const features=read('assets/features.js');
-ok(features.includes('Pin to dashboard')&&features.includes('★ Pinned'),'calculator pinning copy missing');
+ok(features.includes('Pin tool')&&features.includes('★ Pinned'),'calculator pinning copy missing');
 const ads=read('assets/ads.js');
 ok(ads.includes("!isCalc")&&ads.includes("pilotdesk:calculated"),'ad loading does not protect calculator-first UX');
 
@@ -23,7 +23,7 @@ const bootstrap=read('assets/app-bootstrap.js');
 for(const asset of ['/assets/navigation-core.js','/assets/global-nav.js','/assets/theme.js','/assets/errors.js','/assets/analytics.js','/assets/update.js'])ok(bootstrap.includes(asset),`streamlined bootstrap missing ${asset}`);
 ok(!bootstrap.includes('/assets/navigation-data.js')&&!bootstrap.includes('/assets/flight-store.js'),'streamlined bootstrap must not eagerly load full navigation data or saved-flight storage');
 for(const retired of ['/assets/context-widget.js','/assets/growth-suite.js','/assets/sticky-app.js','/assets/avionics-command.js','/assets/home-command-center.js'])ok(!bootstrap.includes(retired),`retired competing retention/UI layer returned: ${retired}`);
-ok(bootstrap.includes("if(calc){load('/assets/features.js')")&&bootstrap.includes("load('/assets/pilotdesk-plus.js')"),'calculator retention enhancements must stay route-scoped');
+ok(bootstrap.includes("if(calc||['/route-planner.html','/weight-balance.html','/weather.html','/e6b-flight-computer.html'].includes(path))load('/assets/features.js')")&&bootstrap.includes("load('/assets/pilotdesk-plus.js')"),'calculator retention enhancements must stay route-scoped');
 ok(bootstrap.includes('isAstroNative')&&bootstrap.includes("if(!isAstroNative)load('/assets/experience.js')"),'native Astro pages must not be rebuilt by the legacy experience runtime');
 ok(!bootstrap.includes('pd-ui-booting')&&!bootstrap.includes('visibility:hidden'),'retention UI must not hide static content behind a first-paint gate');
 

@@ -25,8 +25,8 @@ for(const retired of ['site-chassis.css','home-visual-system.css','tool-first-la
 need(nav,'data-pd-astro-shell','global-nav.js');need(nav,'window.PILOTDESK_NAV_CORE','global-nav.js');need(nav,'navigation-search.js','global-nav.js');
 
 for(const [name,html] of [['dist/planner.html',planner],['dist/weather.html',weather],['dist/aircraft.html',aircraft]]){
-  need(html,'/assets/styles.css',name);
-  need(html,'/assets/app-bootstrap.js',name);
+  const release=JSON.parse(read('dist/assets/release-manifest.json')).assets;
+  for(const asset of ['/assets/styles.css','/assets/app-bootstrap.js'])need(html,release[asset],name);
 }
 
 if(failures.length){console.error('Site chassis checks failed:\n- '+failures.join('\n- '));process.exit(1)}

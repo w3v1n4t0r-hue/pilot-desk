@@ -19,16 +19,16 @@ const legacyCss=read('assets/styles-legacy.css');
 const sw=read('sw.js');
 
 for(const phrase of [
-  'Do the flight math. Check the weather. Study the next rating.',
-  'Calculators + planning','No install','Sources shown',
-  'Common pilot calculations','PILOTDESK DAILY','Study by certificate or rating.',
+  'Your next flight starts here.',
+  'Core tools work without an account','FAA, AWC and eCFR references',
+  'Common pilot calculations','Three daily questions','Study for the flying you do.',
   'OPTIONAL ACCOUNT','SOURCES','Common questions'
 ]) check(home.includes(phrase),'Homepage structure/copy changed or missing: '+phrase);
 for(const phrase of ['Plan a Flight','Use a Calculator','Study for a Written']) check(siteData.includes(phrase),'Homepage quick-start action missing: '+phrase);
 check(home.includes('id="pdHomeSearch"')&&home.includes('<kbd>/</kbd>'),'Homepage slash-search shortcut missing');
 check(!/47 Flight Tools|Search 47 browser-based tools/i.test(toolsPage),'Tools directory must not advertise a stale hardcoded inventory count');
 check(home.includes('id="pdHomeDesk"')&&home.includes('Pick up where you left off'),'Returning-user resume desk missing');
-check(homeCss.includes('border-left:2px solid var(--accent)'),'Returning-user desk does not have restrained active-state emphasis');
+check(homeCss.includes('.pd-home-desk[hidden]{display:none!important}'),'Returning-user desk does not have restrained active-state emphasis');
 check(homeCss.includes('.pd-home-command:hover')&&homeCss.includes('border-color:var(--accent)'),'Slash-search control is not visually discoverable');
 check(!/purple|magenta|pink/i.test(homeCss),'Homepage CSS reintroduced purple/pink SaaS color language');
 check(!/radial-gradient/i.test(homeCss),'Homepage CSS reintroduced decorative radial gradients');
@@ -44,7 +44,7 @@ check(!navCore.includes('"label":"Calculators"'),'Stale Calculators top-level la
 for(const item of [
  'Free aviation calculators','E6B flight computer','Weight & balance','Flight math','Calculation history',
  'Route planner','Airport search','Procedures','Aircraft','Saved flights','Flight brief','Aircraft performance',
- 'METAR & TAF','METAR decoder','Airport weather',
+ 'METAR & TAF','METAR decoder','Read METARs & TAFs',
  'Written Prep','Weak subjects','Flight training','Pilot guides','Daily challenge','Checklist practice',
  'ACS & FAR reference','Certificates & ratings','Oral exam guide'
 ]) check(navCore.includes(item),'Required mega-menu item missing: '+item);

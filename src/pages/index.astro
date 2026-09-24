@@ -41,8 +41,8 @@ const schema = {
     <div class="pd-home-hero-inner">
       <div class="pd-home-hero-copy">
         <div class="eyebrow">PILOT TOOLS · OPEN IN A BROWSER</div>
-        <h1 id="pdHomeTitle">Do the flight math. Check the weather. Study the next rating.</h1>
-        <p>Use the calculator, route, weather, or study tool you need. Most of PilotDesk works without an account.</p>
+        <h1 id="pdHomeTitle">Your next flight starts here.</h1>
+        <p>Flight planning, aviation calculators, weather and FAA study tools for pilots. Open a tool and get to work.</p>
         <div class="pd-home-hero-links">
           <a class="pd-btn" href="/route-planner.html" data-pd-home-cta="Start Planning">Plan a flight</a>
           <button class="pd-home-command" id="pdHomeSearch" type="button" data-pd-home-cta="Search">Search PilotDesk <kbd>/</kbd></button>
@@ -61,9 +61,7 @@ const schema = {
       </div>
 
       <div class="pd-home-proof" aria-label="PilotDesk basics">
-        <span><strong>Calculators + planning</strong><small>Math, weather, routes, training</small></span>
-        <span><strong>No install</strong><small>Open it in a browser</small></span>
-        <span><strong>Sources shown</strong><small>Check the controlling source</small></span>
+        <span>Core tools work without an account</span><span>FAA, AWC and eCFR references</span>
       </div>
     </div>
   </section>
@@ -85,7 +83,7 @@ const schema = {
         <div>
           <div class="eyebrow">TOOL INDEX</div>
           <h2>Common pilot calculations</h2>
-          <p>Open the tool. Enter the numbers. Keep moving.</p>
+          <p>Wind, performance, loading and fuel — with methods and worked examples.</p>
         </div>
         <a href="/tools.html" data-pd-home-cta="All Calculators">Free aviation calculators →</a>
       </div>
@@ -107,33 +105,33 @@ const schema = {
         </div>
         <a href="/guides.html">Browse aviation guides →</a>
       </div>
-      <div class="pd-popular-grid">
-        <a class="pd-popular-tool" href="/guides/crosswind-component.html"><span>Crosswind components: runway 35 example</span></a>
-        <a class="pd-popular-tool" href="/guides/density-altitude.html"><span>Density altitude: pressure and temperature</span></a>
-        <a class="pd-popular-tool" href="/guides/wind-triangle.html"><span>Wind triangle: heading and groundspeed</span></a>
+      <div class="pd-home-lessons">
+        <a href="/guides/crosswind-component.html"><b>Crosswind components</b><span>Work a runway 35 example, then check the result.</span><em>Read example →</em></a>
+        <a href="/guides/density-altitude.html"><b>Density altitude</b><span>See how pressure and temperature affect the estimate.</span><em>Read example →</em></a>
+        <a href="/guides/wind-triangle.html"><b>Wind triangle</b><span>Turn a course and forecast wind into heading and groundspeed.</span><em>Read example →</em></a>
       </div>
     </section>
 
-    <section class="pd-home-section pd-home-two-up" aria-label="Training and daily challenge">
-      <article class="pd-home-feature">
-        <div class="eyebrow">PILOTDESK DAILY</div>
-        <h2>Three aviation questions each day.</h2>
-        <p>A short daily check across weather, systems, performance, regulations, and decision making.</p>
-        <div class="pd-actions">
-          <a class="pd-btn" href="/daily/" data-pd-home-cta="Play Daily">Play Daily →</a>
-          <a href="/skill-gap.html" data-pd-home-cta="Skill Gap">See your weak subjects →</a>
-        </div>
-      </article>
+    <section class="pd-home-section pd-home-route" aria-labelledby="route-title">
+      <div>
+        <div class="eyebrow">ROUTE PLANNING</div>
+        <h2 id="route-title">Build the route. Review each leg.</h2>
+        <p>Find airports and fixes, plot on FAA charts, and calculate a navlog using your aircraft and wind inputs.</p>
+        <div class="pd-actions"><a class="pd-btn" href="/route-planner.html">Open Route Planner</a><a href="/aircraft.html">Your aircraft →</a></div>
+      </div>
+      <ol class="pd-home-route-steps">
+        <li><b>Enter waypoints</b><span>Airport identifiers, navigation fixes or coordinates.</span></li>
+        <li><b>Run the numbers</b><span>Distance, course, heading, time and fuel by leg.</span></li>
+        <li><b>Check the context</b><span>FAA chart layers, endpoint weather and procedure links.</span></li>
+      </ol>
+    </section>
 
-      <article class="pd-home-feature">
-        <div class="eyebrow">TRAINING</div>
-        <h2>Study by certificate or rating.</h2>
-        <p>Written prep, oral practice, FAA references, and checkride guides stay grouped around the rating you are working on.</p>
-        <div class="pd-actions">
-          <a class="pd-btn secondary" href="/flight-training.html" data-pd-home-cta="Training Hub">Open training</a>
-          <a href="/written-prep.html" data-pd-home-cta="Written Prep">Written prep →</a>
-        </div>
-      </article>
+    <section class="pd-home-section pd-home-learn" aria-labelledby="learn-title">
+      <div class="pd-home-section-head"><div><div class="eyebrow">LEARN</div><h2 id="learn-title">Study for the flying you do.</h2><p>FAA references, oral practice and tools connected to each subject.</p></div><a href="/flight-training.html">Open Learn →</a></div>
+      <div class="pd-home-ratings">
+        <a href="/training/private-pilot.html">Private</a><a href="/training/instrument-rating.html">Instrument</a><a href="/training/commercial-pilot.html">Commercial</a><a href="/training/multiengine.html">Multi-engine</a><a href="/training/cfi.html">CFI</a><a href="/training/cfii.html">CFII</a>
+      </div>
+      <div class="pd-home-study-links"><a href="/written-prep.html">Written prep →</a><a href="/learn/oral-exam/">Oral exam guide →</a><a href="/daily/">Three daily questions →</a></div>
     </section>
 
     <section class="pd-home-section pd-home-account" data-pd-home-account aria-label="PilotDesk account">

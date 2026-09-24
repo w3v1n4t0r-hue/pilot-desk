@@ -23,16 +23,15 @@ assert.doesNotMatch(read('assets/styles-legacy.css'),/@view-transition\{navigati
 const clients=['global-nav.js','account.js','billing.js','calculation-account.js','daily.js','written-prep.js'];
 for(const file of clients)assert.match(read('assets/'+file),/supabase-client\.js/,'shared client required in '+file);
 assert.equal(count(read('assets/supabase-client.js'),/createClient\(/g),1,'one Supabase client creation site');
-for(const page of ['index.html','route-planner.html'])assert.match(read('dist/'+page),/src="\/assets\/app-bootstrap\.js\?v=run6-fingerprint"/,'fresh bootstrap URL required on '+page);
-const builtBootstrap=read('dist/assets/app-bootstrap.js');
+const release=JSON.parse(read('dist/assets/release-manifest.json')).assets;
+for(const page of ['index.html','route-planner.html'])assert.ok(read('dist/'+page).includes(release['/assets/app-bootstrap.js']),'release bootstrap required on '+page);
+const builtBootstrap=read('dist'+release['/assets/app-bootstrap.js']);
 const builtPlanner=read('dist/route-planner.html');
-for(const name of ['crosswind-mfd','calculation-account']){
- const match=builtBootstrap.match(new RegExp('/assets/'+name+'\\.([a-f0-9]{12})\\.js'));
- assert.ok(match,'fingerprinted '+name+' script required');
- assert.ok(fs.existsSync('dist'+match[0]),'fingerprinted '+name+' script must exist');
+for(const name of ['crosswind-mfd','calculation-account','efb-layers']){
+ const entry=Object.entries(release).find(([url])=>new RegExp('/'+name+'\\.[a-f0-9]{12}\\.js$').test(url));
+ assert.ok(entry,'fingerprinted dependency '+name);
+ assert.ok((name==='efb-layers'?builtPlanner:builtBootstrap).includes(entry[1]),'current release dependency '+name);
+ assert.ok(fs.existsSync('dist'+entry[1]),'release dependency exists '+name);
 }
-const efb=builtPlanner.match(/\/assets\/efb-layers\.([a-f0-9]{12})\.js/);
-assert.ok(efb,'fingerprinted map layer script required');
-assert.ok(fs.existsSync('dist'+efb[0]),'fingerprinted map layer script must exist');
 for(const asset of ['crosswind-mfd.js','calculation-account.js','efb-layers.js','supabase-client.js'])assert.match(read('sw.js'),new RegExp("NETWORK_FIRST_ASSETS[\\s\\S]*'/assets/"+asset.replaceAll('.','\\.')+"'"),'network-first release asset '+asset);
 console.log('Run 6 regression PASS: initial header, social metadata, map keyboard order, crosswind invalid state, navigation transitions, auth client.');

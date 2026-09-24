@@ -24,7 +24,7 @@ check(tools.includes('pdToolCount')&&!tools.includes('47 tools'),'calculator dir
 
 for(const responsive of ['.pd-home-actions{','@media(max-width:800px)','@media(max-width:480px)','min-height:44px'])check(experience.includes(responsive),`current experience layer missing task-first/mobile safeguard ${responsive}`);
 check(!styles.includes('/assets/home-polish.css'),'obsolete competing homepage CSS layer must stay out of the shared cascade');
-for(const guard of ['margin:0!important','grid-template-columns:minmax(0,1fr)!important','@media(max-width:1040px)','max-width:100%!important'])check(homeCss.includes(guard),`homepage layout guard missing ${guard}`);
+for(const guard of ['margin:0!important','grid-template-columns:1fr!important','@media(max-width:1040px)','max-width:100%!important'])check(homeCss.includes(guard),`homepage layout guard missing ${guard}`);
 check(!/margin\s*:\s*0\s+calc\(50%\s*-\s*50vw\)/i.test(homeCss),'homepage hero must not use negative viewport margins');
 for(const retired of ['tool-first-layout.js','performance.js','home-command-center.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired runtime layout optimizer returned: ${retired}`);
 check(bootstrap.includes('/assets/calculator-ux.js'),'calculator-specific QoL must remain route-scoped in the streamlined bootstrap');

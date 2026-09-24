@@ -19,7 +19,7 @@ const cases=[
  ['how much crosswind','/calculators/crosswind/'],
  ['3 degree descent','/calculators/three-degree-descent/'],
  ['VMC','/guides/vmc-vs-vyse.html'],
- ['IFR alternate','/training/instrument-rating.html'],
+ ['IFR alternate','/guides/ifr-alternate-requirements.html'],
  ['CG','/weight-balance.html'],
  ['hot day performance','/calculators/density-altitude/'],
  ['oral prep','/learn/oral-exam/'],

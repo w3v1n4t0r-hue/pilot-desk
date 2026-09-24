@@ -11,7 +11,7 @@ const items=[];
 const seen=new Set();
 
 function add(item){
-  if(!item?.href||seen.has(item.href))return;
+  if(!item?.href||!/^\/(?!\/)/.test(item.href)||seen.has(item.href))return;
   seen.add(item.href);
   items.push(item);
 }
@@ -39,22 +39,14 @@ if(Array.isArray(flights)&&flights.length){
 
 const favorites=read('pd-favorites',[]);
 if(Array.isArray(favorites)&&favorites.length){
-  const favorite=favorites.find(x=>x?.path);
-  if(favorite)add({kind:'PINNED TOOL',title:text(favorite.title)||'Pinned calculator',detail:'One of your saved calculator shortcuts.',href:favorite.path,action:'Open tool'});
+  for(const favorite of favorites.filter(x=>x?.path).slice(0,4))add({kind:'PINNED TOOL',title:text(favorite.title)||'Pinned tool',detail:'Saved on this device.',href:favorite.path,action:'Open tool'});
 }
 
 const recent=read('pd-recent',[]);
 if(Array.isArray(recent)&&recent.length){
-  const recentTool=recent.find(x=>x?.path&&!seen.has(x.path));
-  if(recentTool)add({kind:'RECENT TOOL',title:text(recentTool.title)||'Recent calculator',detail:'The last calculator you opened on this device.',href:recentTool.path,action:'Use again'});
+  for(const recentTool of recent.filter(x=>x?.path&&!seen.has(x.path)).slice(0,4))add({kind:'RECENT TOOL',title:text(recentTool.title)||'Recent tool',detail:'Recently opened on this device.',href:recentTool.path,action:'Use again'});
 }
 
-if(!items.length){
-  add({kind:'START HERE',title:'Add an aircraft',detail:'Save cruise speed, fuel burn, and planning values on this device.',href:'/aircraft.html',action:'Add aircraft'});
-  add({kind:'START HERE',title:'Build a route',detail:'Create a route and navlog, then carry it into weather and procedures.',href:'/route-planner.html',action:'Plan flight'});
-  add({kind:'START HERE',title:'Pin a calculator',detail:'Open a calculator and pin it so it shows here next time.',href:'/tools.html',action:'Browse tools'});
-  const status=document.getElementById('pdHomeDeskStatus');if(status)status.textContent='Nothing saved yet';
-}
 host.replaceChildren();
 for(const item of items.slice(0,4)){
   const a=document.createElement('a');
@@ -68,13 +60,13 @@ for(const item of items.slice(0,4)){
   a.append(small,strong,span,em);
   host.append(a);
 }
-section.hidden=false;
+section.hidden=items.length===0;
 const search=document.getElementById('pdHomeSearch');
 if(search&&!search.dataset.pdBound){
   search.dataset.pdBound='1';
   search.addEventListener('click',()=>{
     const input=document.querySelector('.pd-site-search input');
-    if(input){input.focus();input.select?.();window.pdTrack?.('Home Search Focus',{})}
+    if(input){document.dispatchEvent(new CustomEvent('pilotdesk:open-search'));input.select?.();window.pdTrack?.('Home Search Focus',{})}
   });
 }
 section.addEventListener('click',event=>{

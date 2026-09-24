@@ -32,7 +32,7 @@ need(siteData,"['/daily/', 'Play Daily'",'shared homepage data');
 need(header,'navSections.map','Astro header');
 need(header,'section.items.map','Astro header');
 need(home,'href="/daily/"','Astro homepage retention');
-need(home,'Play Daily →','Astro homepage retention');
+need(home,'Three daily questions →','Astro homepage retention');
 if(boot.includes('/assets/home-daily.js')||boot.includes('/assets/home-architecture-2026.js'))failures.push('homepage retention: retired homepage injectors should not compete with the native Astro homepage');
 need(robots,'https://www.pilot-desk.com/sitemap-daily.xml','robots');
 need(sitemap,'https://www.pilot-desk.com/daily/','daily sitemap');

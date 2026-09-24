@@ -70,6 +70,11 @@ jobs:
             calculators/glide-range/index.html \
             calculators/crosswind/index.html \
             calculators/density-altitude/index.html \
+            calculators/fuel-required/index.html \
+            calculators/hydroplaning/index.html \
+            calculators/pressure-altitude/index.html \
+            calculators/true-magnetic/index.html \
+            calculators/wind-triangle/index.html \
             calculators/pivotal-altitude/index.html \
             calculators/three-degree-descent/index.html \
             flight-training.html \

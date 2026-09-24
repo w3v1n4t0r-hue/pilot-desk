@@ -44,7 +44,7 @@ const formulas={
   glide:'Still-air glide distance = altitude available × glide ratio, then the horizontal distance is converted to nautical miles.',
   vaWeight:'Adjusted Va ≈ published Va × √(current weight ÷ published reference weight).',
   stallBank:'Accelerated stall speed = 1-G stall speed × √load factor, with coordinated level-turn load factor based on bank angle.',
-  hydro:'Dynamic hydroplaning speed estimate ≈ 9 × √tire pressure in psi.',
+  hydro:'FAA dynamic hydroplaning speed estimate ≈ 8.6 × √main tire pressure in psi. The commonly rounded 9 × √psi rule is a different approximation; neither establishes a safe speed or stopping distance.',
   wingLoading:'Wing loading = aircraft weight ÷ wing area.',
   powerLoading:'Power loading = aircraft weight ÷ horsepower.',
   obstacleGradient:'Required geometric gradient = obstacle height plus desired margin ÷ horizontal distance, with consistent units.',

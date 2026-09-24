@@ -47,7 +47,8 @@ for(const [slug,title] of [
 ]){
  const h=read('calculators/'+slug+'/index.html');
  check(h.includes('<title>'+title+'</title>'),slug+': generated SEO title out of sync');
- check(sitemap.includes('https://www.pilot-desk.com/calculators/'+slug+'/</loc><lastmod>2026-09-22</lastmod>'),slug+': sitemap lastmod not refreshed');
+ const expectedLastmod=slug==='three-degree-descent'?'2026-09-23':'2026-09-24';
+ check(sitemap.includes('https://www.pilot-desk.com/calculators/'+slug+'/</loc><lastmod>'+expectedLastmod+'</lastmod>'),slug+': sitemap lastmod not refreshed');
 }
 
 if(failures.length){

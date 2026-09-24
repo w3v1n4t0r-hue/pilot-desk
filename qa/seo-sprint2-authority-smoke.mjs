@@ -41,7 +41,10 @@ for(const path of [
  'guides/multiengine-checkride-study-guide.html','guides/pilot-math-formulas.html',
  'guides/single-engine-climb-performance.html','guides/single-engine-service-ceiling.html',
  'guides/vmc-vs-vyse.html','guides/zero-sideslip-multiengine.html','weather.html'
-]) check(sitemap.includes('https://www.pilot-desk.com/'+path+'</loc><lastmod>2026-09-22</lastmod>'),path+': Sprint 2 sitemap freshness missing');
+]) {
+ const expectedLastmod=/^(e6b-flight-computer\.html|weather\.html)$/.test(path)?'2026-09-24':'2026-09-23';
+ check(sitemap.includes('https://www.pilot-desk.com/'+path+'</loc><lastmod>'+expectedLastmod+'</lastmod>'),path+': Sprint 2 sitemap freshness missing');
+}
 
 if(failures.length){
  console.error('SEO Sprint 2 authority checks failed ('+failures.length+')');

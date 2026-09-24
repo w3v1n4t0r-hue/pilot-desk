@@ -196,7 +196,6 @@ for(const [slug,key,title,desc,fields,results] of calcs){
   const formula=formulas[key]||`${title} uses the entered values to compute the displayed outputs with the standard arithmetic relationship for this aviation problem.`;
   const fieldNames=fields.map(x=>x[1]);
   const resultNames=results;
-  const defaults=fields.map(x=>`${x[1]} ${x[2]}${x[3]?' '+x[3]:''}`).join('; ');
   const metaCandidate=desc.length<118?`${desc} Free browser-based aviation calculator for pilots and flight students.`:desc;
   const defaultMetaDesc=metaCandidate.length>158?metaCandidate.slice(0,155).replace(/\s+\S*$/,'')+'…':metaCandidate;
   const metaDesc=seoDescriptionBySlug[slug]||defaultMetaDesc;
@@ -219,24 +218,16 @@ for(const [slug,key,title,desc,fields,results] of calcs){
   const faqHtml=faq.map(([q,a])=>`<details><summary><strong>${esc(q)}</strong></summary><p>${esc(a)}</p></details>`).join('');
 
   const inputList=fields.map(([,label,,u])=>`<li><strong>${esc(label)}</strong>${u?` — enter the value in ${esc(u)}.`:'.'}</li>`).join('');
-  const resultList=results.map(r=>`<li><strong>${esc(r)}</strong> — one of the calculated outputs for this problem.</li>`).join('');
-
   const educational=`<div class="info-card" data-pd-seo-depth="1">
     <h2>How to use the ${esc(title)} calculator</h2>
     <p><strong>${esc(title)}:</strong> ${esc(useText[category])}</p>
-    <p>This page is built around <strong>${esc(fieldNames.join(', '))}</strong>. Enter the values, calculate, and then check whether <strong>${esc(resultNames.join(', '))}</strong> are reasonable before carrying them into another planning step.</p>
     <h3>Inputs</h3><ul>${inputList}</ul>
     <h2>Formula and method</h2>
     <p>${esc(formula)}</p>
-    <p>For ${esc(title)}, work the relationship once by hand and compare it with the displayed result. That makes the calculator useful for checking the arithmetic without turning it into a black-box answer.</p>
-    <h2>Worked example setup</h2>
-    <p>The default example uses ${esc(defaults)}. Calculate the example first, then change one input at a time. Watching which result changes—and by how much—is a quick way to understand the relationship instead of memorizing a single answer.</p>
     <h2>What the result means</h2>
     <p><strong>${esc(resultNames[0]||title)}:</strong> ${esc(meaningText[category])}</p>
-    <ul>${resultList}</ul>
     <h2>Common mistakes to avoid</h2>
     <p><strong>${esc(title)} check:</strong> ${esc(mistakeText[category])}</p>
-    <p>Before using the ${esc(title)} result elsewhere, compare ${esc(resultNames[0]||'the primary output')} with a rough estimate and recheck the source and units for ${esc(fieldNames[0]||'the first input')}.</p>
     <h2>Sources and limitations</h2>
     <p>The ${esc(title)} calculation uses the aviation relationship shown above. Aircraft-specific limitations, performance and procedures still come from the current approved source for the airplane or operation. See <a href="/sources.html">PilotDesk sources and methods</a>.</p>
   </div>

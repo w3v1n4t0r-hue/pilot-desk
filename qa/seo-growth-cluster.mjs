@@ -6,8 +6,7 @@ const newGuides=[
   'guides/how-far-can-an-airplane-glide.html',
   'guides/best-glide-speed-vs-glide-ratio.html',
   'guides/emergency-glide-planning.html',
-  'guides/checkride-study-guides.html',
-  'guides/pilot-checkride-math.html'
+  'guides/checkride-study-guides.html'
 ];
 
 for(const file of newGuides){
@@ -27,16 +26,18 @@ if(!/<h1>[^<]*Glide Distance Calculator[^<]*<\/h1>/i.test(calc))fail('glide calc
 for(const href of ['/guides/glide-range.html','/guides/how-far-can-an-airplane-glide.html','/guides/best-glide-speed-vs-glide-ratio.html','/guides/emergency-glide-planning.html'])if(!calc.includes(`href="${href}"`))fail(`glide calculator: missing cluster link ${href}`);
 
 const glide=fs.readFileSync('guides/glide-range.html','utf8');
-for(const href of ['/calculators/glide-range/','/guides/how-far-can-an-airplane-glide.html','/guides/best-glide-speed-vs-glide-ratio.html','/guides/emergency-glide-planning.html','/guides/pilot-checkride-math.html'])if(!glide.includes(`href="${href}"`))fail(`glide guide: missing cluster link ${href}`);
+for(const href of ['/calculators/glide-range/','/guides/how-far-can-an-airplane-glide.html','/guides/best-glide-speed-vs-glide-ratio.html','/guides/emergency-glide-planning.html','/guides/pilot-math-formulas.html'])if(!glide.includes(`href="${href}"`))fail(`glide guide: missing cluster link ${href}`);
 
 const multi=fs.readFileSync('guides/multiengine-checkride-study-guide.html','utf8');
 if(!multi.includes('"datePublished"'))fail('multi-engine guide: datePublished missing');
 if(!multi.includes('"logo":{"@type":"ImageObject"'))fail('multi-engine guide: organization logo missing');
 if(!multi.includes('href="/guides/checkride-study-guides.html"'))fail('multi-engine guide: checkride hub link missing');
-if(!multi.includes('href="/guides/pilot-checkride-math.html"'))fail('multi-engine guide: checkride math link missing');
+if(!multi.includes('href="/guides/pilot-math-formulas.html"'))fail('multi-engine guide: pilot math reference link missing');
 
 const growth=fs.readFileSync('sitemap-growth.xml','utf8');
 for(const file of newGuides){const u=`https://www.pilot-desk.com/${file}`;if(!growth.includes(`<loc>${u}</loc>`))fail(`sitemap-growth.xml: missing ${u}`)}
+if(!/<meta\s+name="robots"\s+content="noindex,follow"/i.test(fs.readFileSync('guides/pilot-checkride-math.html','utf8')))fail('duplicate checkride math summary: noindex missing');
+if(growth.includes('https://www.pilot-desk.com/guides/pilot-checkride-math.html'))fail('sitemap-growth.xml: duplicate checkride math summary should remain excluded');
 if(!growth.includes('<loc>https://www.pilot-desk.com/calculators/glide-range/</loc>'))fail('sitemap-growth.xml: glide calculator missing');
 
 const robots=fs.readFileSync('robots.txt','utf8');

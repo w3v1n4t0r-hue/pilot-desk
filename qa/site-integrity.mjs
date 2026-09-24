@@ -44,14 +44,15 @@ const retiredGuide='guides/pilot-seo-priority.html';
 const publicGuide='guides/popular-aviation-tools.html';
 if(fs.existsSync(retiredGuide))failures.push(`${retiredGuide}: retired internal SEO-named page must not exist`);
 if(!fs.existsSync(publicGuide))failures.push(`${publicGuide}: public popular-tools guide is missing`);
+else if(!/<meta\s+name="robots"\s+content="noindex,follow"/i.test(fs.readFileSync(publicGuide,'utf8')))failures.push(`${publicGuide}: duplicate tools directory page must be noindex`);
 const redirect=(vercel.redirects||[]).find(r=>r.source==='/guides/pilot-seo-priority.html');
-if(!redirect||redirect.destination!=='/guides/popular-aviation-tools.html'||redirect.permanent!==true){
-  failures.push('vercel.json: retired pilot-seo-priority URL must permanently redirect to popular-aviation-tools');
+if(!redirect||redirect.destination!=='/tools.html'||redirect.permanent!==true){
+  failures.push('vercel.json: retired pilot-seo-priority URL must permanently redirect to tools');
 }
 const growthSitemap=fs.readFileSync('sitemap-growth.xml','utf8');
 if(sitemap.includes('pilot-seo-priority')||growthSitemap.includes('pilot-seo-priority'))failures.push('sitemaps: retired pilot-seo-priority URL is still indexed');
-if(!sitemap.includes('https://www.pilot-desk.com/guides/popular-aviation-tools.html'))failures.push('sitemap.xml: popular-aviation-tools URL missing');
-if(!growthSitemap.includes('https://www.pilot-desk.com/guides/popular-aviation-tools.html'))failures.push('sitemap-growth.xml: popular-aviation-tools URL missing');
+if(sitemap.includes('https://www.pilot-desk.com/guides/popular-aviation-tools.html'))failures.push('sitemap.xml: noindex popular-aviation-tools URL is listed');
+if(growthSitemap.includes('https://www.pilot-desk.com/guides/popular-aviation-tools.html'))failures.push('sitemap-growth.xml: noindex popular-aviation-tools URL is listed');
 
 if(failures.length){console.error(`Site integrity failed with ${failures.length} issue(s):`);for(const x of failures.slice(0,100))console.error(' - '+x);process.exit(1)}
 console.log(`Site integrity passed: ${htmlFiles.length} HTML pages, UTF-8 declarations, local links/assets, duplicate IDs, manifest shortcuts, sitemap targets, and retired-URL protections checked.`);

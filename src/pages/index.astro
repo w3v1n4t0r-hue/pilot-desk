@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { homeActions, popularTools } from '../data/site.mjs';
+import { popularTools } from '../data/site.mjs';
 
 const schema = {
   '@context': 'https://schema.org',
@@ -45,20 +45,24 @@ const schema = {
         <p>Flight planning, aviation calculators, weather and FAA study tools for pilots. Open a tool and get to work.</p>
         <div class="pd-home-hero-links">
           <a class="pd-btn" href="/route-planner.html" data-pd-home-cta="Start Planning">Plan a flight</a>
-          <button class="pd-home-command" id="pdHomeSearch" type="button" data-pd-home-cta="Search">Search PilotDesk <kbd>/</kbd></button>
-          <a class="pd-home-text-link" href="/tools.html" data-pd-home-cta="Browse Tools">All tools →</a>
+          <a class="pd-home-command" href="/tools.html" data-pd-home-cta="Browse Tools">Open tools</a>
+          <a class="pd-home-command" href="/flight-training.html" data-pd-home-cta="Study">Study</a>
         </div>
       </div>
 
-      <div class="pd-home-actions" aria-label="Quick start">
-        {homeActions.slice(0,3).map(([href, title, copy, path], index) => (
-          <a class="pd-home-action" href={href} data-pd-home-cta={title} data-pd-launch={index === 2 ? 'written-prep' : undefined}>
-            <span class="pd-home-action-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg></span>
-            <span class="pd-home-action-copy"><b>{title}</b><span>{copy}</span></span>
-            <em aria-hidden="true">↗</em>
-          </a>
-        ))}
-      </div>
+      <section class="pd-home-example" aria-labelledby="home-wind-title">
+        <div class="pd-home-example-head"><span class="eyebrow">TRY THE FLIGHT MATH</span><span>Illustrative inputs</span></div>
+        <h2 id="home-wind-title">Check the crosswind.</h2>
+        <p>Runway 350° · wind from 320°</p>
+        <label for="pdHomeWind">Wind speed <output id="pdHomeWindValue">18 kt</output></label>
+        <input id="pdHomeWind" type="range" min="0" max="40" step="1" value="18" aria-describedby="pdHomeWindNote" />
+        <div class="pd-home-example-results" aria-live="polite" aria-atomic="true">
+          <div><span>Crosswind from left</span><strong id="pdHomeCross">9.0 kt</strong></div>
+          <div><span>Headwind</span><strong id="pdHomeHead">15.6 kt</strong></div>
+        </div>
+        <p id="pdHomeWindNote">30° angle · components only, not an aircraft limit.</p>
+        <a id="pdHomeWindLink" href="/calculators/crosswind/?runway=350&amp;windDir=320&amp;windSpeed=18">Use your runway and wind →</a>
+      </section>
 
       <div class="pd-home-proof" aria-label="PilotDesk basics">
         <span>Core tools work without an account</span><span>FAA, AWC and eCFR references</span>
@@ -94,6 +98,7 @@ const schema = {
           </a>
         ))}
       </div>
+      <button class="pd-home-command" id="pdHomeSearch" type="button">Search all tools <kbd>/</kbd></button>
     </section>
 
     <section class="pd-home-section" aria-labelledby="flight-lessons-title">
@@ -132,6 +137,11 @@ const schema = {
         <a href="/training/private-pilot.html">Private</a><a href="/training/instrument-rating.html">Instrument</a><a href="/training/commercial-pilot.html">Commercial</a><a href="/training/multiengine.html">Multi-engine</a><a href="/training/cfi.html">CFI</a><a href="/training/cfii.html">CFII</a>
       </div>
       <div class="pd-home-study-links"><a href="/written-prep.html">Written prep →</a><a href="/learn/oral-exam/">Oral exam guide →</a><a href="/daily/">Three daily questions →</a></div>
+    </section>
+
+    <section class="pd-home-section pd-home-weather" aria-labelledby="weather-title">
+      <div><div class="eyebrow">AIRPORT WEATHER</div><h2 id="weather-title">Read the report. Check the time.</h2><p>Look up METARs and TAFs with the raw report, decoded conditions, and observation or issue time kept together.</p></div>
+      <div class="pd-home-weather-links"><a href="/weather.html"><b>Check an airport</b><span>Current reports and runway-wind context →</span></a><a href="/guides/metar-taf.html"><b>Practice the decode</b><span>Wind, ceilings and forecast change groups →</span></a></div>
     </section>
 
     <section class="pd-home-section pd-home-account" data-pd-home-account aria-label="PilotDesk account">

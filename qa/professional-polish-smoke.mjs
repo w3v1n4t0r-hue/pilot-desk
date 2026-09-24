@@ -19,7 +19,7 @@ check(css.includes(':focus-visible'),'experience.css must preserve visible keybo
 check(css.includes('min-height:44px'),'current UI must preserve touch-friendly control sizing');
 
 for(const token of ['--bg:#050607','--panel:#0c1014','--text:#f2f3f3','--line:#293038','--accent:#6faed1','--pd-cut:9px','--pd-good:#8fb39a'])check(tokens.includes(token),`design token layer missing ${token}`);
-for(const guard of ['body:before{','animation:none','clip-path:polygon','@keyframes pd-menu-in','@media(prefers-reduced-motion:reduce)','.pd-live-dot'])check(tokens.includes(guard),`design token/motion layer missing ${guard}`);
+for(const guard of ['body:before{','animation:none','clip-path:polygon','@media(prefers-reduced-motion:reduce)','.pd-live-dot'])check(tokens.includes(guard),`design token/motion layer missing ${guard}`);
 check(entry.trim().endsWith('@import url("/assets/design-tokens.css");'),'design-tokens.css must remain the final shared cascade authority');
 check(tokens.includes('Resend-inspired restraint')&&tokens.includes('square controls and clipped corners'),'shared visual system must preserve the Resend/aviation geometry brief');
 check(tokens.includes('border-radius:0!important')&&tokens.includes('--pd-radius:3px'),'visual system should avoid generic rounded dashboard cards');

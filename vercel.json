@@ -41,6 +41,41 @@
       "source": "/guides/pilot-seo-priority.html",
       "destination": "/tools.html",
       "permanent": true
+    },
+    {
+      "source": "/guides/wind-correction-angle.html",
+      "destination": "/guides/wind-triangle.html#correction",
+      "permanent": true
+    },
+    {
+      "source": "/guides/groundspeed-vs-airspeed.html",
+      "destination": "/guides/wind-triangle.html#groundspeed",
+      "permanent": true
+    },
+    {
+      "source": "/guides/course-heading-track.html",
+      "destination": "/guides/wind-triangle.html#course-heading-track",
+      "permanent": true
+    },
+    {
+      "source": "/guides/true-magnetic-heading.html",
+      "destination": "/guides/wind-triangle.html#true-magnetic",
+      "permanent": true
+    },
+    {
+      "source": "/guides/metar-wind-and-gusts.html",
+      "destination": "/guides/metar-taf.html#wind",
+      "permanent": true
+    },
+    {
+      "source": "/guides/metar-ceiling-and-visibility.html",
+      "destination": "/guides/metar-taf.html#ceiling",
+      "permanent": true
+    },
+    {
+      "source": "/guides/taf-change-groups.html",
+      "destination": "/guides/metar-taf.html#taf-timeline",
+      "permanent": true
     }
   ],
   "rewrites": [

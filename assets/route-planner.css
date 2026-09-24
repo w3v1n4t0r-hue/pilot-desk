@@ -106,7 +106,9 @@
 .rp-leg-label,.rp-nav-label{background:#08080a!important;color:#e8e7e1!important;border:1px solid #3a3a40!important;border-radius:0!important;box-shadow:none!important;padding:2px 4px!important;font:700 8px/1.2 system-ui!important}
 .rp-leg-label:before,.rp-nav-label:before{display:none!important}
 @media(max-width:700px){
-  .rp-efb-panel{top:8px;right:8px;width:calc(100% - 16px);max-height:72%}
+  .rp-efb-panel{position:fixed;top:auto;bottom:12px;right:12px;width:calc(100% - 24px);max-height:70svh;overscroll-behavior:contain}
+  .rp-efb-head button{width:44px;height:44px}
+  .rp-layer-row{min-height:44px}
   .rp-radar-timeline{left:8px;right:8px;bottom:8px;grid-template-columns:30px auto minmax(90px,1fr) 54px}
   .rp-radar-timeline label{display:none!important}
   .rp-leg-strip{left:8px;right:8px;bottom:54px}

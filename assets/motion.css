@@ -13,6 +13,28 @@ a,button,input,select,textarea,[role="button"]{
 .result strong.pd-result-updated,[id^="out"].pd-result-updated{animation:pd-result-settle 220ms var(--pd-ease-out)}
 @keyframes pd-result-settle{from{opacity:.55}to{opacity:1}}
 .tool-card.hidden{display:none!important}
+/* State changes, never automatic page or card reveals. Controls remain usable. */
+.pd-nav-menu,.pd-search-results,.rp-efb-panel{
+  opacity:1;transform:translateY(0);
+  transition:opacity 180ms var(--pd-ease-out),transform 180ms var(--pd-ease-out),display 180ms allow-discrete;
+}
+.pd-nav-item:not(.open) .pd-nav-menu,.pd-search-results[hidden],.rp-efb-panel[hidden]{opacity:0;transform:translateY(-4px);pointer-events:none}
+@starting-style{
+  .pd-nav-item.open .pd-nav-menu,.pd-search-results,.rp-efb-panel:not([hidden]){opacity:0;transform:translateY(-4px)}
+}
+.safety-warning.show,.wx-summary,details[open]>.pd-oral-body{animation:pd-dialog-in 160ms var(--pd-ease-out)}
+.pd-star,.pd-star.on{transition:color 140ms ease,background-color 140ms ease,border-color 140ms ease}
+button:disabled{opacity:.6}
+.pd-xwind-svg [data-runway-group],.pd-xwind-svg [data-wind-group]{transform-origin:120px 120px;transition:transform 180ms var(--pd-ease-out)}
+@media(max-width:700px){
+  .rp-efb-panel[hidden]{transform:translateY(8px)}
+  @starting-style{.rp-efb-panel:not([hidden]){transform:translateY(8px)}}
+}
+@media(max-width:800px){
+  .pd-main-nav{opacity:1;transform:none;transition:opacity 180ms ease,transform 180ms var(--pd-ease-out),display 180ms allow-discrete}
+  .pd-main-nav:not(.open){opacity:0;transform:translateY(-4px);pointer-events:none}
+  @starting-style{.pd-main-nav.open{opacity:0;transform:translateY(-4px)}}
+}
 dialog[open],[role="dialog"].show,.modal.show,.popover.show{animation:pd-dialog-in 160ms var(--pd-ease-out) both}
 @keyframes pd-dialog-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .toast{transform:translateY(6px);opacity:0;transition:opacity var(--pd-motion-base) ease,transform var(--pd-motion-base) var(--pd-ease-out)}

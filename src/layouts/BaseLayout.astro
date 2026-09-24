@@ -17,7 +17,7 @@ const canonicalUrl = canonical.startsWith('http') ? canonical : new URL(canonica
 const schemas = !schema ? [] : Array.isArray(schema) ? schema : [schema];
 ---
 <!doctype html>
-<html lang="en" data-pd-astro-native="1">
+<html lang="en" data-pd-astro-native="1" class={canonical === "/tools.html" ? "pd-streamlined-app" : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />

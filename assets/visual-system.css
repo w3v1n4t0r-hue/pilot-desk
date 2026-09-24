@@ -184,7 +184,6 @@ small,.fine{color:var(--muted2)!important}
 .pd-nav-item.open .pd-nav-menu{
   display:grid;
   transform-origin:top left;
-  animation:pd-menu-in 150ms var(--pd-ease) both;
 }
 .pd-nav-menu a{
   border-radius:1px!important;
@@ -451,7 +450,7 @@ input:focus,select:focus,textarea:focus,
 }
 
 /* Calculator + data surfaces. */
-.calculator-layout{gap:26px!important}
+.calculator-layout{gap:32px!important;grid-template-columns:minmax(0,1fr) 260px}
 .calc-hero h1,.content-page h1,.pd-flight-hero h1,.pd-page-hero h1{
   color:var(--text)!important;
   font-weight:640!important;
@@ -526,15 +525,17 @@ input:focus,select:focus,textarea:focus,
 }
 
 /* Editorial content: less dashboard, more publication. */
-.content-page{max-width:980px!important}
+.content-page{max-width:var(--pd-reading-width)!important}
+.content-page>article.pd-seo-copy{padding:0!important;border:0!important;background:transparent!important;clip-path:none!important}
+.content-page>article.pd-seo-copy h1{font-size:clamp(30px,3.6vw,44px)!important}
 .content-page h1{
   margin:12px 0 20px!important;
-  font-size:clamp(40px,5.6vw,66px)!important;
+  font-size:clamp(30px,3.6vw,44px)!important;
   line-height:.99!important;
 }
-.content-page h2{
-  margin-top:42px!important;
-  padding-top:17px!important;
+.content-page :is(article.pd-seo-copy,hgroup) h2,.content-page>h2{
+  margin-top:var(--pd-space-section)!important;
+  padding-top:16px!important;
   border-top:1px solid var(--line)!important;
   color:#ecebe6!important;
   font-size:23px!important;
@@ -639,11 +640,6 @@ footer p{font-size:12.5px!important}
 }
 .footer-links a:hover{color:#fff!important;background:#101012!important;text-decoration:none!important}
 
-/* Purposeful motion only: fast, subtle, one-shot. */
-@keyframes pd-menu-in{
-  from{opacity:0;transform:translateY(-5px)}
-  to{opacity:1;transform:translateY(0)}
-}
 
 .pd-live-dot{
   display:inline-block;
@@ -864,59 +860,7 @@ a,button,input,select,textarea,summary{
   --pd-current-line:#efeee9;
 }
 
-/* Motion is subtle and directional, never floaty. */
-@keyframes pd-surface-in{
-  from{opacity:.01;transform:translateY(8px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes pd-line-scan{
-  from{transform:scaleX(0);transform-origin:left}
-  to{transform:scaleX(1);transform-origin:left}
-}
-
-  100%{background-position:-20% 0}
-}
-@keyframes pd-number-settle{
-  0%{opacity:.25;transform:translateY(4px)}
-  100%{opacity:1;transform:translateY(0)}
-}
-
-@media(prefers-reduced-motion:no-preference){
-  .pd-ready main>section,
-  .pd-ready main>.hero,
-  .pd-ready main>.calculator-layout,
-  .pd-ready main>.category,
-  .pd-ready main>.pd-account-layout{
-    animation:pd-surface-in 300ms var(--pd-ease) both;
-  }
-  .pd-ready main>section:nth-of-type(2){animation-delay:35ms}
-  .pd-ready main>section:nth-of-type(3){animation-delay:70ms}
-  .pd-ready main>section:nth-of-type(4){animation-delay:105ms}
-
-  .tool-card:before,.pd-card:before,.pd-hub-card:before,.pd-flight-card:before{
-    transform:scaleX(.45);
-    transform-origin:left;
-    transition:transform 180ms var(--pd-ease),opacity 180ms ease!important;
-  }
-  .tool-card:hover:before,.pd-card:hover:before,.pd-hub-card:hover:before,.pd-flight-card:hover:before{
-    transform:scaleX(1);
-    opacity:1!important;
-  }
-
-  .result strong,.pd-user-stat strong,.pd-owner-stat strong,.pd-training-countdown strong{
-    animation:pd-number-settle 240ms var(--pd-ease) both;
-  }
-
-  .pd-btn,.calc-btn,.pd-auth-btn{
-    position:relative;
-    overflow:hidden;
-  }
-  .pd-btn:after,.calc-btn:after,.pd-auth-btn:after{display:none!important}
-
-  details[open]>:not(summary){
-    animation:pd-surface-in 180ms var(--pd-ease) both;
-  }
-}
+/* Interaction motion is owned by motion.css. */
 
 /* A little more structure on workflow surfaces. */
 .pd-flight-journey-steps a,
@@ -990,9 +934,9 @@ html.pd-streamlined-app .pd-search-key{
 html.pd-streamlined-app .pd-streamlined-shell,
 html.pd-streamlined-app main.shell,
 html.pd-streamlined-app main.pd-account-shell{
-  width:min(100%,1440px)!important;
-  max-width:1440px!important;
-  padding:24px 28px 64px!important;
+  width:min(100% - 40px,var(--pd-shell-width))!important;
+  max-width:var(--pd-shell-width)!important;
+  padding:24px 0 64px!important;
 }
 
 html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero){
@@ -1003,6 +947,7 @@ html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-acc
   clip-path:none!important;
   box-shadow:none!important;
 }
+html.pd-streamlined-app main>h1,
 html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero) h1{
   max-width:920px!important;
   margin:7px 0 8px!important;
@@ -1122,8 +1067,8 @@ html.pd-streamlined-app .hero-stat{
 html.pd-streamlined-app .hero-stat strong{font-size:30px!important}
 
 html.pd-streamlined-app footer{
-  max-width:1440px!important;
-  padding:24px 28px 76px!important;
+  max-width:var(--pd-shell-width)!important;
+  padding:24px 0 48px!important;
   border-top:1px solid var(--line)!important;
 }
 
@@ -1137,9 +1082,11 @@ html.pd-streamlined-app footer{
   html.pd-streamlined-app .pd-streamlined-shell,
   html.pd-streamlined-app main.shell,
   html.pd-streamlined-app main.pd-account-shell{
-    padding:18px 14px 86px!important;
+    width:100%!important;
+    padding:20px 16px 48px!important;
   }
-  html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero) h1{
+  html.pd-streamlined-app main>h1,
+html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero) h1{
     font-size:clamp(28px,8vw,36px)!important;
   }
   html.pd-streamlined-app :is(input,select,.calc-btn,.pd-btn,button.primary,.pd-auth-btn,.utility-btn,.pd-chip,.recent-chip){

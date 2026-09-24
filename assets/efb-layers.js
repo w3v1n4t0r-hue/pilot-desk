@@ -161,9 +161,9 @@ function start(RP,L){
     const open=el.hidden;
     panel.hidden=true;brief.hidden=true;
     layersButton.setAttribute('aria-expanded','false');briefButton.setAttribute('aria-expanded','false');
-    if(open){el.hidden=false;button.setAttribute('aria-expanded','true')}
+    if(open){el.hidden=false;button.setAttribute('aria-expanded','true');el.querySelector('button')?.focus({preventScroll:true})}
   }
-  function closePanel(el,button){el.hidden=true;button.setAttribute('aria-expanded','false')}
+  function closePanel(el,button){el.hidden=true;button.setAttribute('aria-expanded','false');button.focus({preventScroll:true})}
 
   panel.querySelectorAll('input[name="rpEfbBase"]').forEach(input=>input.addEventListener('change',()=>{
     if(!input.checked)return;

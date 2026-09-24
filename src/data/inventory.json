@@ -420,12 +420,6 @@
     "group": "Aviation"
   },
   {
-    "title": "Course, heading and track",
-    "href": "/guides/course-heading-track.html",
-    "type": "Guide",
-    "group": "Aviation"
-  },
-  {
     "title": "Critical Engine Explained for Multi-Engine Pilots",
     "href": "/guides/critical-engine-multiengine.html",
     "type": "Guide",
@@ -552,12 +546,6 @@
     "group": "Aviation"
   },
   {
-    "title": "Groundspeed versus airspeed",
-    "href": "/guides/groundspeed-vs-airspeed.html",
-    "type": "Guide",
-    "group": "Aviation"
-  },
-  {
     "title": "Holding pattern leg distance",
     "href": "/guides/holding-leg-distance.html",
     "type": "Guide",
@@ -600,20 +588,8 @@
     "group": "Aviation"
   },
   {
-    "title": "METAR ceiling and visibility",
-    "href": "/guides/metar-ceiling-and-visibility.html",
-    "type": "Guide",
-    "group": "Aviation"
-  },
-  {
     "title": "How to Read METARs and TAFs",
     "href": "/guides/metar-taf.html",
-    "type": "Guide",
-    "group": "Aviation"
-  },
-  {
-    "title": "Reading METAR wind and gusts",
-    "href": "/guides/metar-wind-and-gusts.html",
     "type": "Guide",
     "group": "Aviation"
   },
@@ -750,13 +726,7 @@
     "group": "Aviation"
   },
   {
-    "title": "TAF change groups",
-    "href": "/guides/taf-change-groups.html",
-    "type": "Guide",
-    "group": "Aviation"
-  },
-  {
-    "title": "3\u00b0 Descent Rate Chart",
+    "title": "3° Descent Rate Chart",
     "href": "/guides/three-degree-descent-rate-chart.html",
     "type": "Guide",
     "group": "Aviation"
@@ -782,12 +752,6 @@
   {
     "title": "The 2% True Airspeed Rule",
     "href": "/guides/true-airspeed-rule.html",
-    "type": "Guide",
-    "group": "Aviation"
-  },
-  {
-    "title": "True versus magnetic heading",
-    "href": "/guides/true-magnetic-heading.html",
     "type": "Guide",
     "group": "Aviation"
   },
@@ -842,12 +806,6 @@
   {
     "title": "Aircraft weight-and-balance envelope",
     "href": "/guides/weight-balance-envelope.html",
-    "type": "Guide",
-    "group": "Aviation"
-  },
-  {
-    "title": "Wind correction angle",
-    "href": "/guides/wind-correction-angle.html",
     "type": "Guide",
     "group": "Aviation"
   },

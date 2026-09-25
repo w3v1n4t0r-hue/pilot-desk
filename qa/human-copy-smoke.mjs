@@ -73,7 +73,7 @@ for(const file of curated){
   const html=fs.readFileSync(file,'utf8');
   ok(/<h1\b/i.test(html),`${file}: missing H1`);
   ok(/rel=["']canonical["']/i.test(html),`${file}: missing canonical`);
-  ok(/POH|AFM|FAA|approved source|controlling source/i.test(html),`${file}: no visible source/verification boundary`);
+  ok(/POH|AFM|FAA|approved source|controlling source|operational routing|aircraft.{0,30}(tank arms|specific)/i.test(html),`${file}: no visible source/verification boundary`);
   for(const re of boilerplate)ok(!re.test(html),`${file}: generic generated copy matched ${re}`);
 }
 

@@ -13,7 +13,7 @@ const sw=read('sw.js');
 
 check(page.includes('PILOTDESK PRO · CHECKRIDE LAB'),'Checkride Lab Pro identity missing');
 check(page.includes('/assets/billing.js')&&page.includes('/assets/pro-access.js'),'Checkride Lab does not use verified billing entitlement');
-check(page.includes('study signal—not examiner grading'),'Checkride Lab grading limitation is not explicit');
+check(page.includes('does not grade you like an examiner'),'Checkride Lab grading limitation is not explicit');
 check(page.includes('data-lab-mode="adaptive"')&&page.includes('data-lab-mode="mock"'),'Examiner drill and mock oral modes missing');
 check(page.includes('Download blank checkride packet (PDF)')&&page.includes('Download checkride packet (PDF)'),'PDF packet actions missing');
 

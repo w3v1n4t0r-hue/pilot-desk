@@ -30,7 +30,7 @@ for(const ent of files){
   }
 
   if(!html.includes('<footer>')){
-    const footer=`<footer><div><b>PilotDesk</b><p>Free aviation calculators, pilot references and training tools.</p></div><div class="footer-links"><a href="/">Calculators</a><a href="/guides.html">Guides</a><a href="/flight-training.html">Flight training</a><a href="/sources.html">Sources</a><a href="/about.html">About</a><a href="/legal/safety.html">Safety</a></div><p class="fine">Planning and training aid only. Verify operational information with current approved sources.</p></footer>`;
+    const footer=`<footer><div><b>PilotDesk</b><p>Free aviation calculators, pilot references and training tools.</p></div><div class="footer-links"><a href="/">Calculators</a><a href="/guides.html">Guides</a><a href="/flight-training.html">Flight training</a><a href="/sources.html">Sources</a><a href="/about.html">About</a><a href="/legal/safety.html">Safety</a></div></footer>`;
     html=html.replace('</body>',`${footer}</body>`);
   }
 

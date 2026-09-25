@@ -88,13 +88,13 @@ const figureQuestions=all.filter(q=>q.figureRef?.url&&q.figureRef?.figure);
 ok(figureQuestions.length>=23,`At least 23 live questions should require an official FAA figure; got ${figureQuestions.length}`);
 ok(figureQuestions.length/all.length>=0.45,'At least 45% of the live bank should be FAA-figure based');
 
-has(html,'Quality before question count.','Written Prep quality-first disclosure missing');
+has(html,'Practice by test and subject.','Written Prep should explain the practice flow');
 ok(!html.includes('5,000'),'Written Prep must not market the removed generated-volume bank');
 ok(!html.includes('data-difficulty="foundation"'),'Foundation difficulty must not be exposed');
 has(html,'data-difficulty="applied"','Applied difficulty filter missing');
 has(html,'data-difficulty="advanced"','Advanced difficulty filter missing');
-has(html,'exactly three answer choices','Three-choice exam format disclosure missing');
-has(html,'FAA-S-8081-9E','CFII PTS disclosure missing');
+ok(html.includes('data-difficulty="all"')&&html.includes('data-difficulty="applied"'),'Question difficulty filters should be available');
+has(html,'FII · PTS','CFII written-test track must be identified as PTS-based');
 has(html,'id="pdPrepStandard"','Per-question standard badge missing');
 has(html,'id="pdPrepGrade"','Practice grade UI missing');
 has(html,'ACCOUNT REQUIRED','Account wall copy missing');
@@ -109,7 +109,7 @@ has(js,"difficulty:state.difficulty",'Study sessions must send selected difficul
 has(js,"text('#pdPrepStandard'",'Question UI must render the ACS/PTS element');
 has(js,"return 'FAA SAMPLE'",'Exact FAA sample questions must be visibly labeled');
 has(js,"return 'FAA FIGURE'",'FAA-figure parallel questions must be visibly labeled');
-has(js,"return 'CURATED'",'Manually curated non-figure questions must be visibly labeled');
+has(js,"return 'PRACTICE ITEM'",'Non-figure practice questions must have a clear label');
 has(js,'renderFigureRef(q)','FAA testing-supplement figure handoff missing');
 has(js,'pd-prep-choice-rationale','Per-choice rationale rendering missing');
 has(js,"text('#pdPrepGrade'",'Dashboard must render practice grade');

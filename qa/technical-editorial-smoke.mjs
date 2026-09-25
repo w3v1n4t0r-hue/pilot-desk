@@ -55,6 +55,8 @@ for(const label of ['Type: identity','Type: model','Type: atmosphere model','Typ
 check(math.includes('What should not be reduced to a generic formula'),'Pilot-math reference lost generic-formula boundary');
 
 const policy=fs.readFileSync('editorial-policy.html','utf8');
+check(policy.includes('Individual author names')&&policy.includes('outside technical review are not claimed'),'Editorial policy must disclose collective authorship and individual-review limits');
+check(!/TECHNICAL REVIEW STANDARD/.test(policy),'Editorial policy must not imply universal expert-review status');
 check(policy.includes('AI is not a technical source'),'Editorial policy lost AI-source rule');
 check(policy.includes('Physics before memorization'),'Editorial policy lost derivation standard');
 check(policy.includes('Assumptions must be visible'),'Editorial policy lost assumption standard');
@@ -65,4 +67,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log(`Technical editorial review passed across ${reviewed.length} professionally reviewed aviation pages.`);
+console.log(`Technical editorial content checks passed across ${reviewed.length} aviation pages; this is not independent CFI/DPE certification.`);

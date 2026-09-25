@@ -18,6 +18,11 @@ function staticSocialMetadata(html){
  ].filter(([name])=>!meta(name)).map(([name,value,attr])=>'<meta '+attr+'="'+name+'" content="'+esc(unesc(value))+'">').join('');
  return additions?html.replace(/<\/head>/i,additions+'</head>'):html;
 }
+function guideEditorialMeta(html,canonical){
+ if(!canonical.includes('/guides/')||html.includes('data-pd-editorial-meta'))return html;
+ const details='<p class="pd-editorial-meta" data-pd-editorial-meta="1"><span>Published by PilotDesk</span><a href="/editorial-policy.html">Sources, testing &amp; corrections</a></p>';
+ return html.replace(/(<h1\b[^>]*>[\s\S]*?<\/h1>)/i,`$1${details}`);
+}
 export function sharedShell(html){
  const canonical=(html.match(/<link\b(?=[^>]*\brel=["']canonical["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/i)||[])[1]||'';
  const app=/\/(?:calculators\/|training\/|learn\/|(?:tools|daily|written-prep|skill-gap|planner|airport|route-planner|flights|flight-brief|aircraft|weather|procedures|poh-chart-studio|checklist-trainer|flight-planning-workspace|weight-balance|e6b-flight-computer|metar-decoder|flight-training|history|account|pricing|for-flight-schools|guides)\.html(?:$|[?#]))/.test(canonical);
@@ -41,5 +46,6 @@ export function sharedShell(html){
  if(!html.includes('src="/assets/app-bootstrap.js"'))html=html.replace('</body>','<script defer src="/assets/app-bootstrap.js"></script></body>');
  html=html.replace(/src=["']\/assets\/app-bootstrap\.js(?:\?[^"']*)?["']/g,'src="/assets/app-bootstrap.js?v=run6-fingerprint"');
  if(!html.includes('/_vercel/insights/script.js'))html=html.replace('</body>','<script defer src="/_vercel/insights/script.js"></script></body>');
+ html=guideEditorialMeta(html,canonical);
  return staticSocialMetadata(html);
 }

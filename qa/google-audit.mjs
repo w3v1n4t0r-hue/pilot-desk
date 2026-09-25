@@ -25,7 +25,7 @@ const consolidatedGuides=[
   'guides/altimeter-pressure-conversions.html','guides/aircraft-weight-conversions.html',
   'guides/vertical-speed-conversions.html','guides/free-aviation-tools-for-flight-schools.html',
   'guides/aviation-calculator-widgets-flight-school-websites.html','guides/climb-gradient.html',
-  'guides/pilot-checkride-math.html'
+  'guides/pilot-checkride-math.html','guides/crosswind-component-chart.html','guides/runway-numbers-and-headings.html'
 ];
 for(const file of consolidatedGuides)if(!/<meta\s+name="robots"\s+content="noindex,follow"/i.test(read(file)))fail(`thin satellite guide should stay out of search results: ${file}`);
 for(const file of fs.readdirSync('.').filter(name=>/^sitemap.*\.xml$/i.test(name))){
@@ -57,6 +57,15 @@ const weather=read('guides/aviation-weather-reference.html');
 if(!weather.includes('complete weather picture')||!weather.includes('current official observations')||!weather.includes('valid time'))fail('weather hub is missing its briefing workflow');
 const performance=read('guides/aircraft-performance-reference.html');
 if(!performance.includes('At 60° of bank')||!performance.includes('repeatable performance-chart workflow')||!performance.includes('current AFM/POH'))fail('performance hub is missing worked relationships or aircraft-specific workflow');
+const recipro=read('guides/reciprocal-heading.html');
+if(!recipro.includes('id="runway-designators"')||!recipro.includes('184° is designated Runway 18')||!recipro.includes('aim_html/chap2_section_3.html'))fail('reciprocal-heading guide is missing consolidated, sourced runway-designator guidance');
+const crosswind=read('guides/crosswind-component.html');
+if(!crosswind.includes('id="quick-chart"')||!crosswind.includes("Pilot\'s Handbook of Aeronautical Knowledge"))fail('crosswind guide is missing the consolidated chart destination or official reference');
+const wing=read('guides/wing-loading.html');
+if(!wing.includes('√(2,000 ÷ 2,400)')||!wing.includes('not an approved speed for any airplane')||!wing.includes('handbooks_manuals/aviation/phak'))fail('wing-loading guide is missing its worked comparison, boundary, or primary source');
+const editorial=read('editorial-policy.html');
+if(!editorial.includes('Individual author names')||!editorial.includes('outside technical review are not claimed'))fail('editorial policy must disclose collective authorship and reviewer limits');
+if(!read('scripts/shared-shell.mjs').includes('data-pd-editorial-meta'))fail('guide pages must show a collective publisher credit and editorial-policy link');
 if(!/<meta\s+name="robots"\s+content="noindex,follow"/i.test(read('feedback.html')))fail('feedback form should not be a search landing page');
 if(!ads.includes("rule.trim()==='noindex'")||!ads.includes("||noindex||"))fail('AdSense loader should skip pages marked noindex');
 for(const file of ['guides/top-of-descent.html','guides/climb-rate-vs-climb-gradient.html','guides/true-airspeed-rule.html','guides/standard-rate-turn.html']){

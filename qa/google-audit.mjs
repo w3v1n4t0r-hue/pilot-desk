@@ -60,6 +60,8 @@ if(!performance.includes('At 60° of bank')||!performance.includes('repeatable p
 const recipro=read('guides/reciprocal-heading.html');
 if(!recipro.includes('id="runway-designators"')||!recipro.includes('184° is designated Runway 18')||!recipro.includes('aim_html/chap2_section_3.html'))fail('reciprocal-heading guide is missing consolidated, sourced runway-designator guidance');
 const crosswind=read('guides/crosswind-component.html');
+for(const file of ['guides/crosswind-component.html','calculators/crosswind/index.html','guides/popular-aviation-tools.html','assets/growth-suite.js','src/data/inventory.json'])if(read(file).includes('/guides/crosswind-component-chart.html'))fail(`active crosswind links still use the retired chart URL: ${file}`);
+for(const file of ['guides/metar-wind-and-gusts.html','guides/navigation-reference.html','src/data/inventory.json'])if(read(file).includes('/guides/runway-numbers-and-headings.html'))fail(`active runway links still use the retired guide URL: ${file}`);
 if(!crosswind.includes('id="quick-chart"')||!crosswind.includes("Pilot\'s Handbook of Aeronautical Knowledge"))fail('crosswind guide is missing the consolidated chart destination or official reference');
 const wing=read('guides/wing-loading.html');
 if(!wing.includes('√(2,000 ÷ 2,400)')||!wing.includes('not an approved speed for any airplane')||!wing.includes('handbooks_manuals/aviation/phak'))fail('wing-loading guide is missing its worked comparison, boundary, or primary source');

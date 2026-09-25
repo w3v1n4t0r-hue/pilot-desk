@@ -426,8 +426,8 @@
     "group": "Aviation"
   },
   {
-    "title": "Crosswind Component Chart",
-    "href": "/guides/crosswind-component-chart.html",
+    "title": "Crosswind Component Quick Chart",
+    "href": "/guides/crosswind-component.html#quick-chart",
     "type": "Guide",
     "group": "Aviation"
   },
@@ -690,8 +690,8 @@
     "group": "Aviation"
   },
   {
-    "title": "Runway numbers and headings",
-    "href": "/guides/runway-numbers-and-headings.html",
+    "title": "Runway designators",
+    "href": "/guides/reciprocal-heading.html#runway-designators",
     "type": "Guide",
     "group": "Aviation"
   },

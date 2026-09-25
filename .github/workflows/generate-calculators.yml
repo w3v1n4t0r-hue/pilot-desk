@@ -103,7 +103,7 @@ jobs:
             guides/identify-verify-feather.html \
             guides/past-critical-engine.html \
             guides/single-engine-climb-performance.html \
-            guides/single-engine-service-ceiling.html \
+            guides/service-ceiling-vs-absolute-ceiling.html \
             guides/vmc-demonstration-explained.html \
             guides/zero-sideslip-multiengine.html \
             guides/avgas-weight-per-gallon.html \
@@ -138,3 +138,4 @@ jobs:
         run: node qa/google-audit.mjs
       - name: Run SEO hardening checks
         run: node qa/seo-hardening.mjs
+

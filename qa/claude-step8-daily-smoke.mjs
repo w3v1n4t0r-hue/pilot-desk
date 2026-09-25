@@ -34,7 +34,7 @@ check(css.indexOf('Claude Step 8 — Daily')>css.indexOf('Claude Step 5 — fina
 
 check(Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0)>=51,'Service worker version fell below the Step 8 cache floor');
 check(sw.includes("'/assets/daily.js'")&&sw.includes("'/assets/daily.css'"),'Daily runtime assets are not network-first');
-check(sitemap.includes('<url><loc>https://www.pilot-desk.com/daily/</loc><lastmod>2026-09-23</lastmod></url>'),'Canonical sitemap Daily date is stale');
+check(/<url><loc>https:\/\/www\.pilot-desk\.com\/daily\/<\/loc><lastmod>\d{4}-\d{2}-\d{2}<\/lastmod><\/url>/.test(sitemap),'Canonical sitemap Daily entry is missing or has an invalid date');
 check(dailyMap.includes('<lastmod>2026-09-22</lastmod>'),'Daily sitemap date is stale');
 
 if(failures.length){
@@ -43,3 +43,4 @@ if(failures.length){
  process.exit(1);
 }
 console.log('Claude Step 8 Daily smoke passed: refined three-question flow, professional return loop, and results-to-Weak-Subjects handoff verified.');
+

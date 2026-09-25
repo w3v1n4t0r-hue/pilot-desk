@@ -23,6 +23,7 @@ const sitemapBodies=childFiles.length?childFiles.map(f=>fs.readFileSync(f,'utf8'
 const sitemap=sitemapBodies.join('\n');
 const locs=[...sitemap.matchAll(/<loc>(https:\/\/www\.pilot-desk\.com\/(?![^<]*\.xml<)[^<]*)<\/loc>/g)].map(x=>x[1].replaceAll('&amp;','&'));
 if(rootSitemap.includes('<sitemapindex')&&!childFiles.length)fail('sitemap index has no readable local child sitemaps');
+if(new Set(locs).size!==locs.length)fail('sitemap contains duplicate canonical URLs');
 
 const productionFileFor=url=>{
   const pathname=new URL(url).pathname;

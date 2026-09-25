@@ -37,7 +37,7 @@ function shortcut(){document.addEventListener('keydown',e=>{const tag=e.target?.
 const RELATED={
  '/guides/crosswind-component.html':[['/guides/crosswind-component.html#quick-chart','Crosswind component chart']],
  '/calculators/crosswind/':[['/guides/crosswind-component.html#quick-chart','Crosswind component chart']],
- '/guides/fuel-weight.html':[['/guides/avgas-weight-per-gallon.html','Avgas weight per gallon']],
+ '/guides/avgas-weight-per-gallon.html#fuel-types':[['/guides/avgas-weight-per-gallon.html','Avgas weight per gallon']],
  '/calculators/fuel-weight/':[['/guides/avgas-weight-per-gallon.html','Avgas weight per gallon']],
  '/guides/three-degree-descent.html':[['/guides/three-degree-descent-rate-chart.html','3° descent rate chart']],
  '/calculators/three-degree-descent/':[['/guides/three-degree-descent-rate-chart.html','3° descent rate chart']],

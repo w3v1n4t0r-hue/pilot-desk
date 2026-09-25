@@ -22,6 +22,15 @@ const curated=[
   'guides/pilot-math-formulas.html',
   'guides/density-altitude.html',
   'guides/accelerated-stall-load-factor.html',
+  'guides/airport-identifiers.html',
+  'guides/accelerate-stop-accelerate-go.html',
+  'guides/flight-planning.html',
+  'guides/cg-shift-fuel-burn.html',
+  'guides/great-circle-distance.html',
+  'guides/holding-leg-distance.html',
+  'guides/obstacle-climb-gradient.html',
+  'guides/poh-performance-chart-interpolation.html',
+  'guides/turn-radius-rate.html',
   'guides/weight-balance-envelope.html',
   'guides/multiengine-checkride-study-guide.html',
   'guides/critical-engine-multiengine.html',
@@ -32,7 +41,7 @@ const curated=[
   'guides/identify-verify-feather.html',
   'guides/past-critical-engine.html',
   'guides/single-engine-climb-performance.html',
-  'guides/single-engine-service-ceiling.html',
+  'guides/service-ceiling-vs-absolute-ceiling.html',
   'guides/vmc-demonstration-explained.html',
   'guides/zero-sideslip-multiengine.html',
   'guides/avgas-weight-per-gallon.html',
@@ -77,6 +86,31 @@ for(const file of ['training/private-pilot.html','training/instrument-rating.htm
   const html=fs.readFileSync(file,'utf8');
   ok(/ACS|Airman Certification Standards/i.test(html),`${file}: ACS context missing`);
   ok(/FAA/i.test(html),`${file}: FAA source context missing`);
+  ok(!/Do something with the material|TURN THIS INTO PRACTICE|Use the ACS\/FAR reference to make sure/i.test(html),`${file}: generic study prompt returned`);
+}
+
+const calculatorDirs=fs.readdirSync('calculators',{withFileTypes:true}).filter(x=>x.isDirectory());
+for(const dir of calculatorDirs){
+  const file=`calculators/${dir.name}/index.html`;
+  if(!fs.existsSync(file))continue;
+  const html=fs.readFileSync(file,'utf8');
+  ok(!/What inputs should I use\?|relationship being solved|supplemental planning and training aid/i.test(html),`${file}: generic calculator filler returned`);
+  ok(/Formula and method/.test(html),`${file}: calculator-specific method missing`);
+  ok(/sources\.html/.test(html),`${file}: sources and methods link missing`);
+}
+
+const vercel=JSON.parse(fs.readFileSync('vercel.json','utf8'));
+const mergedGuides=[
+  ['/guides/endurance-range.html','/guides/fuel-planning.html#endurance-range'],
+  ['/guides/fuel-weight.html','/guides/avgas-weight-per-gallon.html#fuel-types'],
+  ['/guides/vfr-navlog.html','/guides/navigation-reference.html#vfr-navlog'],
+  ['/guides/single-engine-service-ceiling.html','/guides/service-ceiling-vs-absolute-ceiling.html#oei-service-ceiling'],
+  ['/guides/standard-rate-turn.html','/guides/turn-radius-rate.html#standard-rate-turn']
+];
+const sitemaps=fs.readdirSync('.').filter(x=>/^sitemap.*\.xml$/i.test(x));
+for(const [source,destination] of mergedGuides){
+  ok(vercel.redirects.some(r=>r.source===source&&r.destination===destination&&r.permanent===true),`${source}: permanent consolidated-guide redirect missing`);
+  for(const file of sitemaps)ok(!fs.readFileSync(file,'utf8').includes(source),`${file}: retired guide remains in sitemap: ${source}`);
 }
 
 const glide=fs.readFileSync('calculators/glide-range/index.html','utf8');

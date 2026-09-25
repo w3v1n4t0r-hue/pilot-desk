@@ -78,7 +78,7 @@ const corePages={
     intro:'Route planning connects geography with time, wind, fuel and navigation. A line between airports is only the beginning: each leg needs a distance, course or track, expected groundspeed, estimated time and enough context to make the route practical. Use the PilotDesk route tools to build and study that structure, then verify the route against current aeronautical information.',
     checks:['Verify every airport or waypoint before accepting the route.','Keep true and magnetic references consistent when applying wind and variation.','Use expected groundspeed—not airspeed—for time and distance over the ground.','Review airspace, terrain, procedures, NOTAMs and current chart information before flight.'],
     training:'A good navlog exercise is to calculate one leg manually before using the automated tools. Estimate the no-wind time first, apply the wind triangle, compare the new groundspeed and ETA, then calculate fuel for that leg. Repeating the process makes course, heading, wind correction, groundspeed, time and fuel feel like one connected problem.',
-    links:'<a href="/calculators/wind-triangle/">Wind triangle</a> · <a href="/calculators/time-speed-distance/">Time/speed/distance</a> · <a href="/guides/vfr-navlog.html">VFR navlog guide</a>'
+    links:'<a href="/calculators/wind-triangle/">Wind triangle</a> · <a href="/calculators/time-speed-distance/">Time/speed/distance</a> · <a href="/guides/navigation-reference.html#vfr-navlog">VFR navlog guide</a>'
   },
   'procedures.html':{
     heading:'Treat procedure lookup as document control',subject:'a procedure lookup',

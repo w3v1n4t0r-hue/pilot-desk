@@ -36,7 +36,7 @@ const intents=[
  {terms:['groundspeed','wind triangle','wca','wind correction'],title:'Wind Triangle Calculator',href:'/calculators/wind-triangle/',type:'Calculator',reason:'Course, TAS, and wind → heading and groundspeed'},
  {terms:['true magnetic','variation','magnetic heading'],title:'True / Magnetic Heading Calculator',href:'/calculators/true-magnetic/',type:'Calculator',reason:'Apply magnetic variation to headings and courses'},
  {terms:['pivotal altitude','eights on pylons'],title:'Pivotal Altitude Calculator',href:'/calculators/pivotal-altitude/',type:'Calculator',reason:'Groundspeed → pivotal altitude'},
- {terms:['service ceiling','single engine ceiling'],title:'Single-Engine Service Ceiling',href:'/guides/single-engine-service-ceiling.html',type:'Guide',reason:'Multi-engine single-engine ceiling and performance'},
+ {terms:['service ceiling','single engine ceiling'],title:'Single-Engine Service Ceiling',href:'/guides/service-ceiling-vs-absolute-ceiling.html#oei-service-ceiling',type:'Guide',reason:'Multi-engine single-engine ceiling and performance'},
  {terms:['best glide','glide distance','glide ratio'],title:'Aircraft Glide Distance Calculator',href:'/calculators/glide-range/',type:'Calculator',reason:'Altitude + glide ratio → still-air glide distance'},
  {terms:['fuel required','fuel burn','fuel planning','reserve fuel'],title:'Fuel Required Calculator',href:'/calculators/fuel-required/',type:'Calculator',reason:'Trip time, burn, reserve, and onboard fuel'},
  {terms:['standard rate','rate one','3 degrees per second'],title:'Standard-Rate Bank Calculator',href:'/calculators/standard-rate-bank/',type:'Calculator',reason:'Airspeed → approximate bank for a rate-one turn'}

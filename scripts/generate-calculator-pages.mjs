@@ -151,7 +151,7 @@ const seoTitleBySlug={
   'rate-of-turn':'Rate 1 Turn Calculator | Turn Rate & Radius | PilotDesk',
   'turn-radius':'Aircraft Turn Radius Calculator | Speed & Bank Angle | PilotDesk',
   'true-airspeed':'True Airspeed Calculator | 2% TAS Rule Estimate | PilotDesk',
-  'pivotal-altitude':'Pivotal Altitude Calculator & Formula | Eights on Pylons | PilotDesk',
+  'pivotal-altitude':'Pivotal Altitude Calculator | Eights on Pylons | PilotDesk',
   'glide-range':'Aircraft Glide Distance Calculator | Glide Ratio to NM | PilotDesk',
   'climb-gradient':'Climb Gradient Calculator | ft/NM to FPM | PilotDesk',
   'crosswind':'Crosswind Component Calculator & Chart | PilotDesk',

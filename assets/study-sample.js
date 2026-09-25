@@ -37,7 +37,7 @@ function init(){
    next.hidden=false;next.textContent=index<items.length-1?'Next question':'See sample score';
   });options.append(b)})
  }
- next.addEventListener('click',()=>{index++;if(index<items.length)return render();title.textContent=`Sample complete: ${score} of ${items.length} correct`;options.replaceChildren();feedback.textContent='The live bank uses the same source-first format and removes mass-generated numeric variants.';next.hidden=true});
+ next.addEventListener('click',()=>{index++;if(index<items.length)return render();title.textContent=`Sample complete: ${score} of ${items.length} correct`;options.replaceChildren();feedback.textContent='Choose a test below to continue practicing.';next.hidden=true});
  render();
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();

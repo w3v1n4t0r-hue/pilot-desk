@@ -43,7 +43,7 @@ function makeTasks(track,cluster,dayIndex,minutes){
  const source=cluster.sources.find(x=>/^https?:/.test(x))||t.standardUrl;
  tasks.push(task(cluster.id+'-source-'+dayIndex,'SOURCE','Read the controlling source',cluster.title+' · '+cluster.codes.join(' · '),source));
  if(cluster.figures.length){const f=cluster.figures[dayIndex%cluster.figures.length],fig=f.figures[dayIndex%f.figures.length];tasks.push(task(cluster.id+'-figure-'+dayIndex,'FAA FIGURE','Work '+f.supplement+' · Figure '+fig,'Read the figure first, then explain what inputs, limits, or procedure details the FAA expects you to extract.',figureUrl(track)))}
- if(t.knowledgeTest)tasks.push(task(cluster.id+'-written-'+dayIndex,'WRITTEN','Written Prep · '+cluster.title,'Use All Reviewed / Missed / Weak-area review. Do not memorize option position.','/written-prep.html?track='+encodeURIComponent(track)+'#pdPrepApp'));
+ if(t.knowledgeTest)tasks.push(task(cluster.id+'-written-'+dayIndex,'WRITTEN','Written Prep · '+cluster.title,'Choose All Questions, Missed, or Weak Subjects. Explain why the correct answer fits.','/written-prep.html?track='+encodeURIComponent(track)+'#pdPrepApp'));
  tasks.push(task(cluster.id+'-oral-'+dayIndex,'ORAL','Explain it without notes',cluster.title+' · use examiner follow-up practice and verify the answer in the listed source.','/learn/checkride-lab/?track='+encodeURIComponent(oralTrack(track))));
  const limit=minutes<=30?2:minutes<=45?3:4;return tasks.slice(0,limit)
 }

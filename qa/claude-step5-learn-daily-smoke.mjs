@@ -27,7 +27,7 @@ check(boot.includes("path.startsWith('/learn/oral-exam/')"),'Learn strip is not 
 check(learnCss.includes('.pd-learn-subnav'),'Learn EFB strip styling missing');
 
 // Written Prep: clear rating/session entry, FAA-area progress, subtle activity, grouped misses.
-check(prep.includes('Pick the rating. Find the weak areas. Work them.'),'Written Prep still opens like generic marketing copy');
+check(prep.includes('FAA knowledge test practice'),'Written Prep heading should say what the page does');
 check(prep.includes('pd-prep-study-entry')&&prep.includes('Weak-area session')&&prep.includes('Review misses')&&prep.includes('Practice exam'),'Written Prep practice-session entry points missing');
 check(prep.includes('pdPrepStudyStreak')&&prep.includes('pdPrepStreakDots'),'Subtle Written Prep study streak missing');
 check(prep.includes('ACS / PTS KNOWLEDGE AREAS')&&prep.includes('pdPrepSkillMap'),'Knowledge-area progress surface missing');

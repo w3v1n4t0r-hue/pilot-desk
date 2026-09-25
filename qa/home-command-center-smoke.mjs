@@ -13,7 +13,7 @@ for(const text of [
   'Your next flight starts here.',
   'Plan a flight',
   'Common pilot calculations','Three daily questions',
-  'Study for the flying you do.','Check the source behind the number.'
+  'Study for the flying you do.','FAA, weather and aircraft references'
 ])ok(home.includes(text),`homepage is missing its core value signal: ${text}`);
 for(const text of ['Plan a Flight','Use a Calculator','Study for a Written'])ok(data.includes(text),`homepage quick action is missing: ${text}`);
 for(const href of ['/route-planner.html','/tools.html','/written-prep.html','/daily/','/flight-training.html','/sources.html'])ok(home.includes(href),`homepage is missing core destination ${href}`);

@@ -6,7 +6,7 @@ const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelecto
 const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt',"'":'&#39;','"':'&quot;'}[c]));
 const trackNames={ppl:'Private Pilot',ira:'Instrument',cpl:'Commercial',cfi:'CFI',cfii:'CFII',atp:'ATP'};
 const modeNames={learn:'WEAK-AREA REVIEW',missed:'MISSED QUESTIONS',marked:'MARKED QUESTIONS',random:'RANDOM QUESTIONS',exam:'PRACTICE EXAM'};
-const difficultyNames={all:'ALL REVIEWED',applied:'APPLIED',advanced:'ADVANCED'};
+const difficultyNames={all:'ALL QUESTIONS',applied:'APPLIED',advanced:'ADVANCED'};
 const state={client:null,auth:null,track:'ppl',difficulty:'all',dashboard:null,session:null,current:null,pendingNext:null,timer:null,timerSeconds:0};
 const edgeHeaders=()=>({apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${state.auth?.access_token||''}`});
 const safeTrack=v=>['ppl','ira','cpl','cfi','cfii','atp'].includes(v)?v:'ppl';
@@ -18,7 +18,7 @@ function text(sel,v){const el=$(sel);if(el)el.textContent=String(v)}
 function show(sel,on){const el=$(sel);if(el)el.hidden=!on}
 function notice(msg,kind=''){const el=$('#pdPrepNotice');if(!el)return;el.textContent=msg;el.dataset.kind=kind;el.hidden=!msg;if(msg)setTimeout(()=>{if(el.textContent===msg)el.hidden=true},4500)}
 function band(v){return v>=80?'strong':v>=60?'developing':'gap'}
-function sourceLabel(q){if(q?.source==='faa-sample-exact')return 'FAA SAMPLE';if(q?.source==='pilotdesk-faa-parallel')return 'FAA FIGURE';if(q?.source==='pilotdesk-curated')return 'CURATED';return q?.standardType==='PTS'?'PTS-LINKED':'ACS-LINKED'}
+function sourceLabel(q){if(q?.source==='faa-sample-exact')return 'FAA SAMPLE';if(q?.source==='pilotdesk-faa-parallel')return 'FAA FIGURE';if(q?.source==='pilotdesk-curated')return 'PRACTICE ITEM';return q?.standardType==='PTS'?'PTS-LINKED':'ACS-LINKED'}
 function renderFigureRef(q){
  let box=$('#pdPrepFigureRef');
  if(!box){box=document.createElement('section');box.id='pdPrepFigureRef';box.className='pd-prep-figure-ref';$('#pdPrepPrompt')?.insertAdjacentElement('afterend',box)}

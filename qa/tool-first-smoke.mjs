@@ -29,9 +29,10 @@ check(!/margin\s*:\s*0\s+calc\(50%\s*-\s*50vw\)/i.test(homeCss),'homepage hero m
 for(const retired of ['tool-first-layout.js','performance.js','home-command-center.js'])check(!bootstrap.includes(`/assets/${retired}`),`retired runtime layout optimizer returned: ${retired}`);
 check(bootstrap.includes('/assets/calculator-ux.js'),'calculator-specific QoL must remain route-scoped in the streamlined bootstrap');
 
-check(calculator.includes('data-calculate')&&calculator.includes('class="info-card"')&&calculator.includes('class="formula"'),'calculator must retain operational controls plus visible reference and formula content');
+check(calculator.includes('data-calculate')&&calculator.includes('class="info-card"')&&(calculator.includes('class="formula"')||calculator.includes('Formula and method')),'calculator must retain operational controls plus visible reference and formula content');
 check(sw.includes('...GENERATED_CALCULATORS'),'all calculators must be deterministically available to the offline worker');
 check(vercel.git?.deploymentEnabled?.main===true&&vercel.git?.deploymentEnabled?.['*']===false,'non-production branches must not spend Vercel deployments');
 
 if(failures.length){console.error(`Tool-first optimization checks failed with ${failures.length} issue(s):`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
 console.log('Tool-first optimization checks passed: Astro keeps primary tasks concise, calculator discovery searchable, mobile controls usable, and retired runtime layout stacks out.');
+

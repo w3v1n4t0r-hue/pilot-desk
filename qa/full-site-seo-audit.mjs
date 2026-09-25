@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const roots=['.'];
-const skip=new Set(['node_modules','dist','.astro-public','.git']);
+// Audit the built public files after shared-shell metadata has been applied.
+const auditRoot=fs.existsSync('dist')?'dist':'.';
+const skip=new Set(['node_modules','.astro-public','.git']);
+if(auditRoot==='.')skip.add('dist');
 const files=[];
 function walk(dir){
   for(const ent of fs.readdirSync(dir,{withFileTypes:true})){
@@ -12,7 +14,7 @@ function walk(dir){
     else if(ent.isFile()&&ent.name.endsWith('.html'))files.push(p.replaceAll('\\','/').replace(/^\.\//,''));
   }
 }
-walk('.');
+walk(auditRoot);
 
 const grab=(h,a,b)=>((h.match(a)||h.match(b)||[])[1]||'').replace(/\s+/g,' ').replace(/<[^>]+>/g,'').trim();
 const meta=(h,name)=>{
@@ -27,7 +29,7 @@ const meta=(h,name)=>{
 const rows=files.map(file=>{
  const h=fs.readFileSync(file,'utf8');
  return {
-  file,h,
+  file:path.relative(auditRoot,file).replaceAll('\\','/'),h,
   title:grab(h,/<title>([^<]*)<\/title>/i,/$a/),
   desc:meta(h,'description'),
   canonical:grab(h,/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i,/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i),

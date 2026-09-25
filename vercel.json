@@ -76,6 +76,16 @@
       "source": "/guides/taf-change-groups.html",
       "destination": "/guides/metar-taf.html#taf-timeline",
       "permanent": true
+    },
+    {
+      "source": "/guides/crosswind-component-chart.html",
+      "destination": "/guides/crosswind-component.html#quick-chart",
+      "permanent": true
+    },
+    {
+      "source": "/guides/runway-numbers-and-headings.html",
+      "destination": "/guides/reciprocal-heading.html#runway-designators",
+      "permanent": true
     }
   ],
   "rewrites": [

@@ -86,6 +86,31 @@
       "source": "/guides/runway-numbers-and-headings.html",
       "destination": "/guides/reciprocal-heading.html#runway-designators",
       "permanent": true
+    },
+    {
+      "source": "/guides/endurance-range.html",
+      "destination": "/guides/fuel-planning.html#endurance-range",
+      "permanent": true
+    },
+    {
+      "source": "/guides/fuel-weight.html",
+      "destination": "/guides/avgas-weight-per-gallon.html#fuel-types",
+      "permanent": true
+    },
+    {
+      "source": "/guides/vfr-navlog.html",
+      "destination": "/guides/navigation-reference.html#vfr-navlog",
+      "permanent": true
+    },
+    {
+      "source": "/guides/single-engine-service-ceiling.html",
+      "destination": "/guides/service-ceiling-vs-absolute-ceiling.html#oei-service-ceiling",
+      "permanent": true
+    },
+    {
+      "source": "/guides/standard-rate-turn.html",
+      "destination": "/guides/turn-radius-rate.html#standard-rate-turn",
+      "permanent": true
     }
   ],
   "rewrites": [

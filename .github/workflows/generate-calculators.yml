@@ -77,6 +77,13 @@ jobs:
             calculators/wind-triangle/index.html \
             calculators/pivotal-altitude/index.html \
             calculators/three-degree-descent/index.html \
+            calculators/accelerated-stall/index.html \
+            calculators/climb-gradient/index.html \
+            calculators/maneuvering-speed-weight/index.html \
+            calculators/moment-cg/index.html \
+            calculators/percent-mac/index.html \
+            calculators/standard-rate-bank/index.html \
+            calculators/top-of-descent/index.html \
             flight-training.html \
             guides/glide-range.html \
             guides/how-far-can-an-airplane-glide.html \
@@ -103,7 +110,7 @@ jobs:
             guides/identify-verify-feather.html \
             guides/past-critical-engine.html \
             guides/single-engine-climb-performance.html \
-            guides/single-engine-service-ceiling.html \
+            guides/service-ceiling-vs-absolute-ceiling.html \
             guides/vmc-demonstration-explained.html \
             guides/zero-sideslip-multiengine.html \
             guides/avgas-weight-per-gallon.html \
@@ -138,3 +145,4 @@ jobs:
         run: node qa/google-audit.mjs
       - name: Run SEO hardening checks
         run: node qa/seo-hardening.mjs
+

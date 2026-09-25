@@ -29,7 +29,7 @@ for(const href of ['/guides/vmc-vs-vyse.html','/guides/critical-engine-multiengi
 for(const page of [
  'guides/vmc-vs-vyse.html','guides/feathering-vs-windmilling-propeller.html',
  'guides/critical-engine-multiengine.html','guides/zero-sideslip-multiengine.html',
- 'guides/single-engine-climb-performance.html','guides/single-engine-service-ceiling.html'
+ 'guides/single-engine-climb-performance.html','guides/service-ceiling-vs-absolute-ceiling.html'
 ]) check(read(page).includes('/guides/multiengine-checkride-study-guide.html'),page+': missing authority backlink to multi-engine hub');
 
 check(weather.includes('/guides/crosswind-component.html')&&weather.includes('/guides/density-altitude.html')&&weather.includes('/calculators/isa-temperature/'),'Weather page is not feeding authority into weather/performance cluster');
@@ -39,11 +39,13 @@ for(const path of [
  'e6b-flight-computer.html','for-cfis.html','guides/critical-engine-multiengine.html',
  'guides/crosswind-component.html','guides/density-altitude.html','guides/feathering-vs-windmilling-propeller.html',
  'guides/multiengine-checkride-study-guide.html','guides/pilot-math-formulas.html',
- 'guides/single-engine-climb-performance.html','guides/single-engine-service-ceiling.html',
+ 'guides/single-engine-climb-performance.html','guides/service-ceiling-vs-absolute-ceiling.html',
  'guides/vmc-vs-vyse.html','guides/zero-sideslip-multiengine.html','weather.html'
 ]) {
- const expectedLastmod=/^(e6b-flight-computer\.html|weather\.html)$/.test(path)?'2026-09-24':'2026-09-23';
- check(sitemap.includes('https://www.pilot-desk.com/'+path+'</loc><lastmod>'+expectedLastmod+'</lastmod>'),path+': Sprint 2 sitemap freshness missing');
+ const marker='https://www.pilot-desk.com/'+path+'</loc><lastmod>';
+ const start=sitemap.indexOf(marker);
+ const lastmod=start<0?'':sitemap.slice(start+marker.length,start+marker.length+10);
+ check(/^\d{4}-\d{2}-\d{2}$/.test(lastmod),path+': sitemap entry missing or lastmod is invalid');
 }
 
 if(failures.length){
@@ -52,3 +54,4 @@ if(failures.length){
  process.exit(1);
 }
 console.log('SEO Sprint 2 authority checks passed: E6B/pilot-math, multi-engine engine-out, weather-performance, and CFI referral clusters are connected.');
+

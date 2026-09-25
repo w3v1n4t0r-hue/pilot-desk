@@ -481,7 +481,7 @@
   },
   {
     "title": "Aircraft endurance and range",
-    "href": "/guides/endurance-range.html",
+    "href": "/guides/fuel-planning.html#endurance-range",
     "type": "Guide",
     "group": "Aviation"
   },
@@ -529,7 +529,7 @@
   },
   {
     "title": "Aviation fuel weight",
-    "href": "/guides/fuel-weight.html",
+    "href": "/guides/avgas-weight-per-gallon.html#fuel-types",
     "type": "Guide",
     "group": "Aviation"
   },
@@ -715,13 +715,13 @@
   },
   {
     "title": "Single-Engine Service Ceiling Explained",
-    "href": "/guides/single-engine-service-ceiling.html",
+    "href": "/guides/service-ceiling-vs-absolute-ceiling.html#oei-service-ceiling",
     "type": "Guide",
     "group": "Aviation"
   },
   {
     "title": "Standard-Rate Turns",
-    "href": "/guides/standard-rate-turn.html",
+    "href": "/guides/turn-radius-rate.html#standard-rate-turn",
     "type": "Guide",
     "group": "Aviation"
   },
@@ -775,7 +775,7 @@
   },
   {
     "title": "How to build a VFR navlog",
-    "href": "/guides/vfr-navlog.html",
+    "href": "/guides/navigation-reference.html#vfr-navlog",
     "type": "Guide",
     "group": "Aviation"
   },

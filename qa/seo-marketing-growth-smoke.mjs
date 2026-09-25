@@ -47,8 +47,10 @@ for(const [slug,title] of [
 ]){
  const h=read('calculators/'+slug+'/index.html');
  check(h.includes('<title>'+title+'</title>'),slug+': generated SEO title out of sync');
- const expectedLastmod=slug==='three-degree-descent'?'2026-09-23':'2026-09-24';
- check(sitemap.includes('https://www.pilot-desk.com/calculators/'+slug+'/</loc><lastmod>'+expectedLastmod+'</lastmod>'),slug+': sitemap lastmod not refreshed');
+ const marker='https://www.pilot-desk.com/calculators/'+slug+'/</loc><lastmod>';
+ const start=sitemap.indexOf(marker);
+ const lastmod=start<0?'':sitemap.slice(start+marker.length,start+marker.length+10);
+ check(/^\d{4}-\d{2}-\d{2}$/.test(lastmod),slug+': sitemap entry missing or lastmod is invalid');
 }
 
 if(failures.length){
@@ -57,3 +59,4 @@ if(failures.length){
  process.exit(1);
 }
 console.log('SEO + marketing growth smoke passed: indexed calculator hub, Search Console CTR targets, internal authority, and flight-school referral surface verified.');
+

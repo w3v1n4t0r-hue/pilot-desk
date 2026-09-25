@@ -73,12 +73,12 @@ const formulas={
 };
 
 const guideFor={
-  'crosswind':'/guides/crosswind-component.html','wind-triangle':'/guides/wind-triangle.html','time-speed-distance':'/guides/time-speed-distance.html','fuel-required':'/guides/fuel-planning.html','endurance-range':'/guides/endurance-range.html','top-of-descent':'/guides/top-of-descent.html','three-degree-descent':'/guides/three-degree-descent.html','holding-leg-distance':'/guides/holding-leg-distance.html',
+  'crosswind':'/guides/crosswind-component.html','wind-triangle':'/guides/wind-triangle.html','time-speed-distance':'/guides/time-speed-distance.html','fuel-required':'/guides/fuel-planning.html','endurance-range':'/guides/fuel-planning.html#endurance-range','top-of-descent':'/guides/top-of-descent.html','three-degree-descent':'/guides/three-degree-descent.html','holding-leg-distance':'/guides/holding-leg-distance.html',
   'pressure-altitude':'/guides/pressure-altitude.html','density-altitude':'/guides/density-altitude.html','isa-temperature':'/guides/isa-temperature.html','cloud-base':'/guides/cloud-base-estimate.html','speed-of-sound':'/guides/mach-speed-of-sound.html','mach-number':'/guides/mach-speed-of-sound.html',
   'true-airspeed':'/guides/true-airspeed-rule.html','climb-gradient':'/guides/climb-gradient.html','fpm-to-gradient':'/guides/climb-rate-vs-climb-gradient.html','gradient-angle':'/guides/flight-path-gradient-angle.html','glide-range':'/guides/glide-range.html','maneuvering-speed-weight':'/guides/maneuvering-speed-weight.html','accelerated-stall':'/guides/accelerated-stall-load-factor.html','hydroplaning':'/guides/hydroplaning-speed.html','wing-loading':'/guides/wing-loading.html','power-loading':'/guides/power-loading.html','obstacle-gradient':'/guides/obstacle-climb-gradient.html',
-  'pivotal-altitude':'/guides/pivotal-altitude.html','standard-rate-bank':'/guides/standard-rate-turn.html','load-factor':'/guides/accelerated-stall-load-factor.html','turn-radius':'/guides/turn-radius-rate.html','rate-of-turn':'/guides/turn-radius-rate.html',
+  'pivotal-altitude':'/guides/pivotal-altitude.html','standard-rate-bank':'/guides/turn-radius-rate.html#standard-rate-turn','load-factor':'/guides/accelerated-stall-load-factor.html','turn-radius':'/guides/turn-radius-rate.html','rate-of-turn':'/guides/turn-radius-rate.html',
   'reciprocal-heading':'/guides/reciprocal-heading.html','true-magnetic':'/guides/true-magnetic-heading.html','arc-distance':'/guides/dme-arc-distance.html','great-circle-distance':'/guides/great-circle-distance.html','dms-decimal':'/guides/dms-coordinates.html','nm-per-minute':'/guides/nautical-miles-per-minute.html',
-  'moment-cg':'/guides/moment-center-of-gravity.html','percent-mac':'/guides/percent-mac.html','ballast':'/guides/ballast-cg.html','fuel-weight':'/guides/fuel-weight.html',
+  'moment-cg':'/guides/moment-center-of-gravity.html','percent-mac':'/guides/percent-mac.html','ballast':'/guides/ballast-cg.html','fuel-weight':'/guides/avgas-weight-per-gallon.html#fuel-types',
   'speed-conversion':'/guides/aviation-speed-conversions.html','distance-conversion':'/guides/aviation-distance-conversions.html','temperature-conversion':'/guides/aviation-temperature-conversions.html','weight-conversion':'/guides/aircraft-weight-conversions.html','volume-conversion':'/guides/aviation-volume-conversions.html','pressure-conversion':'/guides/altimeter-pressure-conversions.html','vertical-speed-conversion':'/guides/vertical-speed-conversions.html'
 };
 
@@ -93,33 +93,33 @@ const hubFor={
 };
 
 const useText={
-  'Flight Planning':'Use the calculator to work a flight-planning problem, verify hand calculations, or build an example for training. Start with current, correctly referenced inputs and keep runway, wind, course, speed, time and fuel units consistent.',
-  'Atmosphere & Weather':'Use current pressure, temperature and weather information when the calculation depends on atmospheric conditions. Treat the output as a planning or study value and connect it back to the current weather product and aircraft performance data.',
-  'Performance':'Use the result as a math check or training reference. Aircraft performance, limitations and operating decisions still come from the current POH or AFM, applicable charts and the conditions that actually exist.',
-  'Maneuvers & Turns':'Use the result to understand the geometry and relationships behind common flight-training maneuvers. The calculated number is not a substitute for aircraft limitations, instructor guidance or the applicable training standard.',
-  'Navigation':'Use the calculator for navigation planning and cross-checks, keeping true/magnetic references, coordinates, groundspeed and units consistent. Current charts and navigation data remain the controlling source for a flight.',
-  'Weight & Balance':'Use the calculator to perform moment, arm, CG or fuel-weight math. A correct arithmetic result still must be compared with the approved loading data and envelope for the exact aircraft.',
-  'Conversions':'Use the converter when aviation information arrives in a different unit system. Confirm both the starting unit and the physical quantity before carrying the converted value into another calculation.'
+  'Flight Planning':'Try the values from a route or training scenario. Check that wind direction, course reference, speed, time and fuel units match your source.',
+  'Atmosphere & Weather':'Use a current pressure or temperature observation. The result describes the values entered, not conditions along an entire route.',
+  'Performance':'Use this to understand the relationship or check arithmetic. The aircraft’s current POH or AFM has the performance numbers for a real flight.',
+  'Maneuvers & Turns':'Use the result to study how these values work together. Follow the aircraft limitations and the procedure taught for the maneuver.',
+  'Navigation':'Check true and magnetic references before comparing the result with a chart. Use current navigation data for a flight.',
+  'Weight & Balance':'Use the exact aircraft’s arms, current empty-weight data and approved envelope. A correct calculation alone cannot show whether loading is within limits.',
+  'Conversions':'Write down both units before converting. The converted number still describes the same quantity.'
 };
 
 const meaningText={
-  'Flight Planning':'The output is most useful when it feeds the next planning step. Wind components affect runway decisions, groundspeed affects time and fuel, and descent or holding math depends on how quickly the airplane moves across the ground.',
-  'Atmosphere & Weather':'Atmospheric numbers matter because air density, pressure and temperature affect both weather interpretation and aircraft performance. A calculated atmospheric value should be read together with current conditions rather than by itself.',
-  'Performance':'Performance math describes relationships, not guarantees. Weight, configuration, runway condition, wind, temperature, technique and aircraft-specific data can all change the operational answer.',
-  'Maneuvers & Turns':'These outputs make the speed-bank-load-factor relationships visible. They are especially useful for oral-exam preparation and for checking whether a mental estimate is in the right range.',
-  'Navigation':'Navigation results are only as good as the references behind the inputs. A correct formula can still produce a wrong operational answer if true and magnetic directions are mixed or if stale coordinates and winds are used.',
-  'Weight & Balance':'Weight-and-balance arithmetic produces a location or moment; airworthiness depends on where that result sits relative to the approved envelope and any weight limits.',
-  'Conversions':'A conversion changes the unit, not the underlying quantity. Converting knots to mph does not turn indicated airspeed into true airspeed, and converting pressure units does not change the observed pressure.'
+  'Flight Planning':'Groundspeed affects estimated time and fuel. Wind direction also changes the headwind, tailwind or crosswind component.',
+  'Atmosphere & Weather':'Pressure and temperature describe the air at one place and time. They do not replace an aircraft performance chart.',
+  'Performance':'A math result helps compare conditions, but cannot account for every aircraft configuration, runway surface or technique.',
+  'Maneuvers & Turns':'The result shows the modeled relationship. A real maneuver also depends on how the airplane is flown.',
+  'Navigation':'A result can be arithmetically right and still miss the route if its reference or coordinates are wrong.',
+  'Weight & Balance':'Fuel burn can change weight and moment as well as total weight. Check CG against the correct envelope at every required point.',
+  'Conversions':'Only the unit changes. A converted number does not make different quantities interchangeable.'
 };
 
 const mistakeText={
-  'Flight Planning':'Common errors include mixing true and magnetic directions, using airspeed where groundspeed belongs, entering minutes as decimal hours, or treating a generic reserve as the legal requirement for every operation.',
-  'Atmosphere & Weather':'Common errors include mixing field elevation with pressure altitude, using stale weather, confusing Celsius and Fahrenheit, or treating a rule-of-thumb output as an aircraft performance chart.',
-  'Performance':'Common errors include using the wrong weight or configuration, confusing indicated and true airspeed, applying a training shortcut outside its assumptions, or treating a calculated estimate as an aircraft limitation.',
-  'Maneuvers & Turns':'Common errors include using indicated airspeed where a formula expects true airspeed, assuming bank angle alone describes every maneuver, or ignoring how wind changes groundspeed-dependent relationships.',
-  'Navigation':'Common errors include east/west sign mistakes, mixing runway magnetic headings with true wind directions, entering longitude with the wrong sign, or carrying a rounded intermediate value too far.',
-  'Weight & Balance':'Common errors include mixing pounds and kilograms, using an arm from the wrong datum, forgetting fuel burn changes weight and moment, or comparing a calculated CG with the wrong envelope.',
-  'Conversions':'The biggest error is converting the wrong starting unit. Write the original unit beside the number, perform the conversion, and make a quick reasonableness check before using the result elsewhere.'
+  'Flight Planning':'Check whether a calculation calls for airspeed or groundspeed, and convert minutes to hours before multiplying by knots.',
+  'Atmosphere & Weather':'Check the altimeter setting and temperature units first. Weather values can change quickly, so note when and where they were observed.',
+  'Performance':'Check the weight, configuration, surface and atmospheric assumptions against the POH or AFM chart; a shortcut may not cover them all.',
+  'Maneuvers & Turns':'Confirm whether the formula expects true airspeed, indicated airspeed, groundspeed or a particular bank-angle assumption.',
+  'Navigation':'Check east/west signs, true or magnetic references, and rounding before relying on a direction or distance.',
+  'Weight & Balance':'Use arms measured from the same datum and weight and moment values from the records for that aircraft.',
+  'Conversions':'Check that the starting unit is the one you have, especially for U.S. versus imperial gallons, pressure and temperature.'
 };
 
 const faqBySlug={
@@ -178,14 +178,21 @@ const seoDescriptionBySlug={
 };
 
 const seoH1BySlug={
-  'isa-temperature':'ISA Temperature Calculator by Altitude'
+  'isa-temperature':'ISA Temperature Calculator by Altitude',
+  'glide-range':'Aircraft Glide Distance Calculator'
 };
 
-function genericFaq(title,category){return [
-  [`What does the ${title} calculator do?`,`It uses the entered aviation values to solve the ${title.toLowerCase()} relationship and displays the main outputs immediately for study, planning and cross-checking.`],
-  ['What inputs should I use?',`For ${title}, use values from the current source that applies to the problem. Keep the units and reference systems consistent with the ${category.toLowerCase()} relationship being solved.`],
-  ['Can I use the result as the only source for a flight?',`No. Treat the ${title} result as a calculation and training cross-check. Operational decisions still require the current aircraft data, weather, charts, procedures and regulations that apply.`]
-]}
+const guideClusters={
+  'glide-range':[
+    ['/guides/how-far-can-an-airplane-glide.html','How far can an airplane glide?'],
+    ['/guides/best-glide-speed-vs-glide-ratio.html','Best glide speed vs glide ratio'],
+    ['/guides/emergency-glide-planning.html','Emergency glide planning']
+  ]
+};
+
+const sourceNotes={
+  'hydroplaning':'<p>The FAA Airplane Flying Handbook gives the dynamic estimate as 8.6 × √(main-tire pressure in PSI). At 36 PSI, that is 51.6 knots. This estimate does not predict a safe speed or stopping distance; viscous hydroplaning can occur below it. See the FAA <a href="https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf" target="_blank" rel="noopener">Airplane Flying Handbook, Chapter 9</a>.</p>'
+};
 
 for(const [slug,key,title,desc,fields,results] of calcs){
   const category=categoryFor(slug);
@@ -206,15 +213,19 @@ for(const [slug,key,title,desc,fields,results] of calcs){
   const relatedSlugs=[...siblings.slice(position,position+4),...siblings.slice(0,4)].slice(0,4);
   const relatedLinks=relatedSlugs.map(x=>`<a href="/calculators/${x}/">${esc(calcBySlug.get(x)||x)}</a>`).join('');
   const guideLink=guideFor[slug]?`<a href="${guideFor[slug]}">Read the ${esc(title)} guide</a>`:'';
+  const guideClusterLinks=(guideClusters[slug]||[]).map(([href,label])=>`<a href="${href}">${esc(label)}</a>`).join('');
   const [hubUrl,hubLabel]=hubFor[category]||['/guides.html','Aviation guides'];
   const hubLink=`<a href="${hubUrl}">${esc(hubLabel)}</a>`;
   const mathLink='<a href="/guides/pilot-math-formulas.html">Pilot math formula reference</a>';
   const e6bLink='<a href="/e6b-flight-computer.html">Online E6B flight computer</a>';
-  const supportLinks=[hubLink,mathLink,e6bLink].filter((link,index,all)=>{
+  const sourcesLink='<a href="/sources.html">Sources and methods</a>';
+  const supportLinks=[hubLink,mathLink,e6bLink,sourcesLink].filter((link,index,all)=>{
     const href=link.match(/href="([^"]+)"/)?.[1];
     return href&&all.findIndex(x=>x.includes(`href="${href}"`))===index;
   }).join('');
-  const faq=faqBySlug[slug]||genericFaq(title,category);
+  // Keep FAQs only where we have answers written for this specific calculation.
+  // The repeated category-wide questions added length without helping pilots use the tool.
+  const faq=faqBySlug[slug]||[];
   const faqHtml=faq.map(([q,a])=>`<details><summary><strong>${esc(q)}</strong></summary><p>${esc(a)}</p></details>`).join('');
 
   const inputList=fields.map(([,label,,u])=>`<li><strong>${esc(label)}</strong>${u?` — enter the value in ${esc(u)}.`:'.'}</li>`).join('');
@@ -228,16 +239,14 @@ for(const [slug,key,title,desc,fields,results] of calcs){
     <p><strong>${esc(resultNames[0]||title)}:</strong> ${esc(meaningText[category])}</p>
     <h2>Common mistakes to avoid</h2>
     <p><strong>${esc(title)} check:</strong> ${esc(mistakeText[category])}</p>
-    <h2>Sources and limitations</h2>
-    <p>The ${esc(title)} calculation uses the aviation relationship shown above. Aircraft-specific limitations, performance and procedures still come from the current approved source for the airplane or operation. See <a href="/sources.html">PilotDesk sources and methods</a>.</p>
-  </div>
-  <section class="info-card" data-pd-faq><h2>${esc(title)} questions</h2>${faqHtml}<p class="fine">PilotDesk is a supplemental planning and training aid, not an FAA-approved flight-planning source.</p></section>`;
+    ${sourceNotes[slug]||''}</div>
+  ${faq.length?`<section class="info-card" data-pd-faq><h2>${esc(title)} questions</h2>${faqHtml}</section>`:''}`;
 
   const appSchema={'@context':'https://schema.org','@type':'WebApplication',name:`${title} Calculator`,applicationCategory:'UtilitiesApplication',operatingSystem:'Any',isAccessibleForFree:true,offers:{'@type':'Offer',price:'0',priceCurrency:'USD'},url:`https://www.pilot-desk.com/calculators/${slug}/`,description:metaDesc,featureList:[...fieldNames,...resultNames],audience:{'@type':'Audience',audienceType:'Pilots, flight students, and aviation educators'},isPartOf:{'@type':'WebSite',name:'PilotDesk',url:'https://www.pilot-desk.com/'},publisher:{'@type':'Organization',name:'PilotDesk',url:'https://www.pilot-desk.com/',logo:{'@type':'ImageObject',url:'https://www.pilot-desk.com/favicon.svg'}}};
   const crumbSchema={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Calculators',item:'https://www.pilot-desk.com/'},{'@type':'ListItem',position:2,name:category,item:`https://www.pilot-desk.com/#${encodeURIComponent(category.toLowerCase())}`},{'@type':'ListItem',position:3,name:title,item:`https://www.pilot-desk.com/calculators/${slug}/`} ]};
   const schemas=`<script type="application/ld+json" data-pd-static-calc-schema="1">${JSON.stringify(appSchema)}</script><script type="application/ld+json" data-pd-static-breadcrumbs="1">${JSON.stringify(crumbSchema)}</script>`;
 
-  let html=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(titleTag)}</title><meta name="description" content="${esc(metaDesc)}"><meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#08090b"><meta name="color-scheme" content="dark light"><meta property="og:title" content="${esc(titleTag)}"><meta property="og:description" content="${esc(metaDesc)}"><meta property="og:type" content="website"><meta property="og:url" content="https://www.pilot-desk.com/calculators/${slug}/"><meta property="og:image" content="https://www.pilot-desk.com/assets/pilot-math-reference.svg"><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="https://www.pilot-desk.com/calculators/${slug}/"><link rel="stylesheet" href="/assets/styles.css"><link rel="manifest" href="/site.webmanifest"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><script defer src="/assets/safety.js"></script><script defer src="/assets/site.js"></script><script defer src="/assets/ad-config.js"></script><script defer src="/assets/ads.js"></script>${schemas}</head><body data-calc="${esc(key)}"><a class="skip-link" href="#main-content">Skip to main content</a><header class="topbar"><a class="brand" href="/"><span class="brandmark" aria-hidden="true"><img src="/favicon.svg" alt="" width="36" height="36"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><nav><a href="/">Calculators</a><a href="/airport.html">Airports</a><a href="/weather.html">Weather</a><a href="/aircraft.html">Hangar</a><a href="/guides.html">Guides</a><a href="/about.html">About</a></nav></header><main class="shell" id="main-content"><div class="breadcrumbs"><a href="/">Calculators</a> / ${esc(category)} / ${esc(title)}</div><div class="safety-strip"><strong>Verify before flight.</strong> Use current approved data for aircraft-specific limits, performance and operating decisions.</div><div class="calculator-layout"><section class="calc-main"><div class="calc-hero"><span class="badge">${esc(category)}</span><h1>${esc(seoH1BySlug[slug]||(`${title} Calculator`))}</h1><p>${esc(desc)}</p><p class="fine">Free browser-based aviation calculator for pilots, flight students and instructors.</p></div><div class="calc-box"><div class="fields">${fields.map(([id,label,value,u])=>`<div class="field"><label for="${esc(id)}">${esc(label)}</label><div class="input-wrap"><input data-calc-input id="${esc(id)}" step="any" type="number" value="${esc(value)}">${unit(u)}</div></div>`).join('')}</div><button class="calc-btn" data-calculate type="button">Calculate</button><div class="results">${results.map((r,i)=>`<div class="result${i===0?' primary':''}"><small>${esc(r)}</small><strong id="out${i}">—</strong></div>`).join('')}</div><div class="notice">For planning and study. Verify operational numbers with current approved sources.</div></div><div class="ad-wrap" style="margin-top:32px;margin-bottom:32px"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="content"><span>Ad space</span></div></div>${educational}</section><aside class="sidebar"><div class="side-card"><h3>Related pilot tools</h3><div class="related">${relatedLinks}${guideLink}${supportLinks}</div></div><div class="ad-wrap"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="sidebar"><span>Ad space</span></div></div></aside></div></main><footer><div><b>PilotDesk</b><p>Free pilot calculators, aviation weather tools and training references.</p></div><div class="footer-links"><a href="/guides.html">Guides</a><a href="/flight-training.html">Flight training</a><a href="/about.html">About</a><a href="/legal/privacy.html">Privacy</a><a href="/legal/terms.html">Terms</a><a href="/legal/disclaimer.html">Disclaimer</a><a href="/legal/safety.html">Safety</a><a href="/sources.html">Sources</a></div><p class="fine">Planning and training aid only. Check operational numbers against current approved sources.</p></footer></body></html>`;
+  let html=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(titleTag)}</title><meta name="description" content="${esc(metaDesc)}"><meta name="robots" content="index,follow,max-image-preview:large"><meta name="theme-color" content="#08090b"><meta name="color-scheme" content="dark light"><meta property="og:title" content="${esc(titleTag)}"><meta property="og:description" content="${esc(metaDesc)}"><meta property="og:type" content="website"><meta property="og:url" content="https://www.pilot-desk.com/calculators/${slug}/"><meta property="og:image" content="https://www.pilot-desk.com/assets/pilot-math-reference.svg"><meta name="twitter:card" content="summary_large_image"><link rel="canonical" href="https://www.pilot-desk.com/calculators/${slug}/"><link rel="stylesheet" href="/assets/styles.css"><link rel="manifest" href="/site.webmanifest"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><script defer src="/assets/safety.js"></script><script defer src="/assets/site.js"></script><script defer src="/assets/ad-config.js"></script><script defer src="/assets/ads.js"></script>${schemas}</head><body data-calc="${esc(key)}"><a class="skip-link" href="#main-content">Skip to main content</a><header class="topbar"><a class="brand" href="/"><span class="brandmark" aria-hidden="true"><img src="/favicon.svg" alt="" width="36" height="36"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a><nav><a href="/">Calculators</a><a href="/airport.html">Airports</a><a href="/weather.html">Weather</a><a href="/aircraft.html">Hangar</a><a href="/guides.html">Guides</a><a href="/about.html">About</a></nav></header><main class="shell" id="main-content"><div class="breadcrumbs"><a href="/">Calculators</a> / ${esc(category)} / ${esc(title)}</div><div class="safety-strip"><strong>Verify before flight.</strong> Use current approved data for aircraft-specific limits, performance and operating decisions.</div><div class="calculator-layout"><section class="calc-main"><div class="calc-hero"><span class="badge">${esc(category)}</span><h1>${esc(seoH1BySlug[slug]||(`${title} Calculator`))}</h1><p>${esc(desc)}</p></div><div class="calc-box"><div class="fields">${fields.map(([id,label,value,u])=>`<div class="field"><label for="${esc(id)}">${esc(label)}</label><div class="input-wrap"><input data-calc-input id="${esc(id)}" step="any" type="number" value="${esc(value)}">${unit(u)}</div></div>`).join('')}</div><button class="calc-btn" data-calculate type="button">Calculate</button><div class="results">${results.map((r,i)=>`<div class="result${i===0?' primary':''}"><small>${esc(r)}</small><strong id="out${i}">—</strong></div>`).join('')}</div></div><div class="ad-wrap" style="margin-top:32px;margin-bottom:32px"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="content"><span>Ad space</span></div></div>${educational}</section><aside class="sidebar"><div class="side-card"><h3>Related pilot tools</h3><div class="related">${relatedLinks}${guideLink}${guideClusterLinks}${supportLinks}</div></div><div class="ad-wrap"><div class="ad-label">ADVERTISEMENT</div><div class="ad-slot" data-ad-slot="sidebar"><span>Ad space</span></div></div></aside></div></main><footer><div><b>PilotDesk</b><p>Free pilot calculators, aviation weather tools and training references.</p></div><div class="footer-links"><a href="/guides.html">Guides</a><a href="/flight-training.html">Flight training</a><a href="/about.html">About</a><a href="/legal/privacy.html">Privacy</a><a href="/legal/terms.html">Terms</a><a href="/legal/disclaimer.html">Disclaimer</a><a href="/legal/safety.html">Safety</a><a href="/sources.html">Sources</a></div></footer></body></html>`;
 
   fs.writeFileSync(file,html);
 }

@@ -70,7 +70,7 @@ if(!editorial.includes('Individual author names')||!editorial.includes('outside 
 if(!read('scripts/shared-shell.mjs').includes('data-pd-editorial-meta'))fail('guide pages must show a collective publisher credit and editorial-policy link');
 if(!/<meta\s+name="robots"\s+content="noindex,follow"/i.test(read('feedback.html')))fail('feedback form should not be a search landing page');
 if(!ads.includes("rule.trim()==='noindex'")||!ads.includes("||noindex||"))fail('AdSense loader should skip pages marked noindex');
-for(const file of ['guides/top-of-descent.html','guides/climb-rate-vs-climb-gradient.html','guides/true-airspeed-rule.html','guides/standard-rate-turn.html']){
+for(const file of ['guides/top-of-descent.html','guides/climb-rate-vs-climb-gradient.html','guides/true-airspeed-rule.html','guides/turn-radius-rate.html']){
   const html=read(file);
   if(html.includes('$12026-09-23'))fail(`${file} has malformed review-date metadata`);
   for(const [,json] of html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi))try{JSON.parse(json)}catch{fail(`${file} has invalid JSON-LD`)}

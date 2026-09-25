@@ -31,7 +31,7 @@ for(const file of ratingPages){
   check(html.includes('/learn/oral-exam/'),`${file}: oral-exam path missing`);
   check(html.includes('/training/acs-far-reference.html'),`${file}: ACS/FAR source path missing`);
   check(html.includes('aria-current="page"'),`${file}: active training rating not identified`);
-  check(html.includes('Use these sources first'),`${file}: controlling-source section lost`);
+  check(html.includes('Use these sources first')||html.includes('Check the current FAA references'),`${file}: controlling-source section lost`);
   check(/faa\.gov/.test(html),`${file}: FAA source link missing`);
 }
 
@@ -45,3 +45,4 @@ if(failures.length){
   process.exit(1);
 }
 console.log(`Training-system checks passed across the main hub and ${ratingPages.length} rating hubs: goal-first routes, written/oral/source workflow, active rating navigation, FAA-source boundaries, and mobile layout verified.`);
+

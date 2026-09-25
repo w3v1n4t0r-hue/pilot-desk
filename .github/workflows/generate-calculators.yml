@@ -77,6 +77,13 @@ jobs:
             calculators/wind-triangle/index.html \
             calculators/pivotal-altitude/index.html \
             calculators/three-degree-descent/index.html \
+            calculators/accelerated-stall/index.html \
+            calculators/climb-gradient/index.html \
+            calculators/maneuvering-speed-weight/index.html \
+            calculators/moment-cg/index.html \
+            calculators/percent-mac/index.html \
+            calculators/standard-rate-bank/index.html \
+            calculators/top-of-descent/index.html \
             flight-training.html \
             guides/glide-range.html \
             guides/how-far-can-an-airplane-glide.html \

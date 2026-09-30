@@ -8,7 +8,7 @@ Deno.serve(async(req:Request)=>{
  if(req.method==="OPTIONS")return new Response(null,{status:204,headers:cors});
  if(!["GET","POST"].includes(req.method))return json(405,{error:"Method not allowed"});
  const base=(Deno.env.get("SUPABASE_URL")||"").replace(/\/+$/,""),pub=envKey("SUPABASE_PUBLISHABLE_KEYS","SUPABASE_ANON_KEY"),admin=envKey("SUPABASE_SECRET_KEYS","SUPABASE_SERVICE_ROLE_KEY");
- const stripeKey=Deno.env.get("STRIPE_SECRET_KEY")||"",proPrice=Deno.env.get("STRIPE_PRO_PRICE_ID")||"",schoolPrice=Deno.env.get("STRIPE_SCHOOL_PRICE_ID")||"",billingEnabled=Deno.env.get("PILOTDESK_BILLING_ENABLED")==="true";
+ const stripeKey=Deno.env.get("STRIPE_SECRET_KEY")||"",proPrice=Deno.env.get("STRIPE_PRO_PRICE_ID")||"price_1UHzEB02i4B03RL4C9qiFaZA",schoolPrice=Deno.env.get("STRIPE_SCHOOL_PRICE_ID")||"",billingEnabled=Deno.env.get("PILOTDESK_BILLING_ENABLED")!=="false";
  if(req.method==="GET")return json(200,{configured:Boolean(billingEnabled&&base&&pub&&admin&&stripeKey&&proPrice),schoolConfigured:Boolean(billingEnabled&&base&&pub&&admin&&stripeKey&&schoolPrice)});
  const token=(req.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"").trim();
  if(!base||!pub||!admin)return json(503,{error:"Billing backend is unavailable."});

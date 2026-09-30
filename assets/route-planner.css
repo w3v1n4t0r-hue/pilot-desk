@@ -147,9 +147,13 @@
 
 #rpMap .rp-map-symbol{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible}
 #rpMap .rp-map-symbol svg{display:block;width:24px;height:24px;max-width:none;overflow:visible}
-#rpMap .rp-pirep-symbol{display:flex;align-items:center}
+#rpMap .rp-pirep-symbol{display:flex;align-items:center;position:relative}
 #rpMap .rp-pirep-condition{position:relative;display:block;flex:0 0 28px;height:28px}
-#rpMap .rp-pirep-condition b{position:absolute;bottom:-5px;right:0;background:#08090b;font:700 10px/12px ui-monospace,monospace;padding:0 2px;white-space:nowrap}
-#rpMap .rp-pirep-urgent{color:#f58c88;background:#08090b;font:800 16px/20px ui-monospace,monospace}
+#rpMap .rp-pirep-urgent{position:absolute;right:-1px;top:-5px;width:13px;height:13px;border-radius:50%;color:white;background:#ce0024;font:800 12px/13px sans-serif;text-align:center}
+#rpMap .rp-pirep-altitude{position:absolute;top:26px;left:0;right:4px;color:white;text-align:center;font:700 11px/13px ui-monospace,monospace;text-shadow:0 1px 2px #000,1px 0 2px #000,-1px 0 2px #000}
+.rp-legend-row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.rp-legend-row span{display:flex;flex-direction:column;align-items:center;font-size:10px}
+.rp-legend-row svg{width:24px;height:24px;max-width:none}
+#rpMap .rp-pirep-urgent svg{width:13px;height:13px}
 .rp-symbol-legend{font-size:12px;line-height:1.5;margin:8px 0;color:var(--muted)}
 .rp-symbol-legend summary{cursor:pointer;padding:8px 0}

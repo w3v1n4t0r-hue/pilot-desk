@@ -22,17 +22,33 @@ function svg(kind,color='#f0efe9',negative=false){const shape=shapes[kind]||shap
 function section(raw,name){return raw.match(new RegExp('/'+name+'\\s+([^/]+)','i'))?.[1]?.trim()||'';}
 function severity(text){if(/\b(EXTRM|EXTREME)\b/.test(text))return 4;if(/\b(SEV|SEVERE|HVY|HEAVY)\b/.test(text))return 3;if(/\b(MOD|MODERATE)\b/.test(text))return 2;if(/\b(LGT|LIGHT|LT)\b/.test(text))return 1;if(/\b(TRC|TRACE)\b/.test(text))return .5;if(/\b(NEG|NEGATIVE|NONE|SMOOTH|NIL)\b/.test(text))return 0;return null;}
 function describe(text){return text.replace(/\bEXTRM\b/g,'extreme').replace(/\bSEV\b/g,'severe').replace(/\bMOD\b/g,'moderate').replace(/\bLGT\b|\bLT\b/g,'light').replace(/\bTRC\b/g,'trace').replace(/\bNEG\b/g,'negative').toLowerCase();}
+// Independently drawn vectors matched against ForeFlight Legends Guide §2.10.11.
+// Standard intensity glyphs encode severity; trace icing uses the light glyph.
+function weatherSvg(kind,level){
+ const negative='<circle cx="12" cy="12" r="7"/><path d="m5 19 14-14"/>';
+ const ice=['','M5 7v10h14V7M12 12v9','M5 7v10h14V7M9 12v9M15 12v9','M5 6v11h14V6M8 11v10M12 11v10M16 11v10'];
+ const turb=['','m7 18 5-12 5 12','M4 18h4l4-12 4 12h4','M4 20h4l4-10 4 10h4M8 10l4-6 4 6','M4 20h16M8 10l4-6 4 6'];
+ const eye='<path d="M3 12q9-13 18 0-9 13-18 0Z" fill="white" stroke="none"/><circle cx="12" cy="12" r="4" fill="#505b69" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="white" stroke="none"/>';
+ const color=kind==='icing'?'#5145ff':kind==='turbulence'?'#ff8500':'#505b69';
+ const shape=kind==='turbulence'&&level===4?'<path d="m8 20 4-10 4 10Z" fill="white"/><path d="M4 20h16M8 10l4-6 4 6"/>':kind==='skyweather'?eye:level===0?negative:level===null?'<path d="M9 8a3 3 0 1 1 5 2c-2 1-2 2-2 4M12 18h.01"/>':'<path d="'+(kind==='icing'?ice[Math.min(3,Math.ceil(level))]:turb[Math.min(4,Math.ceil(level))])+'"/>';
+ return '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="1" y="1" width="22" height="22" rx="4" fill="'+color+'" stroke="#27303b" stroke-opacity=".55"/><g fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+shape+'</g></svg>';
+}
 function pirep(properties={}){
-const p=properties,raw=String(p.rawOb||p.raw_text||p.raw||'').toUpperCase(),items=[];
-for(const [kind,prefix,code]of [['turbulence','tb','TB'],['icing','ic','IC']]){const structured=[p[prefix+'Int1'],p[prefix+'Int2']].filter(v=>v!==undefined&&v!==null&&v!=='').join(' / ').toUpperCase(),text=structured||section(raw,code);if(!text)continue;const level=severity(text);items.push({kind,level,negative:level===0,label:kind[0].toUpperCase()+kind.slice(1)+': '+describe(text),badge:level===0?'NEG':level===.5?'TR':level===1?'L':level===2?'M':level===3?'S':level===4?'X':'?'});}
-const wx=String(p.wxString||p.wx||section(raw,'WX')).toUpperCase();
-if(wx){const kinds=[];if(/\b(?:[+-]?TS[A-Z]*|THUNDERSTORM[S]?)\b/.test(wx))kinds.push('thunderstorm');if(/SN|SG|PL/.test(wx))kinds.push('snow');if(/GS|GR|HAIL/.test(wx))kinds.push('hail');if(/RA|DZ/.test(wx))kinds.push('rain');if(/FG|BR|HZ|FU|DU|SA/.test(wx))kinds.push('visibility');if(!kinds.length)kinds.push('report');for(const kind of kinds)items.push({kind,label:'Weather: '+wx,level:null});}
-const sky=section(raw,'SK')||[p.cloudCvg1,p.cloudCvg2,p.cloudCvg].filter(Boolean).join(' ');if(sky){const clear=/\b(SKC|CLR)\b/.test(sky)&&! /\b(FEW|SCT|BKN|OVC)(?=\d|\b)/.test(sky);items.push({kind:clear?'clear':'cloud',level:null,label:'Sky: '+sky});}
-if(!items.length)items.push({kind:'report',level:null,label:'Pilot report: no classified weather condition'});
-const urgent=/\bUUA\b/.test(raw)||String(p.reportType||'').toUpperCase()==='UUA',label=[...new Set(items.map(x=>x.label))].join('; ')+(urgent?'; urgent PIREP':'');
-const html=items.map(x=>{const color=x.level>=3?'#f58c88':x.level>=1?'#f0cd76':x.level===0?'#c7d0d9':x.kind==='icing'?'#a2cef5':'#f0efe9';return '<span class="rp-pirep-condition" data-condition="'+x.kind+'">'+svg(x.kind,color,x.negative)+(x.badge?'<b style="color:'+color+'">'+x.badge+'</b>':'')+'</span>';}).join('')+(urgent?'<strong class="rp-pirep-urgent">!</strong>':'');
-return{items,urgent,label,html,width:items.length*28+(urgent?12:0)};
+ const p=properties,raw=String(p.rawOb||p.raw_text||p.raw||'').toUpperCase(),items=[];
+ for(const [kind,prefix,code]of [['icing','ic','IC'],['turbulence','tb','TB']]){
+  const structured=[p[prefix+'Int1'],p[prefix+'Int2']].filter(v=>v!==undefined&&v!==null&&v!=='').join(' / ').toUpperCase(),text=structured||section(raw,code);
+  if(!text)continue;const level=severity(text);
+  items.push({kind,level,displayLevel:level===.5?1:level,negative:level===0,label:kind[0].toUpperCase()+kind.slice(1)+': '+describe(text)});
+ }
+ const wx=String(p.wxString||p.wx||section(raw,'WX')).toUpperCase(),sky=section(raw,'SK')||[p.cloudCvg1,p.cloudCvg2,p.cloudCvg].filter(Boolean).join(' ');
+ if(!items.length)items.push({kind:'skyweather',level:null,label:[wx?'Weather: '+wx:'',sky?'Sky: '+sky:''].filter(Boolean).join('; ')||'Pilot report: no classified weather condition'});
+ const urgent=/\bUUA\b/.test(raw)||String(p.reportType||'').toUpperCase()==='UUA'||items.some(x=>x.level>=3);
+ const label=[...new Set(items.map(x=>x.label)),...(wx&&items[0].kind!=='skyweather'?['Weather: '+wx]:[]),...(sky&&items[0].kind!=='skyweather'?['Sky: '+sky]:[])].join('; ')+(urgent?'; urgent/severe PIREP':'');
+ const html=items.map(x=>'<span class="rp-pirep-condition" data-condition="'+x.kind+'">'+weatherSvg(x.kind,x.level)+'</span>').join('')+(urgent?'<strong class="rp-pirep-urgent" aria-hidden="true"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="7" fill="#ce0024"/><path d="M7 3v5M7 10h.01" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg></strong>':'');
+ const altitude=Number(p.fltlvl??p.fltLvl);
+ const altitudeLabel=Number.isFinite(altitude)&&altitude>=0&&p.fltlvl!==null&&p.fltLvl!==null&&(p.fltlvl!==undefined||p.fltLvl!==undefined)?String(altitude).padStart(3,'0'):'';
+ return{items,urgent,label,html:html+(altitudeLabel?'<span class="rp-pirep-altitude">'+altitudeLabel+'</span>':''),width:items.length*28};
 }
 function navigation(key,p={}){const type=String(p.TYPE_CODE||p.TYPE||p.type||'').toUpperCase();const kind=key==='airports'?'airport':key==='navaids'?/NDB/.test(type)?'ndb':'navaid':key==='fixes'?'fix':key==='obstacles'?'obstacle':'report';return{kind,label:kind==='ndb'?'NDB':key==='navaids'?'Navaid':key==='airports'?'Airport':key==='fixes'?'Fix':key==='obstacles'?'Obstacle':'Chart point',html:svg(kind)};}
-return{pirep,navigation,svg,escape};
+return{pirep,navigation,svg,weatherSvg,escape};
 });

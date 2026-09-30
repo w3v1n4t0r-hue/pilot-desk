@@ -96,7 +96,7 @@ function start(RP,L){
       toggleRow('radar','Radar','NOAA MRMS'),
       toggleRow('metar','METARs','AWC'),
       toggleRow('pirep','PIREPs','AWC'),
-      '<details class="rp-symbol-legend"><summary>Chart symbols</summary><p>Turbulence: wave · Icing: snowflake · Weather: cloud, rain, snow, hail, lightning or visibility lines.</p><p>TR trace · L light · M moderate · S severe/heavy · X extreme · NEG reported negative · ? intensity unspecified. ! urgent PIREP. Intensity badges use the strongest reported intensity in each category; open the report for ranges. Multiple symbols mean multiple reported conditions.</p><p>Airport: runway circle · Navaid: hexagon (NDB: dotted circle) · Fix: triangle · Obstacle: mast. These are PilotDesk overlay symbols; read the full report.</p></details>',
+      '<details class="rp-symbol-legend"><summary>Chart symbols</summary><p>PIREP symbols follow the published aviation intensity legend: blue icing, orange turbulence, gray eye for sky/weather.</p>'+['icing','turbulence'].map(kind=>'<div class="rp-legend-row">'+[0,1,2,3,...(kind==='turbulence'?[4]:[])].map(level=>'<span>'+window.PilotDeskChartSymbols.weatherSvg(kind,level)+['Negative','Light','Moderate','Severe','Extreme'][level]+'</span>').join('')+'</div>').join('')+'<p>Trace icing uses the light symbol. Ranges use the strongest intensity. Red ! marks urgent or severe reports. ? means intensity unspecified. Paired symbols show icing and turbulence; numbers show reported flight level. Open a marker for the full report.</p><p>Airport: runway circle · Navaid: hexagon (NDB: dotted circle) · Fix: triangle · Obstacle: mast.</p></details>',
       toggleRow('gairmet','G-AIRMETs','AWC'),
       toggleRow('airsigmet','SIGMETs','AWC'),
       toggleRow('cwa','CWAs','AWC'),

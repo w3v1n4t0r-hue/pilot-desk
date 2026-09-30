@@ -284,10 +284,5 @@
         }
       ]
     }
-  ],
-  "functions": {
-    "api/navigation.js": {
-      "maxDuration": 60
-    }
-  }
+  ]
 }

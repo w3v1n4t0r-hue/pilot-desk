@@ -34,9 +34,9 @@ function start(RP,L){
     radarOpacity:Number(saved.radarOpacity||.68),
     vectorOpacity:Number(saved.vectorOpacity||.88)
   };
-  const data={},groups={},lastFetch={},fetchSeq={},notams={},briefWx={dep:null,dst:null};
+  const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},notams={},briefWx={dep:null,dst:null};
   let radarOverlay=null,notamGroup=L.layerGroup(),ringsGroup=L.layerGroup(),radarTimer=null,briefLoading=false;
-  let routeContextSeq=0;
+  let routeContextSeq=0,notamSeq=0,radarSeq=0,radarPending=null;
 
   function save(){
     localStorage.setItem('pd-efb-layers',JSON.stringify({
@@ -245,7 +245,7 @@ function start(RP,L){
     return [r(b.getSouth()),r(b.getWest()),r(b.getNorth()),r(b.getEast()),Math.floor(map.getZoom())].join(',');
   }
   async function fetchJson(url){
-    const r=await fetch(url,{cache:'no-store'});
+    const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);let r;try{r=await fetch(url,{cache:'no-store',signal:controller.signal})}finally{clearTimeout(timeout)}
     let j={};
     try{j=await r.json()}catch{}
     if(!r.ok){
@@ -283,27 +283,31 @@ function start(RP,L){
       const g=groups[key];if(g)g.clearLayers();
       return data[key]||null;
     }
-    const stamp=roundedBoundsKey();
-    if(data[key]&&lastFetch[key]===stamp)return data[key];
+    const stamp=getBoundsString()+','+Math.floor(map.getZoom());
+    if(data[key]&&lastFetch[key]===stamp&&Date.now()-dataTime[key]<60000)return data[key];
+    if(dataPending[key]?.stamp===stamp)return dataPending[key].promise;
     const seq=(fetchSeq[key]||0)+1;fetchSeq[key]=seq;
     setLayerStatus(key,'loading','loading');
-    try{
+    dataStatus[key]='loading';
+    const request=(async()=>{try{
       const j=await fetchJson(endpoint);
       if(fetchSeq[key]!==seq)return null;
       data[key]=j.geojson||{type:'FeatureCollection',features:[]};
-      lastFetch[key]=stamp;
+      lastFetch[key]=stamp;dataTime[key]=Date.now();dataStatus[key]='available';
       setLayerStatus(key,String((data[key].features||[]).length),'live');
       if(state.enabled[key])renderGeoLayer(key,data[key]);
       renderBrief();
       return data[key];
     }catch(e){
       if(fetchSeq[key]!==seq)return null;
+      delete data[key];delete lastFetch[key];dataStatus[key]='unavailable';
       if(e.status===400&&/Zoom in/i.test(e.message))setLayerStatus(key,'zoom in','idle');
       else setLayerStatus(key,'unavailable','error');
-      if(!forBrief){const g=groups[key];if(g)g.clearLayers()}
+      {const g=groups[key];if(g)g.clearLayers()}
       renderBrief();
       return null;
-    }
+    }finally{if(dataPending[key]?.seq===seq)delete dataPending[key]}})();
+    dataPending[key]={stamp,seq,promise:request};return request;
   }
 
   function toggleLayer(key,on){
@@ -313,6 +317,7 @@ function start(RP,L){
       return;
     }
     if(key==='notams'){
+      if(!on)notamSeq++;
       if(on){notamGroup.addTo(map);void loadNotams()}else{map.removeLayer(notamGroup)}
       renderBrief();
       return;
@@ -348,7 +353,7 @@ function start(RP,L){
   }
   function styleFor(key,feature){
     const o=state.vectorOpacity;
-    if(key==='tfr')return {pane:'pdAirspacePane',color:'#ef6f6f',weight:2.2,opacity:o,fillColor:'#e87c7c',fillOpacity:.08*o,dashArray:null};
+    if(key==='tfr')return {pane:'pdAirspacePane',color:feature?.properties?.status==='upcoming'?'#e6bd62':'#ef6f6f',weight:2.2,opacity:o,fillColor:'#e87c7c',fillOpacity:.08*o,dashArray:feature?.properties?.status==='upcoming'?'7 5':null};
     if(key==='sua')return {pane:'pdAirspacePane',color:'#d7b76c',weight:1.4,opacity:.85*o,fillColor:'#d7b76c',fillOpacity:.035*o,dashArray:'7 5'};
     if(key==='airspace')return {pane:'pdAirspacePane',color:'#c5c5ca',weight:1,opacity:.62*o,fillOpacity:0,dashArray:'4 5'};
     if(key==='airsigmet')return {pane:'pdWeatherPane',color:'#e87c7c',weight:2,opacity:o,fillColor:'#e87c7c',fillOpacity:.10*o};
@@ -375,7 +380,10 @@ function start(RP,L){
       const id=field(p,['notamId','NOTAM_KEY']),type=field(p,['type','TYPE']),desc=field(p,['description','TITLE']);
       const status=field(p,['status']);
       const link=field(p,['detailUrl']);
-      return '<div class="rp-route-popup"><b>'+esc(id||'FAA TFR')+'</b><br>'+esc(type)+(status?' · '+esc(status):'')+'<br>'+esc(desc)+(link?'<br><a href="'+esc(link)+'" target="_blank" rel="noopener">Open FAA restriction</a>':'')+'</div>';
+      const timing=[p.effectiveStart?'Start '+p.effectiveStart+' UTC date':'',p.effectiveEnd?'End '+p.effectiveEnd+' UTC date':''].filter(Boolean).join(' · ');
+      const lower=field(p,['LOWER_DESC','LOWER_VAL','LOWER']),upper=field(p,['UPPER_DESC','UPPER_VAL','UPPER']);
+      const altitude=lower||upper?String(lower||'unknown')+' to '+String(upper||'unknown'):'Altitude limits: see FAA restriction';
+      return '<div class="rp-route-popup"><b>'+esc(id||'FAA TFR')+'</b><br>'+esc(type)+(status?' · '+esc(status):'')+'<br>'+esc(desc)+'<br>'+esc(altitude)+(timing?'<br>'+esc(timing):'')+'<br>Confirm exact active times in the FAA restriction.'+(link?'<br><a href="'+esc(link)+'" target="_blank" rel="noopener">Open FAA restriction</a>':'')+'</div>';
     }
     if(key==='metar'){
       const id=field(p,['icaoId','id','stationId']),cat=field(p,['fltCat','flightCategory']),raw=field(p,['rawOb','raw_text','raw']);
@@ -432,7 +440,7 @@ function start(RP,L){
       bbox:[bounds.getWest(),bounds.getSouth(),bounds.getEast(),bounds.getNorth()].join(','),
       bboxSR:'4326',
       imageSR:'4326',
-      size:[Math.max(600,Math.min(1800,size.x*2)),Math.max(400,Math.min(1400,size.y*2))].join(','),
+      size:[Math.max(320,Math.min(1200,size.x)),Math.max(320,Math.min(900,size.y))].join(','),
       format:'png32',
       transparent:'true',
       interpolation:'RSP_BilinearInterpolation',
@@ -442,14 +450,23 @@ function start(RP,L){
     return RADAR+'?'+params.toString();
   }
   function refreshRadar(){
-    if(!state.enabled.radar)return;
-    const b=map.getBounds(),url=radarUrl(b,radarFrameTime());
-    if(radarOverlay)map.removeLayer(radarOverlay);
-    radarOverlay=L.imageOverlay(url,b,{pane:'pdRadarPane',opacity:state.radarOpacity,interactive:false});
-    radarOverlay.addTo(map);
-    setLayerStatus('radar',Number(radarSlider.value)===24?'live':'history','live');
+    if(!state.enabled.radar||document.hidden)return;
+    const b=map.getBounds(),url=radarUrl(b,radarFrameTime()),seq=++radarSeq;
+    if(radarPending)map.removeLayer(radarPending);
+    const next=L.imageOverlay(url,b,{pane:'pdRadarPane',opacity:0,interactive:false});
+    radarPending=next;setLayerStatus('radar','loading','loading');
+    next.on('load',()=>{
+      if(seq!==radarSeq||!state.enabled.radar){map.removeLayer(next);return}
+      if(radarOverlay)map.removeLayer(radarOverlay);
+      radarOverlay=next;radarPending=null;next.setOpacity(state.radarOpacity);
+      radarTimeLabel.value=(Number(radarSlider.value)===24?'Latest request':new Date(radarFrameTime()).toISOString().slice(11,16)+'Z');
+      setLayerStatus('radar','loaded','live');
+    });
+    next.on('error',()=>{map.removeLayer(next);if(seq===radarSeq){radarPending=null;setLayerStatus('radar','unavailable','error');radarTimeLabel.value='Unavailable';if(radarOverlay){map.removeLayer(radarOverlay);radarOverlay=null}}});
+    next.addTo(map);
   }
   function removeRadar(){
+    radarSeq++;if(radarPending){map.removeLayer(radarPending);radarPending=null}
     if(radarOverlay){map.removeLayer(radarOverlay);radarOverlay=null}
     if(radarTimer){clearInterval(radarTimer);radarTimer=null;radarPlay.textContent='▶'}
     setLayerStatus('radar','','');
@@ -488,29 +505,29 @@ function start(RP,L){
   }
 
   async function loadNotams(){
-    notamGroup.clearLayers();
+    const seq=++notamSeq;notamGroup.clearLayers();for(const id of Object.keys(notams))delete notams[id];
     if(!state.enabled.notams)return;
     const pts=RP.getPoints();
     const candidates=pts.filter(p=>/^[A-Z0-9]{4}$/.test(String(p.id||''))).slice(0,8);
     if(!candidates.length){setLayerStatus('notams','route','idle');renderBrief();return}
     setLayerStatus('notams','loading','loading');
-    let configured=true,total=0;
+    let configured=true,total=0,failed=false;
     await Promise.all(candidates.map(async p=>{
       const id=String(p.id).toUpperCase();
       try{
         const j=await fetchJson('/api/notams?station='+encodeURIComponent(id));
-        notams[id]=j;total+=Number(j.count||0);
+        if(seq!==notamSeq)return;notams[id]=j;total+=Number(j.count||0);
         if(Number(j.count||0)>0){
           const icon=L.divIcon({className:'rp-notam-marker',html:'<span>!</span><b>'+Number(j.count||0)+'</b>',iconSize:[30,22],iconAnchor:[15,11]});
           L.marker([p.lat,p.lon],{pane:'pdNotamPane',icon}).addTo(notamGroup).bindPopup(notamPopup(id,j));
         }
       }catch(e){
-        const payload=e.payload||{};
-        notams[id]=payload;
+        if(seq!==notamSeq)return;failed=true;const payload=e.payload||{};
+        notams[id]={...payload,error:e.message};
         if(payload.configured===false)configured=false;
       }
     }));
-    setLayerStatus('notams',configured?String(total):'setup','live');
+    if(seq!==notamSeq)return;setLayerStatus('notams',!configured?'unavailable':failed?'partial':String(total),failed||!configured?'error':'live');
     renderBrief();
   }
   function notamPopup(id,j){
@@ -524,7 +541,7 @@ function start(RP,L){
     const pts=RP.getPoints();
     if(pts.length<2)return;
     const dep=String(pts[0].id||''),dst=String(pts[pts.length-1].id||'');
-    const request=id=>/^[A-Z0-9]{3,4}$/.test(id)?fetchJson('/api/weather?station='+encodeURIComponent(id)).catch(e=>({station:id,error:e.message})):Promise.resolve(null);
+    const request=id=>/^[A-Z0-9]{3,4}$/.test(id)?RP.getWeather(id).catch(e=>({station:id,error:e.message})):Promise.resolve(null);
     const result=await Promise.all([request(dep),request(dst)]);
     if(seq!==routeContextSeq)return;
     briefWx.dep=result[0];briefWx.dst=result[1];
@@ -586,7 +603,7 @@ function start(RP,L){
     if(x.error)return 'Unavailable';
     const m=x.metar||{},cat=m.fltCat||m.flightCategory||'';
     const raw=m.rawOb||m.raw_text||'METAR available';
-    return (cat?cat+' · ':'')+raw;
+    const time=m.obsTime?new Date(Number(m.obsTime)<1e11?Number(m.obsTime)*1000:m.obsTime):null;const stamp=time&&Number.isFinite(time.getTime())?' · Observed '+time.toISOString().slice(0,16).replace('T',' ')+' UTC':' · Observation time unavailable';return (cat?cat+' · ':'')+raw+stamp;
   }
   function destinationNotam(){
     const pts=RP.getPoints(),dst=pts.length?String(pts[pts.length-1].id||'').toUpperCase():'';
@@ -618,9 +635,12 @@ function start(RP,L){
     if(sigRel.length)flags.push(['danger','SIGMET INTERSECTION']);
     if(gairRel.length)flags.push(['warn','G-AIRMET INTERSECTION']);
     if(dstCat==='IFR'||dstCat==='LIFR')flags.push(['warn','DESTINATION '+dstCat]);
-    if(dstNotam&&Number(dstNotam.count||0))flags.push(['info','DESTINATION NOTAM · '+Number(dstNotam.count||0)]);
-    if(!flags.length&&!briefLoading)flags.push(['ok','NO AUTOMATIC ROUTE FLAGS']);
-    const notamText=dstNotam?(dstNotam.configured===false?'FAA NOTAM API needs server credentials.':Number(dstNotam.count||0)+' current notices returned.'):'Not yet loaded.';
+    if(state.enabled.notams&&(!dstNotam||dstNotam.error||dstNotam.configured===false))flags.push(['warn','NOTAM COVERAGE INCOMPLETE']);
+    if(dstNotam&&!dstNotam.error&&Number(dstNotam.count||0))flags.push(['info','DESTINATION NOTAM · '+Number(dstNotam.count||0)]);
+    const missing=['tfr','airsigmet','gairmet'].filter(key=>dataStatus[key]!=='available'||Date.now()-dataTime[key]>60000);
+    if(missing.length)flags.push(['warn','ADVISORY COVERAGE INCOMPLETE']);
+    if(!flags.length&&!briefLoading)flags.push(['info','NO FLAGS IN LOADED DATA']);
+    const notamText=dstNotam?(dstNotam.error||dstNotam.configured===false?'NOTAMs unavailable. Check FAA NOTAM Search.':Number(dstNotam.count||0)+' current notices returned.'):'Not yet loaded.';
     const hazards=[
       sigRel.length?sigRel.length+' SIGMET route intersection'+(sigRel.length===1?'':'s'):null,
       gairRel.length?gairRel.length+' G-AIRMET route intersection'+(gairRel.length===1?'':'s'):null,
@@ -634,6 +654,8 @@ function start(RP,L){
       briefSection('TFRs',tfrRel.length?hazardsPart(tfrRel):'No route/near-route TFR geometry detected in loaded FAA data.'),
       briefSection('Destination weather',wxSummary(briefWx.dst)),
       briefSection('NOTAMs',notamText),
+      briefSection('Data coverage',['tfr','airsigmet','gairmet'].map(key=>key.toUpperCase()+': '+(dataStatus[key]==='available'?'retrieved '+new Date(dataTime[key]).toISOString().slice(11,16)+'Z':dataStatus[key]||'not loaded')).join(' · ')),
+      '<button type="button" class="utility-btn" data-refresh-brief>Refresh route data</button>',
       '<div class="rp-brief-source">Automatic flags describe data relationships only; they are not a go/no-go decision. <a href="https://www.1800wxbrief.com/" target="_blank" rel="noopener">Official briefing</a></div>'
     ].join('');
   }
@@ -644,6 +666,8 @@ function start(RP,L){
       return String(id)+' · '+d;
     }).join(' · ');
   }
+
+  brief.addEventListener('click',e=>{if(!e.target.closest('[data-refresh-brief]'))return;for(const key of Object.keys(lastFetch))delete lastFetch[key];void loadRouteContext()});
 
   async function loadRouteContext(){
     const pts=RP.getPoints();
@@ -668,11 +692,12 @@ function start(RP,L){
     const wxData=to===dst?briefWx.dst:(from===dep?briefWx.dep:null);
     const wx=String((wxData&&wxData.metar&&(wxData.metar.fltCat||wxData.metar.flightCategory))||'—').toUpperCase();
     const notice=notams[to];
-    const count=notice&&notice.configured!==false?String(Number(notice.count||0)):'—';
+    const count=notice&&!notice.error&&notice.configured!==false?String(Number(notice.count||0)):'—';
     legStrip.hidden=false;
     legStrip.innerHTML=[
       '<div class="rp-leg-strip-route"><span>'+esc(leg.from)+'</span><i>→</i><span>'+esc(leg.to)+'</span></div>',
       metric('TC',fmt(leg.course,0)+'°'),
+      metric('WCA',fmt(leg.wca,1)+'°'),
       metric('MH',fmt(leg.mag,0)+'°'),
       metric('GS',fmt(leg.gs,0)+' kt'),
       metric('ETE',fmt(Number(leg.hours)*60,0)+' min'),
@@ -697,6 +722,8 @@ function start(RP,L){
       });
     },320);
   });
+  document.addEventListener('pilotdesk:route-invalidated',()=>{routeContextSeq++;notamSeq++;briefLoading=false;briefWx.dep=null;briefWx.dst=null;notamGroup.clearLayers();legStrip.hidden=true;renderBrief()});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(radarTimer)toggleRadarPlayback()}else if(state.enabled.radar)refreshRadar()});
   document.addEventListener('pilotdesk:route-built',()=>setTimeout(loadRouteContext,120));
   document.addEventListener('pilotdesk:leg-selected',e=>showLeg(e.detail&&e.detail.leg));
   document.addEventListener('keydown',e=>{

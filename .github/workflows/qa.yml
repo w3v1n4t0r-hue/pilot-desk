@@ -121,6 +121,8 @@ jobs:
         run: node qa/v2-smoke.mjs
       - name: Run planner lab checks
         run: node qa/planner-lab-tests.mjs
+      - name: Check chart tile resolution and bounds
+        run: node qa/chart-tiles-tests.mjs
       - name: Run chart symbol tests
         run: node qa/chart-symbols-tests.mjs
       - name: Run route performance and fuel tests

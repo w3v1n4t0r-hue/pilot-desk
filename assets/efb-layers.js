@@ -96,6 +96,7 @@ function start(RP,L){
       toggleRow('radar','Radar','NOAA MRMS'),
       toggleRow('metar','METARs','AWC'),
       toggleRow('pirep','PIREPs','AWC'),
+      '<details class="rp-symbol-legend"><summary>Chart symbols</summary><p>Turbulence: wave · Icing: snowflake · Weather: cloud, rain, snow, hail, lightning or visibility lines.</p><p>TR trace · L light · M moderate · S severe/heavy · X extreme · NEG reported negative · ? intensity unspecified. ! urgent PIREP. Intensity badges use the strongest reported intensity in each category; open the report for ranges. Multiple symbols mean multiple reported conditions.</p><p>Airport: runway circle · Navaid: hexagon (NDB: dotted circle) · Fix: triangle · Obstacle: mast. These are PilotDesk overlay symbols; read the full report.</p></details>',
       toggleRow('gairmet','G-AIRMETs','AWC'),
       toggleRow('airsigmet','SIGMETs','AWC'),
       toggleRow('cwa','CWAs','AWC'),
@@ -353,6 +354,7 @@ function start(RP,L){
   }
   function styleFor(key,feature){
     const o=state.vectorOpacity;
+    if(key==='metar')return {color:'#08080a',fillColor:fltColor(field(feature?.properties||{},['fltCat','flightCategory','flight_category'])),fillOpacity:.96*o};
     if(key==='tfr')return {pane:'pdAirspacePane',color:feature?.properties?.status==='upcoming'?'#e6bd62':'#ef6f6f',weight:2.2,opacity:o,fillColor:'#e87c7c',fillOpacity:.08*o,dashArray:feature?.properties?.status==='upcoming'?'7 5':null};
     if(key==='sua')return {pane:'pdAirspacePane',color:'#d7b76c',weight:1.4,opacity:.85*o,fillColor:'#d7b76c',fillOpacity:.035*o,dashArray:'7 5'};
     if(key==='airspace')return {pane:'pdAirspacePane',color:'#c5c5ca',weight:1,opacity:.62*o,fillOpacity:0,dashArray:'4 5'};
@@ -368,11 +370,12 @@ function start(RP,L){
       const cat=field(p,['fltCat','flightCategory','flight_category']);
       return L.circleMarker(ll,{pane,radius:5,weight:1.5,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
     }
-    if(key==='pirep')return L.circleMarker(ll,{pane,radius:4,weight:1.5,color:'#0a0a0b',fillColor:'#e6bd62',fillOpacity:.9*state.vectorOpacity});
-    if(key==='obstacles')return L.circleMarker(ll,{pane,radius:3,weight:1.2,color:'#e6bd62',fillColor:'#09090b',fillOpacity:1});
-    const klass=key==='airports'?'airport':key==='navaids'?'navaid':key==='fixes'?'fix':'nav';
-    const icon=L.divIcon({className:'rp-map-symbol rp-map-symbol-'+klass,html:'<span></span>',iconSize:[12,12],iconAnchor:[6,6]});
-    return L.marker(ll,{pane,icon,interactive:true,keyboard:false});
+    const symbols=window.PilotDeskChartSymbols;
+    const symbol=key==='pirep'?symbols.pirep(p):symbols.navigation(key,p);
+    const width=symbol.width||24,icon=L.divIcon({className:'rp-map-symbol'+(key==='pirep'?' rp-pirep-symbol':''),html:symbol.html,iconSize:[width,28],iconAnchor:[width/2,14]});
+    const marker=L.marker(ll,{pane,icon,interactive:true,keyboard:false});
+    marker.options.title=symbol.label;marker.options.alt=symbol.label;
+    return marker.setOpacity(state.vectorOpacity);
   }
   function popupFor(key,feature){
     const p=feature.properties||{};
@@ -390,8 +393,8 @@ function start(RP,L){
       return '<div class="rp-route-popup"><b>'+esc(id||'METAR')+'</b>'+(cat?' · '+esc(cat):'')+'<br>'+esc(raw||'Observation available')+'</div>';
     }
     if(key==='pirep'){
-      const raw=field(p,['rawOb','raw_text','raw']),alt=field(p,['fltLvl','altitude','alt']);
-      return '<div class="rp-route-popup"><b>PIREP'+(alt?' · '+esc(alt):'')+'</b><br>'+esc(raw||'Pilot report')+'</div>';
+      const raw=field(p,['rawOb','raw_text','raw']),level=p.fltlvl??p.fltLvl,alt=level!=null?'FL'+String(level).padStart(3,'0'):field(p,['altitude','alt']);const symbol=window.PilotDeskChartSymbols.pirep(p);
+      return '<div class="rp-route-popup"><b>PIREP'+(alt?' · '+esc(alt):'')+'</b><br>'+esc(symbol.label)+'<br>'+esc(raw||'Pilot report')+'</div>';
     }
     if(key==='airsigmet'||key==='gairmet'||key==='cwa'){
       const hazard=field(p,['hazard','hazardType','type','seriesId']),raw=field(p,['rawAirSigmet','rawOb','rawText','raw']);
@@ -420,12 +423,12 @@ function start(RP,L){
     layer.addTo(g);
   }
   function refreshVectorStyles(){
-    Object.keys(groups).forEach(key=>{
-      groups[key].eachLayer(child=>{
-        if(child.eachLayer)child.eachLayer(l=>{if(l.setStyle&&l.feature)l.setStyle(styleFor(key,l.feature))});
-        else if(child.setStyle&&child.feature)child.setStyle(styleFor(key,child.feature));
-      });
-    });
+    function update(layer,key){
+      if(layer.eachLayer){layer.eachLayer(child=>update(child,key));return;}
+      if(layer.setOpacity)layer.setOpacity(state.vectorOpacity);
+      if(layer.setStyle&&layer.feature)layer.setStyle(styleFor(key,layer.feature));
+    }
+    Object.keys(groups).forEach(key=>update(groups[key],key));
   }
 
   const RADAR='https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer/exportImage';

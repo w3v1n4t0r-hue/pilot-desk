@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+const S=createRequire(import.meta.url)('../assets/chart-symbols.js');
+const kinds=p=>S.pirep(p).items.map(x=>x.kind);
+assert.equal(S.pirep({tbInt1:'LGT-MOD'}).items[0].badge,'M');
+assert.equal(S.pirep({rawOb:'AAA UUA /TB SEV TURB /IC MOD RIME'}).urgent,true);
+assert.deepEqual(kinds({rawOb:'AAA UA /TB LGT /IC MOD /WX TSRA /SK BKN030'}),['turbulence','icing','thunderstorm','rain','cloud']);
+assert.equal(S.pirep({rawOb:'AAA UA /TB NEG'}).items[0].negative,true);
+assert.equal(S.pirep({rawOb:'AAA UA /IC NEG'}).items[0].negative,true);
+assert.equal(S.pirep({rawOb:'AAA UA /TB CHOP'}).items[0].badge,'?');
+assert.equal(S.pirep({rawOb:'AAA UA /TB CONS LT OCNL MOD'}).items[0].badge,'M');
+assert.equal(S.pirep({icInt1:'TRC'}).items[0].badge,'TR');
+assert.equal(S.pirep({rawOb:'AAA UA /TB EXTRM'}).items[0].badge,'X');
+assert.deepEqual(kinds({rawOb:'AAA UA /RM NO TURB REPORTED'}),['report']);
+assert.deepEqual(kinds({rawOb:'AAA UA /WX -RASN'}),['snow','rain']);
+assert.deepEqual(kinds({rawOb:'AAA UA /WX GR'}),['hail']);
+assert.deepEqual(kinds({rawOb:'AAA UA /WX FG'}),['visibility']);
+assert.deepEqual(kinds({rawOb:'AAA UA /SK SKC'}),['clear']);
+assert.deepEqual(kinds({rawOb:'AAA UA /SK SKC BKN100'}),['cloud']);
+assert.deepEqual(kinds({}),['report']);
+assert.equal(S.navigation('navaids',{TYPE:'NDB'}).kind,'ndb');
+for(const key of ['airports','navaids','fixes','obstacles']){const icon=S.navigation(key);assert.ok(icon.html.includes('<svg'));assert.ok(!icon.html.includes('<span'));}
+assert.ok(!S.pirep({tbInt1:'<script>alert(1)</script>'}).html.includes('<script>'));
+console.log('Chart symbol tests passed: multi-condition PIREPs, intensities, negative vs unknown, weather, sky, navigation, and safe markup.');

@@ -1,6 +1,6 @@
 importScripts('/assets/offline-precache.js');
 
-const CACHE='pilotdesk-v62';
+const CACHE='pilotdesk-v63';
 const GENERATED_CALCULATORS=Array.isArray(self.PILOTDESK_OFFLINE_CALCULATORS)?self.PILOTDESK_OFFLINE_CALCULATORS:[];
 const GENERATED_ASSETS=Array.isArray(self.PILOTDESK_OFFLINE_ASSETS)?self.PILOTDESK_OFFLINE_ASSETS:[];
 const CORE=[...new Set([
@@ -68,7 +68,7 @@ async function migrateCalculatorEntries(cache,oldCacheNames){
 /* New workers wait. PilotDesk only switches versions after the user explicitly accepts the update,
    so an open page can never jump into a new shell halfway through a session. */
 self.addEventListener('install',event=>event.waitUntil(precache()));
-self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
+self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting();if(event.data?.type==='OFFLINE_PACK_SUPPORT')event.ports?.[0]?.postMessage({version:1})});
 self.addEventListener('activate',event=>event.waitUntil((async()=>{
   const keys=await caches.keys();
   const oldPilotDeskCaches=keys.filter(k=>k.startsWith('pilotdesk-')&&k!==CACHE);
@@ -100,7 +100,7 @@ async function staleWhileRevalidate(event,req){
     event.waitUntil(fresh.then(()=>{}));
     return hit;
   }
-  return (await fresh)||Response.error();
+  return (await fresh)||(await flightPackMatch(req))||Response.error();
 }
 
 async function cacheFirst(req){
@@ -109,22 +109,35 @@ async function cacheFirst(req){
   try{return put(cache,req,await fetch(req))}catch{return Response.error()}
 }
 
+const PACK_METADATA=new Map();
+async function flightPackMatch(req){
+  const url=new URL(req.url),key=req.mode==='navigate'?url.origin+url.pathname:req.url;
+  for(const name of (await caches.keys()).filter(n=>n.startsWith('pd-flight-pack-')).reverse()){
+    const cache=await caches.open(name);let manifest=PACK_METADATA.get(name);if(!manifest){const r=await cache.match('/__pilotdesk_pack_manifest__');if(!r)continue;try{manifest=await r.json();PACK_METADATA.set(name,{complete:manifest.complete,expires:manifest.expires})}catch{continue}}
+    if(!manifest.complete||!(Date.parse(manifest.expires)>Date.now()))continue;
+    const hit=await cache.match(key);if(hit)return hit;
+  }
+  return null;
+}
+async function packFirst(req){try{const response=await fetch(req);if(response.ok)return response;return (await flightPackMatch(req))||response}catch{return (await flightPackMatch(req))||Response.error()}}
+async function networkWithPack(req,preloadPromise){try{const preload=preloadPromise?await preloadPromise.catch(()=>null):null;const r=preload||await fetch(req);if(r.ok)return r;return (await flightPackMatch(req))||r}catch{return (await flightPackMatch(req))||await networkFirst(req,preloadPromise)}}
 self.addEventListener('fetch',event=>{
   const req=event.request;
   if(req.method!=='GET') return;
   const url=new URL(req.url);
-  if(url.origin!==self.location.origin) return;
+  if(url.origin!==self.location.origin){if((url.origin==='https://tiles.arcgis.com'&&url.pathname.startsWith('/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/services/'))||(url.origin==='https://unpkg.com'&&url.pathname.startsWith('/leaflet@1.9.4/dist/')))event.respondWith(packFirst(req));return;}
+  if(url.pathname==='/api/procedure-pdf'){event.respondWith(networkWithPack(req));return;}
   if(networkOnlyPath(url.pathname)) return;
   if(req.mode==='navigate'){
-    event.respondWith(networkFirst(req,event.preloadResponse));
+    event.respondWith(networkWithPack(req,event.preloadResponse));
     return;
   }
   if(NETWORK_FIRST_ASSETS.has(url.pathname)){
-    event.respondWith(networkFirst(req));
+    event.respondWith(networkWithPack(req));
     return;
   }
   if(/\.(?:js|css|svg|png|jpg|jpeg|webp|woff2?)$/i.test(url.pathname)){
-    event.respondWith(staleWhileRevalidate(event,req));
+    event.respondWith((async()=>{try{return await staleWhileRevalidate(event,req)}catch{return (await flightPackMatch(req))||Response.error()}})());
     return;
   }
   event.respondWith(cacheFirst(req));

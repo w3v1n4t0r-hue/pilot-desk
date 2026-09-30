@@ -125,6 +125,8 @@ jobs:
         run: node qa/chart-tiles-tests.mjs
       - name: Run chart symbol tests
         run: node qa/chart-symbols-tests.mjs
+      - name: Run FAA routing, POH tables, and offline pack tests
+        run: node qa/advanced-planning-tests.mjs
       - name: Run route performance and fuel tests
         run: node qa/route-performance-tests.mjs
       - name: Run calculator formula regression tests

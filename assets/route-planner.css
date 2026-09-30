@@ -145,3 +145,5 @@
 
 /* Leaflet's overlay pane has no layout width; the sitewide media max-width rule collapsed route vectors. */
 #rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}
+
+#rpPhaseEnabled{width:20px;height:20px;min-height:20px;vertical-align:middle;margin-right:8px}

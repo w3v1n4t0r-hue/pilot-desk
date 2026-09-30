@@ -15,6 +15,7 @@ await page.route('**/*',async route=>{
   if(url.pathname.includes('notams')){status=503;body={error:'Test fixture unavailable',configured:true}}
   if(url.pathname.includes('weather'))body={station:url.searchParams.get('station'),metar:{fltCat:'VFR',rawOb:'Test fixture METAR',obsTime:Math.floor(Date.now()/1000)}};
   if(url.pathname.includes('procedures'))body={procedures:[]};
+  if(url.pathname.includes('winds-aloft')){const request=JSON.parse(route.request().postData()),departure=Date.parse(request.departureUtc);body={source:'QA forecast fixture',altitude:request.altitude,fetchedAt:new Date().toISOString(),baseAt:departure-3600000,start:departure-3600000,end:departure+12*3600000,legs:request.points.slice(1).map(()=>({direction:180,speed:10,station:'FIX',stationDistanceNm:20}))};}
   return route.fulfill({status,contentType:'application/json',body:JSON.stringify(body)});
  }
  if(url.hostname!=='pd.test')return route.abort();
@@ -33,10 +34,19 @@ await page.fill('#rpFuelOnboard','');assert((await page.textContent('#rpFuelResu
 await page.fill('#rpFuelOnboard','40');
 await page.locator('.rp-leg-planning summary').click();await page.locator('[data-leg-field="tas"]').first().fill('90');
 await page.waitForFunction(()=>window.pdNavlogResult?.legs[0].tas===90);console.log('PASS per-leg TAS');
-console.log('PASS fuel ledger');await page.click('#rpSaveFlight');await page.waitForFunction(()=>new URL(location.href).searchParams.has('flight'),null,{timeout:5000}).catch(async e=>{console.log(await page.textContent('#rpStatus'),errors);throw e});
+console.log('PASS fuel ledger');
+await page.fill('#rpPhaseSource','QA fixture, constant rates');
+for(const [key,value] of Object.entries({cruiseAltitude:6000,departureElevation:0,destinationElevation:0,climbTas:90,climbBurn:15,climbRate:600,descentTas:120,descentBurn:6,descentRate:600}))await page.fill('#rpPhase_'+key,String(value));
+await page.check('#rpPhaseEnabled');await page.waitForFunction(()=>!!window.pdNavlogResult?.phaseSummary);
+assert((await page.textContent('#rpPhaseResults')).includes('Top of climb'));
+await page.click('#rpLoadWinds');await page.waitForFunction(()=>window.pdNavlogResult?.legs[0].windSpeed===10);
+assert((await page.textContent('#rpWindsStatus')).includes('QA forecast fixture'));
+await page.fill('#rpDepartureUtc','2026-10-01T00:30');await page.waitForFunction(()=>document.getElementById('rpStatus').textContent.includes('no longer match'));
+await page.click('#rpClearWinds');await page.waitForFunction(()=>!!window.pdNavlogResult?.phaseSummary);
+console.log('PASS phase planning, forecast apply and changed-time rejection');await page.click('#rpSaveFlight');await page.waitForFunction(()=>new URL(location.href).searchParams.has('flight'),null,{timeout:5000}).catch(async e=>{console.log(await page.textContent('#rpStatus'),errors);throw e});
 const id=await page.evaluate(()=>new URL(location.href).searchParams.get('flight'));
 const saved=await page.evaluate(id=>window.PilotDeskFlights.get(id),id);
-assert.equal(saved.planning.reserveMinutes,'45');assert.equal(Object.values(saved.planning.legOverrides)[0].tas,'90');
+assert.equal(saved.planning.phases.enabled,true);assert.equal(saved.planning.phases.climbRate,'600');assert.equal(saved.planning.reserveMinutes,'45');assert.equal(Object.values(saved.planning.legOverrides)[0].tas,'90');
 console.log('PASS save');await page.reload();await page.waitForFunction(()=>window.pdNavlogResult?.legs[0].tas===90);console.log('PASS per-leg TAS');
 assert.equal(await page.inputValue('#rpFuelOnboard'),'40');assert.equal(await page.inputValue('#rpReserveMinutes'),'45');
 for(const width of [320,360,375,390,414,430,768,1365,1920]){

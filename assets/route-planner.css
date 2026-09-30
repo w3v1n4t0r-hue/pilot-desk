@@ -1,4 +1,4 @@
-.rp-shell{max-width:1500px}.rp-intro{max-width:1050px}.rp-grid{display:grid;grid-template-columns:minmax(300px,.37fr) minmax(0,.63fr);gap:18px;align-items:start}.rp-panel,.rp-procedure-section{border:1px solid var(--line);background:#0c0c0e;border-radius:0;padding:16px;box-shadow:none}.rp-panel label{display:grid;gap:5px;margin:10px 0}.rp-panel input,.rp-panel textarea,.rp-panel select{width:100%;box-sizing:border-box}.rp-panel textarea{min-height:98px;resize:vertical}
+.rp-shell{max-width:1500px}.rp-intro{max-width:1050px}.rp-grid{display:grid;grid-template-columns:minmax(300px,.37fr) minmax(0,.63fr);gap:18px;align-items:start}.rp-panel,.rp-procedure-section{border:1px solid var(--line);background:#0c0c0e;border-radius:0;padding:16px;box-shadow:none}.rp-panel label{display:grid;gap:5px;margin:10px 0}.rp-panel input,.rp-panel textarea,.rp-panel select{width:100%;box-sizing:border-box}.rp-panel textarea{min-height:98px;resize:vertical}.rp-insert-stop{margin:12px 0;padding:12px 0;border-block:1px solid var(--line)}.rp-insert-stop summary{cursor:pointer;min-height:44px;display:flex;align-items:center}.rp-panel .pd-actions{flex-wrap:wrap}.rp-panel button{min-height:44px}.rp-grid>*{min-width:0}
 .rp-waypoint-finder{padding-bottom:12px;border-bottom:1px solid var(--line)}
 .rp-waypoint-finder>label{display:block;margin:0 0 6px;color:var(--muted2);font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
 .rp-waypoint-finder input{min-height:42px}
@@ -45,11 +45,11 @@
 .rp-efb-head>div{display:grid;gap:2px}
 .rp-efb-head strong{font-size:15px;letter-spacing:-.015em}
 .rp-eyebrow{font-size:8px;font-weight:800;letter-spacing:.14em;color:#87878f}
-.rp-efb-head button{width:30px;height:30px;padding:0;border:1px solid #303035;background:#0c0c0e;color:#bbb;font:400 20px/1 system-ui;cursor:pointer}
+.rp-efb-head button{width:44px;height:44px;padding:0;border:1px solid #303035;background:#0c0c0e;color:#bbb;font:400 20px/1 system-ui;cursor:pointer}
 .rp-efb-head button:hover,.rp-efb-head button:focus-visible{color:#fff;border-color:#777}
 .rp-layer-section{padding:12px 14px;border-bottom:1px solid #242428}
 .rp-layer-section h3,.rp-brief-section h3{margin:0 0 7px;font-size:8px;letter-spacing:.14em;color:#85858d}
-.rp-layer-row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0!important;min-height:33px;border-top:1px solid rgba(255,255,255,.045);font-size:11px;color:#deddd8}
+.rp-layer-row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0!important;min-height:44px;border-top:1px solid rgba(255,255,255,.045);font-size:11px;color:#deddd8}
 .rp-layer-row:first-of-type{border-top:0}
 .rp-layer-row>span{display:flex;align-items:center;gap:7px}
 .rp-layer-row input{width:14px!important;height:14px!important;margin:0;accent-color:#deddd8}
@@ -62,9 +62,9 @@
 .rp-layer-opacity input{width:100%!important;margin:0}
 .rp-layer-opacity output{text-align:right;font-variant-numeric:tabular-nums;color:#b8b8bc}
 .rp-layer-foot{margin:0;padding:10px 14px 13px;font-size:8px;line-height:1.55;color:#696970}
-.rp-radar-timeline{position:absolute;z-index:880;left:12px;right:12px;bottom:12px;display:grid;grid-template-columns:34px auto minmax(140px,1fr) 58px minmax(120px,.45fr);align-items:center;gap:9px;padding:8px 10px;background:#08080a;border:1px solid #37373c;color:#ddd;backdrop-filter:none}
+.rp-radar-timeline{position:absolute;z-index:880;left:12px;right:12px;bottom:12px;display:grid;grid-template-columns:44px auto minmax(140px,1fr) 58px minmax(120px,.45fr);align-items:center;gap:9px;padding:8px 10px;background:#08080a;border:1px solid #37373c;color:#ddd;backdrop-filter:none}
 .rp-radar-timeline[hidden]{display:none!important}
-.rp-radar-timeline button{width:30px;height:28px;padding:0;border:1px solid #3a3a40;background:#0e0e10;color:#e7e6e1;cursor:pointer}
+.rp-radar-timeline button{width:44px;height:44px;padding:0;border:1px solid #3a3a40;background:#0e0e10;color:#e7e6e1;cursor:pointer}
 .rp-radar-timeline input{width:100%}
 .rp-radar-timeline output{font:700 9px/1 system-ui;color:#bebec2;font-variant-numeric:tabular-nums;white-space:nowrap}
 .rp-radar-label{font-size:8px;font-weight:800;letter-spacing:.12em;color:#9c9ca2}

@@ -130,6 +130,20 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   el('#rpRoute').value='A,47,-97 GEP B,48,-97';
   await window.PilotDeskRoutePlanner.rebuild();
   if(!el('#rpStatus').textContent.includes('GEP RESTRICTED'))throw new Error('Restricted FAA facility status was hidden from the built route');
+  const original=el('#rpRoute').value;
+  el('#rpReverse').listeners.click();
+  if(el('#rpRoute').value!==original.split(/\s+/).reverse().join(' '))throw new Error('Reverse route lost waypoint coordinates');
+  el('#rpUndo').listeners.click();
+  if(el('#rpRoute').value!==original)throw new Error('Undo did not restore the route');
+  el('#rpRedo').listeners.click();
+  if(el('#rpRoute').value===original)throw new Error('Redo did not reapply reverse');
+  el('#rpUndo').listeners.click();
+  await window.PilotDeskRoutePlanner.rebuild();
+  el('#rpInsertAfter').value='0';el('#rpInsertWaypoint').value='STOP,47.5,-97';
+  el('#rpInsert').listeners.click();
+  if(!el('#rpRoute').value.startsWith('A,47,-97 STOP,47.5,-97 GEP'))throw new Error('Insert stop changed the wrong leg');
+  el('#rpUndo').listeners.click();
+  if(el('#rpRoute').value!==original)throw new Error('Inserted stop could not be undone');
   el('#rpClearRoute').listeners.click();
   if(storage.has('pd-route-last')||storage.has('pd-route-draft-v1')||el('#rpRoute').value)throw new Error('Clear did not remove the restored route and draft');
 }

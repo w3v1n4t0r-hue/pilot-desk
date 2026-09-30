@@ -42,7 +42,7 @@ if(fs.existsSync('.astro-public/route-planner.html')){
 if(!rpCss.includes('#rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important'))throw new Error('Sitewide media sizing must not collapse Leaflet route vectors');
 const plannerPro=fs.readFileSync('assets/planner-pro.js','utf8');
 if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
-for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!rpjs.includes(s))throw new Error(`Route optimization/integration missing ${s}`);
+for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!(rpjs+fs.readFileSync('assets/chart-tiles.js','utf8')).includes(s))throw new Error(`Route optimization/integration missing ${s}`);
 const efb=fs.readFileSync('assets/efb-layers.js','utf8');
 for(const s of ['Auto by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
 if(!rp.includes('/assets/efb-layers.js'))throw new Error('Route planner does not load the EFB layer controller');
@@ -106,7 +106,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   const documentListeners={};
   const document={readyState:'loading',querySelector:s=>s.startsWith('#')?el(s):null,querySelectorAll:()=>[],createElement:()=>({setAttribute:()=>{},remove(){elements.delete('#'+this.id)},textContent:'',id:''}),addEventListener:(type,fn)=>{documentListeners[type]=fn},dispatchEvent:()=>{}};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)};
-  const window={PilotDeskNavlog:nav,PilotDeskFlights:{list:()=>[]}};
+  const window={PilotDeskChartTiles:require('../assets/chart-tiles.js'),PilotDeskNavlog:nav,PilotDeskFlights:{list:()=>[]}};
   const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:url.includes('ident=GEP')?{point:{id:'GEP',name:'Gopher',lat:45.1457,lon:-93.3732,source:'faa-navaid',status:'RESTRICTED'}}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
   vm.runInNewContext(rpjs,{window,document,localStorage,fetch,AbortController,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true});
   documentListeners.DOMContentLoaded();

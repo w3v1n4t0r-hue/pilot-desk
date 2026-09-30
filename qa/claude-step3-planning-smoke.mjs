@@ -52,7 +52,7 @@ check(route.includes('cache:\'no-store\''),'Route weather/nav data fetches are n
 check(pro.includes('pd-aircraft-active')&&pro.includes('rpAircraft'),'Aircraft profile does not feed planner');
 check(airport.includes('/route-planner.html?route='),'Airport page cannot hand an airport to the Route Planner');
 check(procedures.includes('pd-route-procedures'),'Procedure page is not tied to the route pack');
-check(brief.includes('pd-saved-flights')&&brief.includes('PilotDeskNavlog.build'),'Flight Brief does not rebuild from saved flight/navlog data');
+check(brief.includes('pd-saved-flights')&&brief.includes('PilotDeskNavlog.plannedBuild')&&brief.includes('f.planning||{}')&&route.includes('N.plannedBuild'),'Flight Brief does not rebuild from saved flight/navlog data');
 check(aircraft.includes('/flights.html?aircraft='),'Aircraft profile cannot start a connected flight');
 
 // Step 3 visual contract.

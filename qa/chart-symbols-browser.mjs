@@ -34,7 +34,7 @@ await page.waitForSelector('.rp-pirep-symbol');
 await page.waitForFunction(()=>document.querySelectorAll('.rp-pirep-symbol').length===3);
 assert.equal(await page.locator('[data-condition="turbulence"]').count(),2);
 assert.equal(await page.locator('[data-condition="icing"]').count(),1);
-assert.equal(await page.locator('[data-condition="thunderstorm"]').count(),1);
+assert.equal(await page.locator('[data-condition="skyweather"]').count(),1);
 assert.equal(await page.locator('.rp-pirep-urgent').count(),1);
 assert.ok(await page.locator('.rp-map-symbol svg').count()>=7);
 assert.ok(await page.evaluate(()=>[...document.querySelectorAll('.rp-map-symbol')].every(el=>getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')));

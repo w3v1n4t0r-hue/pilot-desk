@@ -121,6 +121,8 @@ jobs:
         run: node qa/v2-smoke.mjs
       - name: Run planner lab checks
         run: node qa/planner-lab-tests.mjs
+      - name: Run route performance and fuel tests
+        run: node qa/route-performance-tests.mjs
       - name: Run calculator formula regression tests
         run: node qa/formula-tests.mjs
       - name: Check motion behavior and consolidated guide routes

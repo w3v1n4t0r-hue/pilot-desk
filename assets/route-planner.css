@@ -94,10 +94,7 @@
 .rp-waypoint-icon{background:transparent!important;border:0!important}
 .rp-waypoint-icon span{display:block;width:10px;height:10px;margin:2px;background:#f0efe9;border:2px solid #070708;box-shadow:0 0 0 1px #f0efe9;transform:rotate(45deg)}
 .rp-map-symbol{background:transparent!important;border:0!important}
-.rp-map-symbol span{display:block;box-sizing:border-box}
-.rp-map-symbol-airport span{width:10px;height:10px;margin:1px;border:2px solid #f0efe9;border-radius:50%;background:#09090b}
-.rp-map-symbol-navaid span{width:10px;height:10px;margin:1px;border:1px solid #e2e1dc;background:#0a0a0c;transform:rotate(45deg)}
-.rp-map-symbol-fix span{width:0;height:0;margin:1px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid #d5d4cf}
+
 .rp-notam-marker{display:flex!important;align-items:center!important;justify-content:center!important;gap:2px!important;background:#09090b!important;border:1px solid #e87c7c!important;color:#f2b0b0!important;font:800 8px/1 system-ui!important}
 .rp-notam-marker span{font-size:11px}
 .rp-notam-marker b{font-size:8px}
@@ -147,3 +144,12 @@
 #rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}
 
 #rpPhaseEnabled{width:20px;height:20px;min-height:20px;vertical-align:middle;margin-right:8px}
+
+#rpMap .rp-map-symbol{background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible}
+#rpMap .rp-map-symbol svg{display:block;width:24px;height:24px;max-width:none;overflow:visible}
+#rpMap .rp-pirep-symbol{display:flex;align-items:center}
+#rpMap .rp-pirep-condition{position:relative;display:block;flex:0 0 28px;height:28px}
+#rpMap .rp-pirep-condition b{position:absolute;bottom:-5px;right:0;background:#08090b;font:700 10px/12px ui-monospace,monospace;padding:0 2px;white-space:nowrap}
+#rpMap .rp-pirep-urgent{color:#f58c88;background:#08090b;font:800 16px/20px ui-monospace,monospace}
+.rp-symbol-legend{font-size:12px;line-height:1.5;margin:8px 0;color:var(--muted)}
+.rp-symbol-legend summary{cursor:pointer;padding:8px 0}

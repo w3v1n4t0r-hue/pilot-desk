@@ -119,11 +119,23 @@
       "destination": "/api/navigation-lookup?pdLookup=airport-search"
     },
     {
+      "source": "/api/airport-search/",
+      "destination": "/api/navigation-lookup?pdLookup=airport-search"
+    },
+    {
       "source": "/api/nearby-airports",
       "destination": "/api/navigation-lookup?pdLookup=nearby-airports"
     },
     {
+      "source": "/api/nearby-airports/",
+      "destination": "/api/navigation-lookup?pdLookup=nearby-airports"
+    },
+    {
       "source": "/api/navigation",
+      "destination": "/api/navigation-lookup?pdLookup=navigation"
+    },
+    {
+      "source": "/api/navigation/",
       "destination": "/api/navigation-lookup?pdLookup=navigation"
     },
     {

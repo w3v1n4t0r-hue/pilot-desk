@@ -13,6 +13,8 @@ function response() {
 for (const route of routes) {
   assert.equal(config.rewrites.find(rule => rule.source === `/api/${route}`).destination,
     `/api/navigation-lookup?pdLookup=${route}`);
+  assert.equal(config.rewrites.find(rule => rule.source === `/api/${route}/`).destination,
+    `/api/navigation-lookup?pdLookup=${route}`);
   const res = response();
   await handler({ method: 'POST', query: { pdLookup: route } }, res);
   assert.equal(res.code, 405, `${route} retains method validation`);

@@ -48,6 +48,7 @@ function stateFor(f,key){
  return Boolean(p[key]);
 }
 function render(){
+ if(path==='/route-planner.html')return; // The map workspace already owns route entry and flight context.
  const main=$('main');if(!main)return;
  $$('.pd-flight-nav,.pd-flight-journey,.pd-flight-context[data-pd-old-flight-context]').forEach(x=>x.remove());
  const f=flight(),current=STEPS.findIndex(([p])=>p===path),parts=routeParts(f),dst=parts.at(-1)||'',ac=aircraftName(f);

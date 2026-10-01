@@ -5,6 +5,7 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
   const snapshot = { requests: {}, sources: [] };
+  const responseCache = new Map(), pendingRequests = new Map();
   function expand(legs, from, to) {
     const match = (l, p) =>
         l.point &&
@@ -63,16 +64,30 @@
           "This navigation item was not downloaded in a current offline pack.",
         );
     } else {
-      const r = await fetch(
-        "/api/navigation?product=" +
-          product +
-          "&ident=" +
-          encodeURIComponent(ident) +
-          (at ? "&at=" + encodeURIComponent(at + "Z") : ""),
-        { signal: AbortSignal.timeout(55000) },
-      );
-      data = await r.json();
-      if (!r.ok) throw Error(data.error || "FAA navigation unavailable.");
+      const cached = responseCache.get(key);
+      if (cached && Date.now() - cached.at < 60000) data = cached.data;
+      else {
+        let pending = pendingRequests.get(key);
+        if (!pending) {
+          pending = (async () => {
+            const r = await fetch(
+              "/api/navigation?product=" +
+                product +
+                "&ident=" +
+                encodeURIComponent(ident) +
+                (at ? "&at=" + encodeURIComponent(at + "Z") : ""),
+              { signal: AbortSignal.timeout(55000) },
+            );
+            data = await r.json();
+            if (!r.ok) throw Error(data.error || "FAA navigation unavailable.");
+            if (responseCache.size >= 300) responseCache.delete(responseCache.keys().next().value);
+            responseCache.set(key, { data, at: Date.now() });
+            return data;
+          })().finally(() => pendingRequests.delete(key));
+          pendingRequests.set(key, pending);
+        }
+        data = await pending;
+      }
     }
     snapshot.requests[key] = data;
     if (!snapshot.sources.some((s) => s.url === data.source.url))

@@ -948,7 +948,7 @@ html.pd-streamlined-app main.pd-account-shell{
   padding:24px 0 64px!important;
 }
 
-html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero){
+html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero):not(.rp-workspace .pd-flight-hero){
   margin:0 0 24px!important;
   padding:18px 0 22px!important;
   border-bottom:1px solid var(--line)!important;
@@ -957,7 +957,7 @@ html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-acc
   box-shadow:none!important;
 }
 html.pd-streamlined-app main>h1,
-html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero) h1{
+html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero):not(.rp-workspace .pd-flight-hero) h1{
   max-width:920px!important;
   margin:7px 0 8px!important;
   font-size:clamp(30px,3.2vw,42px)!important;
@@ -965,7 +965,7 @@ html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-acc
   letter-spacing:-.038em!important;
   font-weight:640!important;
 }
-html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero) p{
+html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero):not(.rp-workspace .pd-flight-hero) p{
   max-width:760px!important;
   margin:0!important;
   font-size:var(--pd-type-body)!important;
@@ -1095,7 +1095,7 @@ html.pd-streamlined-app footer{
     padding:20px 16px 48px!important;
   }
   html.pd-streamlined-app main>h1,
-html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero) h1{
+html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero):not(.rp-workspace .pd-flight-hero) h1{
     font-size:clamp(28px,8vw,36px)!important;
   }
   html.pd-streamlined-app :is(input,select,.calc-btn,.pd-btn,button.primary,.pd-auth-btn,.utility-btn,.pd-chip,.recent-chip){

@@ -41,7 +41,7 @@ if(fs.existsSync('.astro-public/route-planner.html')){
 }
 if(!rpCss.includes('#rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important'))throw new Error('Sitewide media sizing must not collapse Leaflet route vectors');
 const plannerPro=fs.readFileSync('assets/planner-pro.js','utf8');
-if(!rp.includes('FAA CHART + NAVLOG')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
+if(!rp.includes('FAA aeronautical chart with plotted route')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
 for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!(rpjs+fs.readFileSync('assets/chart-tiles.js','utf8')).includes(s))throw new Error(`Route optimization/integration missing ${s}`);
 const efb=fs.readFileSync('assets/efb-layers.js','utf8');
 for(const s of ['Auto by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
@@ -101,15 +101,15 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
 // A restored route must be recalculated before totals or a navlog are shown.
 {
   const elements=new Map(),timers=new Map(),storage=new Map([['pd-route-last',JSON.stringify({route:'A,47,-97 B,48,-97',tas:120,burn:10,wd:270,ws:0,variation:0,totalDistance:0,totalHours:0,totalFuel:0})]]);
-  let timerId=0;
-  const el=selector=>{if(!elements.has(selector)){const listeners={};elements.set(selector,{value:'',textContent:'',innerHTML:'',disabled:false,listeners,addEventListener:(type,fn)=>{listeners[type]=fn},setAttribute:()=>{},focus:()=>{},insertAdjacentElement:(_position,node)=>elements.set('#'+node.id,node),remove:()=>elements.delete(selector),classList:{toggle:()=>{}},dataset:{}})}return elements.get(selector)};
+  let timerId=0,clock=Date.now();const requests=[];
+  const el=selector=>{if(!elements.has(selector)){const listeners={};elements.set(selector,{value:'',textContent:'',innerHTML:'',disabled:false,listeners,addEventListener:(type,fn)=>{listeners[type]=fn},attributes:{},setAttribute(key,value){this.attributes[key]=value},getAttribute(key){return this.attributes[key]},focus:()=>{},insertAdjacentElement:(_position,node)=>elements.set('#'+node.id,node),remove:()=>elements.delete(selector),classList:{toggle:()=>{}},dataset:{}})}return elements.get(selector)};
   const documentListeners={},windowListeners={};
   const printDetails=[{open:false},{open:true}];
-  const document={readyState:'loading',getElementById:id=>el('#'+id),querySelector:s=>s.startsWith('#')?el(s):null,querySelectorAll:selector=>selector==='.pd-task-options'?printDetails:[],createElement:()=>({setAttribute:()=>{},remove(){elements.delete('#'+this.id)},textContent:'',id:''}),addEventListener:(type,fn)=>{documentListeners[type]=fn},dispatchEvent:()=>{}};
+  const document={readyState:'loading',getElementById:id=>el('#'+id),querySelector:s=>s.startsWith('#')?el(s):null,querySelectorAll:selector=>selector.includes('.pd-task-options')?printDetails:[],createElement:()=>({setAttribute:()=>{},remove(){elements.delete('#'+this.id)},textContent:'',id:''}),addEventListener:(type,fn)=>{documentListeners[type]=fn},dispatchEvent:()=>{}};
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)};
   const window={addEventListener:(type,fn)=>{windowListeners[type]=fn},PilotDeskChartTiles:require('../assets/chart-tiles.js'),PilotDeskRouteNavigation:require('../assets/route-navigation.js'),PilotDeskNavlog:nav,PilotDeskFlights:{list:()=>[]}};
   const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:url.includes('ident=GEP')?{point:{id:'GEP',name:'Gopher',lat:45.1457,lon:-93.3732,source:'faa-navaid',status:'RESTRICTED'}}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
-  const context={window,document,localStorage,fetch:async url=>{const response=await fetch(url);return{...response,json:async()=>({...await response.json(),source:{url:'https://faa.gov/qa-fixture',cycle:'2609'}})}},AbortController,AbortSignal,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true};
+  const context={window,document,localStorage,Date:class extends Date{static now(){return clock}},fetch:async url=>{requests.push(url);const response=await fetch(url);return{...response,json:async()=>({...await response.json(),source:{url:'https://faa.gov/qa-fixture',cycle:'2609'}})}},AbortController,AbortSignal,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true};
   vm.createContext(context);vm.runInContext(fs.readFileSync('assets/route-navigation.js','utf8'),context);window.PilotDeskRouteNavigation=context.PilotDeskRouteNavigation;vm.runInContext(rpjs,context);
   documentListeners.DOMContentLoaded();
   windowListeners.beforeprint();
@@ -123,7 +123,9 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   await window.PilotDeskRoutePlanner.rebuild();
   if(!(window.pdNavlogResult?.totalDistance>0)||el('#rpSummaryDistance').textContent==='— NM')throw new Error('Reviewed route did not build its navlog');
   el('#rpWaypointSearch').value='GFK';
+  el('#rpWaypointResults').innerHTML='<button>Old result</button>';
   el('#rpWaypointSearch').listeners.input();
+  if(el('#rpWaypointResults').innerHTML.includes('Old result'))throw new Error('Search kept an outdated result clickable');
   const searchTimer=[...timers.values()][0];timers.clear();searchTimer();
   await new Promise(setImmediate);
   if(!el('#rpWaypointResults').innerHTML.includes('Grand Forks VOR')||el('#rpWaypointResults').innerHTML.includes('KFAKE'))throw new Error('Waypoint search did not render real airport/NAVAID results safely');
@@ -136,6 +138,16 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   el('#rpRoute').value='A,47,-97 GEP B,48,-97';
   await window.PilotDeskRoutePlanner.rebuild();
   if(!el('#rpStatus').textContent.includes('GEP RESTRICTED'))throw new Error('Restricted FAA facility status was hidden from the built route');
+  const gepRequests=()=>requests.filter(url=>url==='/api/navigation?product=point&ident=GEP').length;
+  const lookups=gepRequests();
+  await window.PilotDeskRoutePlanner.rebuild();
+  if(gepRequests()!==lookups)throw new Error('Repeated route build repeated a fresh navigation lookup');
+  clock+=60001;await window.PilotDeskRoutePlanner.rebuild();
+  if(gepRequests()!==lookups+1)throw new Error('Navigation lookup cache did not expire');
+  el('#rpDepartureUtc').value='2026-10-02T12:00';
+  await window.PilotDeskRoutePlanner.rebuild();
+  if(!requests.includes('/api/navigation?product=point&ident=GEP&at=2026-10-02T12%3A00Z'))throw new Error('Changed departure reused navigation for another time');
+  el('#rpDepartureUtc').value='';
   const original=el('#rpRoute').value;
   el('#rpReverse').listeners.click();
   if(el('#rpRoute').value!==original.split(/\s+/).reverse().join(' '))throw new Error('Reverse route lost waypoint coordinates');
@@ -150,6 +162,19 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   if(!el('#rpRoute').value.startsWith('A,47,-97 STOP,47.5,-97 GEP'))throw new Error('Insert stop changed the wrong leg');
   el('#rpUndo').listeners.click();
   if(el('#rpRoute').value!==original)throw new Error('Inserted stop could not be undone');
+  el('#rpRouteSequence').listeners.click({target:{closest:()=>({dataset:{routeAction:'later',routeIndex:'0'}})}});
+  if(el('#rpRoute').value!=='GEP A,47,-97 B,48,-97'||window.pdNavlogResult!==null)throw new Error('Waypoint reorder lost coordinates or retained stale results');
+  if(!el('#rpRouteSequence').innerHTML.includes('Remove GEP'))throw new Error('Waypoint sequence did not refresh after reorder');
+  el('#rpUndo').listeners.click();
+  if(el('#rpRoute').value!==original)throw new Error('Waypoint reorder cannot be undone');
+  el('#rpRouteSequence').listeners.click({target:{closest:()=>({dataset:{routeAction:'remove',routeIndex:'1'}})}});
+  if(el('#rpRoute').value!=='A,47,-97 B,48,-97')throw new Error('Waypoint removal changed the wrong stop');
+  el('#rpUndo').listeners.click();
+  el('#rpEditorToggle').setAttribute('aria-expanded','true');
+  el('#rpEditorToggle').listeners.click();
+  if(!el('#rpRouteEditor').hidden||el('#rpEditorToggle').getAttribute('aria-expanded')!=='false')throw new Error('Editor toggle did not close the accessible panel');
+  el('#rpEditorToggle').listeners.click();
+  if(el('#rpRouteEditor').hidden||el('#rpEditorToggle').getAttribute('aria-expanded')!=='true')throw new Error('Editor toggle did not restore the accessible panel');
   el('#rpClearRoute').listeners.click();
   if(storage.has('pd-route-last')||storage.has('pd-route-draft-v1')||el('#rpRoute').value)throw new Error('Clear did not remove the restored route and draft');
 }

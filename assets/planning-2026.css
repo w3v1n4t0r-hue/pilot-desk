@@ -59,7 +59,8 @@
 .rp-live-route span{display:block;margin-top:4px;color:var(--muted2);font-size:var(--pd-type-label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Route editing and chart are the primary two-column workspace. */
-.rp-grid{grid-template-columns:minmax(320px,.34fr) minmax(0,.66fr)!important;gap:10px!important}
+.rp-grid{grid-template-columns:minmax(300px,360px) minmax(0,1fr)!important;gap:10px!important}
+.rp-grid.rp-editor-closed{grid-template-columns:1fr!important}
 .rp-panel,.rp-procedure-section{border-color:var(--line)!important;background:var(--panel)!important}
 .rp-grid>.rp-panel:first-child{border-top:2px solid #46515a!important}
 .rp-map-card{border-top:2px solid var(--accent)!important}

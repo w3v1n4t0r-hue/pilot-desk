@@ -101,7 +101,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
 // A restored route must be recalculated before totals or a navlog are shown.
 {
   const elements=new Map(),timers=new Map(),storage=new Map([['pd-route-last',JSON.stringify({route:'A,47,-97 B,48,-97',tas:120,burn:10,wd:270,ws:0,variation:0,totalDistance:0,totalHours:0,totalFuel:0})]]);
-  let timerId=0;
+  let timerId=0,clock=Date.now();const requests=[];
   const el=selector=>{if(!elements.has(selector)){const listeners={};elements.set(selector,{value:'',textContent:'',innerHTML:'',disabled:false,listeners,addEventListener:(type,fn)=>{listeners[type]=fn},attributes:{},setAttribute(key,value){this.attributes[key]=value},getAttribute(key){return this.attributes[key]},focus:()=>{},insertAdjacentElement:(_position,node)=>elements.set('#'+node.id,node),remove:()=>elements.delete(selector),classList:{toggle:()=>{}},dataset:{}})}return elements.get(selector)};
   const documentListeners={},windowListeners={};
   const printDetails=[{open:false},{open:true}];
@@ -109,7 +109,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   const localStorage={getItem:key=>storage.get(key)??null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)};
   const window={addEventListener:(type,fn)=>{windowListeners[type]=fn},PilotDeskChartTiles:require('../assets/chart-tiles.js'),PilotDeskRouteNavigation:require('../assets/route-navigation.js'),PilotDeskNavlog:nav,PilotDeskFlights:{list:()=>[]}};
   const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:url.includes('ident=GEP')?{point:{id:'GEP',name:'Gopher',lat:45.1457,lon:-93.3732,source:'faa-navaid',status:'RESTRICTED'}}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
-  const context={window,document,localStorage,fetch:async url=>{const response=await fetch(url);return{...response,json:async()=>({...await response.json(),source:{url:'https://faa.gov/qa-fixture',cycle:'2609'}})}},AbortController,AbortSignal,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true};
+  const context={window,document,localStorage,Date:class extends Date{static now(){return clock}},fetch:async url=>{requests.push(url);const response=await fetch(url);return{...response,json:async()=>({...await response.json(),source:{url:'https://faa.gov/qa-fixture',cycle:'2609'}})}},AbortController,AbortSignal,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true};
   vm.createContext(context);vm.runInContext(fs.readFileSync('assets/route-navigation.js','utf8'),context);window.PilotDeskRouteNavigation=context.PilotDeskRouteNavigation;vm.runInContext(rpjs,context);
   documentListeners.DOMContentLoaded();
   windowListeners.beforeprint();
@@ -123,7 +123,9 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   await window.PilotDeskRoutePlanner.rebuild();
   if(!(window.pdNavlogResult?.totalDistance>0)||el('#rpSummaryDistance').textContent==='— NM')throw new Error('Reviewed route did not build its navlog');
   el('#rpWaypointSearch').value='GFK';
+  el('#rpWaypointResults').innerHTML='<button>Old result</button>';
   el('#rpWaypointSearch').listeners.input();
+  if(el('#rpWaypointResults').innerHTML.includes('Old result'))throw new Error('Search kept an outdated result clickable');
   const searchTimer=[...timers.values()][0];timers.clear();searchTimer();
   await new Promise(setImmediate);
   if(!el('#rpWaypointResults').innerHTML.includes('Grand Forks VOR')||el('#rpWaypointResults').innerHTML.includes('KFAKE'))throw new Error('Waypoint search did not render real airport/NAVAID results safely');
@@ -136,6 +138,16 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   el('#rpRoute').value='A,47,-97 GEP B,48,-97';
   await window.PilotDeskRoutePlanner.rebuild();
   if(!el('#rpStatus').textContent.includes('GEP RESTRICTED'))throw new Error('Restricted FAA facility status was hidden from the built route');
+  const gepRequests=()=>requests.filter(url=>url==='/api/navigation?product=point&ident=GEP').length;
+  const lookups=gepRequests();
+  await window.PilotDeskRoutePlanner.rebuild();
+  if(gepRequests()!==lookups)throw new Error('Repeated route build repeated a fresh navigation lookup');
+  clock+=60001;await window.PilotDeskRoutePlanner.rebuild();
+  if(gepRequests()!==lookups+1)throw new Error('Navigation lookup cache did not expire');
+  el('#rpDepartureUtc').value='2026-10-02T12:00';
+  await window.PilotDeskRoutePlanner.rebuild();
+  if(!requests.includes('/api/navigation?product=point&ident=GEP&at=2026-10-02T12%3A00Z'))throw new Error('Changed departure reused navigation for another time');
+  el('#rpDepartureUtc').value='';
   const original=el('#rpRoute').value;
   el('#rpReverse').listeners.click();
   if(el('#rpRoute').value!==original.split(/\s+/).reverse().join(' '))throw new Error('Reverse route lost waypoint coordinates');

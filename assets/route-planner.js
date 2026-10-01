@@ -5,16 +5,17 @@ const FAA_ROOT='https://tiles.arcgis.com/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/serv
 const CHARTS=window.PilotDeskChartTiles.charts;
 let offlinePack=null;
 let map=null,tile=null,overview=null,chartResizeTimer=0,routeGroup=null,lastPoints=[],lastLegs=[],plotMode=false,plotCount=1,procedureIndex=[],contextSeq=0,autoTimer=0,routeRevision=0,searchTimer=0,searchRevision=0;const chartCache=new Map(),legWeather=new Map(),weatherPending=new Map(),weatherResults=new Map();
-let routeHistory=[],historyIndex=-1,hasFitted=false;
+let routeHistory=[],historyIndex=-1,hasFitted=false,routeSequenceHtml=null;
 function rememberRoute(){const value=$('#rpRoute').value;if(routeHistory[historyIndex]===value)return;routeHistory=routeHistory.slice(0,historyIndex+1);routeHistory.push(value);if(routeHistory.length>50)routeHistory.shift();historyIndex=routeHistory.length-1;syncHistory()}
 function syncHistory(){if($('#rpUndo'))$('#rpUndo').disabled=historyIndex<=0;if($('#rpRedo'))$('#rpRedo').disabled=historyIndex>=routeHistory.length-1}
 function renderRouteSequence(){
  const host=$('#rpRouteSequence');if(!host)return;
  const tokens=$('#rpRoute').value.trim().split(/\s+/).filter(Boolean);
- host.innerHTML=tokens.map((token,index)=>{
+ const html=tokens.map((token,index)=>{
   const name=parseManual(token)?.id||token.toUpperCase();
   return `<li><span>${index+1}</span><b>${esc(name)}</b><div><button type="button" data-route-action="earlier" data-route-index="${index}" aria-label="Move ${esc(name)} earlier" ${index===0?'disabled':''}>↑</button><button type="button" data-route-action="later" data-route-index="${index}" aria-label="Move ${esc(name)} later" ${index===tokens.length-1?'disabled':''}>↓</button><button type="button" data-route-action="remove" data-route-index="${index}" aria-label="Remove ${esc(name)}">×</button></div></li>`;
  }).join('');
+ if(routeSequenceHtml!==html){host.innerHTML=html;routeSequenceHtml=html;}
 }
 function initWorkspace(){
  const toggle=$('#rpEditorToggle'),editor=$('#rpRouteEditor'),workspace=$('#rpWorkspace');
@@ -24,7 +25,7 @@ function initWorkspace(){
    toggle.setAttribute('aria-expanded',String(open));editor.hidden=!open;
    workspace.classList.toggle('rp-editor-closed',!open);
    map?.invalidateSize({pan:false});
-   if(open)$('#rpRoute').focus();
+   if(open)$('#rpRoute').focus({preventScroll:true});
   });
  }
  $('#rpRouteSequence')?.addEventListener('click',e=>{
@@ -33,13 +34,16 @@ function initWorkspace(){
   if(!Number.isInteger(index)||index<0||index>=tokens.length)return;
   if(action==='remove')tokens.splice(index,1);
   else{const next=index+(action==='earlier'?-1:1);if(next<0||next>=tokens.length)return;[tokens[index],tokens[next]]=[tokens[next],tokens[index]];}
-  editRoute(tokens.join(' '));$('#rpRoute').focus();
+  editRoute(tokens.join(' '));
+  const row=Math.min(action==='remove'?index: index+(action==='earlier'?-1:1),tokens.length-1);
+  const control=$('#rpRouteSequence')?.querySelector?.(`[data-route-index="${row}"][data-route-action="${action}"]:not(:disabled)`);
+  (control||$('#rpRoute')).focus({preventScroll:true});
  });
  $('#rpRoute').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();build();}});
  document.addEventListener('pilotdesk:route-built',renderRouteSequence);
  document.addEventListener('pilotdesk:route-invalidated',renderRouteSequence);
  renderRouteSequence();
- if(map&&window.ResizeObserver){const observer=new ResizeObserver(()=>map.invalidateSize({pan:false}));observer.observe($('#rpMap'));}
+ if(map&&window.ResizeObserver){let frame=0;const observer=new ResizeObserver(()=>{if(frame)return;if(window.requestAnimationFrame)frame=window.requestAnimationFrame(()=>{frame=0;map.invalidateSize({pan:false});});else map.invalidateSize({pan:false});});observer.observe($('#rpMap'));}
 }
 function editRoute(value){rememberRoute();$('#rpRoute').value=value;rememberRoute();saveDraft();invalidateRoute();scheduleAutoBuild(0)}
 function travelHistory(direction){const next=historyIndex+direction;if(next<0||next>=routeHistory.length)return;historyIndex=next;$('#rpRoute').value=routeHistory[next];syncHistory();saveDraft();invalidateRoute();scheduleAutoBuild(0)}
@@ -94,7 +98,7 @@ function duplicateSavedRoute(id){const store=window.PilotDeskFlights,f=store?.ge
 async function loadLegWeather(pts,seq){const stations=[...new Set(pts.map(p=>p.id).filter(id=>/^[A-Z0-9]{3,4}$/.test(id)))].slice(0,10);const weather=await Promise.all(stations.map(async id=>[id,await endpointWx(id)]));if(seq!==contextSeq)return;legWeather.clear();for(const [id,wx] of weather)if(wx?.metar)legWeather.set(id,wx);renderNavlog(lastLegs)}
 function renderWaypointResults(rows,message){const host=$('#rpWaypointResults');if(!host)return;if(!rows.length){host.innerHTML='<p>'+esc(message||'No matching waypoint with coordinates found.')+'</p>';return}host.innerHTML=rows.map(p=>'<button type="button" data-rp-add="'+esc(p.token||p.id)+'"><b>'+esc(p.id)+'</b><span>'+esc(p.name||p.id)+'</span><small>'+esc(p.type)+' · '+fmt(p.lat,3)+', '+fmt(p.lon,3)+'</small></button>').join('')+(message?'<p>'+esc(message)+'</p>':'')}
 async function searchWaypoints(){const q=$('#rpWaypointSearch').value.trim(),revision=++searchRevision;if(q.length<2)return renderWaypointResults([],'Enter at least two characters.');renderWaypointResults([],'Searching aviation data…');const airportRequest=jsonFetch('/api/airport-search?q='+encodeURIComponent(q),9000).catch(e=>({results:[],error:e.message}));const navRequest=/^[A-Z0-9]{2,7}$/i.test(q)?jsonFetch('/api/navdata?ident='+encodeURIComponent(q)+'&search=1',17500).catch(e=>({error:e.message})):Promise.resolve(null);const airportData=await airportRequest;if(revision!==searchRevision)return;const stations=(airportData.results||[]).filter(p=>!p.synthetic&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)).map(p=>({id:p.id,name:p.name,type:[p.state,p.country].filter(Boolean).join(', ')||'AWC station',lat:p.lat,lon:p.lon}));renderWaypointResults(stations.slice(0,12),stations.length?'':'Checking navigation identifiers…');const navData=await navRequest;if(revision!==searchRevision)return;const rows=[],seen=new Set();const add=p=>{if(!p?.id||!Number.isFinite(p.lat)||!Number.isFinite(p.lon))return;const key=p.id+':'+p.lat.toFixed(4)+':'+p.lon.toFixed(4);if(seen.has(key))return;seen.add(key);rows.push(p)};const navType=p=>({airport:'Airport',navaid:'NAVAID',fix:'Fix',feature:'Navigation feature','faa-navaid':'FAA NAVAID','faa-fix':'FAA fix'})[p.source]||'Navigation feature';const navMeta=p=>[navType(p),p.location,p.status].filter(Boolean).join(' · ');if(navData?.point){const p=navData.point;add({id:p.id,name:p.name,type:navMeta(p),lat:p.lat,lon:p.lon})}for(const p of navData?.matches||[])add({id:p.id,name:p.name,type:navMeta(p),lat:p.lat,lon:p.lon,token:`${p.id},${p.lat.toFixed(5)},${p.lon.toFixed(5)}`});for(const p of airportData.results||[])if(!p.synthetic)add({id:p.id,name:p.name,type:[p.state,p.country].filter(Boolean).join(', ')||'AWC station',lat:p.lat,lon:p.lon});renderWaypointResults(rows.slice(0,12),navData?.error?'Navigation lookup unavailable: '+navData.error:airportData.error?'Station search unavailable. Try an exact airport, VOR, or fix identifier.':rows.length?'':'No matching waypoint with coordinates found.')}
-function initWaypointSearch(){const input=$('#rpWaypointSearch'),results=$('#rpWaypointResults');if(!input||!results)return;input.addEventListener('input',()=>{clearTimeout(searchTimer);searchRevision++;const q=input.value.trim();if(q.length<2){renderWaypointResults([],'Enter at least two characters.');return}searchTimer=setTimeout(searchWaypoints,300)});results.addEventListener('click',e=>{const b=e.target.closest('[data-rp-add]');if(!b)return;searchRevision++;clearTimeout(searchTimer);const box=$('#rpRoute'),id=b.dataset.rpAdd;editRoute((box.value.trim()?box.value.trim()+' ':'')+id);input.value='';renderWaypointResults([],'Waypoint added. Search for another.');box.focus()})}
+function initWaypointSearch(){const input=$('#rpWaypointSearch'),results=$('#rpWaypointResults');if(!input||!results)return;input.addEventListener('input',()=>{clearTimeout(searchTimer);searchRevision++;const q=input.value.trim();if(q.length<2){renderWaypointResults([],'Enter at least two characters.');return}renderWaypointResults([],'Searching aviation data…');searchTimer=setTimeout(searchWaypoints,300)});results.addEventListener('click',e=>{const b=e.target.closest('[data-rp-add]');if(!b)return;searchRevision++;clearTimeout(searchTimer);const box=$('#rpRoute'),id=b.dataset.rpAdd;editRoute((box.value.trim()?box.value.trim()+' ':'')+id);input.value='';renderWaypointResults([],'Waypoint added. Search for another.');box.focus()})}
 function scheduleAutoBuild(delay=650){clearTimeout(autoTimer);autoTimer=setTimeout(()=>{const raw=$('#rpRoute')?.value.split(/\s+/).filter(Boolean)||[];if(raw.length<2)return;if($('#rpBuild')?.disabled){scheduleAutoBuild(250);return}void build()},delay)}
 function invalidateRoute(preserveMap=false){weatherResults.clear();msg('Route changed. Build navlog to update results.');routeRevision++;contextSeq++;window.pdNavlogResult=null;lastPoints=[];lastLegs=[];legWeather.clear();updateLiveSummary(null,$('#rpRoute').value);if(!preserveMap)routeGroup?.clearLayers();$('#rpNavlog').innerHTML='<p>No route built yet.</p>';$('#rpWeather').innerHTML='<small>Build a route to load departure/destination METAR context.</small>';$('#rpProcedures').innerHTML='<div class="pd-empty">Build a route to load FAA procedures for the endpoints.</div>';renderRouteSequence();document.dispatchEvent(new CustomEvent('pilotdesk:route-invalidated'))}
 function highlightLeg(i){if(!routeGroup||!lastLegs[i])return;updateSelectedLeg(i);routeGroup.eachLayer(l=>{if(l instanceof L.Polyline&&!l._radius)l.setStyle({weight:l._pdLegIndex===i?7:4,opacity:l._pdLegIndex===i?1:.62})});document.querySelectorAll('.rp-leg-row').forEach((r,j)=>r.dataset.active=String(j===i));document.dispatchEvent(new CustomEvent('pilotdesk:leg-selected',{detail:{index:i,leg:lastLegs[i]}}))}

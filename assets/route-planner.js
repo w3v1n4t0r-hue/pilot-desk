@@ -37,7 +37,8 @@ function initWorkspace(){
   editRoute(tokens.join(' '));
   const row=Math.min(action==='remove'?index: index+(action==='earlier'?-1:1),tokens.length-1);
   const control=$('#rpRouteSequence')?.querySelector?.(`[data-route-index="${row}"][data-route-action="${action}"]:not(:disabled)`);
-  (control||$('#rpRoute')).focus({preventScroll:true});
+  const fallback=$('#rpRouteSequence')?.querySelector?.(`[data-route-index="${row}"]:not(:disabled)`);
+  (control||fallback||$('#rpRoute')).focus({preventScroll:true});
  });
  $('#rpRoute').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();build();}});
  document.addEventListener('pilotdesk:route-built',renderRouteSequence);

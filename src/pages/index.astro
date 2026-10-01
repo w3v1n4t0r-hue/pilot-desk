@@ -40,14 +40,16 @@ const schema = {
   <section class="pd-home-hero" aria-labelledby="pdHomeTitle">
     <div class="pd-home-hero-inner">
       <div class="pd-home-hero-copy">
-        <div class="eyebrow">PILOT TOOLS · OPEN IN A BROWSER</div>
-        <h1 id="pdHomeTitle">Your next flight starts here.</h1>
-        <p>Flight planning, aviation calculators, weather and FAA study tools for pilots. Open a tool and get to work.</p>
-        <div class="pd-home-hero-links">
+        <div class="eyebrow">PILOTDESK</div>
+        <h1 id="pdHomeTitle">Flight planning and pilot tools.</h1>
+        <p>Build a route, check the weather, run the numbers or study for your next checkride.</p>
+        <nav class="pd-home-hero-links" aria-label="Start a pilot task">
           <a class="pd-btn" href="/route-planner.html" data-pd-home-cta="Start Planning">Plan a flight</a>
           <a class="pd-home-command" href="/tools.html" data-pd-home-cta="Browse Tools">Open tools</a>
+          <a class="pd-home-command" href="/weather.html" data-pd-home-cta="Weather">Weather</a>
           <a class="pd-home-command" href="/flight-training.html" data-pd-home-cta="Study">Study</a>
-        </div>
+          <a class="pd-home-command" href="/daily/" data-pd-home-cta="Daily">Daily questions</a>
+        </nav>
       </div>
 
       <section class="pd-home-example" aria-labelledby="home-wind-title">
@@ -61,7 +63,7 @@ const schema = {
           <div><span>Headwind</span><strong id="pdHomeHead">15.6 kt</strong></div>
         </div>
         <p id="pdHomeWindNote">30° angle · components only, not an aircraft limit.</p>
-        <a id="pdHomeWindLink" href="/calculators/crosswind/?runway=350&amp;windDir=320&amp;windSpeed=18">Use your runway and wind →</a>
+        <a id="pdHomeWindLink" href="/calculators/crosswind/?runway=350&amp;windDir=320&amp;windSpeed=18">Use your runway and wind</a>
       </section>
 
       <div class="pd-home-proof" aria-label="PilotDesk basics">
@@ -87,7 +89,7 @@ const schema = {
         <div>
           <div class="eyebrow">TOOL INDEX</div>
           <h2>Common pilot calculations</h2>
-          <p>Wind, performance, loading and fuel — with methods and worked examples.</p>
+          <p>Wind, performance, loading and fuel. Each tool includes its method and an example.</p>
         </div>
         <a href="/tools.html" data-pd-home-cta="All Calculators">Free aviation calculators →</a>
       </div>

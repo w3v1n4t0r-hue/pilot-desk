@@ -20,7 +20,7 @@ const styles=read('assets/styles.css');
 const sw=read('sw.js');
 
 // Account = personalized home base.
-check(account.includes('Your PilotDesk home base.'),'Account hero does not frame the page as a personalized home base');
+check(account.includes('Your account'),'Account hero must clearly identify account management');
 for(const id of ['pdAccountRecentActivity','pdAccountCurrency','pdAccountPrep','pdAccountSettings','pdSettingCompact','pdSettingMotion'])
   check(account.includes('id="'+id+'"'),'Account missing '+id);
 check(accountJs.includes("from('saved_calculations').select"),'Recent account-saved calculations are not loaded');
@@ -40,7 +40,7 @@ check(step6.includes('.pd-toggle-switch'),'EFB-style switch treatment missing');
 // Pricing = factual comparison.
 check(pricing.includes('Free tools. Optional account backup.')||pricing.includes('Free pilot tools. Pro for checkride prep and saved workflows.'),'Pricing still uses a sales-heavy hero');
 check((pricing.match(/class="pd-plan-card/g)||[]).length===2,'Pricing should compare only Free and Pro as active plans');
-check(pricing.includes('pd-pricing-school-note')&&pricing.includes('No school checkout yet.'),'Flight School status is not a restrained development note');
+check(pricing.includes('pd-pricing-school-note')&&pricing.includes('School features are still being tested before pricing is finalized.'),'Flight School status must explain availability without implying a purchasable school plan');
 check(step6.includes('.pd-plan-grid{grid-template-columns:1fr 1fr!important'),'Pricing comparison is not reduced to two factual columns');
 
 // Footer = minimal utility links + clear supplemental disclaimer.

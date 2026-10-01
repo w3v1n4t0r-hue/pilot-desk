@@ -11,7 +11,7 @@ const written=read('written-prep.html'),training=read('flight-training.html'),sw
 
 for(const phrase of ['Full interactive checkride prep','1 saved aircraft profile','Up to 3 saved flights','No Free-plan aircraft-profile cap','No Free-plan saved-flight cap'])
  check(pricing.includes(phrase),'Pricing missing product rule: '+phrase);
-check(pricing.includes('TRAIN')&&pricing.includes('FLY'),'Pricing does not frame Pro around TRAIN + FLY');
+check(pricing.includes('Full Checkride Lab')&&pricing.includes('Pro Preflight workspace'),'Pricing must describe both study and planning benefits');
 check(pricing.includes('Core calculators')||pricing.includes('core aviation calculators'),'Pricing no longer makes the free acquisition surface clear');
 
 check(access.includes('aircraft:1')&&access.includes('savedFlights:3')&&access.includes('oralTopicsPerTrack:2'),'Shared Pro limits are not canonicalized');

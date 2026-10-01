@@ -19,7 +19,8 @@ for(const file of files){
  const html=fs.readFileSync(file,'utf8');
  const lower=html.toLowerCase();
  const robots=(html.match(/<meta\s+name=["']robots["'][^>]*content=["']([^"']+)["']/i)||[])[1]||'';
- const indexablePage=/^\s*index\s*,\s*follow\s*$/i.test(robots);
+ const directives=robots.toLowerCase().split(',').map(x=>x.trim());
+ const indexablePage=!directives.includes('noindex');
  if(indexablePage)indexable++;
 
  check(/<meta\s+name=["']viewport["']/i.test(html),file+': missing responsive viewport');

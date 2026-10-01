@@ -41,7 +41,7 @@ function applyShell(dir){
   for(const e of fs.readdirSync(dir,{withFileTypes:true})){
     const p=path.join(dir,e.name);
     if(e.isDirectory()) applyShell(p);
-    else if(e.name.endsWith('.html')) fs.writeFileSync(p,sharedShell(fs.readFileSync(p,'utf8')));
+    else if(e.name.endsWith('.html')) fs.writeFileSync(p,sharedShell(fs.readFileSync(p,'utf8'),'/'+path.relative(target,p).split(path.sep).join('/')));
   }
 }
 applyShell(target);

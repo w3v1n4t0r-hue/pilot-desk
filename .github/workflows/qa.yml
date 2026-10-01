@@ -67,6 +67,8 @@ jobs:
         run: node qa/claude-step8-daily-smoke.mjs
       - name: Audit every built page surface
         run: node qa/page-surface-smoke.mjs
+      - name: Check Sites design workflow regressions
+        run: node qa/sites-design-regression.mjs
       - name: Run five-pass copy and design audit
         run: node qa/five-pass-site-audit.mjs
       - name: Run second-round five-iteration deep audit

@@ -19,7 +19,7 @@ const legacyCss=read('assets/styles-legacy.css');
 const sw=read('sw.js');
 
 for(const phrase of [
-  'Your next flight starts here.',
+  'Flight planning and pilot tools.',
   'Core tools work without an account','FAA, AWC and eCFR references',
   'Common pilot calculations','Three daily questions','Study for the flying you do.',
   'OPTIONAL ACCOUNT','SOURCES','Common questions'

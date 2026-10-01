@@ -57,7 +57,7 @@
 .topbar .brand small{
   display:block;
   margin-top:1px;
-  font-size:9px!important;
+  font-size:var(--pd-type-label)!important;
   line-height:1.1;
   letter-spacing:.16em;
 }
@@ -168,7 +168,7 @@ a.pd-card:hover,
 }
 .calc-box{padding:22px}
 .fields{gap:14px}
-.field label{font-size:13px}
+.field label{font-size:var(--pd-type-label)}
 .results{gap:10px}
 .result{min-width:0}
 .related a{min-height:40px;display:flex;align-items:center}
@@ -264,6 +264,6 @@ input,select,textarea,button{min-width:0}
     width:100%;
     justify-content:center;
   }
-  .source-table{font-size:11px}
+  .source-table{font-size:var(--pd-type-label)}
   .source-table th,.source-table td{padding:8px 6px}
 }

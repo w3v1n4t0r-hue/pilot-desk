@@ -20,7 +20,7 @@
   <script defer src="/assets/aircraft-v2.js?v=3.1"></script>
   <script defer src="/assets/ad-config.js"></script>
   <script defer src="/assets/ads.js"></script>
-  
+
 <script type="application/ld+json" data-pd-aircraft-schema="1">{"@context":"https://schema.org","@type":"WebApplication","name":"PilotDesk Aircraft Profiles and Hangar","url":"https://www.pilot-desk.com/aircraft.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"PilotDesk","url":"https://www.pilot-desk.com/","logo":{"@type":"ImageObject","url":"https://www.pilot-desk.com/favicon.svg"}}}</script></head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -32,14 +32,15 @@
   <section class="pd-aircraft-active-hub" id="pdAircraftActiveHub" aria-labelledby="pdAircraftActiveTitle">
     <div class="pd-aircraft-active-empty" id="pdAircraftActiveEmpty">
       <span class="eyebrow">ACTIVE AIRCRAFT</span>
-      <h2 id="pdAircraftActiveTitle">Your airplane can drive the rest of PilotDesk.</h2>
-      <p>Add an aircraft below, then make it active to reuse its planning values instead of re-entering them on every flight.</p>
+      <h2 id="pdAircraftActiveTitle">Active aircraft</h2>
+      <p>Choose an active aircraft to reuse its planning values across PilotDesk.</p>
     </div>
     <div id="pdAircraftActiveContent" hidden aria-live="polite"></div>
   </section>
   <section class="info-card" data-pd-aircraft-source="1" data-pd-core-depth="1"><h2>Keep the source with the airplane.</h2><p>A saved profile is a convenience copy, not the aircraft record. Put the POH/AFM revision or current weight-and-balance date in the profile, and recheck the numbers after equipment, maintenance, or weighing changes.</p><p><a href="/weight-balance.html">Weight &amp; balance</a> · <a href="/poh-chart-studio.html">POH chart practice</a> · <a href="/guides/aircraft-performance-reference.html">Performance reference</a></p></section><div class="safety-strip"><strong>Use current approved aircraft data.</strong> A Hangar profile is only a saved copy. PilotDesk does not verify POH/AFM limitations, current equipment, maintenance changes, weight-and-balance revisions, or airworthiness.</div>
 
-  <section class="pd-panel">
+  <section class="pd-panel"><div class="pd-card-head"><div><h2>Saved aircraft</h2><p id="aircraftCount">Stored only on this device.</p><p class="fine" id="aircraftPlanNote">Free includes 1 aircraft profile. Pro removes the Free-plan cap and adds cloud backup/restore.</p></div><div class="pd-actions"><a class="pd-btn secondary" href="/flights.html">Saved Flights</a><a class="pd-btn secondary" href="/calculators/weight-balance-builder/">Open W&amp;B</a><button class="pd-btn secondary" type="button" id="aircraftExport">Export Hangar</button><label class="pd-btn secondary pd-file-button" for="aircraftImport">Import Hangar</label><input id="aircraftImport" type="file" accept="application/json,.json" hidden></div></div><div id="aircraftList" class="pd-list"></div></section>
+<section class="pd-panel">
     <div class="pd-card-head"><div><h2 id="aircraftFormTitle">Add an aircraft</h2><p>Leave anything you do not use blank. Keep the source/revision note current so you know where the numbers came from.</p></div><span class="badge" id="aircraftEditState">NEW</span></div>
     <form id="aircraftForm" novalidate>
       <div class="pd-form-grid">
@@ -68,7 +69,7 @@
     </form>
   </section>
 
-  <section class="pd-panel"><div class="pd-card-head"><div><h2>Saved aircraft</h2><p id="aircraftCount">Stored only on this device.</p><p class="fine" id="aircraftPlanNote">Free includes 1 aircraft profile. Pro removes the Free-plan cap and adds cloud backup/restore.</p></div><div class="pd-actions"><a class="pd-btn secondary" href="/flights.html">Saved Flights</a><a class="pd-btn secondary" href="/calculators/weight-balance-builder/">Open W&amp;B</a><button class="pd-btn secondary" type="button" id="aircraftExport">Export Hangar</button><label class="pd-btn secondary pd-file-button" for="aircraftImport">Import Hangar</label><input id="aircraftImport" type="file" accept="application/json,.json" hidden></div></div><div id="aircraftList" class="pd-list"></div></section>
+
   <p>Clearing browser/site data removes local profiles. Export Hangar creates a JSON backup you can keep or move to another device. Imported values should be checked against current approved aircraft data before use.</p>
 </main>
 <footer><div><b>PilotDesk</b><p>Aviation planning and training tools.</p></div><div class="footer-links"><a href="/airport.html">Airports</a><a href="/flights.html">Saved Flights</a><a href="/weather.html">Weather</a><a href="/legal/privacy.html">Privacy</a><a href="/sources.html">Sources</a></div><p class="fine">Planning aid only. Verify operational numbers with current approved sources.</p></footer>

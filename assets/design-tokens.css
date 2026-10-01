@@ -6,7 +6,7 @@
 :root{
   color-scheme:dark;
   --bg:#050607;--bg2:#0a0d11;--panel:#0c1014;--panel2:#12171c;--panel3:#181e24;
-  --text:#f2f3f3;--muted:#b0b5ba;--muted2:#747b82;
+  --text:#f2f3f3;--muted:#b0b5ba;--muted2:#9299a0;
   --line:#293038;--line-hi:#4b5660;--silver:#d9dde0;--silver2:#f5f6f6;
   --accent:#6faed1;--accent-soft:rgba(111,174,209,.10);
   --pd-blue:#6faed1;--pd-blue-soft:rgba(111,174,209,.10);
@@ -16,12 +16,13 @@
   --pd-radius-sm:2px;--pd-radius:3px;--pd-radius-lg:4px;--pd-cut:9px;
   --shadow:none;--pd-shadow:none;--pd-shadow-soft:none;
   --pd-ease:cubic-bezier(.22,.72,.18,1);--pd-fast:140ms;--pd-medium:220ms;
+  --pd-type-body:1rem;--pd-type-label:.875rem;--pd-type-meta:.75rem;
   --pd-shell-width:1260px;--pd-reading-width:820px;--pd-space-section:32px;--pd-space-panel:20px;
 }
 html,body{background:#050505;color:var(--text)}
 body:before{animation:none}
 ::selection{background:#faf9f4;color:#050505}
-:focus-visible{outline:1px solid #d9d8d2!important;outline-offset:3px!important}
+:focus-visible{outline:2px solid #d9d8d2!important;outline-offset:3px!important}
 
 /* HARD-SQUARE GEOMETRY RESET */
 :where(button,input,select,textarea,.pd-btn,.calc-btn,.utility-btn,.recent-chip,.pd-chip,
@@ -69,7 +70,7 @@ html[data-pd-theme="dark"]{
   color-scheme:dark!important;
   --bg:#050607!important;--bg2:#0a0d11!important;--panel:#0c1014!important;
   --panel2:#12171c!important;--panel3:#181e24!important;
-  --text:#f2f3f3!important;--muted:#b0b5ba!important;--muted2:#747b82!important;
+  --text:#f2f3f3!important;--muted:#b0b5ba!important;--muted2:#9299a0!important;
   --line:#293038!important;--line-hi:#4b5660!important;
   --silver:#d9dde0!important;--silver2:#f5f6f6!important;
   --accent:#6faed1!important;--accent-soft:rgba(111,174,209,.10)!important;

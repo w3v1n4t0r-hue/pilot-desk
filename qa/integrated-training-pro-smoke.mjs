@@ -23,7 +23,7 @@ check(matrix?.tracks?.cfii?.standard==='FAA-S-8081-9E','CFII standard mismatch')
 check(matrix?.tracks?.atp?.standard==='FAA-S-ACS-11A','ATP standard mismatch');
 check(matrix?.tracks?.multi?.knowledgeTest===false&&matrix.tracks.multi.testCode==='NO SEPARATE KNOWLEDGE TEST','Multi must not invent a separate FAA knowledge test');
 
-check(coverage.includes('Every training question needs a place in the standard.'),'coverage page purpose missing');
+check(coverage.includes('FAA study coverage')&&coverage.includes('Choose a rating to review its FAA standard'),'coverage page must explain the student-facing purpose');
 check(coverage.includes('Volume does not count as coverage.'),'coverage page authoring gate missing');
 check(coverageJs.includes("const order=['ppl','ira','cpl','multi','cfi','cfii','atp']"),'coverage UI does not expose all seven tracks');
 check(!/linear-gradient|radial-gradient|backdrop-filter/.test(coverageCss),'coverage page violates Claude visual rules');
@@ -56,7 +56,7 @@ check(preflightJs.includes('does not mean the flight is safe, legal, or recommen
 check(preflight.includes('Personal planning limits')&&preflightJs.includes('Print / save PDF')&&preflightJs.includes("addEventListener('click',()=>print())"),'Pro Preflight limit/PDF controls missing');
 check(!/linear-gradient|radial-gradient|backdrop-filter/.test(preflightCss),'Pro Preflight violates Claude visual rules');
 
-for(const phrase of ['source-based study plan','pro preflight workspace','faa coverage matrices'])check(pricing.toLowerCase().includes(phrase),`pricing missing ${phrase}`);
+for(const phrase of ['source-based study plan','pro preflight workspace','faa acs / pts coverage matrix'])check(pricing.toLowerCase().includes(phrase),`pricing missing ${phrase}`);
 check(training.includes('/learn/study-plan/')&&training.includes('/learn/coverage/')&&training.includes('/preflight-brief.html'),'training hub missing integrated workflow links');
 check(Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0)>=58,'service worker cache not advanced for integrated training release');
 for(const asset of ['/assets/training-standards-data.js','/assets/training-coverage.js','/assets/study-plan.js','/assets/pro-preflight.js'])check(sw.includes("'"+asset+"'"),`network-first cache missing ${asset}`);

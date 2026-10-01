@@ -12,7 +12,7 @@ const sectionDefinitions = [
   },
   {
     label: 'Plan',
-    paths: ['/planner.html', '/route-planner.html', '/airport.html', '/procedures.html', '/flights.html', '/flight-brief.html', '/aircraft.html', '/poh-chart-studio.html'],
+    paths: ['/planner.html', '/route-planner.html', '/airport.html', '/procedures.html', '/flights.html', '/flight-brief.html', '/preflight-brief.html', '/aircraft.html', '/poh-chart-studio.html'],
     items: [
       ['/route-planner.html', 'Route planner', 'Build a route and navlog'],
       ['/airport.html', 'Airport search', 'Runways, weather, and FAA procedures'],
@@ -20,6 +20,7 @@ const sectionDefinitions = [
       ['/aircraft.html', 'Aircraft', 'Your aircraft profiles and planning numbers'],
       ['/flights.html', 'Saved flights', 'Return to flights you saved'],
       ['/flight-brief.html', 'Flight brief', 'Review your current flight'],
+      ['/preflight-brief.html', 'Pro Preflight', 'Review your route against personal planning limits'],
       ['/poh-chart-studio.html', 'Aircraft performance', 'Work with your approved chart data']
     ]
   },
@@ -34,7 +35,7 @@ const sectionDefinitions = [
   },
   {
     label: 'Learn',
-    paths: ['/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/', '/daily/', '/checklist-trainer.html'],
+    paths: ['/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/', '/learn/', '/daily/', '/checklist-trainer.html'],
     items: [
       ['/written-prep.html', 'Written Prep', 'PPL through ATP written-test study'],
       ['/skill-gap.html', 'Weak subjects', 'Find subjects that need more work'],
@@ -44,7 +45,9 @@ const sectionDefinitions = [
       ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons'],
       ['/training/acs-far-reference.html', 'ACS & FAR reference', 'Official FAA study sources by rating'],
       ['/training/certificates-ratings.html', 'Certificates & ratings', 'See the FAA certificate path and ratings'],
-      ['/learn/oral-exam/', 'Oral exam guide', 'Practice checkride subjects by rating']
+      ['/learn/oral-exam/', 'Oral exam guide', 'Practice checkride subjects by rating'],
+      ['/learn/checkride-lab/', 'Checkride Lab', 'Practice answers and examiner follow-ups'],
+      ['/learn/study-plan/', 'Study plan', 'Choose your next study task']
     ]
   }
 ];

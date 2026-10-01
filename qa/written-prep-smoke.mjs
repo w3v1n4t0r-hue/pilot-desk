@@ -88,7 +88,7 @@ const figureQuestions=all.filter(q=>q.figureRef?.url&&q.figureRef?.figure);
 ok(figureQuestions.length>=23,`At least 23 live questions should require an official FAA figure; got ${figureQuestions.length}`);
 ok(figureQuestions.length/all.length>=0.45,'At least 45% of the live bank should be FAA-figure based');
 
-has(html,'Practice by test and subject.','Written Prep should explain the practice flow');
+has(html,'Choose your test and a study session.','Written Prep should explain the practice flow');
 ok(!html.includes('5,000'),'Written Prep must not market the removed generated-volume bank');
 ok(!html.includes('data-difficulty="foundation"'),'Foundation difficulty must not be exposed');
 has(html,'data-difficulty="applied"','Applied difficulty filter missing');

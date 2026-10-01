@@ -24,10 +24,10 @@
   padding:11px 13px!important;border-bottom:1px solid var(--line)!important
 }
 .pd-flight-journey-head>div:first-child{display:grid;gap:2px}
-.pd-flight-journey-head small{color:var(--accent)!important;font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:.1em!important}
-.pd-flight-journey-head b{font-size:12px!important}
-.pd-flight-journey-head span{color:var(--muted2)!important;font-size:9px!important}
-.pd-flight-journey-actions a{color:var(--muted)!important;font-size:9px!important}
+.pd-flight-journey-head small{color:var(--accent)!important;font:700 var(--pd-type-label)/1.2 ui-monospace,SFMono-Regular,Consolas,monospace!important;letter-spacing:.1em!important}
+.pd-flight-journey-head b{font-size:var(--pd-type-label)!important}
+.pd-flight-journey-head span{color:var(--muted2)!important;font-size:var(--pd-type-label)!important}
+.pd-flight-journey-actions a{color:var(--muted)!important;font-size:var(--pd-type-label)!important}
 .pd-flight-journey-steps{
   display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:1px!important;background:var(--line)!important
 }
@@ -38,9 +38,9 @@
 .pd-flight-journey-steps a:hover{background:var(--panel2)!important;color:var(--text)!important}
 .pd-flight-journey-steps a[aria-current="step"]{background:#0a1218!important;color:var(--text)!important;box-shadow:inset 0 -2px 0 var(--accent)!important}
 .pd-flight-journey-steps a.visited i{color:var(--accent)!important}
-.pd-flight-journey-steps i{font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace!important;color:var(--muted2)!important;font-style:normal!important}
-.pd-flight-journey-steps span{font-size:9px!important}
-.pd-flight-journey-next{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:9px 12px!important;border-top:1px solid var(--line)!important;color:var(--muted)!important;font-size:9px!important}
+.pd-flight-journey-steps i{font:700 var(--pd-type-label)/1 ui-monospace,SFMono-Regular,Consolas,monospace!important;color:var(--muted2)!important;font-style:normal!important}
+.pd-flight-journey-steps span{font-size:var(--pd-type-label)!important}
+.pd-flight-journey-next{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:9px 12px!important;border-top:1px solid var(--line)!important;color:var(--muted)!important;font-size:var(--pd-type-label)!important}
 .pd-flight-journey-next a{color:var(--accent)!important;font-weight:700!important}
 
 /* Planner summary remains in scan range while the route is edited. */
@@ -50,13 +50,13 @@
   gap:1px;margin:0 0 10px;border:1px solid #303942;background:#303942
 }
 .rp-live-summary>div{min-width:0;padding:10px 12px;background:#070a0d}
-.rp-live-summary small{display:block;color:var(--muted2);font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em}
+.rp-live-summary small{display:block;color:var(--muted2);font:700 var(--pd-type-label)/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em}
 .rp-live-summary strong{
   display:block;margin-top:5px;color:var(--accent);font:700 18px/1.05 ui-monospace,SFMono-Regular,Consolas,monospace;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis
 }
 .rp-live-route strong{color:var(--text)}
-.rp-live-route span{display:block;margin-top:4px;color:var(--muted2);font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rp-live-route span{display:block;margin-top:4px;color:var(--muted2);font-size:var(--pd-type-label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Route editing and chart are the primary two-column workspace. */
 .rp-grid{grid-template-columns:minmax(320px,.34fr) minmax(0,.66fr)!important;gap:10px!important}
@@ -70,8 +70,8 @@
 /* Repeated routes live inside the editor, not on a disconnected page only. */
 .rp-saved-routes{margin:16px 0;padding-top:13px;border-top:1px solid var(--line)}
 .rp-saved-routes .pd-card-head{margin-bottom:7px}
-.rp-saved-routes h2{margin:0;font-size:13px}
-.rp-saved-routes .pd-card-head a{font-size:9px;color:var(--muted)}
+.rp-saved-routes h2{margin:0;font-size:var(--pd-type-label)}
+.rp-saved-routes .pd-card-head a{font-size:var(--pd-type-label);color:var(--muted)}
 .rp-saved-route{
   display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center;
   padding:8px 0;border-top:1px solid #222931
@@ -79,10 +79,10 @@
 .rp-saved-route:first-child{border-top:0}
 .rp-saved-route>div:first-child{min-width:0}
 .rp-saved-route b,.rp-saved-route small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rp-saved-route b{font-size:10px}.rp-saved-route small{margin-top:2px;color:var(--muted2);font-size:8px}
+.rp-saved-route b{font-size:var(--pd-type-label)}.rp-saved-route small{margin-top:2px;color:var(--muted2);font-size:var(--pd-type-label)}
 .rp-saved-route>div:last-child{display:flex;gap:5px}
 .rp-saved-route a,.rp-saved-route button{
-  min-height:30px;padding:0 7px;border:1px solid var(--line);background:#080b0e;color:var(--muted);font-size:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center
+  min-height:30px;padding:0 7px;border:1px solid var(--line);background:#080b0e;color:var(--muted);font-size:var(--pd-type-label);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center
 }
 .rp-saved-route a:hover,.rp-saved-route button:hover{border-color:var(--accent);color:var(--text)}
 
@@ -91,7 +91,7 @@
 .rp-leg-weather{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
 .rp-leg-wx{
   display:inline-flex;align-items:center;gap:5px;padding:2px 5px;border:1px solid #303942;background:#080b0e;
-  font:700 7.5px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted)
+  font:700 var(--pd-type-label)/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted)
 }
 .rp-leg-wx b{color:var(--accent)}
 .rp-leg-wx[data-cat="IFR"],.rp-leg-wx[data-cat="LIFR"]{border-color:#5b4447}
@@ -107,7 +107,7 @@
 .pd-saved-flight-card:after{display:none!important}
 .pd-saved-flight-card.is-active{box-shadow:inset 2px 0 0 var(--accent)!important}
 .pd-saved-flight-eyebrow .ACTIVE{color:var(--accent)!important}
-.pd-saved-flight-actions .pd-btn{min-height:36px!important;font-size:9px!important}
+.pd-saved-flight-actions .pd-btn{min-height:36px!important;font-size:var(--pd-type-label)!important}
 .pd-saved-flight-bar{border-radius:0!important}
 .pd-saved-flight-bar i{background:var(--accent)!important;border-radius:0!important}
 

@@ -1,6 +1,6 @@
 importScripts('/assets/offline-precache.js');
 
-const CACHE='pilotdesk-v63';
+const CACHE='pilotdesk-v64';
 const GENERATED_CALCULATORS=Array.isArray(self.PILOTDESK_OFFLINE_CALCULATORS)?self.PILOTDESK_OFFLINE_CALCULATORS:[];
 const GENERATED_ASSETS=Array.isArray(self.PILOTDESK_OFFLINE_ASSETS)?self.PILOTDESK_OFFLINE_ASSETS:[];
 const CORE=[...new Set([

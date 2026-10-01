@@ -197,7 +197,7 @@ textarea{resize:vertical}
     min-width:42px;
     padding-inline:10px!important;
   }
-  .pd-account-text{font-size:12px!important}
+  .pd-account-text{font-size:var(--pd-type-label)!important}
 
   .hero,
   .pd-home-hero{

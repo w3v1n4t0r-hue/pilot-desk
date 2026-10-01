@@ -69,6 +69,8 @@ jobs:
         run: node qa/page-surface-smoke.mjs
       - name: Check Sites design workflow regressions
         run: node qa/sites-design-regression.mjs
+      - name: Verify navigation lookup routing and function budget
+        run: node qa/navigation-lookup-tests.mjs
       - name: Run five-pass copy and design audit
         run: node qa/five-pass-site-audit.mjs
       - name: Run second-round five-iteration deep audit

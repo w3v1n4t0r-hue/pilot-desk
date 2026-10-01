@@ -1,5 +1,5 @@
 "use strict";
-const { load } = require("../src/server/cifp.cjs");
+const { load } = require("./cifp.cjs");
 module.exports = async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "GET")

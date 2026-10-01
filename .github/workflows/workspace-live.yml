@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
     paths:
-      - 'api/airport-search.js'
-      - 'api/nearby-airports.js'
+      - 'api/navigation-lookup.js'
+      - 'vercel.json'
+      - 'src/server/airport-search.cjs'
+      - 'src/server/nearby-airports.cjs'
       - 'api/weather.js'
       - 'assets/airport.js'
       - 'assets/flights.js'
@@ -56,8 +58,8 @@ jobs:
           node --check assets/weather-extra.js
           node --check assets/metar-decoder.js
           node --check assets/aircraft-v2.js
-          node --check api/airport-search.js
-          node --check api/nearby-airports.js
+          node --check src/server/airport-search.cjs
+          node --check src/server/nearby-airports.cjs
           node --check api/weather.js
           node -e "JSON.parse(require('fs').readFileSync('site.webmanifest','utf8')); console.log('manifest JSON PASS')"
           if grep -q '<sitemapindex' sitemap.xml; then

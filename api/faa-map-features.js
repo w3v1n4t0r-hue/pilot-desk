@@ -57,7 +57,7 @@ module.exports=async function handler(req,res){
   }
 
   const params=new URLSearchParams({
-    where:'1=1',
+    where:product==='airports'?"PRIVATEUSE = 0 AND TYPE_CODE = 'AD'":'1=1',
     geometry:[bbox.west,bbox.south,bbox.east,bbox.north].join(','),
     geometryType:'esriGeometryEnvelope',
     inSR:'4326',

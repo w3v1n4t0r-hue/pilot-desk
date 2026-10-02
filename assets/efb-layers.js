@@ -114,7 +114,7 @@ function start(RP,L){
     '</section>',
     '<section class="rp-layer-section"><h3>FLIGHT</h3>',
       toggleRow('notams','NOTAMs','FAA API'),
-      toggleRow('airports','Airports','FAA AIS'),
+      toggleRow('airports','Public-use airports','FAA AIS'),
       toggleRow('navaids','VORs / NAVAIDs','FAA AIS'),
       toggleRow('fixes','Fixes','FAA AIS'),
       toggleRow('airways','Airways / Q routes','FAA AIS'),
@@ -452,7 +452,7 @@ function start(RP,L){
   function renderGeoLayer(key,geojson){
     const g=ensureGroup(key);
     g.clearLayers();
-    const visible=(geojson.features||[]).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
+    const visible=(geojson.features||[]).filter(f=>key!=='airports'||window.PilotDeskMapDensity.publicAirport(f)).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
     const size=map.getZoom()<10?({pirep:48,metar:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
     const priority=f=>{const p=f.properties||{};if(key==='pirep'){const v=window.PilotDeskChartSymbols.pirep(p);return (v.urgent?100:0)+Math.max(...v.items.map(x=>x.level||0));}if(key==='metar')return ({LIFR:4,IFR:3,MVFR:2,VFR:1}[p.fltCat||p.flightCategory]||0);return 0;};
     const grouped=size?window.PilotDeskMapDensity.group(visible,c=>map.project([c[1],c[0]],map.getZoom()),size,priority):visible.map(feature=>({feature,members:[feature]}));

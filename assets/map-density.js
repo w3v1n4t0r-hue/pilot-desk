@@ -19,5 +19,6 @@
   if(Math.max(...lon)-Math.min(...lon)>180)return null;
   return [Math.max(-90,Math.min(...lat)-1),Math.max(-180,Math.min(...lon)-1),Math.min(90,Math.max(...lat)+1),Math.min(180,Math.max(...lon)+1)].map(v=>v.toFixed(3)).join(',');
  }
- return {group,routeBounds};
+ function publicAirport(feature){const p=feature.properties||{};return (p.PRIVATEUSE===0||p.PRIVATEUSE==='0')&&String(p.TYPE_CODE||'').trim().toUpperCase()==='AD';}
+ return {group,routeBounds,publicAirport};
 });

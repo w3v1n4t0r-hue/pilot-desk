@@ -19,7 +19,7 @@ assert.deepEqual(kinds({rawOb:'AAA UA /SK SKC'}),['skyweather']);
 assert.deepEqual(kinds({rawOb:'AAA UA /SK SKC BKN100'}),['skyweather']);
 assert.deepEqual(kinds({}),['skyweather']);
 assert.equal(S.navigation('navaids',{TYPE:'NDB'}).kind,'ndb');
-for(const key of ['airports','navaids','fixes','obstacles']){const icon=S.navigation(key);assert.ok(icon.html.includes('<svg'));assert.ok(!icon.html.includes('<span'));}
+for(const key of ['airports','navaids','fixes','obstacles']){const icon=S.navigation(key);assert.ok(icon.html.includes('<svg'));if(key!=='airports')assert.ok(!icon.html.includes('<span'));}
 assert.ok(!S.pirep({tbInt1:'<script>alert(1)</script>'}).html.includes('<script>'));
 assert.equal(S.pirep({tbInt1:'SEV'}).urgent,true);
 assert.equal(S.pirep({tbInt1:'MOD'}).urgent,false);
@@ -45,3 +45,17 @@ assert.equal(S.reportTime({obsTime:'invalid'},now),'Observation time unavailable
 assert.equal(S.reportTime({obsTime:now+600000},now),'Observation time unavailable');
 
 assert.equal(S.reportTime({receiptTime:now/1000},now),'Observation time unavailable');
+
+assert.equal(S.airportStatus({towerStatus:'towered'}).color,'#58a6ff');
+assert.equal(S.airportStatus({towerStatus:'non-towered'}).color,'#df76ce');
+assert.equal(S.airportStatus({}).badge,'?');
+assert.equal(S.airportStatus({_pdMembers:[{properties:{towerStatus:'towered'}},{properties:{towerStatus:'non-towered'}}]}).badge,'MIX');
+assert.equal(S.airportStatus({_pdMembers:[{properties:{towerStatus:'towered'}},{properties:{towerStatus:'towered'}}]}).status,'towered');
+assert.ok(S.navigation('airports',{towerStatus:'towered'}).html.includes('stroke="#58a6ff"'));
+assert.ok(S.navigation('airports',{towerStatus:'non-towered'}).html.includes('stroke="#df76ce"'));
+
+for(const [category,color] of Object.entries({VFR:'#3bd779',MVFR:'#58a6ff',IFR:'#ff5555',LIFR:'#ff79cb'})){
+ assert.equal(S.metarCategory({fltcat:category}),category);assert.equal(S.metarColor({fltcat:category}),color);
+ assert.equal(S.metarCategory({fltCat:category}),category);
+}
+assert.equal(S.metarCategory({}),'UNKNOWN');assert.equal(S.metarColor({fltcat:'bad'}),'#c6cbd0');

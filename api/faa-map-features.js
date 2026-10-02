@@ -31,6 +31,20 @@ async function getGeoJson(url){
   }finally{clearTimeout(timer)}
 }
 
+async function addTowerStatus(geojson){
+  const ids=[...new Set(geojson.features.map(f=>String(f.properties?.ICAO_ID||'').trim()).filter(id=>/^[A-Z0-9]{4}$/.test(id)))].slice(0,400);
+  const records=new Map();
+  if(ids.length){
+    const c=new AbortController(),timer=setTimeout(()=>c.abort(),4500);
+    try{
+      const r=await fetch('https://aviationweather.gov/api/data/airport?format=json&ids='+encodeURIComponent(ids.join(',')),{headers:{Accept:'application/json','User-Agent':UA},signal:c.signal,cache:'no-store'});
+      if(r.ok&&r.status!==204){const rows=await r.json();if(Array.isArray(rows))for(const row of rows){if(row.source!=='FAA'||!Object.prototype.hasOwnProperty.call(row,'tower'))continue;const status=row.tower==='T'?'towered':row.tower===null||row.tower===''?'non-towered':'unknown';if(row.icaoId)records.set(row.icaoId,status);}}
+    }catch{}finally{clearTimeout(timer)}
+  }
+  for(const f of geojson.features){f.properties={...f.properties,towerStatus:records.get(String(f.properties?.ICAO_ID||'').trim())||'unknown'};}
+  return geojson;
+}
+
 module.exports=async function handler(req,res){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   res.setHeader('X-Robots-Tag','noindex');
@@ -72,6 +86,7 @@ module.exports=async function handler(req,res){
   try{
     const url=ROOT+source.service+'/FeatureServer/'+source.layer+'/query?'+params.toString();
     const geojson=await getGeoJson(url);
+    if(product==='airports')await addTowerStatus(geojson);
     res.setHeader('Cache-Control','public, s-maxage=1800, stale-while-revalidate=21600');
     return res.status(200).json({
       product,

@@ -34,3 +34,11 @@ advisoryContext.routeContextSeq=2;complete({geojson:{features:[polygon]}});await
 assert.equal(advisoryContext.briefData.tfr,undefined);
 advisoryContext.fetchJson=async()=>{throw Error('Test outage');};await vm.runInContext("loadRouteAdvisory('tfr',2)",advisoryContext);assert.equal(advisoryContext.briefStatus.tfr,'unavailable');
 console.log('Route coverage checks passed: route bounds used, obsolete responses ignored, and outages identified.');
+
+const airportDensity = (await import('../assets/map-density.js')).default;
+assert.equal(airportDensity.publicAirport({properties:{PRIVATEUSE:0,TYPE_CODE:'AD'}}),true);
+assert.equal(airportDensity.publicAirport({properties:{PRIVATEUSE:'0',TYPE_CODE:'AD'}}),true);
+assert.equal(airportDensity.publicAirport({properties:{PRIVATEUSE:1,TYPE_CODE:'AD'}}),false);
+assert.equal(airportDensity.publicAirport({properties:{PRIVATEUSE:0,TYPE_CODE:'HP'}}),false);
+assert.equal(airportDensity.publicAirport({properties:{TYPE_CODE:'AD'}}),false);
+console.log('Public-use airport filtering passed');

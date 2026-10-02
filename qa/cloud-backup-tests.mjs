@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const C=createRequire(import.meta.url)('../assets/cloud-backup.js');
+const local=[{id:'a',name:'Archer',cruiseTas:'120',updatedAt:1}];
+const remote=[{id:'a',name:'Archer',cruiseTas:'125',updatedAt:2},{id:'b',name:'Seminole'}];
+const merge=C.merge(local,remote);
+assert.equal(merge.records.length,3);assert.equal(merge.conflicts,1);
+assert.equal(merge.records.find(x=>x.id==='a').cruiseTas,'120');
+assert.equal(merge.records.find(x=>x.id===merge.ids.get('a')).cruiseTas,'125');
+assert.equal(C.merge(merge.records,remote).records.length,3,'Repeated restore must not create more conflict copies');
+assert.equal(C.merge(local,[{...local[0],updatedAt:500}]).conflicts,0);
+assert.throws(()=>C.records({}),/could not be read/);
+function storage(){const data=new Map([['pd-aircraft',JSON.stringify(local)],['pd-saved-flights',JSON.stringify([{id:'f-local',name:'Local',aircraftId:'a'}])],['pd-aircraft-active','a']]);return {data,getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v),removeItem:k=>data.delete(k)};}
+const device=storage(),restored=C.restore(device,remote,[{id:'f-cloud',name:'Cloud',aircraftId:'a'}]);
+assert.equal(restored.aircraft.length,3);assert.equal(restored.flights.length,2);
+assert.notEqual(restored.flights.find(x=>x.id==='f-cloud').aircraftId,'a');
+assert.equal(restored.flights.find(x=>x.id==='f-local').aircraftId,'a');
+assert.equal(device.getItem('pd-aircraft-active'),'a');assert.ok(device.getItem('pd-before-cloud-restore'));
+const failing=storage(),original=failing.getItem('pd-aircraft'),set=failing.setItem;let failed=false;
+failing.setItem=(k,v)=>{if(k==='pd-saved-flights'&&!failed){failed=true;throw Error('Quota exceeded');}set(k,v);};
+assert.throws(()=>C.restore(failing,remote,[]),/recovery snapshot/);
+assert.equal(failing.getItem('pd-aircraft'),original,'First list must roll back if the second write fails');
+// Run the application's backup handler against a failed flight write.
+const source=fs.readFileSync('assets/account.js','utf8');
+const handler=source.slice(source.indexOf('async function backupDeviceToCloud(){'),source.indexOf('async function restoreCloudToDevice(){'));
+let inserts=0,message='',busy=false;
+const context={cloudBusy:false,state:{session:{user:{id:'user-a'}},profile:null,client:{from:table=>({insert:async()=>{inserts++;return {error:table==='saved_flights'?Error('Test outage'):null};}})}},paidAccess:()=>true,cloudControls:v=>busy=v,cloudStatus:v=>message=v,cloudTools:async()=>C,localJson:key=>key==='pd-aircraft'?local:[{id:'f',name:'Flight',route:'A B'}],cloudRows:async()=>({a:[],f:[]}),renderAccountDashboard:async()=>{}};
+await vm.runInNewContext(handler+';backupDeviceToCloud()',context);
+assert.equal(inserts,2);assert.match(message,/Existing cloud records were kept; retry safely/);assert.equal(busy,false);
+console.log('Cloud transfer checks passed: conflicts retained, repeated merge deduplicated, aircraft links preserved, write rollback, and partial backup failure.');

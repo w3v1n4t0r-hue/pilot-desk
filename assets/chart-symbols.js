@@ -3,7 +3,11 @@
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shapes={
  airport:'<circle cx="12" cy="12" r="8"/><path d="M7 17 17 7M8 7h4M17 12v4"/>',
- navaid:'<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9Z"/><circle cx="12" cy="12" r="3"/>',
+ navaid:'<path d="m12 4 7 4v8l-7 4-7-4V8Z"/>',
+ vordme:'<rect x="3" y="3" width="18" height="18"/><path d="m12 4 7 4v8l-7 4-7-4V8Z"/>',
+ dme:'<rect x="5" y="5" width="14" height="14"/>',
+ vortac:'<path d="m12 4 7 4v8l-7 4-7-4V8Z"/><path d="M9 1h6v4H9ZM18 14l4 2-3 5-4-2ZM6 14l-4 2 3 5 4-2Z" fill="currentColor"/>',
+ heliport:'<circle cx="12" cy="12" r="8"/><path d="M8 7v10M16 7v10M8 12h8"/>',
  ndb:'<circle cx="12" cy="12" r="8" stroke-dasharray="1 3"/><circle cx="12" cy="12" r="2"/>',
  fix:'<path d="m12 4 9 16H3Z"/>',
  obstacle:'<path d="M12 3v18M5 21l7-13 7 13M7 17h10M8 6l4-3 4 3"/>',
@@ -18,10 +22,10 @@ const shapes={
  clear:'<circle cx="12" cy="12" r="4"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2"/>',
  report:'<path d="m12 3 2 7 7 4v2l-7-2v5l2 2h-8l2-2v-5l-7 2v-2l7-4Z"/>'
 };
-function svg(kind,color='#f0efe9',negative=false){const shape=shapes[kind]||shapes.report,slash=negative?'<path d="m3 21 18-18"/>':'';return '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><g fill="none" stroke="#08090b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">'+shape+slash+'</g><g fill="none" stroke="'+color+'" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+shape+slash+'</g></svg>';}
+function svg(kind,color='#f0efe9',negative=false){const shape=(shapes[kind]||shapes.report).replace(/currentColor/g,color),slash=negative?'<path d="m3 21 18-18"/>':'';return '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><g fill="none" stroke="#08090b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">'+shape+slash+'</g><g fill="none" stroke="'+color+'" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+shape+slash+'</g></svg>';}
 function section(raw,name){return raw.match(new RegExp('/'+name+'\\s+([^/]+)','i'))?.[1]?.trim()||'';}
-function severity(text){if(/\b(EXTRM|EXTREME)\b/.test(text))return 4;if(/\b(SEV|SEVERE|HVY|HEAVY)\b/.test(text))return 3;if(/\b(MOD|MODERATE)\b/.test(text))return 2;if(/\b(LGT|LIGHT|LT)\b/.test(text))return 1;if(/\b(TRC|TRACE)\b/.test(text))return .5;if(/\b(NEG|NEGATIVE|NONE|SMOOTH|NIL)\b/.test(text))return 0;return null;}
-function describe(text){return text.replace(/\bEXTRM\b/g,'extreme').replace(/\bSEV\b/g,'severe').replace(/\bMOD\b/g,'moderate').replace(/\bLGT\b|\bLT\b/g,'light').replace(/\bTRC\b/g,'trace').replace(/\bNEG\b/g,'negative').toLowerCase();}
+function severity(text){if(/\b(EXTRM|EXTREME)\b/.test(text))return 4;if(/\b(SEV|SVR|SEVERE|HVY|HEAVY)\b/.test(text))return 3;if(/\b(MOD|MDT|MODERATE)\b/.test(text))return 2;if(/\b(LGT|LIGHT|LT)\b/.test(text))return 1;if(/\b(TRC|TR|TRACE)\b/.test(text))return .5;if(/\b(NEG|NEGATIVE|NONE|SMOOTH|NIL)\b/.test(text))return 0;return null;}
+function describe(text){return text.replace(/\bEXTRM\b/g,'extreme').replace(/\bSEV\b|\bSVR\b/g,'severe').replace(/\bMOD\b|\bMDT\b/g,'moderate').replace(/\bLGT\b|\bLT\b/g,'light').replace(/\bTRC\b|\bTR\b/g,'trace').replace(/\bNEG\b/g,'negative').toLowerCase();}
 // Independently drawn vectors matched against ForeFlight Legends Guide §2.10.11.
 // Standard intensity glyphs encode severity; trace icing uses the light glyph.
 function weatherSvg(kind,level){
@@ -42,13 +46,28 @@ function pirep(properties={}){
  }
  const wx=String(p.wxString||p.wx||section(raw,'WX')).toUpperCase(),sky=section(raw,'SK')||[p.cloudCvg1,p.cloudCvg2,p.cloudCvg].filter(Boolean).join(' ');
  if(!items.length)items.push({kind:'skyweather',level:null,label:[wx?'Weather: '+wx:'',sky?'Sky: '+sky:''].filter(Boolean).join('; ')||'Pilot report: no classified weather condition'});
- const urgent=/\bUUA\b/.test(raw)||String(p.reportType||'').toUpperCase()==='UUA'||items.some(x=>x.level>=3);
+ const urgent=/\bUUA\b/.test(raw)||String(p.reportType||p.pirepType||'').toUpperCase()==='UUA'||items.some(x=>x.level>=3);
  const label=[...new Set(items.map(x=>x.label)),...(wx&&items[0].kind!=='skyweather'?['Weather: '+wx]:[]),...(sky&&items[0].kind!=='skyweather'?['Sky: '+sky]:[])].join('; ')+(urgent?'; urgent/severe PIREP':'');
  const html=items.map(x=>'<span class="rp-pirep-condition" data-condition="'+x.kind+'">'+weatherSvg(x.kind,x.level)+'</span>').join('')+(urgent?'<strong class="rp-pirep-urgent" aria-hidden="true"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="7" fill="#ce0024"/><path d="M7 3v5M7 10h.01" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg></strong>':'');
  const altitude=Number(p.fltlvl??p.fltLvl);
  const altitudeLabel=Number.isFinite(altitude)&&altitude>=0&&p.fltlvl!==null&&p.fltLvl!==null&&(p.fltlvl!==undefined||p.fltLvl!==undefined)?String(altitude).padStart(3,'0'):'';
  return{items,urgent,label,html:html+(altitudeLabel?'<span class="rp-pirep-altitude">'+altitudeLabel+'</span>':''),width:items.length*28};
 }
-function navigation(key,p={}){const type=String(p.TYPE_CODE||p.TYPE||p.type||'').toUpperCase();const kind=key==='airports'?'airport':key==='navaids'?/NDB/.test(type)?'ndb':'navaid':key==='fixes'?'fix':key==='obstacles'?'obstacle':'report';return{kind,label:kind==='ndb'?'NDB':key==='navaids'?'Navaid':key==='airports'?'Airport':key==='fixes'?'Fix':key==='obstacles'?'Obstacle':'Chart point',html:svg(kind)};}
-return{pirep,navigation,svg,weatherSvg,escape};
+function navigation(key,p={}){
+ const type=String(p.TYPE_CODE||p.TYPE||p.type||p.NAVAID_TYPE||'').toUpperCase().replace(/[ _/-]/g,'');
+ let kind=key==='airports'?(/HELIPORT|HELI/.test(type)?'heliport':'airport'):key==='navaids'?(/NDB/.test(type)?'ndb':/VORTAC/.test(type)?'vortac':/VOR.*DME/.test(type)?'vordme':type==='DME'?'dme':'navaid'):key==='fixes'?'fix':key==='obstacles'?'obstacle':'report';
+ const labels={airport:'Airport',heliport:'Heliport',ndb:'NDB',navaid:type==='VOR'?'VOR':'Navaid',vordme:'VOR/DME',vortac:'VORTAC',dme:'DME',fix:'Fix',obstacle:'Obstacle',report:'Chart point'};
+ return{kind,label:labels[kind],html:svg(kind)};
+}
+function reportTime(properties={},now=Date.now()){
+ const raw=properties.obsTime??properties.observationTime??properties.reportTime??properties.time;
+ if(raw===null||raw===undefined||raw==='')return 'Observation time unavailable';
+ const numeric=typeof raw==='number'||/^\d+(?:\.\d+)?$/.test(String(raw))?Number(raw):NaN;
+ const at=Number.isFinite(numeric)?numeric*(numeric<1e11?1000:1):Date.parse(raw);
+ if(!Number.isFinite(at)||at>now+300000)return 'Observation time unavailable';
+ const age=Math.max(0,Math.floor((now-at)/60000));
+ return 'Observed '+new Date(at).toISOString().slice(0,16).replace('T',' ')+' UTC · '+age+' min ago'+(age>=120?' · Older report; verify current conditions':'');
+}
+
+return{pirep,navigation,svg,weatherSvg,reportTime,escape};
 });

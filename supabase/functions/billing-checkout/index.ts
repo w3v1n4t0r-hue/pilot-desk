@@ -24,8 +24,9 @@ Deno.serve(async(req:Request)=>{
   const price=plan==="school"?schoolPrice:proPrice;if(!price)return json(503,{error:"That PilotDesk plan is not configured for checkout yet.",code:"plan_not_configured"});
   const adminHeaders=admin.startsWith("sb_secret_")?{apikey:admin}:{apikey:admin,Authorization:"Bearer "+admin};
   const existingRes=await fetch(base+"/rest/v1/billing_subscriptions?select=stripe_customer_id,plan,status&user_id=eq."+encodeURIComponent(user.id)+"&limit=1",{headers:adminHeaders});
-  const existingRows=existingRes.ok?await existingRes.json():[];const existing=Array.isArray(existingRows)?existingRows[0]:null;
-  if(existing&&["active","trialing"].includes(String(existing.status))&&existing.plan===plan)return json(409,{error:"This account already has an active "+plan+" subscription.",code:"already_subscribed"});
+  if(!existingRes.ok)throw new Error("Unable to check existing billing. Try again before starting checkout.");
+  const existingRows=await existingRes.json();const existing=Array.isArray(existingRows)?existingRows[0]:null;
+  if(existing&&["active","trialing"].includes(String(existing.status)))return json(409,{error:"This account already has an active subscription. Use billing management to change plans.",code:"already_subscribed"});
   let customerId=existing?.stripe_customer_id||"";
   if(!customerId){
    const customer=await stripePost("/v1/customers",{"email":String(user.email||""),"metadata[supabase_user_id]":user.id,"metadata[pilotdesk]":"true"});

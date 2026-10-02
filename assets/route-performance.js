@@ -1,8 +1,8 @@
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id),KEY='pd-route-performance-v1';
-const fields={departureUtc:'rpDepartureUtc',onboard:'rpFuelOnboard',taxi:'rpTaxiFuel',alternate:'rpAlternateFuel',reserveMinutes:'rpReserveMinutes',reserveBurn:'rpReserveBurn',extra:'rpExtraFuel'};
-const defaults={departureUtc:'',onboard:'',taxi:'0',alternate:'0',reserveMinutes:'',reserveBurn:'',extra:'0'};
+const fields={departureUtc:'rpDepartureUtc',onboard:'rpFuelOnboard',taxi:'rpTaxiFuel',alternate:'rpAlternateFuel',reserveMinutes:'rpReserveMinutes',reserveBurn:'rpReserveBurn',extra:'rpExtraFuel',alternateAirport:'rpAlternateAirport',alternateNotes:'rpAlternateNotes'};
+const defaults={departureUtc:'',onboard:'',taxi:'0',alternate:'0',reserveMinutes:'',reserveBurn:'',extra:'0',alternateAirport:'',alternateNotes:''};
 const phaseNames=["cruiseAltitude","departureElevation","destinationElevation","climbTas","climbBurn","climbRate","descentTas","descentBurn","descentRate"];
 let forecast=null;
 let overrides={},timer=null,activeLegKeys=new Set();

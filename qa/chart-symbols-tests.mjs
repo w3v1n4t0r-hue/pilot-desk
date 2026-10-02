@@ -31,3 +31,17 @@ assert.ok(S.weatherSvg('turbulence',2).includes('#ff8500'));
 for(const kind of ['icing','turbulence'])for(const level of [1,2,3])assert.ok(S.weatherSvg(kind,level).includes('<path d='));
 assert.notEqual(S.weatherSvg('turbulence',3),S.weatherSvg('turbulence',4));
 console.log('Chart symbol tests passed: multi-condition PIREPs, intensities, negative vs unknown, weather, sky, navigation, and safe markup.');
+
+assert.equal(S.pirep({rawOb:'AAA UA /IC MDT'}).items[0].level,2);
+assert.equal(S.pirep({rawOb:'AAA UA /TB SVR'}).items[0].level,3);
+assert.equal(S.pirep({rawOb:'AAA UA /IC TR'}).items[0].level,.5);
+for(const [type,kind] of [['VOR','navaid'],['VOR/DME','vordme'],['VORTAC','vortac'],['DME','dme'],['NDB','ndb']])assert.equal(S.navigation('navaids',{TYPE:type}).kind,kind);
+assert.equal(S.navigation('airports',{TYPE:'HELIPORT'}).kind,'heliport');
+const now=Date.parse('2026-10-02T18:00:00Z');
+assert.match(S.reportTime({obsTime:now/1000-1800},now),/30 min ago/);
+assert.match(S.reportTime({obsTime:'2026-10-02T15:00:00Z'},now),/Older report/);
+assert.equal(S.reportTime({},now),'Observation time unavailable');
+assert.equal(S.reportTime({obsTime:'invalid'},now),'Observation time unavailable');
+assert.equal(S.reportTime({obsTime:now+600000},now),'Observation time unavailable');
+
+assert.equal(S.reportTime({receiptTime:now/1000},now),'Observation time unavailable');

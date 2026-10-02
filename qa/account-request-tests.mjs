@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const source=fs.readFileSync('assets/account.js','utf8');
+const line=name=>source.split('\n').find(x=>x.startsWith('async function '+name+'('));
+let requestCount=0,statusText='',verification='',resetCount=0;
+const button={disabled:false,textContent:'Create account',setAttribute(){},removeAttribute(){}};
+const controls={'#pdCreateEmail':{value:'test@example.invalid'},'#pdCreatePassword':{value:'example-password'},'#pdPasswordEmail':{value:'not-an-email',checkValidity:()=>false},'#pdForgotPassword':button};
+let release;
+const state={client:{auth:{signUp:async()=>{requestCount++;await new Promise(resolve=>release=resolve);return {data:{session:null},error:null};},resetPasswordForEmail:async()=>{resetCount++;return {error:null};}}}};
+const context={state,$:key=>controls[key],status:value=>statusText=value,showVerification:value=>verification=value,redirectUrl:()=> 'https://test.invalid/account.html',renderSession:async()=>{},window:{},console,authError:()=> 'Test authentication failure'};
+vm.createContext(context);
+vm.runInContext(line('withBusy')+'\n'+line('createAccount')+'\n'+line('requestPasswordReset')+'\n'+line('resetPassword'),context);
+const event={preventDefault(){},submitter:button};
+const first=vm.runInContext('createAccount(event)',vm.createContext({...context,event}));
+await Promise.resolve();
+await vm.runInContext('createAccount(event)',vm.createContext({...context,event}));
+assert.equal(requestCount,1);assert.equal(button.disabled,true);
+release();await first;assert.equal(button.disabled,false);assert.equal(verification,'test@example.invalid');assert.match(statusText,/confirm your PilotDesk account/);
+controls['#pdCreatePassword'].value='short';await vm.runInContext('createAccount(event)',vm.createContext({...context,event}));assert.equal(requestCount,1);assert.match(statusText,/at least 6/);
+await vm.runInContext('resetPassword()',context);assert.equal(resetCount,0);assert.match(statusText,/valid email/);
+context.location={origin:'https://test.invalid'};context.URL=URL;
+await vm.runInContext("requestPasswordReset('test@example.invalid',null)",context);assert.equal(resetCount,1);assert.match(statusText,/If this email has an account/);
+console.log('Account request checks passed: duplicate signup blocked, confirmation state, weak password, invalid reset email, and recovery request.');
+
+// A checkout return is not proof that the subscription webhook has completed.
+const paymentSource=source.slice(source.indexOf('async function refreshPaymentStatus('),source.indexOf('async function openBillingPortal('));
+let paid=false,paymentMessage='',queued=[];
+const paymentContext={state:{session:{user:{id:'test-user'}}},window:{PilotDeskBilling:{refresh:async()=>({isPro:paid})}},renderBilling(){},billingStatus:text=>paymentMessage=text,setTimeout:fn=>queued.push(fn)};
+vm.createContext(paymentContext);vm.runInContext(paymentSource,paymentContext);
+await vm.runInContext('refreshPaymentStatus()',paymentContext);assert.match(paymentMessage,/Waiting for subscription confirmation/);assert.equal(queued.length,1);
+paid=true;await queued.shift()();assert.match(paymentMessage,/confirmed and available/);
+paid=false;await vm.runInContext('refreshPaymentStatus(4)',paymentContext);assert.match(paymentMessage,/do not start another checkout/);
+console.log('Payment-return checks passed: pending is distinct from confirmed subscription access.');

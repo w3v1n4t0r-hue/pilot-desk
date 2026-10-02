@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const source=fs.readFileSync('api/weather.js','utf8');
+const context=vm.createContext({module:{exports:{}},Date});
+vm.runInContext(source,context);
+const metar='KGFK 021753Z 19010KT 10SM FEW200 17/01 A3028';
+const taf='TAF KGFK 021720Z 0218/0318 20010KT P6SM FEW100';
+assert.equal(context.parseMetar('2026/10/02 17:53\n'+metar,'KGFK').obsTime,Date.parse('2026-10-02T17:53:00Z')/1000);
+assert.equal(context.parseTaf('2026/10/02 17:20\n'+taf,'KGFK').issueTime,Date.parse('2026-10-02T17:20:00Z')/1000);
+assert.equal(context.parseMetar(metar,'KGFK').obsTime,null);
+assert.equal(context.sourceTime('2026/02/30 17:53'),null);
+assert.equal(context.sourceTime('2026/13/02 17:53'),null);
+assert.equal(context.sourceTime('2026/10/02 25:53'),null);
+assert.equal(context.sourceTime('2026/09/30 23:59'),Date.parse('2026-09-30T23:59:00Z')/1000);
+assert.equal(context.parseMetar('2026/10/02 17:53\n'+metar,'KGFK').rawOb,metar);
+console.log('Weather source timestamps: passed');

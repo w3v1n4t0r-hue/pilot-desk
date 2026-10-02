@@ -131,6 +131,14 @@ jobs:
         run: node qa/chart-symbols-tests.mjs
       - name: Verify chart distance and bearing tools
         run: node qa/map-tools-tests.mjs
+      - name: Verify map density and route review geometry
+        run: node qa/map-density-tests.mjs
+      - name: Verify cloud backup conflict and failure handling
+        run: node qa/cloud-backup-tests.mjs
+      - name: Verify billing user and backend flows
+        run: node qa/billing-flow-tests.mjs
+      - name: Verify signup and reset requests
+        run: node qa/account-request-tests.mjs
       - name: Run FAA routing, POH tables, and offline pack tests
         run: node qa/advanced-planning-tests.mjs
       - name: Run route performance and fuel tests
@@ -181,3 +189,5 @@ jobs:
         run: node qa/first-run-experience-smoke.mjs
       - name: Run Global Search 2.0 checks
         run: node qa/global-search-smoke.mjs
+      - name: Check weather source timestamps
+        run: node qa/weather-source-time-tests.mjs

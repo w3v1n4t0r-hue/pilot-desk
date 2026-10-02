@@ -81,3 +81,5 @@
 .pd-account-note,.pd-account-benefit span{font-size:var(--pd-type-label)}
 .pd-account-actions button,.pd-account-actions a{min-height:44px;font-size:var(--pd-type-label)}
 @media(max-width:620px){.pd-account-shell{padding:16px 14px 56px}.pd-account-card{padding:16px}.pd-account-hero h1{font-size:clamp(30px,8vw,40px)}.pd-account-layout{gap:14px;margin-top:18px}.pd-user-head{align-items:flex-start}.pd-user-head .pd-auth-btn{min-width:88px}}
+
+@media(max-width:620px){.pd-account-field input,.pd-account-field select{min-width:0;box-sizing:border-box}.pd-user-head{flex-wrap:wrap}.pd-user-id,.pd-user-id>div{min-width:0}.pd-user-id span{overflow-wrap:anywhere}.pd-account-actions button,.pd-account-actions a{white-space:normal;max-width:100%}}

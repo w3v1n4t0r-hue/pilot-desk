@@ -42,6 +42,12 @@ function reportText(text){
   const stamp=/^\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}$/.test(lines[0]||'')?lines.shift():null;
   return{stamp,raw:lines.join(' ').replace(/\s+/g,' ').trim()};
 }
+function sourceTime(stamp){
+  if(!stamp)return null;
+  const iso=stamp.replace(/\//g,'-').replace(/\s+/,'T')+':00Z';
+  const ms=Date.parse(iso);
+  return Number.isFinite(ms)&&new Date(ms).toISOString()===iso.replace('Z','.000Z')?ms/1000:null;
+}
 function signed(v){
   if(!v)return null;
   const n=Number(String(v).replace(/^M/,''));
@@ -88,7 +94,7 @@ function parseMetar(text,id){
   let altim=null;
   if(q)altim=Number(q[1]);
   else if(a)altim=(Number(a[1])/100)/0.0295299830714;
-  const obsTime=stamp?Date.parse(stamp.replace(' ','T')+'Z')/1000:null;
+  const obsTime=sourceTime(stamp);
   return{
     icaoId:station,rawOb:raw,
     wdir:wind?(wind[1]==='VRB'?'VRB':Number(wind[1])):null,
@@ -103,7 +109,7 @@ function parseTaf(text,id){
   const {stamp,raw}=reportText(text);
   if(!raw)return null;
   const station=(raw.match(/^(?:TAF(?:\s+(?:AMD|COR))?\s+)?([A-Z0-9]{4})\b/)||[])[1]||id;
-  const issueTime=stamp?Date.parse(stamp.replace(' ','T')+'Z')/1000:null;
+  const issueTime=sourceTime(stamp);
   return{icaoId:station,rawTAF:raw,issueTime:Number.isFinite(issueTime)?issueTime:null};
 }
 

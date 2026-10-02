@@ -38,7 +38,7 @@ async function loadSupabase(){
 function renderSignedOut(){clearTimeout(state.redirectTimer);state.redirectTimer=null;show('#pdSignedOut',true);show('#pdSignedIn',false);show('#pdRecoveryPanel',false);show('#pdOwnerMetrics',false);$('#pdAccountRoot')?.classList.remove('pd-account-disabled')}
 function safeAvatarUrl(value){try{const u=new URL(String(value||''),location.origin);return u.protocol==='https:'||u.protocol==='http:'?u.href:''}catch{return ''}}
 function renderAvatar(user,profile){const host=$('#pdUserAvatar');if(!host)return;const src=safeAvatarUrl(profile?.avatar_url||user?.user_metadata?.avatar_url||'');host.replaceChildren();if(src){const img=document.createElement('img');img.alt='';img.src=src;img.referrerPolicy='no-referrer';host.appendChild(img)}else host.textContent=initials(profile?.display_name||user?.user_metadata?.full_name||user?.email)}
-async function fetchProfile(user){const {data,error}=await state.client.from('profiles').select('id,display_name,avatar_url,pilot_stage,home_airport,training_goal,checkride_date,xp,level,current_streak,longest_streak,daily_completions,last_challenge_date,created_at').eq('id',user.id).maybeSingle();if(error)throw error;state.profile=data||null;if(data)state.client.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',user.id).then(()=>{});return data}
+async function fetchProfile(user){const {data,error}=await state.client.from('profiles').select('id,display_name,avatar_url,pilot_stage,home_airport,training_goal,checkride_date,xp,level,current_streak,longest_streak,daily_completions,last_challenge_date,created_at').eq('id',user.id).maybeSingle();if(error)throw error;if(state.session?.user?.id!==user.id)throw Error('Account changed during profile loading.');state.profile=data||null;if(data)state.client.from('profiles').update({last_seen_at:new Date().toISOString()}).eq('id',user.id).then(()=>{});return data}
 
 function localJson(key,fallback=[]){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
 const goalNames={ppl:'Private Pilot',ira:'Instrument Rating',cpl:'Commercial Pilot',multi:'Multi-Engine',cfi:'CFI',cfii:'CFII',atp:'ATP'};
@@ -50,8 +50,8 @@ async function cloudCounts(userId){
    state.client.from('aircraft_profiles').select('id',{count:'exact',head:true}).eq('user_id',userId),
    state.client.from('saved_flights').select('id',{count:'exact',head:true}).eq('user_id',userId)
   ]);
-  return {aircraft:a.count||0,flights:f.count||0};
- }catch{return {aircraft:0,flights:0}}
+  if(a.error||f.error)return {aircraft:null,flights:null};return {aircraft:a.count||0,flights:f.count||0};
+ }catch{return {aircraft:null,flights:null}}
 }
 function relativeTime(value){const t=new Date(value).getTime();if(!Number.isFinite(t))return'';const d=Math.max(0,Date.now()-t),m=Math.floor(d/60000);if(m<2)return'just now';if(m<60)return m+' min ago';const h=Math.floor(m/60);if(h<24)return h+' hr ago';const days=Math.floor(h/24);return days===1?'yesterday':days+' days ago'}
 function calcHref(slug){if(slug==='weight-balance-builder')return'/weight-balance.html';return slug?'/calculators/'+encodeURIComponent(slug)+'/':'/tools.html'}
@@ -108,7 +108,8 @@ async function renderAccountDashboard(profile){
  );
  if(home)cards.push({eyebrow:'HOME AIRPORT · ACCOUNT',title:home,copy:'Jump back to your home-airport context and current PilotDesk tools.',href:'/airport.html?id='+encodeURIComponent(home),cta:'Open '+home});
  const cloud=await cloudCounts(state.session?.user?.id||'');
- if(cloud.aircraft||cloud.flights)cards.push({eyebrow:'CLOUD BACKUP · ACCOUNT',title:(cloud.aircraft+cloud.flights)+' backed-up item'+((cloud.aircraft+cloud.flights)===1?'':'s'),copy:cloud.aircraft+' aircraft · '+cloud.flights+' saved flights stored with your account.',href:'/pricing.html',cta:'Manage Pro'});
+ if(cloud.aircraft===null||cloud.flights===null)cards.push({eyebrow:'CLOUD BACKUP · ACCOUNT',title:'Backup count unavailable',copy:'Device records are unchanged. Retry when your connection is available.',href:'#pdCloudBackup',cta:'Open backup controls'});
+ if(cloud.aircraft||cloud.flights)cards.push({eyebrow:'CLOUD BACKUP · ACCOUNT',title:(cloud.aircraft+cloud.flights)+' backed-up item'+((cloud.aircraft+cloud.flights)===1?'':'s'),copy:cloud.aircraft+' aircraft records · '+cloud.flights+' flight records, including preserved versions.',href:'#pdCloudBackup',cta:'Restore saved work'});
  host.replaceChildren();
  for(const card of cards){
   const a=document.createElement('a');a.className='pd-account-dashboard-card';a.href=card.href;a.dataset.pdAccountAction=card.cta;
@@ -132,54 +133,65 @@ function renderBilling(s){
  if(copy)copy.textContent=paid?(sub.cancel_at_period_end?'Your paid access remains active through the current billing period. Use billing management to reactivate or review invoices.':'Your paid plan is verified by PilotDesk billing. Full checkride prep, expanded saved planning, cloud backup, and ad-free access stay attached to this account.'):'Core PilotDesk tools remain free. Pro unlocks full interactive checkride prep, removes the Free-plan aircraft/flight cap, adds cloud backup, and removes ads while signed in.';
  up?.classList.toggle('pd-account-hidden',paid);manage?.classList.toggle('pd-account-hidden',!paid);
  if(cloud)cloud.textContent=paid?'Available on this account':'Pro required';
- const backup=$('#pdCloudBackupNow'),restore=$('#pdCloudRestoreNow');if(backup)backup.disabled=!paid;if(restore)restore.disabled=!paid;
- if(!paid)cloudStatus('Cloud backup is a PilotDesk Pro feature. Your existing device-local aircraft and saved flights are unchanged.','warn');else cloudStatus('');
+ const backup=$('#pdCloudBackupNow'),restore=$('#pdCloudRestoreNow');if(backup)backup.disabled=cloudBusy||!paid;if(restore)restore.disabled=cloudBusy||!paid;
+ if(!paid)cloudStatus('Cloud backup is a PilotDesk Pro feature. Your existing device-local aircraft and saved flights are unchanged.','warn');else if(!cloudBusy)cloudStatus('');
 }
-async function openBillingPortal(){billingStatus('Opening secure billing…');try{await window.PilotDeskBilling.portal()}catch(e){billingStatus(e.message||'Unable to open billing management.','bad')}}
-async function upgradePro(){billingStatus('Opening secure checkout…');try{await window.PilotDeskBilling.checkout('pro')}catch(e){billingStatus(e.message||'Unable to start checkout.','bad')}}
+async function refreshPaymentStatus(attempt=0){
+ if(!state.session)return;
+ try{const billing=await window.PilotDeskBilling.refresh();renderBilling(billing);
+  if(billing.isPro)return billingStatus('Your paid plan is confirmed and available.','good');
+ }catch{billingStatus('Payment confirmation could not be checked. Refresh your account before paying again.','warn');return;}
+ if(attempt<4){billingStatus('Payment return received. Waiting for subscription confirmation…','warn');setTimeout(()=>refreshPaymentStatus(attempt+1),1500);}
+ else billingStatus('Subscription confirmation is still pending. Refresh this account later; do not start another checkout.','warn');
+}
+async function openBillingPortal(){if($('#pdManageBilling')?.disabled)return;await withBusy($('#pdManageBilling'),async()=>{billingStatus('Opening secure billing…');try{await window.PilotDeskBilling.portal()}catch(e){billingStatus(e.message||'Unable to open billing management.','bad')}})}
+async function upgradePro(){if($('#pdUpgradePro')?.disabled)return;await withBusy($('#pdUpgradePro'),async()=>{billingStatus('Opening secure checkout…');try{await window.PilotDeskBilling.checkout('pro')}catch(e){billingStatus(e.message||'Unable to start checkout.','bad')}})}
+let cloudBusy=false,cloudModule;
+async function cloudTools(){if(!cloudModule)cloudModule=import('/assets/cloud-backup.js').then(()=>window.PilotDeskCloudBackup);return cloudModule;}
+async function cloudRows(userId){
+ const [a,f]=await Promise.all([
+  state.client.from('aircraft_profiles').select('id,name,make_model,tail_number,data,updated_at',{count:'exact'}).eq('user_id',userId).order('updated_at',{ascending:true}).limit(2000),
+  state.client.from('saved_flights').select('id,name,route,data,updated_at',{count:'exact'}).eq('user_id',userId).order('updated_at',{ascending:true}).limit(2000)
+ ]);
+ if(a.error)throw a.error;if(f.error)throw f.error;
+ if(a.count>(a.data||[]).length||f.count>(f.data||[]).length)throw Error('The full cloud backup was not returned. Contact PilotDesk before restoring; no device lists were changed.');
+ if(state.session?.user?.id!==userId)throw Error('The signed-in account changed. Sign in again before continuing.');
+ return {a:a.data||[],f:f.data||[]};
+}
+function cloudControls(busy){cloudBusy=busy;for(const id of ['#pdCloudBackupNow','#pdCloudRestoreNow']){const button=$(id);if(button)button.disabled=busy||!paidAccess();}}
 async function backupDeviceToCloud(){
+ if(cloudBusy)return;
  if(!state.session)return cloudStatus('Sign in before backing up this device.','warn');
  if(!paidAccess())return cloudStatus('PilotDesk Pro is required for cloud backup. Your local data was not changed.','warn');
- const userId=state.session.user.id,aircraft=localJson('pd-aircraft',[]),flights=localJson('pd-saved-flights',[]);
- const btn=$('#pdCloudBackupNow');if(btn)btn.disabled=true;cloudStatus('Saving this device snapshot…');
+ const userId=state.session.user.id;cloudControls(true);cloudStatus('Saving device records without removing previous backups…');
  try{
-  const delA=await state.client.from('aircraft_profiles').delete().eq('user_id',userId);if(delA.error)throw delA.error;
-  const delF=await state.client.from('saved_flights').delete().eq('user_id',userId);if(delF.error)throw delF.error;
-  if(aircraft.length){
-   const rows=aircraft.map((x,i)=>({user_id:userId,name:String(x.name||x.makeModel||x.make_model||('Aircraft '+(i+1))).slice(0,80),make_model:String(x.makeModel||x.make_model||x.type||'').slice(0,120)||null,tail_number:String(x.tailNumber||x.tail_number||'').slice(0,20)||null,data:{...x,_pilotdesk_local_id:x.id||null}}));
-   const ins=await state.client.from('aircraft_profiles').insert(rows);if(ins.error)throw ins.error;
-  }
-  if(flights.length){
-   const rows=flights.map((x,i)=>({user_id:userId,name:String(x.name||x.route||('Saved flight '+(i+1))).slice(0,120),route:String(x.route||'').slice(0,1000)||null,data:{...x,_pilotdesk_local_id:x.id||null}}));
-   const ins=await state.client.from('saved_flights').insert(rows);if(ins.error)throw ins.error;
-  }
-  cloudStatus('Cloud backup saved: '+aircraft.length+' aircraft and '+flights.length+' saved flight'+(flights.length===1?'':'s')+'.','good');
-  window.pdTrack?.('Cloud Backup Saved',{aircraft:aircraft.length,flights:flights.length});
+  const C=await cloudTools(),aircraft=C.records(localJson('pd-aircraft',[])),flights=C.records(localJson('pd-saved-flights',[])),rows=await cloudRows(userId);
+  const a=C.merge(C.fromRows(rows.a,'aircraft'),aircraft,'device copy'),mapped=flights.map(f=>({...f,aircraftId:a.ids.get(f.aircraftId)||f.aircraftId})),f=C.merge(C.fromRows(rows.f,'flights'),mapped,'device copy');
+  const newA=a.records.filter(x=>!rows.a.some(row=>String(row.data?._pilotdesk_local_id||row.data?.id||row.id)===x.id));
+  const newF=f.records.filter(x=>!rows.f.some(row=>String(row.data?._pilotdesk_local_id||row.data?.id||row.id)===x.id));
+  if(state.session?.user?.id!==userId)throw Error('The signed-in account changed. Retry after signing in.');
+  if(newA.length){const result=await state.client.from('aircraft_profiles').insert(newA.map(x=>({user_id:userId,name:String(x.name||'Aircraft').slice(0,80),make_model:String(x.makeModel||x.type||'').slice(0,120)||null,tail_number:String(x.tailNumber||'').slice(0,20)||null,data:{...x,_pilotdesk_local_id:x.id}})));if(result.error)throw result.error;}
+  if(newF.length){const result=await state.client.from('saved_flights').insert(newF.map(x=>({user_id:userId,name:String(x.name||x.route||'Saved flight').slice(0,120),route:String(x.route||'').slice(0,1000)||null,data:{...x,_pilotdesk_local_id:x.id}})));if(result.error)throw result.error;}
+  cloudStatus('Backup saved. '+newA.length+' aircraft and '+newF.length+' flight records added. Existing cloud records were kept. Different versions remain separate.','good');
   await renderAccountDashboard(state.profile);
- }catch(e){cloudStatus(e.message||'Cloud backup failed. Your local data was not changed.','bad')}
- finally{if(btn)btn.disabled=false}
+ }catch(e){cloudStatus('Backup did not finish. Existing cloud records were kept; retry safely. '+(e.message||''),'bad');}
+ finally{cloudControls(false);}
 }
 async function restoreCloudToDevice(){
+ if(cloudBusy)return;
  if(!state.session)return cloudStatus('Sign in before restoring a backup.','warn');
  if(!paidAccess())return cloudStatus('PilotDesk Pro is required for cloud restore. Your local data was not changed.','warn');
- if(!confirm('Restore your PilotDesk cloud backup to this device? This replaces the aircraft and saved-flight lists currently stored in this browser.'))return;
- const btn=$('#pdCloudRestoreNow');if(btn)btn.disabled=true;cloudStatus('Loading your cloud backup…');
+ if(!confirm('Merge your cloud aircraft and flights into this device? Existing records stay; different versions are kept as separate copies.'))return;
+ const userId=state.session.user.id;cloudControls(true);cloudStatus('Loading your cloud records…');
  try{
-  const userId=state.session.user.id;
-  const [a,f]=await Promise.all([
-   state.client.from('aircraft_profiles').select('id,name,make_model,tail_number,data,updated_at').eq('user_id',userId).order('updated_at',{ascending:true}),
-   state.client.from('saved_flights').select('id,name,route,data,updated_at').eq('user_id',userId).order('updated_at',{ascending:true})
-  ]);
-  if(a.error)throw a.error;if(f.error)throw f.error;
-  const aircraft=(a.data||[]).map(row=>({...row.data,id:row.data?._pilotdesk_local_id||row.id,name:row.data?.name||row.name,makeModel:row.data?.makeModel||row.make_model||'',tailNumber:row.data?.tailNumber||row.tail_number||''}));
-  const flights=(f.data||[]).map(row=>({...row.data,id:row.data?._pilotdesk_local_id||row.id,name:row.data?.name||row.name,route:row.data?.route||row.route||''}));
-  localStorage.setItem('pd-aircraft',JSON.stringify(aircraft));localStorage.setItem('pd-saved-flights',JSON.stringify(flights));
+  const C=await cloudTools(),rows=await cloudRows(userId);
+  if(!rows.a.length&&!rows.f.length)return cloudStatus('No cloud aircraft or flights found. Your device records were kept.','warn');
+  const result=C.restore(localStorage,C.fromRows(rows.a,'aircraft'),C.fromRows(rows.f,'flights'));
   document.dispatchEvent(new CustomEvent('pilotdesk:aircraft-changed'));document.dispatchEvent(new CustomEvent('pilotdesk:flights-changed'));
-  cloudStatus('Restored '+aircraft.length+' aircraft and '+flights.length+' saved flight'+(flights.length===1?'':'s')+' to this device.','good');
-  window.pdTrack?.('Cloud Backup Restored',{aircraft:aircraft.length,flights:flights.length});
+  cloudStatus('Cloud records merged. This device now has '+result.aircraft.length+' aircraft and '+result.flights.length+' flights. '+result.conflicts+' different version'+(result.conflicts===1?' was':'s were')+' kept as separate copies.','good');
   await renderAccountDashboard(state.profile);
- }catch(e){cloudStatus(e.message||'Cloud restore failed.','bad')}
- finally{if(btn)btn.disabled=false}
+ }catch(e){cloudStatus(e.message||'Cloud restore failed. Device records were kept.','bad');}
+ finally{cloudControls(false);}
 }
 
 function ensureOwnerMetric(id,label){const grid=$('#pdOwnerMetrics .pd-owner-grid');if(!grid)return null;let el=$(`#${id}`);if(el)return el;const card=document.createElement('div');card.className='pd-owner-stat';card.innerHTML=`<strong id="${id}">0</strong><span>${label}</span>`;grid.appendChild(card);return $(`#${id}`)}
@@ -199,8 +211,9 @@ async function claimOwnerAccess(e){e?.preventDefault();if(!state.session)return;
 
 async function renderSignedIn(session){
  const user=session.user;show('#pdSignedOut',false);show('#pdSignedIn',true);show('#pdRecoveryPanel',false);$('#pdAccountRoot')?.classList.remove('pd-account-disabled');$('#pdUserEmail').textContent=user.email||'Signed in';
- let p=null;try{p=await fetchProfile(user)}catch(e){status('Signed in, but your profile could not be loaded yet.','warn')}
- const display=p?.display_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'Pilot';$('#pdUserName').textContent=display;$('#pdDisplayName').value=p?.display_name||'';$('#pdPilotStage').value=p?.pilot_stage||'';$('#pdHomeAirport').value=p?.home_airport||'';renderAvatar(user,p);$('#pdTrainingGoal').value=p?.training_goal||'';$('#pdCheckrideDate').value=p?.checkride_date||'';try{renderBilling(await window.PilotDeskBilling?.refresh?.())}catch{renderBilling(null)}try{if(p?.training_goal)localStorage.setItem('pd-training-goal',p.training_goal);if(p?.checkride_date)localStorage.setItem('pd-training-date',p.checkride_date)}catch{}await renderAccountDashboard(p);await renderHomeOverview(p);renderInterfaceSettings();await loadOwnerMetrics();
+ let p=null;try{p=await fetchProfile(user)}catch(e){if(state.session?.user?.id!==user.id)return;status('Signed in, but your profile could not be loaded yet.','warn')}
+ if(state.session?.user?.id!==user.id)return;
+ const display=p?.display_name||user.user_metadata?.full_name||user.email?.split('@')[0]||'Pilot';$('#pdUserName').textContent=display;$('#pdDisplayName').value=p?.display_name||'';$('#pdPilotStage').value=p?.pilot_stage||'';$('#pdHomeAirport').value=p?.home_airport||'';renderAvatar(user,p);$('#pdTrainingGoal').value=p?.training_goal||'';$('#pdCheckrideDate').value=p?.checkride_date||'';try{const billing=await window.PilotDeskBilling?.refresh?.();if(state.session?.user?.id!==user.id)return;renderBilling(billing)}catch{if(state.session?.user?.id!==user.id)return;renderBilling(null);billingStatus('Subscription status could not be loaded. Retry before starting checkout.','warn')}try{if(p?.training_goal)localStorage.setItem('pd-training-goal',p.training_goal);if(p?.checkride_date)localStorage.setItem('pd-training-date',p.checkride_date)}catch{}await renderAccountDashboard(p);await renderHomeOverview(p);renderInterfaceSettings();await loadOwnerMetrics();
  const next=safeNext();if(next&&!ownerView()&&!state.redirectTimer){status('Signed in. Returning you to your PilotDesk tool…','good');state.redirectTimer=setTimeout(()=>location.assign(next),450)}
 }
 async function renderSession(session){state.session=session||null;if(state.recoveryMode&&session)return showRecovery();if(session)await renderSignedIn(session);else renderSignedOut()}
@@ -209,15 +222,15 @@ async function signInPassword(e){e.preventDefault();const email=$('#pdPasswordEm
 async function createAccount(e){e.preventDefault();const email=$('#pdCreateEmail').value.trim(),password=$('#pdCreatePassword').value;if(password.length<6)return status('Your password must be at least 6 characters.','warn');await withBusy(e.submitter||$('#pdCreateAccountForm button[type="submit"]'),async()=>{status('Creating your account…','loading');const {data,error}=await state.client.auth.signUp({email,password,options:{emailRedirectTo:redirectUrl()}});if(error)return status(authError(error,'sign up'),'bad');if(data.session){await renderSession(data.session);status('Account ready. You are signed in.','good')}else{showVerification(email);status('Check your email to confirm your PilotDesk account. If you already signed up, use Sign in or Forgot password.','good')}window.pdTrack?.('Account Created With Password')})}
 async function resendConfirmation(){const email=$('#pdConfirmationEmail').value.trim();if(!$('#pdConfirmationEmail').checkValidity())return status('Enter a valid email address for the confirmation link.','warn');updateResend();const button=$('#pdResendConfirmation');if(button.disabled)return;await withBusy(button,async()=>{const {error}=await state.client.auth.resend({type:'signup',email,options:{emailRedirectTo:redirectUrl()}});if(error)return status(authError(error,'resend confirmation'),'bad');sessionStorage.setItem('pd-confirm-resend-until',String(Date.now()+60000));status('If this account is awaiting confirmation, a new link is on its way. Check your inbox and spam folder.','good')});updateResend()}
 async function requestPasswordReset(email,button){if(!email){$('#pdPasswordEmail')?.focus();return status('Enter your email first, then choose Forgot password.','warn')}await withBusy(button,async()=>{status('Sending a password reset link…','loading');const {error}=await state.client.auth.resetPasswordForEmail(email,{redirectTo:new URL('/account.html',location.origin).href});if(error)return status(authError(error,'password reset request'),'bad');status('If this email has an account, a password reset link is on its way. Check your inbox and spam folder.','good')})}
-async function resetPassword(){await requestPasswordReset($('#pdPasswordEmail').value.trim(),$('#pdForgotPassword'))}
+async function resetPassword(){const input=$('#pdPasswordEmail');if(!input.checkValidity())return status('Enter a valid email address before requesting a password reset.','warn');await requestPasswordReset(input.value.trim(),$('#pdForgotPassword'))}
 async function updatePassword(e){e.preventDefault();const password=$('#pdNewPassword').value,confirm=$('#pdConfirmPassword').value;if(password!==confirm)return status('The new passwords do not match.','warn');if(password.length<6)return status('Use at least 6 characters for your new password.','warn');await withBusy(e.submitter||$('#pdRecoveryForm button[type="submit"]'),async()=>{status('Saving your new password…','loading');const {error}=await state.client.auth.updateUser({password});if(error)return status(authError(error,'set new password'),'bad');state.recoveryMode=false;$('#pdNewPassword').value='';$('#pdConfirmPassword').value='';history.replaceState(null,'',location.pathname);await state.client.auth.signOut().catch(error=>console.warn('[PilotDesk auth] sign out after reset',error));renderSignedOut();status('Password updated. Sign in with your new password.','good')})}
 async function signInGoogle(){await withBusy($('#pdGoogleSignIn'),async()=>{status('Opening Google sign-in…','loading');const {error}=await state.client.auth.signInWithOAuth({provider:'google',options:{redirectTo:redirectUrl()}});if(error)status(authError(error,'Google sign-in'),'bad');else window.pdTrack?.('Account Google Sign In')})}
 async function signInGithub(){await withBusy($('#pdGithubSignIn'),async()=>{status('Opening GitHub sign-in…','loading');const {error}=await state.client.auth.signInWithOAuth({provider:'github',options:{redirectTo:redirectUrl()}});if(error)status(authError(error,'GitHub sign-in'),'bad');else window.pdTrack?.('Account GitHub Sign In')})}
 async function saveProfile(e){e.preventDefault();if(!state.session)return;const updates={display_name:$('#pdDisplayName').value.trim().slice(0,80)||null,pilot_stage:$('#pdPilotStage').value||null,home_airport:cleanAirport($('#pdHomeAirport').value)||null,training_goal:$('#pdTrainingGoal').value||null,checkride_date:$('#pdCheckrideDate').value||null};status('Saving your profile…');const {error}=await state.client.from('profiles').update(updates).eq('id',state.session.user.id);if(error)return status(error.message,'bad');try{if(updates.training_goal)localStorage.setItem('pd-training-goal',updates.training_goal);else localStorage.removeItem('pd-training-goal');if(updates.checkride_date)localStorage.setItem('pd-training-date',updates.checkride_date);else localStorage.removeItem('pd-training-date')}catch{}status('Profile saved.','good');window.pdTrack?.('Account Profile Saved',{trainingGoal:updates.training_goal||'none',hasTargetDate:updates.checkride_date?'yes':'no'});await renderSignedIn(state.session)}
-async function signOut(){await state.client.auth.signOut();status('Signed out.','good');window.pdTrack?.('Account Signed Out')}
+async function signOut(){await withBusy($('#pdSignOut'),async()=>{const {error}=await state.client.auth.signOut();if(error)return status(authError(error,'sign out'),'bad');state.session=null;state.profile=null;renderSignedOut();status('Signed out.','good');window.pdTrack?.('Account Signed Out')})}
 async function deleteAccount(){if(!state.session)return;const answer=prompt('This permanently deletes your PilotDesk account and saved account data. Type DELETE to continue.');if(answer!=='DELETE')return;if(!confirm('Delete this PilotDesk account permanently? This cannot be undone.'))return;status('Deleting your account…');try{const r=await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:edgeHeaders()});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||'Unable to delete your account.','bad');await state.client.auth.signOut({scope:'local'}).catch(()=>{});state.session=null;state.profile=null;renderSignedOut();status('Your PilotDesk account was deleted.','good')}catch{status('Unable to delete your account right now.','bad')}}
 function bind(){$('#pdAccountRetry')?.addEventListener('click',()=>location.reload());$('#pdMagicForm')?.addEventListener('submit',sendMagicLink);$('#pdPasswordForm')?.addEventListener('submit',signInPassword);$('#pdCreateAccountForm')?.addEventListener('submit',createAccount);$('#pdResendConfirmation')?.addEventListener('click',resendConfirmation);$('#pdRecoveryForm')?.addEventListener('submit',updatePassword);$('#pdForgotPassword')?.addEventListener('click',resetPassword);$('#pdChangePassword')?.addEventListener('click',()=>requestPasswordReset(state.session?.user?.email,$('#pdChangePassword')));$('#pdGoogleSignIn')?.addEventListener('click',signInGoogle);$('#pdProfileForm')?.addEventListener('submit',saveProfile);$('#pdSignOut')?.addEventListener('click',signOut);$('#pdDeleteAccount')?.addEventListener('click',deleteAccount);$('#pdRefreshMetrics')?.addEventListener('click',loadOwnerMetrics);$('#pdOwnerClaim')?.addEventListener('submit',claimOwnerAccess);$('#pdCloudBackupNow')?.addEventListener('click',backupDeviceToCloud);$('#pdCloudRestoreNow')?.addEventListener('click',restoreCloudToDevice);$('#pdManageBilling')?.addEventListener('click',openBillingPortal);$('#pdUpgradePro')?.addEventListener('click',upgradePro);$('#pdHomeAirport')?.addEventListener('input',e=>{e.target.value=cleanAirport(e.target.value)});$('#pdSettingCompact')?.addEventListener('change',e=>window.PilotDeskPreferences?.set?.('compact',e.target.checked));$('#pdSettingMotion')?.addEventListener('change',e=>window.PilotDeskPreferences?.set?.('motion',e.target.checked))}
-async function init(){bind();show('#pdGoogleSignIn',false);$('#pdAccountRoot')?.classList.add('pd-account-disabled');status('Loading your account…','loading');const linkError=callbackError(),url=new URL(location.href);state.recoveryMode=url.searchParams.get('type')==='recovery'||new URLSearchParams(url.hash.replace(/^#/,'')).get('type')==='recovery';setInterval(()=>{if(!$('#pdVerificationPanel')?.classList.contains('pd-account-hidden'))updateResend()},1000);try{await loadSupabase();state.client.auth.onAuthStateChange((event,next)=>{if(event==='PASSWORD_RECOVERY')state.recoveryMode=true;if(event==='SIGNED_OUT')state.recoveryMode=false;setTimeout(()=>renderSession(next),0)});const {data:{session},error}=await state.client.auth.getSession();if(error)throw error;status('');await renderSession(session);if(linkError){state.recoveryMode=false;if(!session&&['otp_expired','otp_disabled'].includes(linkError))showVerification('');status(['otp_expired','otp_disabled'].includes(linkError)?'That email link expired or was already used. For a password reset, enter your email and choose Forgot password. For confirmation, resend below.':authError({code:linkError,message:linkError},'email callback'),'bad')}else if(state.recoveryMode&&!session){state.recoveryMode=false;renderSignedOut();status('That recovery link has expired or is invalid. Enter your email and request a new password reset link.','bad')}const qp=new URL(location.href).searchParams;if(qp.get('billing')==='success'){billingStatus('Payment completed. PilotDesk is confirming the subscription with Stripe…','good');setTimeout(async()=>{try{renderBilling(await window.PilotDeskBilling?.refresh?.());billingStatus('Subscription status refreshed.','good')}catch{}},1200)}}catch(e){console.error('[PilotDesk account init]',e);renderSignedOut();$('#pdAccountRoot')?.classList.remove('pd-account-disabled');$('#pdSignedOut')?.querySelectorAll('input,button').forEach(control=>{control.disabled=true});show('#pdAccountRetry',true);status('PilotDesk accounts are temporarily unavailable. Check your connection and retry.','warn')}}
+async function init(){bind();show('#pdGoogleSignIn',false);$('#pdAccountRoot')?.classList.add('pd-account-disabled');status('Loading your account…','loading');const linkError=callbackError(),url=new URL(location.href);state.recoveryMode=url.searchParams.get('type')==='recovery'||new URLSearchParams(url.hash.replace(/^#/,'')).get('type')==='recovery';setInterval(()=>{if(!$('#pdVerificationPanel')?.classList.contains('pd-account-hidden'))updateResend()},1000);try{await loadSupabase();state.client.auth.onAuthStateChange((event,next)=>{if(event==='PASSWORD_RECOVERY')state.recoveryMode=true;if(event==='SIGNED_OUT')state.recoveryMode=false;setTimeout(()=>renderSession(next).catch(()=>status('Your account could not finish loading. Refresh and try again.','warn')),0)});const {data:{session},error}=await state.client.auth.getSession();if(error)throw error;status('');await renderSession(session);if(linkError){state.recoveryMode=false;if(!session&&['otp_expired','otp_disabled'].includes(linkError))showVerification('');status(['otp_expired','otp_disabled'].includes(linkError)?'That email link expired or was already used. For a password reset, enter your email and choose Forgot password. For confirmation, resend below.':authError({code:linkError,message:linkError},'email callback'),'bad')}else if(state.recoveryMode&&!session){state.recoveryMode=false;renderSignedOut();status('That recovery link has expired or is invalid. Enter your email and request a new password reset link.','bad')}const qp=new URL(location.href).searchParams;if(qp.get('billing')==='success'){billingStatus('Payment completed. PilotDesk is confirming the subscription with Stripe…','good');setTimeout(()=>refreshPaymentStatus(),1200)}}catch(e){console.error('[PilotDesk account init]',e);renderSignedOut();$('#pdAccountRoot')?.classList.remove('pd-account-disabled');$('#pdSignedOut')?.querySelectorAll('input,button').forEach(control=>{control.disabled=true});show('#pdAccountRetry',true);status('PilotDesk accounts are temporarily unavailable. Check your connection and retry.','warn')}}
 document.addEventListener('click',e=>{if(e.target?.id==='pdGithubSignIn')signInGithub()});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 

@@ -35,6 +35,7 @@ function start(RP,L){
     vectorOpacity:Number(saved.vectorOpacity||.88),
     pirepFilter:['all','icing','turbulence','skyweather'].includes(saved.pirepFilter)?saved.pirepFilter:'all'
   };
+  const briefData={},briefStatus={},briefTime={};
   const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},notams={},briefWx={dep:null,dst:null};
   let radarOverlay=null,notamGroup=L.layerGroup(),ringsGroup=L.layerGroup(),radarTimer=null,briefLoading=false;
   let routeContextSeq=0,notamSeq=0,radarSeq=0,radarPending=null;
@@ -86,7 +87,7 @@ function start(RP,L){
   panel.hidden=true;
   panel.innerHTML=[
     '<div class="rp-efb-head"><div><span class="rp-eyebrow">MAP CONTROL</span><strong>Layers</strong></div><button type="button" data-close-layers aria-label="Close layers">×</button></div>',
-    '<section class="rp-layer-section"><h3>MAP SETUP</h3><div class="rp-map-setups"><button type="button" data-map-setup="navigation">Navigation</button><button type="button" data-map-setup="weather">Weather</button><button type="button" data-map-setup="saved">My setup</button><button type="button" data-map-save>Save setup</button><button type="button" data-map-refresh>Refresh layers</button></div><p id="rpSetupStatus" role="status">Save your current layers to reuse them.</p></section>',
+    '<section class="rp-layer-section"><h3>MAP SETUP</h3><div class="rp-map-setups"><button type="button" data-map-setup="navigation">Navigation</button><button type="button" data-map-setup="weather">Weather</button><button type="button" data-map-setup="saved">My setup</button><button type="button" data-map-save>Save setup</button><button type="button" data-map-refresh>Refresh layers</button></div><p id="rpSetupStatus" role="status">Save your current layers to reuse them. Nearby point symbols are grouped; open a count to see each item or zoom in.</p></section>',
     '<section class="rp-layer-section"><h3>BASE MAP</h3>',
       baseRow('auto','Auto by zoom'),
       baseRow('sectional','Sectional'),
@@ -402,6 +403,9 @@ function start(RP,L){
   }
   function pointFor(key,feature,ll){
     const p=feature.properties||{},pane=paneFor(key);
+    if(p._pdMembers){const count=p._pdMembers.length,label=count+' '+key+' items; open for details';const symbol=key==='pirep'?window.PilotDeskChartSymbols.pirep(p).html:key==='metar'?'<span class="rp-cluster-cat">'+esc(p.fltCat||p.flightCategory||'WX')+'</span>':window.PilotDeskChartSymbols.navigation(key,p).html;
+      return L.marker(ll,{pane,keyboard:false,icon:L.divIcon({className:'rp-map-cluster',html:symbol+'<b>'+count+'</b>',iconSize:[42,34],iconAnchor:[21,17]}),title:label}).setOpacity(state.vectorOpacity);
+    }
     if(key==='metar'){
       const cat=field(p,['fltCat','flightCategory','flight_category']);
       return L.circleMarker(ll,{pane,radius:5,weight:1.5,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
@@ -415,6 +419,7 @@ function start(RP,L){
   }
   function popupFor(key,feature){
     const p=feature.properties||{};
+    if(p._pdMembers){return '<div class="rp-route-popup rp-cluster-popup"><b>'+p._pdMembers.length+' nearby '+esc(key)+' items</b><p>Grouped at this zoom.'+(['metar','pirep'].includes(key)?' The symbol represents the strongest reported condition in this group.':'')+'</p>'+p._pdMembers.slice(0,50).map(f=>'<details><summary>'+esc(field(f.properties||{},['IDENT','icaoId','ident','id','NAME'])||window.PilotDeskChartSymbols.pirep(f.properties||{}).label)+'</summary>'+popupFor(key,f)+'</details>').join('')+(p._pdMembers.length>50?'<p>Showing 50 of '+p._pdMembers.length+'. Zoom in to separate more items.</p>':'')+'</div>'; }
     if(key==='tfr'){
       const id=field(p,['notamId','NOTAM_KEY']),type=field(p,['type','TYPE']),desc=field(p,['description','TITLE']);
       const status=field(p,['status']);
@@ -447,7 +452,12 @@ function start(RP,L){
   function renderGeoLayer(key,geojson){
     const g=ensureGroup(key);
     g.clearLayers();
-    const layer=L.geoJSON(geojson,{
+    const visible=(geojson.features||[]).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
+    const size=map.getZoom()<10?({pirep:48,metar:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
+    const priority=f=>{const p=f.properties||{};if(key==='pirep'){const v=window.PilotDeskChartSymbols.pirep(p);return (v.urgent?100:0)+Math.max(...v.items.map(x=>x.level||0));}if(key==='metar')return ({LIFR:4,IFR:3,MVFR:2,VFR:1}[p.fltCat||p.flightCategory]||0);return 0;};
+    const grouped=size?window.PilotDeskMapDensity.group(visible,c=>map.project([c[1],c[0]],map.getZoom()),size,priority):visible.map(feature=>({feature,members:[feature]}));
+    const display={type:'FeatureCollection',features:grouped.map(x=>({...x.feature,properties:{...x.feature.properties,_pdMembers:x.members.length>1?x.members:null}}))};
+    const layer=L.geoJSON(display,{
       pane:paneFor(key),
       filter:f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter),
       style:f=>styleFor(key,f),
@@ -461,7 +471,8 @@ function start(RP,L){
       }
     });
     layer.addTo(g);
-    if(key==='pirep'){const features=geojson.features||[],shown=features.filter(f=>state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter)).length;setLayerStatus(key,state.pirepFilter==='all'?String(shown):shown+' / '+features.length+' reports','live');}
+    if(size&&key!=='pirep')setLayerStatus(key,grouped.length+' symbols / '+visible.length+' items','live');
+    if(key==='pirep'){const features=geojson.features||[],shown=features.filter(f=>state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter)).length;setLayerStatus(key,grouped.length+' symbols / '+shown+' reports'+(state.pirepFilter==='all'?'':' filtered'),'live');}
   }
   function refreshVectorStyles(){
     function update(layer,key){
@@ -548,9 +559,9 @@ function start(RP,L){
     });
   }
 
-  async function loadNotams(){
+  async function loadNotams(forBrief=false){
     const seq=++notamSeq;notamGroup.clearLayers();for(const id of Object.keys(notams))delete notams[id];
-    if(!state.enabled.notams)return;
+    if(!state.enabled.notams&&!forBrief)return;
     const pts=RP.getPoints();
     const candidates=pts.filter(p=>/^[A-Z0-9]{4}$/.test(String(p.id||''))).slice(0,8);
     if(!candidates.length){setLayerStatus('notams','route','idle');renderBrief();return}
@@ -575,6 +586,7 @@ function start(RP,L){
     renderBrief();
   }
   function notamPopup(id,j){
+    if(j.error||j.configured===false)return '<div class="rp-route-popup"><b>'+esc(id)+' NOTAMs unavailable</b><p>Check FAA NOTAM Search. No absence of notices is implied.</p></div>';
     const counts=j.counts||{};
     const summary=Object.keys(counts).filter(k=>counts[k]).map(k=>k+' '+counts[k]).join(' · ');
     const rows=(j.notams||[]).slice(0,6).map(n=>'<div class="rp-notam-item"><b>'+esc(n.category||'NOTAM')+(n.number?' · '+esc(n.number):'')+'</b><span>'+esc(n.text||'')+'</span></div>').join('');
@@ -603,7 +615,8 @@ function start(RP,L){
   function orient(a,b,c){return (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x)}
   function intersects(a,b,c,d){
     const o1=orient(a,b,c),o2=orient(a,b,d),o3=orient(c,d,a),o4=orient(c,d,b);
-    return ((o1===0||o2===0||o1*o2<0)&&(o3===0||o4===0||o3*o4<0));
+    const between=(p,q,r)=>r.x>=Math.min(p.x,q.x)&&r.x<=Math.max(p.x,q.x)&&r.y>=Math.min(p.y,q.y)&&r.y<=Math.max(p.y,q.y);
+    return (o1*o2<0&&o3*o4<0)||(o1===0&&between(a,b,c))||(o2===0&&between(a,b,d))||(o3===0&&between(c,d,a))||(o4===0&&between(c,d,b));
   }
   function pointInRing(point,ring){
     let inside=false;
@@ -654,7 +667,7 @@ function start(RP,L){
     return notams[dst]||null;
   }
   function relevantFeatures(key,nearNm){
-    const fc=data[key],features=(fc&&fc.features)||[];
+    const fc=briefData[key],features=(fc&&fc.features)||[];
     return features.map(f=>({feature:f,relation:relationToRoute(f)})).filter(x=>x.relation.intersects||(nearNm!=null&&x.relation.distanceNm<=nearNm));
   }
 
@@ -679,28 +692,32 @@ function start(RP,L){
     if(sigRel.length)flags.push(['danger','SIGMET INTERSECTION']);
     if(gairRel.length)flags.push(['warn','G-AIRMET INTERSECTION']);
     if(dstCat==='IFR'||dstCat==='LIFR')flags.push(['warn','DESTINATION '+dstCat]);
-    if(state.enabled.notams&&(!dstNotam||dstNotam.error||dstNotam.configured===false))flags.push(['warn','NOTAM COVERAGE INCOMPLETE']);
+    if(!dstNotam||dstNotam.error||dstNotam.configured===false)flags.push(['warn','NOTAM COVERAGE INCOMPLETE']);
     if(dstNotam&&!dstNotam.error&&Number(dstNotam.count||0))flags.push(['info','DESTINATION NOTAM · '+Number(dstNotam.count||0)]);
-    const missing=['tfr','airsigmet','gairmet'].filter(key=>dataStatus[key]!=='available'||Date.now()-dataTime[key]>60000);
+    const missing=['tfr','airsigmet','gairmet'].filter(key=>briefStatus[key]!=='available'||Date.now()-briefTime[key]>60000);
     if(missing.length)flags.push(['warn','ADVISORY COVERAGE INCOMPLETE']);
     if(!flags.length&&!briefLoading)flags.push(['info','NO FLAGS IN LOADED DATA']);
-    const notamText=dstNotam?(dstNotam.error||dstNotam.configured===false?'NOTAMs unavailable. Check FAA NOTAM Search.':Number(dstNotam.count||0)+' current notices returned.'):'Not yet loaded.';
+    const noticeAirports=pts.filter(p=>/^[A-Z0-9]{4}$/.test(String(p.id||'')));
+    const notamText=(noticeAirports.length>8?'Coverage limited to the first eight airport identifiers; other airports require a separate check. ':'')+(dstNotam?(dstNotam.error||dstNotam.configured===false?'NOTAMs unavailable. Check FAA NOTAM Search.':Number(dstNotam.count||0)+' current notices returned.'):'Not yet loaded.');
     const hazards=[
       sigRel.length?sigRel.length+' SIGMET route intersection'+(sigRel.length===1?'':'s'):null,
       gairRel.length?gairRel.length+' G-AIRMET route intersection'+(gairRel.length===1?'':'s'):null,
       tfrRel.length?tfrRel.length+' TFR route/near-route item'+(tfrRel.length===1?'':'s'):null
-    ].filter(Boolean).join(' · ')||'No route intersections detected in currently loaded advisory data.';
+    ].filter(Boolean).join(' · ')||(missing.length?'Route advisory coverage is incomplete. No clear-route conclusion is available.':'No route intersections detected in loaded advisory data.');
     body.innerHTML=[
       '<div class="rp-brief-route"><span>'+esc(dep)+'</span><i>→</i><span>'+esc(dst)+'</span></div>',
       '<div class="rp-brief-flags">'+flags.map(x=>'<span data-kind="'+x[0]+'">'+esc(x[1])+'</span>').join('')+'</div>',
+      briefSection('Time & fuel',fuelReview()),
+      briefSection('Alternate planning',alternateReview()),
       briefSection('Departure weather',wxSummary(briefWx.dep)),
       briefSection('Enroute hazards',hazards),
-      briefSection('TFRs',tfrRel.length?hazardsPart(tfrRel):'No route/near-route TFR geometry detected in loaded FAA data.'),
+      briefSection('TFRs',tfrRel.length?hazardsPart(tfrRel):briefStatus.tfr==='available'?'No route/near-route TFR geometry detected in loaded FAA data.':'Route TFR coverage unavailable.'),
       briefSection('Destination weather',wxSummary(briefWx.dst)),
       briefSection('NOTAMs',notamText),
-      briefSection('Data coverage',['tfr','airsigmet','gairmet'].map(key=>key.toUpperCase()+': '+(dataStatus[key]==='available'?'retrieved '+new Date(dataTime[key]).toISOString().slice(11,16)+'Z':dataStatus[key]||'not loaded')).join(' · ')),
+      '<details class="rp-brief-section"><summary>Returned airport notices</summary>'+Object.entries(notams).map(([id,j])=>notamPopup(id,j)).join('')+'</details>',
+      briefSection('Data coverage',['tfr','airsigmet','gairmet'].map(key=>key.toUpperCase()+': '+(briefStatus[key]==='available'?'route area retrieved '+new Date(briefTime[key]).toISOString().slice(11,16)+'Z':briefStatus[key]||'not loaded')).join(' · ')),
       '<button type="button" class="utility-btn" data-refresh-brief>Refresh route data</button>',
-      '<div class="rp-brief-source">Automatic flags describe data relationships only; they are not a go/no-go decision. <a href="https://www.1800wxbrief.com/" target="_blank" rel="noopener">Official briefing</a></div>'
+      '<div class="rp-brief-source">Horizontal intersections are approximate; altitude, effective times and full route legality are not validated. Automatic flags describe data relationships only; they are not a go/no-go decision. <a href="https://www.1800wxbrief.com/" target="_blank" rel="noopener">Official briefing</a></div>'
     ].join('');
   }
   function briefSection(title,text){return '<section class="rp-brief-section"><h3>'+esc(title)+'</h3><p>'+esc(text)+'</p></section>'}
@@ -713,6 +730,21 @@ function start(RP,L){
 
   brief.addEventListener('click',e=>{if(!e.target.closest('[data-refresh-brief]'))return;for(const key of Object.keys(lastFetch))delete lastFetch[key];void loadRouteContext()});
 
+  async function loadRouteAdvisory(key,seq){
+    const bbox=window.PilotDeskMapDensity.routeBounds(RP.getPoints());briefStatus[key]='loading';
+    if(!bbox){delete briefData[key];briefStatus[key]='unsupported route area';return;}
+    try{const url=key==='tfr'?'/api/tfrs?bbox='+encodeURIComponent(bbox):'/api/aviation-layers?product='+key+'&bbox='+encodeURIComponent(bbox),j=await fetchJson(url);
+      if(seq!==routeContextSeq)return;briefData[key]=j.geojson||{type:'FeatureCollection',features:[]};briefStatus[key]='available';briefTime[key]=Date.now();
+    }catch{if(seq!==routeContextSeq)return;delete briefData[key];briefStatus[key]='unavailable';}
+  }
+  function alternateReview(){const s=window.PilotDeskRoutePerformance?.getSettings()||{};return s.alternateAirport?String(s.alternateAirport).toUpperCase()+' · '+(s.alternateNotes||'No alternate notes entered.')+' · Pilot-entered; requirements and suitability are not checked.':'No alternate airport entered. Review whether one is required; the planner does not decide this for you.';}
+  function fuelReview(){
+    const nav=window.pdNavlogResult,s=window.PilotDeskRoutePerformance?.getSettings()||{};
+    if(!nav)return 'Rebuild the route to update time and fuel.';
+    try{const p=window.PilotDeskRoutePerformance.getFuelPlan(nav),eta=p.arrival===null?'Departure time not entered':new Date(p.arrival).toISOString().slice(0,16).replace('T',' ')+' UTC';
+      return 'Trip '+fmt(p.trip,1)+' US gal · Total with entered allowances '+fmt(p.required,1)+' US gal · Margin '+(p.margin===null?'fuel on board not entered':fmt(p.margin,1)+' US gal')+' · Destination ETA '+eta+'. Regulatory fuel requirements are not checked.';
+    }catch(e){return 'Fuel plan incomplete: '+e.message;}
+  }
   async function loadRouteContext(){
     const pts=RP.getPoints();
     if(pts.length<2){renderBrief();return}
@@ -720,10 +752,8 @@ function start(RP,L){
     briefLoading=true;renderBrief();
     await Promise.all([
       loadBriefWeather(seq),
-      ensureData('tfr',true),
-      ensureData('airsigmet',true),
-      ensureData('gairmet',true),
-      state.enabled.notams?loadNotams():Promise.resolve()
+      ...['tfr','airsigmet','gairmet'].map(key=>loadRouteAdvisory(key,seq)),
+      loadNotams(true)
     ]);
     if(seq!==routeContextSeq)return;
     briefLoading=false;renderBrief();renderRings();
@@ -755,7 +785,7 @@ function start(RP,L){
   let moveTimer=null;
   map.on('zoomend',()=>{
     if(state.baseMode==='auto')applyAutoChart();
-    syncBaseRadios();
+    syncBaseRadios();for(const key of Object.keys(groups))if(state.enabled[key]&&data[key])renderGeoLayer(key,data[key]);
   });
   map.on('moveend',()=>{
     clearTimeout(moveTimer);
@@ -766,10 +796,12 @@ function start(RP,L){
       });
     },320);
   });
-  document.addEventListener('pilotdesk:route-invalidated',()=>{routeContextSeq++;notamSeq++;briefLoading=false;briefWx.dep=null;briefWx.dst=null;notamGroup.clearLayers();legStrip.hidden=true;renderBrief()});
+  document.addEventListener('pilotdesk:route-invalidated',()=>{routeContextSeq++;notamSeq++;briefLoading=false;briefWx.dep=null;briefWx.dst=null;for(const key of Object.keys(briefData))delete briefData[key];for(const key of Object.keys(briefStatus))delete briefStatus[key];for(const key of Object.keys(notams))delete notams[key];notamGroup.clearLayers();legStrip.hidden=true;renderBrief()});
   document.addEventListener('visibilitychange',()=>{if(document.hidden){if(radarTimer)toggleRadarPlayback()}else if(state.enabled.radar)refreshRadar()});
   document.addEventListener('pilotdesk:route-built',()=>setTimeout(loadRouteContext,120));
   document.addEventListener('pilotdesk:leg-selected',e=>showLeg(e.detail&&e.detail.leg));
+  document.addEventListener('pilotdesk:planning-changed',renderBrief);
+  document.addEventListener('pilotdesk:performance-updated',renderBrief);
   document.addEventListener('keydown',e=>{
     if(e.key!=='Escape')return;
     if(!panel.hidden)closePanel(panel,layersButton);

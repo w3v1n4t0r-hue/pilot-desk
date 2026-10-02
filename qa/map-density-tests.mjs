@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const D=createRequire(import.meta.url)('../assets/map-density.js');
+const point=(x,y,priority)=>({type:'Feature',geometry:{type:'Point',coordinates:[x,y]},properties:{priority}});
+const reports=[point(1,1,0),point(2,2,3),point(100,100,1)];
+const groups=D.group(reports,c=>({x:c[0],y:c[1]}),40,f=>f.properties.priority);
+assert.equal(groups.length,2);assert.equal(groups[0].feature,reports[1]);
+assert.equal(groups.flatMap(g=>g.members).length,3);
+assert.equal(D.group(reports,c=>({x:c[0]*100,y:c[1]*100}),40).length,3);
+const polygon={geometry:{type:'Polygon',coordinates:[]}};
+assert.equal(D.group([polygon],()=>{throw Error('Nonpoints must not project');},40)[0].feature,polygon);
+assert.equal(D.routeBounds([{lat:47,lon:-97},{lat:49,lon:-94}]),'46.000,-98.000,50.000,-93.000');
+assert.equal(D.routeBounds([{lat:0,lon:179},{lat:1,lon:-179}]),null);
+assert.equal(D.routeBounds([{lat:91,lon:0},{lat:1,lon:1}]),null);
+// Verify the actual route intersection helper does not flag separated collinear edges.
+const source=fs.readFileSync('assets/efb-layers.js','utf8');
+const helpers=source.slice(source.indexOf('  function orient('),source.indexOf('  function pointInRing('));
+const intersects=vm.runInNewContext(helpers+';intersects');
+assert.equal(intersects({x:0,y:0},{x:1,y:0},{x:2,y:0},{x:3,y:0}),false);
+assert.equal(intersects({x:0,y:0},{x:3,y:0},{x:2,y:0},{x:4,y:0}),true);
+assert.equal(intersects({x:0,y:0},{x:2,y:2},{x:0,y:2},{x:2,y:0}),true);
+console.log('Map density checks passed: all group members retained, highest priority shown, zoom separation, full-route bounds, and segment intersections.');
+
+// Actual advisory requests use route bounds and ignore obsolete responses.
+const advisorySource=source.slice(source.indexOf('  async function loadRouteAdvisory('),source.indexOf('  function alternateReview('));
+let complete,requestUrl='';
+const advisoryContext={window:{PilotDeskMapDensity:D},RP:{getPoints:()=>[{lat:47,lon:-97},{lat:49,lon:-94}]},routeContextSeq:1,briefStatus:{},briefData:{},briefTime:{},fetchJson:async url=>{requestUrl=url;return await new Promise(resolve=>complete=resolve);}};
+vm.createContext(advisoryContext);vm.runInContext(advisorySource,advisoryContext);
+const request=vm.runInContext("loadRouteAdvisory('tfr',1)",advisoryContext);
+assert.match(decodeURIComponent(requestUrl),/bbox=46.000,-98.000,50.000,-93.000/);
+advisoryContext.routeContextSeq=2;complete({geojson:{features:[polygon]}});await request;
+assert.equal(advisoryContext.briefData.tfr,undefined);
+advisoryContext.fetchJson=async()=>{throw Error('Test outage');};await vm.runInContext("loadRouteAdvisory('tfr',2)",advisoryContext);assert.equal(advisoryContext.briefStatus.tfr,'unavailable');
+console.log('Route coverage checks passed: route bounds used, obsolete responses ignored, and outages identified.');

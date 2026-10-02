@@ -59,6 +59,7 @@ function start(RP,L){
   makePane('pdRadarPane',330,false);
   makePane('pdAirspacePane',350);
   makePane('pdWeatherPane',360);
+  makePane('pdMetarPane',440);
   makePane('pdNavPane',370);
   makePane('pdNotamPane',450);
   notamGroup.addTo(map);
@@ -99,9 +100,10 @@ function start(RP,L){
     '<section class="rp-layer-section"><h3>WEATHER</h3>',
       toggleRow('radar','Radar','NOAA MRMS'),
       toggleRow('metar','METARs','AWC'),
+      '<p class="rp-metar-legend"><span style="color:#3bd779">● VFR</span> <span style="color:#58a6ff">● MVFR</span> <span style="color:#ff5555">● IFR</span> <span style="color:#ff79cb">● LIFR</span> <span style="color:#c6cbd0">● Unknown</span></p>',
       toggleRow('pirep','PIREPs','AWC'),
       '<label class="rp-pirep-filter">PIREP conditions<select id="rpPirepFilter"><option value="all">All reports</option><option value="icing">Icing</option><option value="turbulence">Turbulence</option><option value="skyweather">Sky / weather only</option></select></label>',
-      '<details class="rp-symbol-legend"><summary>Chart symbols</summary><p>PIREP symbols follow the published aviation intensity legend: blue icing, orange turbulence, gray eye for sky/weather.</p>'+['icing','turbulence'].map(kind=>'<div class="rp-legend-row">'+[0,1,2,3,...(kind==='turbulence'?[4]:[])].map(level=>'<span>'+window.PilotDeskChartSymbols.weatherSvg(kind,level)+['Negative','Light','Moderate','Severe','Extreme'][level]+'</span>').join('')+'</div>').join('')+'<p>Trace icing uses the light symbol. Ranges use the strongest intensity. Red ! marks urgent or severe reports. ? means intensity unspecified. Paired symbols show icing and turbulence; numbers show reported flight level. Open a marker for the full report.</p><p>Airport: runway circle · VOR: hexagon · VOR/DME: boxed hexagon · VORTAC: hexagon with TACAN marks · DME: square · NDB: dotted circle · Fix: triangle · Obstacle: mast. Purple line: planned route; pale purple: selected leg.</p></details>',
+      '<details class="rp-symbol-legend"><summary>Chart symbols</summary><p>PIREP symbols follow the published aviation intensity legend: blue icing, orange turbulence, gray eye for sky/weather.</p>'+['icing','turbulence'].map(kind=>'<div class="rp-legend-row">'+[0,1,2,3,...(kind==='turbulence'?[4]:[])].map(level=>'<span>'+window.PilotDeskChartSymbols.weatherSvg(kind,level)+['Negative','Light','Moderate','Severe','Extreme'][level]+'</span>').join('')+'</div>').join('')+'<p>Trace icing uses the light symbol. Ranges use the strongest intensity. Red ! marks urgent or severe reports. ? means intensity unspecified. Paired symbols show icing and turbulence; numbers show reported flight level. Open a marker for the full report.</p><p>Airport: blue T = towered · magenta N = non-towered · gray ? = tower status unknown · MIX = mixed group. Tower hours are not checked. VOR: hexagon · VOR/DME: boxed hexagon · VORTAC: hexagon with TACAN marks · DME: square · NDB: dotted circle · Fix: triangle · Obstacle: mast. Purple line: planned route; pale purple: selected leg.</p></details>',
       toggleRow('gairmet','G-AIRMETs','AWC'),
       toggleRow('airsigmet','SIGMETs','AWC'),
       toggleRow('cwa','CWAs','AWC'),
@@ -204,11 +206,11 @@ function start(RP,L){
     const button=e.target.closest('[data-map-setup]');if(!button)return;
     const mode=button.dataset.mapSetup;let setup;
     if(mode==='saved'){try{setup=JSON.parse(localStorage.getItem('pd-map-setup')||'null')}catch{}if(!setup?.enabled){setupStatus.textContent='Choose your layers, then save a setup first.';return;}}
-    else{setup={enabled:{},pirepFilter:'all',baseMode:state.baseMode};for(const key of Object.keys(DEFAULTS))setup.enabled[key]=mode==='navigation'?['airports','navaids','fixes','airways','tfr'].includes(key):['radar','metar','pirep','gairmet','airsigmet','cwa','tfr'].includes(key);}
+    else{setup={enabled:{},pirepFilter:'all',baseMode:state.baseMode};for(const key of Object.keys(DEFAULTS))setup.enabled[key]=mode==='navigation'?['airports','navaids','fixes','airways','tfr','metar'].includes(key):['radar','metar','pirep','gairmet','airsigmet','cwa','tfr'].includes(key);}
     for(const key of Object.keys(DEFAULTS)){const on=setup.enabled[key]===true;state.enabled[key]=on;const input=panel.querySelector('[data-layer="'+key+'"]');if(input)input.checked=on;toggleLayer(key,on);}
     state.pirepFilter=['all','icing','turbulence','skyweather'].includes(setup.pirepFilter)?setup.pirepFilter:'all';panel.querySelector('#rpPirepFilter').value=state.pirepFilter;
     if(['auto','sectional','terminal','low','high'].includes(setup.baseMode)){state.baseMode=setup.baseMode;if(state.baseMode==='auto')applyAutoChart();else setBase(state.baseMode);syncBaseRadios();}
-    if(data.pirep&&state.enabled.pirep)renderGeoLayer('pirep',data.pirep);save();setupStatus.textContent=mode==='saved'?'My setup restored.':mode==='navigation'?'Navigation layers selected. Weather overlays are hidden.':'Weather layers selected. Navigation overlays are hidden.';
+    if(data.pirep&&state.enabled.pirep)renderGeoLayer('pirep',data.pirep);save();setupStatus.textContent=mode==='saved'?'My setup restored.':mode==='navigation'?'Navigation layers and METARs selected. Other weather overlays are hidden.':'Weather layers selected. Navigation overlays are hidden.';
   });
   mapEl.addEventListener('click',e=>{
     const button=e.target.closest('[data-map-add]');if(!button)return;
@@ -301,6 +303,7 @@ function start(RP,L){
     return null;
   }
   function paneFor(key){
+    if(key==='metar')return 'pdMetarPane';
     if(WEATHER.has(key))return 'pdWeatherPane';
     if(AIRSPACE.has(key))return 'pdAirspacePane';
     return 'pdNavPane';
@@ -383,15 +386,15 @@ function start(RP,L){
   }
   function fltColor(cat){
     const c=String(cat||'').toUpperCase();
-    if(c==='VFR')return '#5fd18b';
-    if(c==='MVFR')return '#68a7f5';
-    if(c==='IFR')return '#e87c7c';
-    if(c==='LIFR')return '#c78af7';
+    if(c==='VFR')return '#3bd779';
+    if(c==='MVFR')return '#58a6ff';
+    if(c==='IFR')return '#ff5555';
+    if(c==='LIFR')return '#ff79cb';
     return '#d4d4d8';
   }
   function styleFor(key,feature){
     const o=state.vectorOpacity;
-    if(key==='metar')return {color:'#08080a',fillColor:fltColor(field(feature?.properties||{},['fltCat','flightCategory','flight_category'])),fillOpacity:.96*o};
+    if(key==='metar')return {color:'#08080a',fillColor:window.PilotDeskChartSymbols.metarColor(feature?.properties||{}),fillOpacity:.96*o};
     if(key==='tfr')return {pane:'pdAirspacePane',color:feature?.properties?.status==='upcoming'?'#e6bd62':'#ef6f6f',weight:2.2,opacity:o,fillColor:'#e87c7c',fillOpacity:.08*o,dashArray:feature?.properties?.status==='upcoming'?'7 5':null};
     if(key==='sua')return {pane:'pdAirspacePane',color:'#d7b76c',weight:1.4,opacity:.85*o,fillColor:'#d7b76c',fillOpacity:.035*o,dashArray:'7 5'};
     if(key==='airspace')return {pane:'pdAirspacePane',color:'#c5c5ca',weight:1,opacity:.62*o,fillOpacity:0,dashArray:'4 5'};
@@ -403,12 +406,12 @@ function start(RP,L){
   }
   function pointFor(key,feature,ll){
     const p=feature.properties||{},pane=paneFor(key);
-    if(p._pdMembers){const count=p._pdMembers.length,label=count+' '+key+' items; open for details';const symbol=key==='pirep'?window.PilotDeskChartSymbols.pirep(p).html:key==='metar'?'<span class="rp-cluster-cat">'+esc(p.fltCat||p.flightCategory||'WX')+'</span>':window.PilotDeskChartSymbols.navigation(key,p).html;
-      return L.marker(ll,{pane,keyboard:false,icon:L.divIcon({className:'rp-map-cluster',html:symbol+'<b>'+count+'</b>',iconSize:[42,34],iconAnchor:[21,17]}),title:label}).setOpacity(state.vectorOpacity);
+    if(p._pdMembers){const count=p._pdMembers.length,label=count+' '+key+' items; open for details';const symbol=key==='pirep'?window.PilotDeskChartSymbols.pirep(p).html:key==='metar'?'<span class="rp-cluster-cat" style="color:'+window.PilotDeskChartSymbols.metarColor(p)+'">● '+window.PilotDeskChartSymbols.metarCategory(p)+'</span>':window.PilotDeskChartSymbols.navigation(key,p).html;
+      return L.marker(ll,{pane,keyboard:false,icon:L.divIcon({className:'rp-map-cluster',html:symbol+'<b>'+count+'</b>',iconSize:key==='metar'?[72,34]:[42,34],iconAnchor:key==='metar'?[36,17]:[21,17]}),title:label}).setOpacity(state.vectorOpacity);
     }
     if(key==='metar'){
-      const cat=field(p,['fltCat','flightCategory','flight_category']);
-      return L.circleMarker(ll,{pane,radius:5,weight:1.5,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
+      const cat=window.PilotDeskChartSymbols.metarCategory(p);
+      return L.circleMarker(ll,{pane,radius:7,weight:2,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
     }
     const symbols=window.PilotDeskChartSymbols;
     const symbol=key==='pirep'?symbols.pirep(p):symbols.navigation(key,p);
@@ -430,7 +433,7 @@ function start(RP,L){
       return '<div class="rp-route-popup"><b>'+esc(id||'FAA TFR')+'</b><br>'+esc(type)+(status?' · '+esc(status):'')+'<br>'+esc(desc)+'<br>'+esc(altitude)+(timing?'<br>'+esc(timing):'')+'<br>Confirm exact active times in the FAA restriction.'+(link?'<br><a href="'+esc(link)+'" target="_blank" rel="noopener">Open FAA restriction</a>':'')+'</div>';
     }
     if(key==='metar'){
-      const id=field(p,['icaoId','id','stationId']),cat=field(p,['fltCat','flightCategory']),raw=field(p,['rawOb','raw_text','raw']);
+      const id=field(p,['icaoId','id','stationId']),cat=window.PilotDeskChartSymbols.metarCategory(p),raw=field(p,['rawOb','raw_text','raw']);
       return '<div class="rp-route-popup"><b>'+esc(id||'METAR')+'</b>'+(cat?' · '+esc(cat):'')+'<br>'+esc(raw||'Observation available')+'<br><small>'+esc(window.PilotDeskChartSymbols.reportTime(p))+'</small></div>';
     }
     if(key==='pirep'){
@@ -447,14 +450,14 @@ function start(RP,L){
     const coordinates=feature.geometry?.type==='Point'?feature.geometry.coordinates:null;
     const canAdd=['airports','navaids','fixes'].includes(key)&&/^[A-Z0-9_-]{1,12}$/i.test(name)&&coordinates?.length>=2&&Number.isFinite(coordinates[0])&&Number.isFinite(coordinates[1])&&Math.abs(coordinates[0])<=180&&Math.abs(coordinates[1])<=90;
     const add=canAdd?'<br><button type="button" class="utility-btn" data-map-add="'+esc(String(name).toUpperCase()+','+coordinates[1].toFixed(5)+','+coordinates[0].toFixed(5))+'">Add to route</button>':'';
-    return '<div class="rp-route-popup"><b>'+esc(name||key.toUpperCase())+'</b>'+(type?'<br>'+esc(type):'')+(alt?'<br>'+esc(alt):'')+'<br><span class="rp-mini">FAA / AWC live planning data</span>'+add+'</div>';
+    return '<div class="rp-route-popup"><b>'+esc(name||key.toUpperCase())+'</b>'+(key==='airports'?'<br>'+esc(window.PilotDeskChartSymbols.airportStatus(p).label)+'<br><span class="rp-mini">Tower operating hours are not checked.</span>':'')+(type?'<br>'+esc(type):'')+(alt?'<br>'+esc(alt):'')+'<br><span class="rp-mini">FAA / AWC live planning data</span>'+add+'</div>';
   }
   function renderGeoLayer(key,geojson){
     const g=ensureGroup(key);
     g.clearLayers();
     const visible=(geojson.features||[]).filter(f=>key!=='airports'||window.PilotDeskMapDensity.publicAirport(f)).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
     const size=map.getZoom()<10?({pirep:48,metar:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
-    const priority=f=>{const p=f.properties||{};if(key==='pirep'){const v=window.PilotDeskChartSymbols.pirep(p);return (v.urgent?100:0)+Math.max(...v.items.map(x=>x.level||0));}if(key==='metar')return ({LIFR:4,IFR:3,MVFR:2,VFR:1}[p.fltCat||p.flightCategory]||0);return 0;};
+    const priority=f=>{const p=f.properties||{};if(key==='pirep'){const v=window.PilotDeskChartSymbols.pirep(p);return (v.urgent?100:0)+Math.max(...v.items.map(x=>x.level||0));}if(key==='metar')return ({LIFR:4,IFR:3,MVFR:2,VFR:1}[window.PilotDeskChartSymbols.metarCategory(p)]||0);return 0;};
     const grouped=size?window.PilotDeskMapDensity.group(visible,c=>map.project([c[1],c[0]],map.getZoom()),size,priority):visible.map(feature=>({feature,members:[feature]}));
     const display={type:'FeatureCollection',features:grouped.map(x=>({...x.feature,properties:{...x.feature.properties,_pdMembers:x.members.length>1?x.members:null}}))};
     const layer=L.geoJSON(display,{

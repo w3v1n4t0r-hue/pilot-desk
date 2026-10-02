@@ -42,3 +42,14 @@ assert.equal(airportDensity.publicAirport({properties:{PRIVATEUSE:1,TYPE_CODE:'A
 assert.equal(airportDensity.publicAirport({properties:{PRIVATEUSE:0,TYPE_CODE:'HP'}}),false);
 assert.equal(airportDensity.publicAirport({properties:{TYPE_CODE:'AD'}}),false);
 console.log('Public-use airport filtering passed');
+
+const faaSource=fs.readFileSync('api/faa-map-features.js','utf8');
+const faaContext=vm.createContext({module:{exports:{}},AbortController,setTimeout,clearTimeout,URLSearchParams,fetch:async url=>{assert.ok(url.includes('ids=KGFK%2CKHCO%2CKXXX'));return {ok:true,status:200,json:async()=>[{icaoId:'KGFK',source:'FAA',tower:'T'},{icaoId:'KHCO',source:'FAA',tower:null}]};}});
+vm.runInContext(faaSource,faaContext);
+const towerFeatures={features:['KGFK','KHCO','KXXX'].map(ICAO_ID=>({properties:{ICAO_ID}}))};
+await faaContext.addTowerStatus(towerFeatures);
+assert.deepEqual(towerFeatures.features.map(f=>f.properties.towerStatus),['towered','non-towered','unknown']);
+faaContext.fetch=async()=>{throw Error('upstream outage');};
+await faaContext.addTowerStatus(towerFeatures);
+assert.ok(towerFeatures.features.every(f=>f.properties.towerStatus==='unknown'));
+console.log('Tower lookup join and unavailable-data fallback passed');

@@ -204,3 +204,7 @@
 .rp-cluster-popup{max-height:300px;overflow:auto}.rp-cluster-popup details{border-top:1px solid #50565c;padding:5px 0}.rp-cluster-popup summary{min-height:44px;cursor:pointer}
 .rp-brief-section summary{min-height:44px;cursor:pointer}.rp-brief-section .rp-route-popup{padding:8px 0;border-top:1px solid var(--line)}
 @media(max-width:600px){.rp-brief-panel,.rp-layers-panel{max-height:65svh;padding-bottom:env(safe-area-inset-bottom)}.rp-map-toolbar button{white-space:normal;overflow-wrap:anywhere}.rp-performance-inputs label{min-width:0}.rp-performance-inputs input{min-width:0;width:100%;box-sizing:border-box}}
+
+.rp-airport-type{position:relative;display:inline-block;width:24px;height:24px}.rp-airport-type small{position:absolute;right:-4px;bottom:-4px;font:700 8px/10px monospace;background:#101318;padding:0 1px}.rp-map-cluster .rp-airport-type{flex-shrink:0}
+
+.rp-metar-legend{display:flex;flex-wrap:wrap;gap:8px;font:600 11px/1.5 monospace}.rp-cluster-cat{white-space:nowrap}.rp-map-cluster:has(.rp-cluster-cat){min-width:62px}

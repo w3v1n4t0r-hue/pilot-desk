@@ -52,7 +52,8 @@ module.exports=async function handler(req,res){
     res.setHeader('Cache-Control','no-store');
     return res.status(400).json({error:'A valid south,west,north,east bounding box is required.'});
   }
-  if(bbox&&BBOX_REQUIRED.has(product)&&((bbox.north-bbox.south)>30||(bbox.east-bbox.west)>30)){
+  const maxLat=product==='metar'?60:30,maxLon=product==='metar'?180:30;
+  if(bbox&&BBOX_REQUIRED.has(product)&&((bbox.north-bbox.south)>maxLat||(bbox.east-bbox.west)>maxLon)){
     res.setHeader('Cache-Control','no-store');
     return res.status(400).json({error:'Zoom in before loading this layer.'});
   }

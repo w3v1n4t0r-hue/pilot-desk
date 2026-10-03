@@ -85,7 +85,7 @@
 .rp-layer-opacity input{width:100%!important;margin:0}
 .rp-layer-opacity output{text-align:right;font-variant-numeric:tabular-nums;color:#b8b8bc}
 .rp-layer-foot{margin:0;padding:10px 14px 13px;font-size:var(--pd-type-label);line-height:1.55;color:#696970}
-.rp-radar-timeline{position:absolute;z-index:880;left:12px;right:12px;bottom:12px;display:grid;grid-template-columns:44px auto minmax(140px,1fr) 58px minmax(120px,.45fr);align-items:center;gap:9px;padding:8px 10px;background:#08080a;border:1px solid #37373c;color:#ddd;backdrop-filter:none}
+.rp-radar-timeline{position:absolute;z-index:880;left:12px;right:12px;bottom:12px;display:grid;grid-template-columns:44px auto minmax(140px,1fr) minmax(110px,auto) minmax(120px,.45fr);align-items:center;gap:9px;padding:8px 10px;background:#08080a;border:1px solid #37373c;color:#ddd;backdrop-filter:none}
 .rp-radar-timeline[hidden]{display:none!important}
 .rp-radar-timeline button{width:44px;height:44px;padding:0;border:1px solid #3a3a40;background:#0e0e10;color:#e7e6e1;cursor:pointer}
 .rp-radar-timeline input{width:100%}
@@ -213,3 +213,6 @@
 .rp-airport-type{position:relative;display:inline-block;width:24px;height:24px}.rp-airport-type small{position:absolute;right:-4px;bottom:-4px;font:700 8px/10px monospace;background:#101318;padding:0 1px}.rp-map-cluster .rp-airport-type{flex-shrink:0}
 
 .rp-metar-legend{display:flex;flex-wrap:wrap;gap:8px;font:600 11px/1.5 monospace}.rp-cluster-cat{white-space:nowrap}.rp-map-cluster:has(.rp-cluster-cat){min-width:62px}
+
+/* Overview images use Leaflet's projected bounds, not responsive article media rules. */
+#rpMap .leaflet-image-layer{max-width:none!important;max-height:none!important}

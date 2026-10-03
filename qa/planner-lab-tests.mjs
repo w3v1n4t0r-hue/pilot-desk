@@ -44,7 +44,7 @@ const plannerPro=fs.readFileSync('assets/planner-pro.js','utf8');
 if(!rp.includes('FAA aeronautical chart with plotted route')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
 for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!(rpjs+fs.readFileSync('assets/chart-tiles.js','utf8')).includes(s))throw new Error(`Route optimization/integration missing ${s}`);
 const efb=fs.readFileSync('assets/efb-layers.js','utf8');
-for(const s of ['Auto by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
+for(const s of ['TAC fallback by zoom','NOAA MRMS','/api/tfrs?bbox=','/api/notams?station=','SIGMET INTERSECTION','DESTINATION NOTAM','Automatic flags describe data relationships only','L.DomEvent.disableClickPropagation'])if(!efb.includes(s))throw new Error(`EFB route layer integration missing ${s}`);
 if(!rp.includes('/assets/efb-layers.js'))throw new Error('Route planner does not load the EFB layer controller');
 if(!rp.includes('id="rpWaypointSearch"')||!rp.includes('id="rpWaypointResults"')||!rpjs.includes('/api/airport-search?q=')||!rpjs.includes('/api/navdata?ident='))throw new Error('Route waypoint search is not connected');
 if(!rpjs.includes('Observation time unavailable')||!rpjs.includes("return 'Observed '+d.toISOString()"))throw new Error('Endpoint METAR time provenance is missing');

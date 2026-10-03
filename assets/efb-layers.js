@@ -18,8 +18,8 @@ function start(RP,L){
 
   const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=(n,d)=>Number.isFinite(Number(n))?Number(n).toFixed(d==null?0:d):'—';
-  const DEFAULTS={radar:true,metar:true,pirep:false,gairmet:false,airsigmet:false,cwa:false,tfr:true,sua:false,airspace:false,notams:true,airports:true,navaids:false,fixes:false,airways:false,obstacles:false,rings:false};
-  const MIN_ZOOM={metar:5,pirep:5,gairmet:3,airsigmet:3,cwa:3,tfr:3,sua:5,airspace:6,airports:6,navaids:7,fixes:8,airways:6,obstacles:8};
+  const DEFAULTS={radar:false,metar:true,pirep:false,gairmet:false,airsigmet:false,cwa:false,tfr:true,sua:false,airspace:false,notams:true,airports:false,navaids:false,fixes:false,airways:false,obstacles:false,rings:false};
+  const MIN_ZOOM={metar:3,pirep:5,gairmet:3,airsigmet:3,cwa:3,tfr:3,sua:5,airspace:6,airports:6,navaids:7,fixes:8,airways:6,obstacles:8};
   const AWC=new Set(['metar','pirep','gairmet','airsigmet','cwa','obstacles']);
   const FAA=new Set(['sua','airspace','airports','navaids','fixes','airways']);
   const WEATHER=new Set(['metar','pirep','gairmet','airsigmet','cwa']);
@@ -88,9 +88,9 @@ function start(RP,L){
   panel.hidden=true;
   panel.innerHTML=[
     '<div class="rp-efb-head"><div><span class="rp-eyebrow">MAP CONTROL</span><strong>Layers</strong></div><button type="button" data-close-layers aria-label="Close layers">×</button></div>',
-    '<section class="rp-layer-section"><h3>MAP SETUP</h3><div class="rp-map-setups"><button type="button" data-map-setup="navigation">Navigation</button><button type="button" data-map-setup="weather">Weather</button><button type="button" data-map-setup="saved">My setup</button><button type="button" data-map-save>Save setup</button><button type="button" data-map-refresh>Refresh layers</button></div><p id="rpSetupStatus" role="status">Save your current layers to reuse them. Nearby point symbols are grouped; open a count to see each item or zoom in.</p></section>',
+    '<section class="rp-layer-section"><h3>MAP SETUP</h3><div class="rp-map-setups"><button type="button" data-map-setup="navigation">Navigation</button><button type="button" data-map-setup="weather">Weather</button><button type="button" data-map-setup="saved">My setup</button><button type="button" data-map-save>Save setup</button><button type="button" data-map-refresh>Refresh layers</button></div><p id="rpSetupStatus" role="status">Save your current layers to reuse them. Weather dots mark individual reporting stations. Nearby navigation symbols are grouped; open a count or zoom in.</p></section>',
     '<section class="rp-layer-section"><h3>BASE MAP</h3>',
-      baseRow('auto','Auto by zoom'),
+      baseRow('auto','TAC fallback by zoom'),
       baseRow('sectional','Sectional'),
       baseRow('terminal','TAC'),
       baseRow('low','IFR Low'),
@@ -266,7 +266,9 @@ function start(RP,L){
   }
   function applyAutoChart(){
     const z=map.getZoom();
-    const key=z<=5?'high':z<=7?'low':'sectional';
+    const current=RP.getChart();
+    // Keep the chosen chart family while zooming; only TAC falls back at wide scale.
+    const key=current==='terminal'&&z<10?'sectional':current;
     if(RP.getChart()!==key)setBase(key);
   }
 
@@ -413,7 +415,7 @@ function start(RP,L){
     }
     if(key==='metar'){
       const cat=window.PilotDeskChartSymbols.metarCategory(p);
-      return L.circleMarker(ll,{pane,radius:7,weight:2,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
+      return L.circleMarker(ll,{pane,radius:map.getZoom()<7?4:6,weight:2,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
     }
     const symbols=window.PilotDeskChartSymbols;
     const symbol=key==='pirep'?symbols.pirep(p):symbols.navigation(key,p);
@@ -458,7 +460,7 @@ function start(RP,L){
     const g=ensureGroup(key);
     g.clearLayers();
     const visible=(geojson.features||[]).filter(f=>key!=='airports'||window.PilotDeskMapDensity.publicAirport(f)).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
-    const size=map.getZoom()<10?({pirep:48,metar:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
+    const size=map.getZoom()<10?({pirep:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
     const priority=f=>{const p=f.properties||{};if(key==='pirep'){const v=window.PilotDeskChartSymbols.pirep(p);return (v.urgent?100:0)+Math.max(...v.items.map(x=>x.level||0));}if(key==='metar')return ({LIFR:4,IFR:3,MVFR:2,VFR:1}[window.PilotDeskChartSymbols.metarCategory(p)]||0);return 0;};
     const grouped=size?window.PilotDeskMapDensity.group(visible,c=>map.project([c[1],c[0]],map.getZoom()),size,priority):visible.map(feature=>({feature,members:[feature]}));
     const display={type:'FeatureCollection',features:grouped.map(x=>({...x.feature,properties:{...x.feature.properties,_pdMembers:x.members.length>1?x.members:null}}))};
@@ -469,6 +471,7 @@ function start(RP,L){
       pointToLayer:(f,ll)=>pointFor(key,f,ll),
       onEachFeature:(f,l)=>{
         l.bindPopup(popupFor(key,f));
+        if(key==='metar'){const p=f.properties||{},id=field(p,['icaoId','id','station']);l.bindTooltip(esc(id)+' · '+esc(window.PilotDeskChartSymbols.metarCategory(p)),{direction:'top',className:'rp-point-label'});}
         if((key==='airports'||key==='navaids'||key==='fixes')&&map.getZoom()>=9){
           const name=field(f.properties||{},['IDENT','ident','ID','NAME','name']);
           if(name)l.bindTooltip(esc(name),{permanent:true,direction:'right',className:'rp-nav-label',offset:[6,0]});

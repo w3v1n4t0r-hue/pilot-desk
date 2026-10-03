@@ -64,3 +64,15 @@ zoom=4;await vm.runInContext("ensureData('airports',false)",zoomContext);
 resolveZoomRequest({geojson:{features:[]}});await pendingZoom;
 assert.equal(rendered,0);assert.equal(cleared,1);
 console.log('Zoom-out race passed: obsolete airport response cannot restore hidden symbols.');
+
+// Weather observations retain their real coordinates even at national scale.
+const weatherRender=source.slice(source.indexOf('  function renderGeoLayer('),source.indexOf('  function refreshVectorStyles('));
+let weatherDisplayed;
+const weatherContext={ensureGroup:()=>({clearLayers(){}}),map:{getZoom:()=>4},window:{PilotDeskMapDensity:{group(){throw Error('Weather must not cluster');}}},state:{},paneFor:()=> 'weather',styleFor:()=>({}),pointFor:()=>({}),popupFor:()=>'',L:{geoJSON:(features)=>{weatherDisplayed=features;return {addTo(){}};}}};
+vm.createContext(weatherContext);vm.runInContext(weatherRender,weatherContext);
+weatherContext.observations={type:'FeatureCollection',features:reports};
+vm.runInContext("renderGeoLayer('metar',observations)",weatherContext);
+assert.equal(weatherDisplayed.features.length,reports.length);
+assert.deepEqual(weatherDisplayed.features.map(f=>f.geometry.coordinates),reports.map(f=>f.geometry.coordinates));
+assert.ok(weatherDisplayed.features.every(f=>f.properties._pdMembers===null));
+console.log('Weather station coordinates retained without clustering at national zoom.');

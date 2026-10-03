@@ -5,6 +5,7 @@ const FAA_ROOT='https://tiles.arcgis.com/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/serv
 const CHARTS=window.PilotDeskChartTiles.charts;
 let offlinePack=null;
 let map=null,tile=null,overview=null,chartResizeTimer=0,routeGroup=null,lastPoints=[],lastLegs=[],plotMode=false,plotCount=1,procedureIndex=[],contextSeq=0,autoTimer=0,routeRevision=0,searchTimer=0,searchRevision=0;const chartCache=new Map(),legWeather=new Map(),weatherPending=new Map(),weatherResults=new Map();
+let chartOverview=null,overviewManifest=null,overviewKey=null;
 let routeHistory=[],historyIndex=-1,hasFitted=false,routeSequenceHtml=null;
 function rememberRoute(){const value=$('#rpRoute').value;if(routeHistory[historyIndex]===value)return;routeHistory=routeHistory.slice(0,historyIndex+1);routeHistory.push(value);if(routeHistory.length>50)routeHistory.shift();historyIndex=routeHistory.length-1;syncHistory()}
 function syncHistory(){if($('#rpUndo'))$('#rpUndo').disabled=historyIndex<=0;if($('#rpRedo'))$('#rpRedo').disabled=historyIndex>=routeHistory.length-1}
@@ -20,10 +21,12 @@ function renderRouteSequence(){
 function initWorkspace(){
  const toggle=$('#rpEditorToggle'),editor=$('#rpRouteEditor'),workspace=$('#rpWorkspace');
  if(toggle&&editor&&workspace){
+  const open=localStorage.getItem('pd-route-editor-open')==='true';
+  toggle.setAttribute('aria-expanded',String(open));editor.hidden=!open;workspace.classList.toggle('rp-editor-closed',!open);
   toggle.addEventListener('click',()=>{
    const open=toggle.getAttribute('aria-expanded')!=='true';
    toggle.setAttribute('aria-expanded',String(open));editor.hidden=!open;
-   workspace.classList.toggle('rp-editor-closed',!open);
+   workspace.classList.toggle('rp-editor-closed',!open);localStorage.setItem('pd-route-editor-open',String(open));
    map?.invalidateSize({pan:false});
    if(open)$('#rpRoute').focus({preventScroll:true});
   });
@@ -63,7 +66,7 @@ const tileUrl=service=>`${FAA_ROOT}${service}/MapServer/tile/{z}/{y}/{x}`;
 function setMapStatus(text,state=''){const el=$('#rpMapStatus');if(el){el.textContent=text;el.dataset.state=state}}
 function opacity(){const n=Number(localStorage.getItem('pd-route-chart-opacity')||.92);return Number.isFinite(n)?Math.min(1,Math.max(.45,n)):.92}
 function chartOptions(key){const size=map.getSize();const options=window.PilotDeskChartTiles.options(CHARTS[key],{width:size.x,height:size.y,memory:navigator.deviceMemory,connection:navigator.connection});if(!navigator.onLine&&offlinePack?.chart===key)options.maxNativeZoom=Math.max(options.minNativeZoom,Math.min(options.maxNativeZoom,offlinePack.maxZoom-options.zoomOffset));return options}
-function chartStatus(key,errors=0){if(!map||!tile)return;const c=CHARTS[key];if(map.getZoom()<tile.options.minZoom)return setMapStatus('Overview map · zoom in for FAA '+c.label);if(errors)return setMapStatus(c.label+': some FAA tiles unavailable; move or zoom to retry');if(!navigator.onLine)return setMapStatus(c.label+' · offline downloaded tiles only','offline');setMapStatus('FAA '+c.label+' chart imagery'+(map.getZoom()>=tile.options.maxNativeZoom?' · full source detail':''),'live')}
+function chartStatus(key,errors=0){if(!map||!tile)return;const c=CHARTS[key];if(map.getZoom()<tile.options.minZoom)return syncOverview();if(errors)return setMapStatus(c.label+': some FAA tiles unavailable; move or zoom to retry');if(!navigator.onLine)return setMapStatus(c.label+' · offline downloaded tiles only','offline');setMapStatus('FAA '+c.label+' chart imagery'+(map.getZoom()>=tile.options.maxNativeZoom?' · full source detail':''),'live')}
 function chartLayer(key){
  const options=chartOptions(key),cacheKey=key+':'+options.tileSize+':'+options.maxNativeZoom;if(chartCache.has(cacheKey))return chartCache.get(cacheKey);
  const c=CHARTS[key],layer=L.tileLayer(tileUrl(c.service),{...options,attribution:'&copy; Federal Aviation Administration, Aeronautical Information Services',opacity:opacity(),zIndex:200});
@@ -74,10 +77,22 @@ function chartLayer(key){
  chartCache.set(cacheKey,layer);return layer;
 }
 function syncOverview(){
- if(!map||!tile)return;const needed=map.getZoom()<tile.options.minZoom;
- if(needed&&!map.hasLayer(overview))overview.addTo(map);
- if(!needed&&map.hasLayer(overview))map.removeLayer(overview);
- if(needed)chartStatus(localStorage.getItem('pd-route-chart-layer')||'sectional');
+ if(!map||!tile)return;
+ // A geographic background remains below charts, including gaps in FAA coverage.
+ if(!map.hasLayer(overview))overview.addTo(map);
+ const key=localStorage.getItem('pd-route-chart-layer')||'sectional';
+ const info=overviewManifest?.[key==='terminal'?'sectional':key];
+ if(!info&&chartOverview){map.removeLayer(chartOverview);chartOverview=null;overviewKey=null;const note=$('#rpOverviewSource');if(note)note.textContent='';}
+ if(info&&overviewKey!==key){
+  if(chartOverview)map.removeLayer(chartOverview);
+  overviewKey=key;
+  chartOverview=L.imageOverlay(info.url+'?v='+encodeURIComponent(info.generatedAt),info.bounds,{pane:'pdChartOverviewPane',interactive:false,opacity:1,alt:'FAA chart overview, generated '+info.generatedAt.slice(0,10)}).addTo(map);
+  const note=$('#rpOverviewSource');if(note)note.textContent=' CONUS overview captured '+info.generatedAt.slice(0,10)+'. '+(info.sourceUpdated||'Verify the source edition.');
+ }
+ if(map.getZoom()<tile.options.minZoom)setMapStatus((info?'FAA '+CHARTS[key].label+' overview · generated '+info.generatedAt.slice(0,10):'Overview map')+' · zoom in for chart detail');
+}
+async function loadChartOverview(){
+ try{const response=await fetch('/assets/chart-overviews/manifest.json',{cache:'no-cache'});if(!response.ok)return;overviewManifest=await response.json();syncOverview();}catch{}
 }
 function changeChart(key){
  if(!map||!CHARTS[key])return;const next=chartLayer(key);if(tile===next)return;
@@ -87,7 +102,7 @@ function changeChart(key){
 }
 function enhanceToolbar(){const bar=$('.rp-map-toolbar');if(!bar||$('#rpFullscreen'))return;const full=document.createElement('button');full.className='utility-btn';full.id='rpFullscreen';full.type='button';full.textContent='Focus chart';bar.insertBefore(full,$('#rpMapStatus'));full.addEventListener('click',toggleFullscreen)}
 function toggleFullscreen(){const card=$('.rp-map-card');if(!card)return;const on=card.classList.toggle('is-fullscreen');$('#rpFullscreen').textContent=on?'Exit chart focus':'Focus chart';document.body.classList.toggle('rp-map-focus',on);setTimeout(()=>map?.invalidateSize(),60)}
-function initMap(){window.PilotDeskRoutePlanner={getMap:()=>map,getRouteGroup:()=>routeGroup,getPoints:()=>lastPoints.slice(),getLegs:()=>lastLegs.slice(),getChart:()=>localStorage.getItem('pd-route-chart-layer')||'sectional',setChart:changeChart,setOfflinePack:value=>{offlinePack=value;changeChart(value.chart)},setChartOpacity:value=>{const o=Math.min(1,Math.max(.25,Number(value)||.92));localStorage.setItem('pd-route-chart-opacity',String(o));tile?.setOpacity(o)},fitRoute,rebuild:build,invalidate:invalidateRoute,highlightLeg,getWeather:endpointWx,insertPoint,setRoute:editRoute,refreshPack:renderPack};if(!window.L){setMapStatus('FAA chart viewer failed to load; route calculations are still available.');return}map=L.map('rpMap',{zoomControl:true,attributionControl:true,minZoom:3,maxZoom:14,preferCanvas:true,zoomAnimation:true,fadeAnimation:true}).setView([39,-98],4);overview=L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{attribution:'Overview &copy; Esri and contributors',minZoom:3,maxZoom:9,keepBuffer:1,updateWhenIdle:true,updateWhenZooming:false,zIndex:100});overview.on('tileerror',()=>{if(map.hasLayer(overview))setMapStatus('Overview unavailable · zoom in for FAA charts')});map.on('zoomend',syncOverview);map.on('resize',()=>{clearTimeout(chartResizeTimer);chartResizeTimer=setTimeout(()=>changeChart(localStorage.getItem('pd-route-chart-layer')||'sectional'),200)});const routePane=map.createPane('pdRoutePane');routePane.style.zIndex='470';routeGroup=L.layerGroup().addTo(map);const initial=localStorage.getItem('pd-route-chart-layer');changeChart(initial&&CHARTS[initial]?initial:'sectional');map.on('click',e=>{if(!plotMode)return;const id=`PT${String(plotCount++).padStart(2,'0')}`,text=`${id},${e.latlng.lat.toFixed(5)},${e.latlng.lng.toFixed(5)}`,box=$('#rpRoute');editRoute((box.value.trim()?box.value.trim()+' ':'')+text);msg(`${id} added from chart. Recalculating route…`);scheduleAutoBuild(0)});enhanceToolbar();document.dispatchEvent(new CustomEvent('pilotdesk:map-ready',{detail:{map}}))}
+function initMap(){window.PilotDeskRoutePlanner={getMap:()=>map,getRouteGroup:()=>routeGroup,getPoints:()=>lastPoints.slice(),getLegs:()=>lastLegs.slice(),getChart:()=>localStorage.getItem('pd-route-chart-layer')||'sectional',setChart:changeChart,setOfflinePack:value=>{offlinePack=value;changeChart(value.chart)},setChartOpacity:value=>{const o=Math.min(1,Math.max(.25,Number(value)||.92));localStorage.setItem('pd-route-chart-opacity',String(o));tile?.setOpacity(o)},fitRoute,rebuild:build,invalidate:invalidateRoute,highlightLeg,getWeather:endpointWx,insertPoint,setRoute:editRoute,refreshPack:renderPack};if(!window.L){setMapStatus('FAA chart viewer failed to load; route calculations are still available.');return}map=L.map('rpMap',{zoomControl:true,attributionControl:true,minZoom:3,maxZoom:14,preferCanvas:true,zoomAnimation:true,fadeAnimation:true}).setView([39,-98],4);const geographicPane=map.createPane('pdGeographicPane');geographicPane.style.zIndex='180';geographicPane.style.pointerEvents='none';overview=L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{pane:'pdGeographicPane',attribution:'Overview &copy; Esri and contributors',minZoom:3,maxZoom:9,keepBuffer:1,updateWhenIdle:true,updateWhenZooming:false,zIndex:100});overview.on('tileerror',()=>{if(map.hasLayer(overview))setMapStatus('Overview unavailable · zoom in for FAA charts')});map.on('zoomend',syncOverview);map.on('resize',()=>{clearTimeout(chartResizeTimer);chartResizeTimer=setTimeout(()=>changeChart(localStorage.getItem('pd-route-chart-layer')||'sectional'),200)});const overviewPane=map.createPane('pdChartOverviewPane');overviewPane.style.zIndex='190';overviewPane.style.pointerEvents='none';void loadChartOverview();const routePane=map.createPane('pdRoutePane');routePane.style.zIndex='470';routeGroup=L.layerGroup().addTo(map);const initial=localStorage.getItem('pd-route-chart-layer');changeChart(initial&&CHARTS[initial]?initial:'sectional');map.on('click',e=>{if(!plotMode)return;const id=`PT${String(plotCount++).padStart(2,'0')}`,text=`${id},${e.latlng.lat.toFixed(5)},${e.latlng.lng.toFixed(5)}`,box=$('#rpRoute');editRoute((box.value.trim()?box.value.trim()+' ':'')+text);msg(`${id} added from chart. Recalculating route…`);scheduleAutoBuild(0)});enhanceToolbar();document.dispatchEvent(new CustomEvent('pilotdesk:map-ready',{detail:{map}}))}
 function greatCircleSamples(a,b,steps=28){const toR=d=>d*Math.PI/180,toD=r=>r*180/Math.PI,p1=toR(a.lat),l1=toR(a.lon),p2=toR(b.lat),l2=toR(b.lon),d=2*Math.asin(Math.sqrt(Math.sin((p2-p1)/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin((l2-l1)/2)**2));if(d<1e-9)return[[a.lat,a.lon],[b.lat,b.lon]];const out=[];for(let i=0;i<=steps;i++){const f=i/steps,A=Math.sin((1-f)*d)/Math.sin(d),B=Math.sin(f*d)/Math.sin(d),x=A*Math.cos(p1)*Math.cos(l1)+B*Math.cos(p2)*Math.cos(l2),y=A*Math.cos(p1)*Math.sin(l1)+B*Math.cos(p2)*Math.sin(l2),z=A*Math.sin(p1)+B*Math.sin(p2),p=Math.atan2(z,Math.sqrt(x*x+y*y)),l=Math.atan2(y,x);out.push([toD(p),toD(l)])}return out}
 function rewriteDraggedPoint(i,p,ll){const box=$('#rpRoute'),tokens=editableTokens();if(!tokens[i])return;tokens[i]=`${p.id},${ll.lat.toFixed(5)},${ll.lng.toFixed(5)}`;editRoute(tokens.join(' '));msg(`${p.id} moved to a manual coordinate. Rebuilding route…`)}
 function drawMap(pts,legs){if(!map||!routeGroup)return;routeGroup.clearLayers();legs.forEach((leg,i)=>{const line=L.polyline(greatCircleSamples(pts[i],pts[i+1]),{color:'#c65cff',weight:4,opacity:.96,lineCap:'round',pane:'pdRoutePane'}).addTo(routeGroup);line._pdLegIndex=i;line.bindTooltip(`${esc(leg.from)} → ${esc(leg.to)} · ${fmt(leg.distance,1)} NM`,{sticky:true,className:'rp-leg-label'});line.bindPopup(`<div class="rp-route-popup"><b>${esc(leg.from)} → ${esc(leg.to)}</b><br>${fmt(leg.distance,1)} NM · ${fmt(leg.gs,0)} kt GS · ${fmt(leg.hours*60,0)} min<br>TC ${fmt(leg.course,0)}° · WCA ${fmt(leg.wca,1)}° · MH ${fmt(leg.mag,0)}°</div>`);line.on('click',()=>highlightLeg(i));line.on('contextmenu',e=>{L.DomEvent.stopPropagation(e.originalEvent);insertPoint(i+1,e.latlng)})});pts.forEach((p,i)=>{const icon=L.divIcon({className:'rp-waypoint-icon',html:'<span></span>',iconSize:[14,14],iconAnchor:[7,7]});const m=L.marker([p.lat,p.lon],{draggable:true,icon,pane:'pdRoutePane',title:`Drag ${p.id} to reroute`}).addTo(routeGroup);m.bindTooltip(esc(p.id),{permanent:true,direction:'top',className:'rp-point-label',offset:[0,-8]});m.bindPopup(`<div class="rp-route-popup"><b>${esc(p.id)}</b><br>${Number(p.lat).toFixed(5)}, ${Number(p.lon).toFixed(5)}<br><span class="rp-mini">${esc(p.source||'resolved waypoint')} · drag to reroute</span></div>`);m.on('dragend',e=>rewriteDraggedPoint(i,p,e.target.getLatLng()))});if(!hasFitted){fitRoute({animate:false});hasFitted=true}}

@@ -163,8 +163,13 @@
   .rp-map-card .rp-map-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
-/* Leaflet's overlay pane has no layout width; the sitewide media max-width rule collapsed route vectors. */
-#rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}
+/* Every Leaflet renderer pane has no layout width. Preserve its pixel surface
+   instead of applying the site's responsive media constraint. */
+#rpMap .leaflet-pane>canvas,#rpMap .leaflet-pane>svg{max-width:none!important;max-height:none!important}
+/* The toolbar can wrap: let the chart use the remaining focus height. */
+.rp-map-card.is-fullscreen{display:flex;flex-direction:column;height:auto;overflow:hidden}
+.rp-map-card.is-fullscreen .rp-map-toolbar{flex:0 0 auto}
+.rp-map-card.is-fullscreen .rp-map{flex:1 1 0;min-height:0;height:auto}
 
 #rpPhaseEnabled{width:20px;height:20px;min-height:20px;vertical-align:middle;margin-right:8px}
 

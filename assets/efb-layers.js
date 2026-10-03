@@ -320,6 +320,8 @@ function start(RP,L){
     if(!endpoint)return null;
     const min=MIN_ZOOM[key]||3;
     if(map.getZoom()<min&&!forBrief){
+      // A pending request for the previous zoom must not restore hidden symbols.
+      fetchSeq[key]=(fetchSeq[key]||0)+1;
       setLayerStatus(key,'zoom '+min+'+','idle');
       const g=groups[key];if(g)g.clearLayers();
       return data[key]||null;

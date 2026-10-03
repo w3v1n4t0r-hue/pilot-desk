@@ -53,3 +53,14 @@ faaContext.fetch=async()=>{throw Error('upstream outage');};
 await faaContext.addTowerStatus(towerFeatures);
 assert.ok(towerFeatures.features.every(f=>f.properties.towerStatus==='unknown'));
 console.log('Tower lookup join and unavailable-data fallback passed');
+
+// Reproduce a zoom-out while an airport request is still in flight.
+const ensureSource=source.slice(source.indexOf('  async function ensureData('),source.indexOf('  function toggleLayer('));
+let resolveZoomRequest,zoom=8,rendered=0,cleared=0;
+const zoomContext={endpointFor:()=>'/airports',MIN_ZOOM:{airports:6},map:{getZoom:()=>zoom},setLayerStatus:()=>{},groups:{airports:{clearLayers:()=>cleared++}},data:{},lastFetch:{},dataTime:{},dataPending:{},fetchSeq:{},dataStatus:{},getBoundsString:()=> 'test',fetchJson:()=>new Promise(resolve=>resolveZoomRequest=resolve),state:{enabled:{airports:true}},renderGeoLayer:()=>rendered++,renderBrief:()=>{},Date};
+vm.createContext(zoomContext);vm.runInContext(ensureSource,zoomContext);
+const pendingZoom=vm.runInContext("ensureData('airports',false)",zoomContext);
+zoom=4;await vm.runInContext("ensureData('airports',false)",zoomContext);
+resolveZoomRequest({geojson:{features:[]}});await pendingZoom;
+assert.equal(rendered,0);assert.equal(cleared,1);
+console.log('Zoom-out race passed: obsolete airport response cannot restore hidden symbols.');

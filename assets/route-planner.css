@@ -115,7 +115,7 @@
 .rp-brief-source a{color:#cfcfca}
 .rp-empty-state{padding:18px 0;color:#77777e;font-size:var(--pd-type-label);line-height:1.5}
 .rp-waypoint-icon{background:transparent!important;border:0!important}
-.rp-waypoint-icon span{display:block;width:10px;height:10px;margin:2px;background:#c65cff;border:2px solid #070708;box-shadow:0 0 0 1px #e6b0ff;transform:rotate(45deg)}
+.rp-waypoint-icon svg{display:block;width:32px;height:32px;overflow:visible}
 .rp-map-symbol{background:transparent!important;border:0!important}
 
 .rp-notam-marker{display:flex!important;align-items:center!important;justify-content:center!important;gap:2px!important;background:#09090b!important;border:1px solid #e87c7c!important;color:#f2b0b0!important;font:800 var(--pd-type-label)/1 system-ui!important}

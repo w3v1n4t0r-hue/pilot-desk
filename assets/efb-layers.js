@@ -35,6 +35,8 @@ function start(RP,L){
     vectorOpacity:Number(saved.vectorOpacity||.88),
     pirepFilter:['all','icing','turbulence','skyweather'].includes(saved.pirepFilter)?saved.pirepFilter:'all'
   };
+  // Printed chart airport symbols and METAR dots replace the duplicate airport overlay.
+  state.enabled.airports=false;
   const briefData={},briefStatus={},briefTime={};
   const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},notams={},briefWx={dep:null,dst:null};
   let radarOverlay=null,notamGroup=L.layerGroup(),ringsGroup=L.layerGroup(),radarTimer=null,briefLoading=false;
@@ -116,7 +118,6 @@ function start(RP,L){
     '</section>',
     '<section class="rp-layer-section"><h3>FLIGHT</h3>',
       toggleRow('notams','NOTAMs','FAA API'),
-      toggleRow('airports','Public-use airports','FAA AIS'),
       toggleRow('navaids','VORs / NAVAIDs','FAA AIS'),
       toggleRow('fixes','Fixes','FAA AIS'),
       toggleRow('airways','Airways / Q routes','FAA AIS'),
@@ -206,8 +207,8 @@ function start(RP,L){
     const button=e.target.closest('[data-map-setup]');if(!button)return;
     const mode=button.dataset.mapSetup;let setup;
     if(mode==='saved'){try{setup=JSON.parse(localStorage.getItem('pd-map-setup')||'null')}catch{}if(!setup?.enabled){setupStatus.textContent='Choose your layers, then save a setup first.';return;}}
-    else{setup={enabled:{},pirepFilter:'all',baseMode:state.baseMode};for(const key of Object.keys(DEFAULTS))setup.enabled[key]=mode==='navigation'?['airports','navaids','fixes','airways','tfr','metar'].includes(key):['radar','metar','pirep','gairmet','airsigmet','cwa','tfr'].includes(key);}
-    for(const key of Object.keys(DEFAULTS)){const on=setup.enabled[key]===true;state.enabled[key]=on;const input=panel.querySelector('[data-layer="'+key+'"]');if(input)input.checked=on;toggleLayer(key,on);}
+    else{setup={enabled:{},pirepFilter:'all',baseMode:state.baseMode};for(const key of Object.keys(DEFAULTS))setup.enabled[key]=mode==='navigation'?['navaids','fixes','airways','tfr','metar'].includes(key):['radar','metar','pirep','gairmet','airsigmet','cwa','tfr'].includes(key);}
+    for(const key of Object.keys(DEFAULTS)){const on=key!=='airports'&&setup.enabled[key]===true;state.enabled[key]=on;const input=panel.querySelector('[data-layer="'+key+'"]');if(input)input.checked=on;toggleLayer(key,on);}
     state.pirepFilter=['all','icing','turbulence','skyweather'].includes(setup.pirepFilter)?setup.pirepFilter:'all';panel.querySelector('#rpPirepFilter').value=state.pirepFilter;
     if(['auto','sectional','terminal','low','high'].includes(setup.baseMode)){state.baseMode=setup.baseMode;if(state.baseMode==='auto')applyAutoChart();else setBase(state.baseMode);syncBaseRadios();}
     if(data.pirep&&state.enabled.pirep)renderGeoLayer('pirep',data.pirep);save();setupStatus.textContent=mode==='saved'?'My setup restored.':mode==='navigation'?'Navigation layers and METARs selected. Other weather overlays are hidden.':'Weather layers selected. Navigation overlays are hidden.';
@@ -297,8 +298,14 @@ function start(RP,L){
     return j;
   }
 
+  function metarBoundsString(){
+    const b=map.getBounds(),lat=(b.getSouth()+b.getNorth())/2,lon=(b.getWest()+b.getEast())/2;
+    // Keep a station query around airport close-ups; this never changes dot coordinates.
+    return [Math.max(-90,Math.min(b.getSouth(),lat-.25)),Math.max(-180,Math.min(b.getWest(),lon-.25)),Math.min(90,Math.max(b.getNorth(),lat+.25)),Math.min(180,Math.max(b.getEast(),lon+.25))].map(v=>v.toFixed(3)).join(',');
+  }
   function endpointFor(key){
-    const bbox=encodeURIComponent(getBoundsString());
+    if(key==='airports')return null;
+    const bbox=encodeURIComponent(key==='metar'?metarBoundsString():getBoundsString());
     if(key==='tfr')return '/api/tfrs?bbox='+bbox;
     if(AWC.has(key))return '/api/aviation-layers?product='+(key==='obstacles'?'obstacle':key)+'&bbox='+bbox;
     if(FAA.has(key))return '/api/faa-map-features?product='+key+'&bbox='+bbox;
@@ -328,7 +335,7 @@ function start(RP,L){
       const g=groups[key];if(g)g.clearLayers();
       return data[key]||null;
     }
-    const stamp=getBoundsString()+','+Math.floor(map.getZoom());
+    const stamp=key==='metar'?endpoint:getBoundsString()+','+Math.floor(map.getZoom());
     if(data[key]&&lastFetch[key]===stamp&&Date.now()-dataTime[key]<60000)return data[key];
     if(dataPending[key]?.stamp===stamp)return dataPending[key].promise;
     const seq=(fetchSeq[key]||0)+1;fetchSeq[key]=seq;
@@ -470,7 +477,7 @@ function start(RP,L){
       style:f=>styleFor(key,f),
       pointToLayer:(f,ll)=>pointFor(key,f,ll),
       onEachFeature:(f,l)=>{
-        l.bindPopup(popupFor(key,f));
+        l.bindPopup(()=>popupFor(key,f));
         if(key==='metar'){const p=f.properties||{},id=field(p,['icaoId','id','station']);l.bindTooltip(esc(id)+' · '+esc(window.PilotDeskChartSymbols.metarCategory(p)),{direction:'top',className:'rp-point-label'});}
         if((key==='airports'||key==='navaids'||key==='fixes')&&map.getZoom()>=9){
           const name=field(f.properties||{},['IDENT','ident','ID','NAME','name']);
@@ -481,6 +488,11 @@ function start(RP,L){
     layer.addTo(g);
     if(size&&key!=='pirep')setLayerStatus(key,grouped.length+' symbols / '+visible.length+' items','live');
     if(key==='pirep'){const features=geojson.features||[],shown=features.filter(f=>state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter)).length;setLayerStatus(key,grouped.length+' symbols / '+shown+' reports'+(state.pirepFilter==='all'?'':' filtered'),'live');}
+  }
+  function resizeWeatherDots(){
+    const radius=map.getZoom()<7?4:6;
+    function resize(layer){if(layer.setRadius)layer.setRadius(radius);else if(layer.eachLayer)layer.eachLayer(resize);}
+    if(groups.metar)resize(groups.metar);
   }
   function refreshVectorStyles(){
     function update(layer,key){
@@ -793,7 +805,7 @@ function start(RP,L){
   let moveTimer=null;
   map.on('zoomend',()=>{
     if(state.baseMode==='auto')applyAutoChart();
-    syncBaseRadios();for(const key of Object.keys(groups))if(state.enabled[key]&&data[key])renderGeoLayer(key,data[key]);
+    syncBaseRadios();resizeWeatherDots();for(const key of Object.keys(groups))if(key!=='metar'&&state.enabled[key]&&data[key])renderGeoLayer(key,data[key]);
   });
   map.on('moveend',()=>{
     clearTimeout(moveTimer);

@@ -76,3 +76,33 @@ assert.equal(weatherDisplayed.features.length,reports.length);
 assert.deepEqual(weatherDisplayed.features.map(f=>f.geometry.coordinates),reports.map(f=>f.geometry.coordinates));
 assert.ok(weatherDisplayed.features.every(f=>f.properties._pdMembers===null));
 console.log('Weather station coordinates retained without clustering at national zoom.');
+
+// Legacy preferences cannot restore duplicate airport boxes, while METARs stay enabled.
+const settingsCode=source.slice(source.indexOf('  const DEFAULTS='),source.indexOf('  const briefData='));
+const settingsContext={localStorage:{getItem:()=>JSON.stringify({enabled:{airports:true,metar:true,radar:true}})}};
+vm.createContext(settingsContext);
+assert.equal(vm.runInContext(settingsCode+';state.enabled.airports',settingsContext),false);
+assert.equal(vm.runInContext('state.enabled.metar',settingsContext),true);
+assert.equal(vm.runInContext('state.enabled.radar',settingsContext),true);
+
+// Airport close-ups fetch neighboring reporting stations without moving weather dots.
+const boundsCode=source.slice(source.indexOf('  function metarBoundsString('),source.indexOf('  function paneFor('));
+let queryBounds={south:47.939,west:-97.181,north:47.945,east:-97.175};
+const boundsContext={map:{getBounds:()=>({getSouth:()=>queryBounds.south,getWest:()=>queryBounds.west,getNorth:()=>queryBounds.north,getEast:()=>queryBounds.east})},getBoundsString:()=>Object.values(queryBounds).join(','),AWC:new Set(['metar','pirep']),FAA:new Set(['airports','fixes'])};
+vm.createContext(boundsContext);vm.runInContext(boundsCode,boundsContext);
+assert.equal(vm.runInContext("endpointFor('airports')",boundsContext),null);
+assert.match(decodeURIComponent(vm.runInContext("endpointFor('metar')",boundsContext)),/bbox=47.692,-97.428,48.192,-96.928/);
+assert.match(decodeURIComponent(vm.runInContext("endpointFor('pirep')",boundsContext)),/bbox=47.939,-97.181,47.945,-97.175/);
+queryBounds={south:20,west:-130,north:55,east:-60};
+assert.equal(vm.runInContext('metarBoundsString()',boundsContext),'20.000,-130.000,55.000,-60.000');
+console.log('Close-up weather bounds and legacy airport overlay removal passed.');
+
+// Zoom changes resize existing canvas weather markers instead of recreating them.
+const resizeCode=source.slice(source.indexOf('  function resizeWeatherDots('),source.indexOf('  function refreshVectorStyles('));
+let radiusChanges=[],detailZoom=6;
+const weatherMarkers=[{setRadius:r=>radiusChanges.push(r)},{setRadius:r=>radiusChanges.push(r)}];
+const resizeContext={map:{getZoom:()=>detailZoom},groups:{metar:{eachLayer:fn=>fn({eachLayer:fn=>weatherMarkers.forEach(fn)})}}};
+vm.createContext(resizeContext);vm.runInContext(resizeCode,resizeContext);
+vm.runInContext('resizeWeatherDots()',resizeContext);assert.deepEqual(radiusChanges,[4,4]);
+detailZoom=14;radiusChanges=[];vm.runInContext('resizeWeatherDots()',resizeContext);assert.deepEqual(radiusChanges,[6,6]);
+console.log('Close-up weather marker resize preserves existing layers.');

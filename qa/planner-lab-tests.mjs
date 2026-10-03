@@ -39,7 +39,7 @@ if(fs.existsSync('.astro-public/route-planner.html')){
     if(!prepared.includes(asset)||!fs.existsSync(`.astro-public${asset}`))throw new Error(`Planner ${extension} is not fingerprinted for returning visitors`);
   }
 }
-if(!rpCss.includes('#rpMap .leaflet-overlay-pane canvas,#rpMap .leaflet-overlay-pane svg{max-width:none!important'))throw new Error('Sitewide media sizing must not collapse Leaflet route vectors');
+if(!rpCss.includes('#rpMap .leaflet-pane>canvas,#rpMap .leaflet-pane>svg{max-width:none!important'))throw new Error('Sitewide media sizing must not collapse any Leaflet renderer pane');
 const plannerPro=fs.readFileSync('assets/planner-pro.js','utf8');
 if(!rp.includes('FAA aeronautical chart with plotted route')||!rp.includes('not used for the enroute wind calculation'))throw new Error('Route source/wind boundary missing');
 for(const s of ['VFR_Sectional','IFR_AreaLow','chartCache','updateWhenIdle:true','loadContext','/api/procedures?ident=','pd-route-procedures','/procedures.html?ident='])if(!(rpjs+fs.readFileSync('assets/chart-tiles.js','utf8')).includes(s))throw new Error(`Route optimization/integration missing ${s}`);

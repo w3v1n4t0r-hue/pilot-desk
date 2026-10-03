@@ -32,3 +32,7 @@ assert.equal(created,1);assert.match(status,/generated 2026-10-03/);
 selected='low';vm.runInContext('syncOverview()',context);
 assert.equal(created,2);assert.equal(removed,1);
 console.log('Chart overview bounds, persistent layers, date labeling and chart switching passed.');
+
+assert.ok(planner.includes("geographicPane.style.zIndex='180'"));
+assert.ok(planner.includes("overviewPane.style.zIndex='190'"));
+assert.ok(planner.includes("pane:'pdGeographicPane'"));

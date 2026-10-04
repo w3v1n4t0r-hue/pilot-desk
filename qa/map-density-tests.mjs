@@ -132,3 +132,13 @@ await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(oldS
 finishOld({geojson:{features:[{obsolete:true}]}});await oldWeather;
 assert.equal(zoomContext.data.metar.features.length,0);
 console.log('Contained weather reuse, freshness, manual refresh, and obsolete-request cancellation passed.');
+// Returning to cached coverage cancels a pending request for a different viewport.
+zoomContext.endpointFor=()=>'/metar-outside';zoomContext.dataBounds.metar=[47.69,-97.43,48.20,-96.92];
+zoomContext.getBoundsString=()=> '48.3,-97.18,48.4,-97.17';
+zoomContext.fetchJson=(_url,controller)=>{oldSignal=controller.signal;return new Promise(resolve=>finishOld=resolve);};
+const outsideRequest=vm.runInContext("ensureData('metar',false)",zoomContext);
+zoomContext.getBoundsString=()=> '47.94,-97.18,47.95,-97.17';
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(oldSignal.aborted,true);
+finishOld({geojson:{features:[{wrongRegion:true}]}});await outsideRequest;
+assert.equal(zoomContext.data.metar.features.length,0);
+console.log('Returning to cached coverage cannot restore another region’s pending weather.');

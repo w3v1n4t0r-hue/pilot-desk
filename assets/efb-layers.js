@@ -343,8 +343,12 @@ function start(RP,L){
     const stamp=key==='metar'?endpoint:getBoundsString()+','+Math.floor(map.getZoom());
     const requestBounds=key==='metar'?metarBoundsString().split(',').map(Number):null;
     // Reuse a recent station query while its coverage still contains the viewport.
-    if(key==='metar'&&data[key]&&lastFetch[key]&&Date.now()-dataTime[key]<60000&&weatherBoundsContain(dataBounds[key],getBoundsString().split(',').map(Number)))return data[key];
-    if(data[key]&&lastFetch[key]===stamp&&Date.now()-dataTime[key]<60000)return data[key];
+    const covered=key==='metar'&&weatherBoundsContain(dataBounds[key],getBoundsString().split(',').map(Number));
+    if(data[key]&&lastFetch[key]&&Date.now()-dataTime[key]<60000&&(covered||lastFetch[key]===stamp)){
+      if(dataPending[key]){fetchSeq[key]=(fetchSeq[key]||0)+1;dataPending[key].controller?.abort();delete dataPending[key];}
+      dataStatus[key]='available';setLayerStatus(key,String((data[key].features||[]).length),'live');
+      return data[key];
+    }
     if(dataPending[key]?.stamp===stamp)return dataPending[key].promise;
     dataPending[key]?.controller?.abort();
     const controller=new AbortController();
@@ -492,7 +496,7 @@ function start(RP,L){
       style:f=>styleFor(key,f),
       pointToLayer:(f,ll)=>pointFor(key,f,ll),
       onEachFeature:(f,l)=>{
-        l.bindPopup(()=>popupFor(key,f));
+        l.bindPopup(()=>popupFor(key,f),key==='metar'?{className:'rp-weather-popup',maxWidth:320}:{});
         if(key==='metar'){const p=f.properties||{},id=field(p,['icaoId','id','station']);l.bindTooltip(esc(id)+' · '+esc(window.PilotDeskChartSymbols.metarCategory(p)),{direction:'top',className:'rp-point-label'});}
         if((key==='airports'||key==='navaids'||key==='fixes')&&map.getZoom()>=9){
           const name=field(f.properties||{},['IDENT','ident','ID','NAME','name']);

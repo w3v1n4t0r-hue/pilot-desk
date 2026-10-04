@@ -11,7 +11,8 @@ for(const feature of ['routeBrief','advancedWeather','fullOral']){
  assert.equal(await access.canUseFeature(feature),false);
  billing={isPro:true,isSchool:false};assert.equal(access.isEnabled(feature),true);assert.equal(await access.canUseFeature(feature),true);
  billing={isPro:true,isSchool:true};assert.equal(access.isEnabled(feature),true);
- billing={isPro:true,error:'subscription lookup failed'};assert.equal(access.isEnabled(feature),false);assert.equal(await access.canUseFeature(feature),false);
+ billing={isPro:true,error:'subscription lookup failed'};assert.equal(access.isEnabled(feature),true,'Retain already verified access during a lookup outage');assert.equal(await access.canUseFeature(feature),true);
+ billing={isPro:false,error:'subscription lookup failed'};assert.equal(access.isEnabled(feature),false,'An unverified account must not gain access during an outage');assert.equal(await access.canUseFeature(feature),false);
  billing={isPro:false};
 }
 assert.equal(access.isEnabled('unknown'),false);

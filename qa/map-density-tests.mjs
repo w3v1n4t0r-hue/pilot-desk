@@ -57,7 +57,7 @@ console.log('Tower lookup join and unavailable-data fallback passed');
 // Reproduce a zoom-out while an airport request is still in flight.
 const ensureSource=source.slice(source.indexOf('  async function ensureData('),source.indexOf('  function toggleLayer('));
 let resolveZoomRequest,zoom=8,rendered=0,cleared=0;
-const zoomContext={endpointFor:()=>'/airports',MIN_ZOOM:{airports:6},map:{getZoom:()=>zoom},setLayerStatus:()=>{},groups:{airports:{clearLayers:()=>cleared++}},data:{},lastFetch:{},dataTime:{},dataPending:{},fetchSeq:{},dataStatus:{},getBoundsString:()=> 'test',fetchJson:()=>new Promise(resolve=>resolveZoomRequest=resolve),state:{enabled:{airports:true}},renderGeoLayer:()=>rendered++,renderBrief:()=>{},Date};
+const zoomContext={endpointFor:()=>'/airports',MIN_ZOOM:{airports:6},map:{getZoom:()=>zoom},setLayerStatus:()=>{},groups:{airports:{clearLayers:()=>cleared++}},data:{},lastFetch:{},dataTime:{},dataPending:{},fetchSeq:{},dataStatus:{},dataBounds:{},AbortController,metarBoundsString:()=> '0,0,1,1',weatherBoundsContain:()=>false,getBoundsString:()=> 'test',fetchJson:()=>new Promise(resolve=>resolveZoomRequest=resolve),state:{enabled:{airports:true}},renderGeoLayer:()=>rendered++,renderBrief:()=>{},Date};
 vm.createContext(zoomContext);vm.runInContext(ensureSource,zoomContext);
 const pendingZoom=vm.runInContext("ensureData('airports',false)",zoomContext);
 zoom=4;await vm.runInContext("ensureData('airports',false)",zoomContext);
@@ -106,3 +106,29 @@ vm.createContext(resizeContext);vm.runInContext(resizeCode,resizeContext);
 vm.runInContext('resizeWeatherDots()',resizeContext);assert.deepEqual(radiusChanges,[4,4]);
 detailZoom=14;radiusChanges=[];vm.runInContext('resizeWeatherDots()',resizeContext);assert.deepEqual(radiusChanges,[6,6]);
 console.log('Close-up weather marker resize preserves existing layers.');
+
+// Close-up pan/zoom reuses only contained, recent weather; refresh and age force a request.
+const containCode=source.slice(source.indexOf('  function weatherBoundsContain('),source.indexOf('  function endpointFor('));
+vm.runInContext(containCode,zoomContext);
+zoom=12;let weatherRequests=0;
+zoomContext.MIN_ZOOM.metar=3;zoomContext.state.enabled.metar=true;
+zoomContext.endpointFor=()=>'/metar';zoomContext.getBoundsString=()=> '47.94,-97.18,47.95,-97.17';
+zoomContext.metarBoundsString=()=> '47.69,-97.43,48.20,-96.92';
+zoomContext.data.metar={features:[]};zoomContext.dataBounds.metar=[47.69,-97.43,48.20,-96.92];zoomContext.dataTime.metar=Date.now();zoomContext.lastFetch.metar='/previous';
+zoomContext.fetchJson=async()=>{weatherRequests++;return {geojson:{features:[]}};};
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(weatherRequests,0);
+zoomContext.getBoundsString=()=> '48.3,-97.18,48.4,-97.17';
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(weatherRequests,1);
+zoomContext.dataTime.metar=Date.now()-61000;
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(weatherRequests,2);
+delete zoomContext.lastFetch.metar;
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(weatherRequests,3);
+let oldSignal,finishOld;
+zoomContext.fetchJson=(_url,controller)=>{oldSignal=controller.signal;return new Promise(resolve=>finishOld=resolve);};
+delete zoomContext.lastFetch.metar;
+const oldWeather=vm.runInContext("ensureData('metar',false)",zoomContext);
+zoomContext.endpointFor=()=>'/metar-next';zoomContext.fetchJson=async()=>({geojson:{features:[]}});
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(oldSignal.aborted,true);
+finishOld({geojson:{features:[{obsolete:true}]}});await oldWeather;
+assert.equal(zoomContext.data.metar.features.length,0);
+console.log('Contained weather reuse, freshness, manual refresh, and obsolete-request cancellation passed.');

@@ -38,7 +38,7 @@ function start(RP,L){
   // Printed chart airport symbols and METAR dots replace the duplicate airport overlay.
   state.enabled.airports=false;
   const briefData={},briefStatus={},briefTime={};
-  const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},notams={},briefWx={dep:null,dst:null};
+  const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},dataBounds={},notams={},briefWx={dep:null,dst:null};
   let radarOverlay=null,notamGroup=L.layerGroup(),ringsGroup=L.layerGroup(),radarTimer=null,briefLoading=false;
   let routeContextSeq=0,notamSeq=0,radarSeq=0,radarPending=null;
 
@@ -287,8 +287,8 @@ function start(RP,L){
     const b=map.getBounds(),q=.25,r=v=>Math.round(v/q)*q;
     return [r(b.getSouth()),r(b.getWest()),r(b.getNorth()),r(b.getEast()),Math.floor(map.getZoom())].join(',');
   }
-  async function fetchJson(url){
-    const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),12000);let r;try{r=await fetch(url,{cache:'no-store',signal:controller.signal})}finally{clearTimeout(timeout)}
+  async function fetchJson(url,controller=new AbortController()){
+    const timeout=setTimeout(()=>controller.abort(),12000);let r;try{r=await fetch(url,{cache:'no-store',signal:controller.signal})}finally{clearTimeout(timeout)}
     let j={};
     try{j=await r.json()}catch{}
     if(!r.ok){
@@ -302,6 +302,9 @@ function start(RP,L){
     const b=map.getBounds(),lat=(b.getSouth()+b.getNorth())/2,lon=(b.getWest()+b.getEast())/2;
     // Keep a station query around airport close-ups; this never changes dot coordinates.
     return [Math.max(-90,Math.min(b.getSouth(),lat-.25)),Math.max(-180,Math.min(b.getWest(),lon-.25)),Math.min(90,Math.max(b.getNorth(),lat+.25)),Math.min(180,Math.max(b.getEast(),lon+.25))].map(v=>v.toFixed(3)).join(',');
+  }
+  function weatherBoundsContain(outer,inner){
+    return outer&&inner&&outer[0]<=inner[0]&&outer[1]<=inner[1]&&outer[2]>=inner[2]&&outer[3]>=inner[3];
   }
   function endpointFor(key){
     if(key==='airports')return null;
@@ -331,20 +334,28 @@ function start(RP,L){
     if(map.getZoom()<min&&!forBrief){
       // A pending request for the previous zoom must not restore hidden symbols.
       fetchSeq[key]=(fetchSeq[key]||0)+1;
+      dataPending[key]?.controller?.abort();
+      delete dataPending[key];delete lastFetch[key];
       setLayerStatus(key,'zoom '+min+'+','idle');
       const g=groups[key];if(g)g.clearLayers();
       return data[key]||null;
     }
     const stamp=key==='metar'?endpoint:getBoundsString()+','+Math.floor(map.getZoom());
+    const requestBounds=key==='metar'?metarBoundsString().split(',').map(Number):null;
+    // Reuse a recent station query while its coverage still contains the viewport.
+    if(key==='metar'&&data[key]&&lastFetch[key]&&Date.now()-dataTime[key]<60000&&weatherBoundsContain(dataBounds[key],getBoundsString().split(',').map(Number)))return data[key];
     if(data[key]&&lastFetch[key]===stamp&&Date.now()-dataTime[key]<60000)return data[key];
     if(dataPending[key]?.stamp===stamp)return dataPending[key].promise;
+    dataPending[key]?.controller?.abort();
+    const controller=new AbortController();
     const seq=(fetchSeq[key]||0)+1;fetchSeq[key]=seq;
     setLayerStatus(key,'loading','loading');
     dataStatus[key]='loading';
     const request=(async()=>{try{
-      const j=await fetchJson(endpoint);
+      const j=await fetchJson(endpoint,controller);
       if(fetchSeq[key]!==seq)return null;
       data[key]=j.geojson||{type:'FeatureCollection',features:[]};
+      dataBounds[key]=requestBounds;
       lastFetch[key]=stamp;dataTime[key]=Date.now();dataStatus[key]='available';
       setLayerStatus(key,String((data[key].features||[]).length),'live');
       if(state.enabled[key])renderGeoLayer(key,data[key]);
@@ -359,7 +370,7 @@ function start(RP,L){
       renderBrief();
       return null;
     }finally{if(dataPending[key]?.seq===seq)delete dataPending[key]}})();
-    dataPending[key]={stamp,seq,promise:request};return request;
+    dataPending[key]={stamp,seq,promise:request,controller};return request;
   }
 
   function toggleLayer(key,on){
@@ -384,6 +395,9 @@ function start(RP,L){
       if(data[key])renderGeoLayer(key,data[key]);
       void ensureData(key,false);
     }else{
+      fetchSeq[key]=(fetchSeq[key]||0)+1;
+      dataPending[key]?.controller?.abort();
+      delete dataPending[key];
       g.clearLayers();
       if(map.hasLayer(g))map.removeLayer(g);
     }
@@ -445,7 +459,8 @@ function start(RP,L){
     }
     if(key==='metar'){
       const id=field(p,['icaoId','id','stationId']),cat=window.PilotDeskChartSymbols.metarCategory(p),raw=field(p,['rawOb','raw_text','raw']);
-      return '<div class="rp-route-popup"><b>'+esc(id||'METAR')+'</b>'+(cat?' · '+esc(cat):'')+'<br>'+esc(raw||'Observation available')+'<br><small>'+esc(window.PilotDeskChartSymbols.reportTime(p))+'</small></div>';
+      const details=window.PilotDeskChartSymbols.metarDetails(p);
+      return '<div class="rp-route-popup rp-metar-popup"><div class="rp-metar-heading"><b>'+esc(id||'METAR')+'</b><strong style="color:'+window.PilotDeskChartSymbols.metarColor(p)+'">'+esc(cat)+'</strong></div><p class="rp-metar-time">'+esc(window.PilotDeskChartSymbols.reportTime(p))+'</p><dl>'+[['Wind',details.wind],['Visibility',details.visibility],['Ceiling',details.ceiling]].map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+esc(value)+'</dd></div>').join('')+'</dl><p class="rp-metar-raw">'+esc(raw||'Raw report unavailable')+'</p><small>Source: Aviation Weather Center · Surface observation</small></div>';
     }
     if(key==='pirep'){
       const raw=field(p,['rawOb','raw_text','raw']),level=p.fltlvl??p.fltLvl,alt=level!=null?'FL'+String(level).padStart(3,'0'):field(p,['altitude','alt']);const symbol=window.PilotDeskChartSymbols.pirep(p);

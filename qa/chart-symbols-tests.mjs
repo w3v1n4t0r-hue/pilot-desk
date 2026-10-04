@@ -1,6 +1,15 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const S=createRequire(import.meta.url)('../assets/chart-symbols.js');
+assert.deepEqual(S.metarDetails({rawOb:'KAAA 040153Z 27012G20KT 1 1/2SM SCT008 BKN015 OVC030'}),{wind:'270°T 12 G20 kt',visibility:'1 1/2 SM',ceiling:'1,500 ft AGL'});
+assert.deepEqual(S.metarDetails({rawOb:'KAAA 040153Z 00000KT P6SM CLR'}),{wind:'Calm',visibility:'>6 SM',ceiling:'No ceiling reported'});
+assert.equal(S.metarDetails({rawOb:'KAAA 040153Z VRB03KT 3SM VV002'}).ceiling,'200 ft AGL');
+assert.equal(S.metarDetails({rawOb:'KAAA 040153Z VRB03KT 3SM VV///'}).ceiling,'Height unavailable');
+assert.equal(S.metarDetails({rawOb:'KAAA 040153Z VRB03KT 3SM VV///'}).wind,'Variable 3 kt');
+assert.deepEqual(S.metarDetails({}),{wind:'Unavailable',visibility:'Unavailable',ceiling:'Unavailable'});
+assert.equal(S.metarDetails({wdir:0,wspd:8,visib:0,clouds:[{cover:'SCT',base:500},{cover:'BKN',base:1200}]}).ceiling,'1,200 ft AGL');
+assert.equal(S.metarDetails({wdir:0,wspd:8,visib:0}).visibility,'0 SM');
+assert.equal(S.metarDetails({clouds:[{cover:'OVX',base:200}]}).ceiling,'200 ft AGL');
 const kinds=p=>S.pirep(p).items.map(x=>x.kind);
 assert.equal(S.pirep({tbInt1:'LGT-MOD'}).items[0].displayLevel,2);
 assert.equal(S.pirep({rawOb:'AAA UUA /TB SEV TURB /IC MOD RIME'}).urgent,true);

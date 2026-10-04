@@ -18,6 +18,7 @@ function start(RP,L){
 
   const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=(n,d)=>Number.isFinite(Number(n))?Number(n).toFixed(d==null?0:d):'—';
+  const B=window.PilotDeskRouteBrief;
   const DEFAULTS={radar:false,metar:true,pirep:false,gairmet:false,airsigmet:false,cwa:false,tfr:true,sua:false,airspace:false,notams:true,airports:false,navaids:false,fixes:false,airways:false,obstacles:false,rings:false};
   const MIN_ZOOM={metar:3,pirep:5,gairmet:3,airsigmet:3,cwa:3,tfr:3,sua:5,airspace:6,airports:6,navaids:7,fixes:8,airways:6,obstacles:8};
   const AWC=new Set(['metar','pirep','gairmet','airsigmet','cwa','obstacles']);
@@ -39,9 +40,9 @@ function start(RP,L){
   state.enabled.airports=false;
   const briefData={},briefStatus={},briefTime={};
   const weatherMarkers=new Map();
-  const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},dataBounds={},notams={},briefWx={dep:null,dst:null};
+  const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},dataBounds={},notams={},briefWx={dep:null,dst:null,alt:null};
   let radarOverlay=null,notamGroup=L.layerGroup(),ringsGroup=L.layerGroup(),radarTimer=null,briefLoading=false;
-  let routeContextSeq=0,notamSeq=0,radarSeq=0,radarPending=null;
+  let routeContextSeq=0,notamSeq=0,radarSeq=0,radarPending=null,briefRefreshTimer=0,briefContextKey='';
 
   function save(){
     localStorage.setItem('pd-efb-layers',JSON.stringify({
@@ -164,7 +165,7 @@ function start(RP,L){
   }
 
   layersButton.addEventListener('click',()=>togglePanel(panel,layersButton));
-  briefButton.addEventListener('click',()=>togglePanel(brief,briefButton));
+  briefButton.addEventListener('click',()=>{togglePanel(brief,briefButton);if(!brief.hidden){renderBrief();if(!briefLoading&&RP.getPoints().length>1&&(Date.now()-Math.min(...Object.values(briefTime))>60000||!Object.keys(briefTime).length))void loadRouteContext();}});
   panel.querySelector('[data-close-layers]').addEventListener('click',()=>closePanel(panel,layersButton));
   brief.querySelector('[data-close-brief]').addEventListener('click',()=>closePanel(brief,briefButton));
   function togglePanel(el,button){
@@ -624,7 +625,7 @@ function start(RP,L){
     const seq=++notamSeq;notamGroup.clearLayers();for(const id of Object.keys(notams))delete notams[id];
     if(!state.enabled.notams&&!forBrief)return;
     const pts=RP.getPoints();
-    const candidates=pts.filter(p=>/^[A-Z0-9]{4}$/.test(String(p.id||''))).slice(0,8);
+    const candidates=B.airportCandidates(pts,window.PilotDeskRoutePerformance?.getSettings()?.alternateAirport).slice(0,8);
     if(!candidates.length){setLayerStatus('notams','route','idle');renderBrief();return}
     setLayerStatus('notams','loading','loading');
     let configured=true,total=0,failed=false;
@@ -633,7 +634,7 @@ function start(RP,L){
       try{
         const j=await fetchJson('/api/notams?station='+encodeURIComponent(id));
         if(seq!==notamSeq)return;notams[id]=j;total+=Number(j.count||0);
-        if(Number(j.count||0)>0){
+        if(Number(j.count||0)>0&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)){
           const icon=L.divIcon({className:'rp-notam-marker',html:'<span>!</span><b>'+Number(j.count||0)+'</b>',iconSize:[30,22],iconAnchor:[15,11]});
           L.marker([p.lat,p.lon],{pane:'pdNotamPane',icon}).addTo(notamGroup).bindPopup(notamPopup(id,j));
         }
@@ -655,13 +656,15 @@ function start(RP,L){
   }
 
   async function loadBriefWeather(seq){
-    const pts=RP.getPoints();
+    const pts=RP.getPoints(),settings=window.PilotDeskRoutePerformance?.getSettings()||{};
     if(pts.length<2)return;
-    const dep=String(pts[0].id||''),dst=String(pts[pts.length-1].id||'');
-    const request=id=>/^[A-Z0-9]{3,4}$/.test(id)?RP.getWeather(id).catch(e=>({station:id,error:e.message})):Promise.resolve(null);
-    const result=await Promise.all([request(dep),request(dst)]);
+    const ids=[B.isAirport(pts[0])?B.stationId(pts[0].id):'',B.isAirport(pts.at(-1))?B.stationId(pts.at(-1).id):'',B.stationId(settings.alternateAirport)];
+    const pending=new Map();
+    const request=id=>{if(!id)return Promise.resolve({error:'Not an airport endpoint.'});if(!pending.has(id))pending.set(id,RP.getWeather(id,true).catch(e=>({station:id,error:e.message})));return pending.get(id);};
+    const result=await Promise.all(ids.map(request));
     if(seq!==routeContextSeq)return;
-    briefWx.dep=result[0];briefWx.dst=result[1];
+    [briefWx.dep,briefWx.dst,briefWx.alt]=result;
+    renderBrief();
   }
 
   function flattenRings(geometry){
@@ -716,13 +719,6 @@ function start(RP,L){
     return {intersects:false,distanceNm:min};
   }
 
-  function wxSummary(x){
-    if(!x)return 'Unavailable';
-    if(x.error)return 'Unavailable';
-    const m=x.metar||{},cat=m.fltCat||m.flightCategory||'';
-    const raw=m.rawOb||m.raw_text||'METAR available';
-    const time=m.obsTime?new Date(Number(m.obsTime)<1e11?Number(m.obsTime)*1000:m.obsTime):null;const stamp=time&&Number.isFinite(time.getTime())?' · Observed '+time.toISOString().slice(0,16).replace('T',' ')+' UTC':' · Observation time unavailable';return (cat?cat+' · ':'')+raw+stamp;
-  }
   function destinationNotam(){
     const pts=RP.getPoints(),dst=pts.length?String(pts[pts.length-1].id||'').toUpperCase():'';
     return notams[dst]||null;
@@ -740,7 +736,9 @@ function start(RP,L){
       body.innerHTML='<div class="rp-empty-state">Build a route to load route-specific weather, hazards, TFRs and NOTAM context.</div>';
       return;
     }
-    const dep=pts[0].id,dst=pts[pts.length-1].id;
+    const dep=pts[0].id,dst=pts[pts.length-1].id,settings=window.PilotDeskRoutePerformance?.getSettings()||{},alternate=B.stationId(settings.alternateAirport);
+    const departure=B.dateValue(settings.departureUtc?settings.departureUtc+'Z':null)?.getTime()??null,arrival=departure!==null&&Number.isFinite(window.pdNavlogResult?.totalHours)?departure+window.pdNavlogResult.totalHours*3600000:null;
+    const airportRows=B.airportCandidates(pts,alternate),cwaRel=relevantFeatures('cwa',0);
     const tfrRel=relevantFeatures('tfr',10);
     const tfrHit=tfrRel.filter(x=>x.relation.intersects);
     const sigRel=relevantFeatures('airsigmet',0);
@@ -752,34 +750,41 @@ function start(RP,L){
     else if(tfrRel.length)flags.push(['warn','TFR NEAR ROUTE']);
     if(sigRel.length)flags.push(['danger','SIGMET INTERSECTION']);
     if(gairRel.length)flags.push(['warn','G-AIRMET INTERSECTION']);
+    if(cwaRel.length)flags.push(['warn','CWA INTERSECTION']);
+    if([[pts[0],briefWx.dep],[pts.at(-1),briefWx.dst]].some(([p,w])=>B.isAirport(p)&&(!w?.metar||!w?.taf))||(alternate&&(!briefWx.alt?.metar||!briefWx.alt?.taf)))flags.push(['warn','WEATHER COVERAGE INCOMPLETE']);
     if(dstCat==='IFR'||dstCat==='LIFR')flags.push(['warn','DESTINATION '+dstCat]);
-    if(!dstNotam||dstNotam.error||dstNotam.configured===false)flags.push(['warn','NOTAM COVERAGE INCOMPLETE']);
+    if(airportRows.some(p=>!notams[p.id]||notams[p.id].error||notams[p.id].configured===false)||airportRows.length>8)flags.push(['warn','NOTAM COVERAGE INCOMPLETE']);
     if(dstNotam&&!dstNotam.error&&Number(dstNotam.count||0))flags.push(['info','DESTINATION NOTAM · '+Number(dstNotam.count||0)]);
-    const missing=['tfr','airsigmet','gairmet'].filter(key=>briefStatus[key]!=='available'||Date.now()-briefTime[key]>60000);
+    const missing=['tfr','airsigmet','gairmet','cwa'].filter(key=>briefStatus[key]!=='available'||Date.now()-briefTime[key]>60000);
     if(missing.length)flags.push(['warn','ADVISORY COVERAGE INCOMPLETE']);
     if(!flags.length&&!briefLoading)flags.push(['info','NO FLAGS IN LOADED DATA']);
-    const noticeAirports=pts.filter(p=>/^[A-Z0-9]{4}$/.test(String(p.id||'')));
-    const notamText=(noticeAirports.length>8?'Coverage limited to the first eight airport identifiers; other airports require a separate check. ':'')+(dstNotam?(dstNotam.error||dstNotam.configured===false?'NOTAMs unavailable. Check FAA NOTAM Search.':Number(dstNotam.count||0)+' current notices returned.'):'Not yet loaded.');
+    const notamText=(airportRows.length>8?'Coverage limited to eight airports, including departure, destination and alternate. Check the remaining route airports separately. ':'')+(briefLoading?'Loading airport notices…':airportRows.length+' airport'+(airportRows.length===1?'':'s')+' requested. Unavailable coverage is shown for each airport.');
     const hazards=[
       sigRel.length?sigRel.length+' SIGMET route intersection'+(sigRel.length===1?'':'s'):null,
       gairRel.length?gairRel.length+' G-AIRMET route intersection'+(gairRel.length===1?'':'s'):null,
-      tfrRel.length?tfrRel.length+' TFR route/near-route item'+(tfrRel.length===1?'':'s'):null
+      tfrRel.length?tfrRel.length+' TFR route/near-route item'+(tfrRel.length===1?'':'s'):null,
+      cwaRel.length?cwaRel.length+' CWA route intersection'+(cwaRel.length===1?'':'s'):null
     ].filter(Boolean).join(' · ')||(missing.length?'Route advisory coverage is incomplete. No clear-route conclusion is available.':'No route intersections detected in loaded advisory data.');
+    const openDetails=new Set([...body.querySelectorAll('[data-brief-detail][open]')].map(el=>el.dataset.briefDetail));
     body.innerHTML=[
       '<div class="rp-brief-route"><span>'+esc(dep)+'</span><i>→</i><span>'+esc(dst)+'</span></div>',
+      '<p class="rp-brief-meta" role="status">'+(briefLoading?'Updating route briefing…':'Route briefing loaded. Review product times and any unavailable coverage.')+'</p>',
       '<div class="rp-brief-flags">'+flags.map(x=>'<span data-kind="'+x[0]+'">'+esc(x[1])+'</span>').join('')+'</div>',
       briefSection('Time & fuel',fuelReview()),
       briefSection('Alternate planning',alternateReview()),
-      briefSection('Departure weather',wxSummary(briefWx.dep)),
+      B.weatherHtml('Departure',B.isAirport(pts[0])?B.stationId(dep):'',briefWx.dep,departure,window.PilotDeskChartSymbols),
       briefSection('Enroute hazards',hazards),
       briefSection('TFRs',tfrRel.length?hazardsPart(tfrRel):briefStatus.tfr==='available'?'No route/near-route TFR geometry detected in loaded FAA data.':'Route TFR coverage unavailable.'),
-      briefSection('Destination weather',wxSummary(briefWx.dst)),
+      B.weatherHtml('Destination',B.isAirport(pts.at(-1))?B.stationId(dst):'',briefWx.dst,arrival,window.PilotDeskChartSymbols),
+      alternate?B.weatherHtml('Alternate',alternate,briefWx.alt,null,window.PilotDeskChartSymbols):'',
       briefSection('NOTAMs',notamText),
-      '<details class="rp-brief-section"><summary>Returned airport notices</summary>'+Object.entries(notams).map(([id,j])=>notamPopup(id,j)).join('')+'</details>',
-      briefSection('Data coverage',['tfr','airsigmet','gairmet'].map(key=>key.toUpperCase()+': '+(briefStatus[key]==='available'?'route area retrieved '+new Date(briefTime[key]).toISOString().slice(11,16)+'Z':briefStatus[key]||'not loaded')).join(' · ')),
-      '<button type="button" class="utility-btn" data-refresh-brief>Refresh route data</button>',
+      ...airportRows.slice(0,8).map(p=>B.notamHtml(p,notams[p.id])),
+      ...['airsigmet','gairmet','cwa','tfr'].map(key=>B.advisoryHtml(key,key==='tfr'?tfrRel: key==='airsigmet'?sigRel:key==='gairmet'?gairRel:cwaRel,briefStatus[key],briefTime[key])),
+      briefSection('Data coverage',['tfr','airsigmet','gairmet','cwa'].map(key=>key.toUpperCase()+': '+(briefStatus[key]==='available'?'route area retrieved '+B.stamp(briefTime[key]||null)+(Date.now()-briefTime[key]>60000?' · Earlier retrieval; refresh before use':''):briefStatus[key]||'not loaded')).join(' · ')),
+      '<button type="button" class="utility-btn" data-refresh-brief '+(briefLoading?'disabled':'')+'>'+(briefLoading?'Updating route data…':'Refresh route data')+'</button>',
       '<div class="rp-brief-source">Horizontal intersections are approximate; altitude, effective times and full route legality are not validated. Automatic flags describe data relationships only; they are not a go/no-go decision. <a href="https://www.1800wxbrief.com/" target="_blank" rel="noopener">Official briefing</a></div>'
     ].join('');
+    body.querySelectorAll('[data-brief-detail]').forEach(el=>{el.open=openDetails.has(el.dataset.briefDetail);});
   }
   function briefSection(title,text){return '<section class="rp-brief-section"><h3>'+esc(title)+'</h3><p>'+esc(text)+'</p></section>'}
   function hazardsPart(items){
@@ -795,8 +800,8 @@ function start(RP,L){
     const bbox=window.PilotDeskMapDensity.routeBounds(RP.getPoints());briefStatus[key]='loading';
     if(!bbox){delete briefData[key];briefStatus[key]='unsupported route area';return;}
     try{const url=key==='tfr'?'/api/tfrs?bbox='+encodeURIComponent(bbox):'/api/aviation-layers?product='+key+'&bbox='+encodeURIComponent(bbox),j=await fetchJson(url);
-      if(seq!==routeContextSeq)return;briefData[key]=j.geojson||{type:'FeatureCollection',features:[]};briefStatus[key]='available';briefTime[key]=Date.now();
-    }catch{if(seq!==routeContextSeq)return;delete briefData[key];briefStatus[key]='unavailable';}
+      if(seq!==routeContextSeq)return;briefData[key]=j.geojson||{type:'FeatureCollection',features:[]};briefStatus[key]='available';briefTime[key]=Date.parse(j.fetchedAt)||0;renderBrief();
+    }catch{if(seq!==routeContextSeq)return;delete briefData[key];briefStatus[key]='unavailable';renderBrief();}
   }
   function alternateReview(){const s=window.PilotDeskRoutePerformance?.getSettings()||{};return s.alternateAirport?String(s.alternateAirport).toUpperCase()+' · '+(s.alternateNotes||'No alternate notes entered.')+' · Pilot-entered; requirements and suitability are not checked.':'No alternate airport entered. Review whether one is required; the planner does not decide this for you.';}
   function fuelReview(){
@@ -809,11 +814,16 @@ function start(RP,L){
   async function loadRouteContext(){
     const pts=RP.getPoints();
     if(pts.length<2){renderBrief();return}
+    clearTimeout(briefRefreshTimer);briefContextKey=B.planningKey(pts,window.PilotDeskRoutePerformance?.getSettings()||{});
     const seq=++routeContextSeq;
+    briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;
+    notamSeq++;for(const id of Object.keys(notams))delete notams[id];notamGroup.clearLayers();
+    for(const key of Object.keys(briefData))delete briefData[key];
+    for(const key of ['tfr','airsigmet','gairmet','cwa'])briefStatus[key]='loading';
     briefLoading=true;renderBrief();
     await Promise.all([
       loadBriefWeather(seq),
-      ...['tfr','airsigmet','gairmet'].map(key=>loadRouteAdvisory(key,seq)),
+      ...['tfr','airsigmet','gairmet','cwa'].map(key=>loadRouteAdvisory(key,seq)),
       loadNotams(true)
     ]);
     if(seq!==routeContextSeq)return;
@@ -857,11 +867,19 @@ function start(RP,L){
       });
     },320);
   });
-  document.addEventListener('pilotdesk:route-invalidated',()=>{routeContextSeq++;notamSeq++;briefLoading=false;briefWx.dep=null;briefWx.dst=null;for(const key of Object.keys(briefData))delete briefData[key];for(const key of Object.keys(briefStatus))delete briefStatus[key];for(const key of Object.keys(notams))delete notams[key];notamGroup.clearLayers();legStrip.hidden=true;renderBrief()});
+  document.addEventListener('pilotdesk:route-invalidated',()=>{routeContextSeq++;notamSeq++;clearTimeout(briefRefreshTimer);briefContextKey='';briefLoading=false;briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;for(const key of Object.keys(briefData))delete briefData[key];for(const key of Object.keys(briefStatus))delete briefStatus[key];for(const key of Object.keys(notams))delete notams[key];notamGroup.clearLayers();legStrip.hidden=true;renderBrief()});
   document.addEventListener('visibilitychange',()=>{if(document.hidden){if(radarTimer)toggleRadarPlayback()}else if(state.enabled.radar)refreshRadar()});
-  document.addEventListener('pilotdesk:route-built',()=>setTimeout(loadRouteContext,120));
+  document.addEventListener('pilotdesk:route-built',()=>{clearTimeout(briefRefreshTimer);briefRefreshTimer=setTimeout(loadRouteContext,120);});
   document.addEventListener('pilotdesk:leg-selected',e=>showLeg(e.detail&&e.detail.leg));
-  document.addEventListener('pilotdesk:planning-changed',renderBrief);
+  document.addEventListener('pilotdesk:planning-changed',()=>{
+    const pts=RP.getPoints(),key=B.planningKey(pts,window.PilotDeskRoutePerformance?.getSettings()||{});
+    if(pts.length<2||key===briefContextKey){renderBrief();return;}
+    routeContextSeq++;notamSeq++;clearTimeout(briefRefreshTimer);briefContextKey=key;briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;
+    for(const key of Object.keys(notams))delete notams[key];notamGroup.clearLayers();
+    for(const key of Object.keys(briefData))delete briefData[key];
+    for(const key of ['tfr','airsigmet','gairmet','cwa'])briefStatus[key]='loading';
+    briefLoading=true;renderBrief();briefRefreshTimer=setTimeout(loadRouteContext,650);
+  });
   document.addEventListener('pilotdesk:performance-updated',renderBrief);
   document.addEventListener('keydown',e=>{
     if(e.key!=='Escape')return;

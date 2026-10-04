@@ -26,7 +26,7 @@ console.log('Map density checks passed: all group members retained, highest prio
 // Actual advisory requests use route bounds and ignore obsolete responses.
 const advisorySource=source.slice(source.indexOf('  async function loadRouteAdvisory('),source.indexOf('  function alternateReview('));
 let complete,requestUrl='';
-const advisoryContext={window:{PilotDeskMapDensity:D},RP:{getPoints:()=>[{lat:47,lon:-97},{lat:49,lon:-94}]},routeContextSeq:1,briefStatus:{},briefData:{},briefTime:{},fetchJson:async url=>{requestUrl=url;return await new Promise(resolve=>complete=resolve);}};
+const advisoryContext={window:{PilotDeskMapDensity:D},RP:{getPoints:()=>[{lat:47,lon:-97},{lat:49,lon:-94}]},routeContextSeq:1,briefStatus:{},briefData:{},briefTime:{},renderBrief:()=>{},fetchJson:async url=>{requestUrl=url;return await new Promise(resolve=>complete=resolve);}};
 vm.createContext(advisoryContext);vm.runInContext(advisorySource,advisoryContext);
 const request=vm.runInContext("loadRouteAdvisory('tfr',1)",advisoryContext);
 assert.match(decodeURIComponent(requestUrl),/bbox=46.000,-98.000,50.000,-93.000/);
@@ -146,3 +146,36 @@ assert.equal(zoomContext.data.metar.features.length,0);
 console.log('Returning to cached coverage cannot restore another region’s pending weather.');
 assert.equal(vm.runInContext('weatherBoundsContain([20,-130,55,-60],[47.94,-97.18,47.95,-97.17])',zoomContext),false);
 console.log('National weather results cannot replace a local station query.');
+
+// Terminal briefing preserves source times, identifies partial products, and checks forecast coverage.
+const B=createRequire(import.meta.url)('../assets/route-brief-core.js');
+const symbols=createRequire(import.meta.url)('../assets/chart-symbols.js');
+const now=Date.parse('2026-10-04T03:00:00Z');
+assert.equal(B.stamp('1791082800'),'2026-10-04 03:00 UTC');
+assert.equal(B.dateValue(null),null);assert.equal(B.dateValue('garbage'),null);
+const wx={source:'AWC',fetchedAt:'2026-10-04T03:00:00Z',metar:{rawOb:'KGFK 040253Z 27010KT 10SM CLR',obsTime:'2026-10-04T02:53:00Z',fltCat:'VFR'},taf:{issueTime:'2026-10-04T02:00:00Z',validTimeFrom:1791079200,validTimeTo:1791090000,rawTAF:'TAF KGFK 040200Z 0402/0405 27010KT P6SM SKC'}};
+const html=B.weatherHtml('Departure','KGFK',wx,now,symbols,now);
+assert.match(html,/7 min ago/);assert.match(html,/TAF KGFK/);assert.match(html,/270°T 10 kt/);assert.match(html,/Issued 2026-10-04 02:00 UTC/);
+assert.doesNotMatch(html,/Forecast does not cover/);
+assert.match(B.weatherHtml('Destination','KGFK',wx,Date.parse('2026-10-04T06:00Z'),symbols,now),/Forecast does not cover the planned time/);
+assert.match(B.weatherHtml('Alternate','KFAR',{taf:wx.taf},null,symbols,now),/METAR unavailable/);
+assert.match(B.weatherHtml('Departure','KGFK',{metar:{rawOb:'OLD',obsTime:now/1000-8000}},null,symbols,now),/Observation time needs review/);
+assert.match(B.weatherHtml('Departure','KGFK',{metar:{rawOb:'<script>bad<\/script>'}},null,symbols,now),/&lt;script&gt;/);
+assert.match(B.weatherHtml('Departure','',null,null,symbols,now),/no airport weather lookup/);
+assert.match(B.tafStatus({issueTime:now/1000,validTimeFrom:now/1000-7200,validTimeTo:now/1000-3600},now,now).notes.join(' '),/validity has ended/);
+const points=[{id:'KGFK',type:'PA',lat:48,lon:-97},...Array.from({length:10},(_,i)=>({id:'KA'+String(i).padStart(2,'0'),type:'PA'})),{id:'KFAR',type:'PA',lat:47,lon:-97}];
+assert.deepEqual(B.airportCandidates(points,'KMSP').slice(0,3).map(p=>p.id),['KGFK','KFAR','KMSP']);
+assert.equal(B.airportCandidates([{id:'PT01',source:'manual'},{id:'FIXA',type:'EA'}],'').length,0);
+assert.equal(B.airportCandidates([{id:'KGFK',type:'PA'},{id:'KGFK',type:'PA'}],'KGFK').length,1);
+assert.notEqual(B.planningKey(points,{departureUtc:'2026-10-04T03:00'}),B.planningKey(points,{departureUtc:'2026-10-04T04:00'}));
+assert.equal(B.planningKey(points,{onboard:10}),B.planningKey(points,{onboard:20}));
+assert.match(B.notamHtml({id:'KGFK',role:'Departure'},{error:'outage'}),/No absence of notices is implied/);
+assert.match(B.notamHtml({id:'KGFK',role:'Departure'},{count:1,notams:[{text:'<b>RWY CLSD</b>',number:'1'}]}),/&lt;b&gt;RWY CLSD/);
+// An alternate request started for a previous plan cannot overwrite the new brief.
+const weatherSource=source.slice(source.indexOf('  async function loadBriefWeather('),source.indexOf('  function flattenRings('));
+let finishWeather;const wxCalls=[];
+const weatherBriefContext={B,RP:{getPoints:()=>points,getWeather:(id,force)=>{wxCalls.push({id,force});return new Promise(resolve=>{if(id==='KMSP')finishWeather=resolve;else resolve(wx);});}},window:{PilotDeskRoutePerformance:{getSettings:()=>({alternateAirport:'KMSP'})}},routeContextSeq:1,briefWx:{dep:null,dst:null,alt:null},renderBrief:()=>{}};
+vm.createContext(weatherBriefContext);vm.runInContext(weatherSource,weatherBriefContext);
+const oldBrief=vm.runInContext('loadBriefWeather(1)',weatherBriefContext);assert.deepEqual(wxCalls.map(p=>p.id),['KGFK','KFAR','KMSP']);assert.ok(wxCalls.every(p=>p.force));
+weatherBriefContext.routeContextSeq=2;finishWeather(wx);await oldBrief;assert.equal(weatherBriefContext.briefWx.alt,null);
+console.log('Route briefing tests passed: METAR/TAF source times, stale and missing products, forecast validity, airport coverage priority, manual-point exclusion, safe text, and obsolete alternate responses.');

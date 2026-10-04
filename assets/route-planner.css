@@ -63,7 +63,7 @@
 .rp-map{position:relative;overflow:hidden}
 .rp-layers-toggle[aria-expanded="true"],#rpBriefToggle[aria-expanded="true"]{background:#efeee9!important;color:#09090b!important;border-color:#efeee9!important}
 .rp-efb-panel{position:absolute;z-index:900;top:12px;right:12px;width:min(330px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:#08080a;border:1px solid #35353a;color:#efeee9;box-shadow:0 18px 50px rgba(0,0,0,.5);backdrop-filter:none}
-.rp-brief-panel{width:min(390px,calc(100% - 24px))}
+.rp-brief-panel{width:min(440px,calc(100% - 24px))}
 .rp-efb-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;background:#08080a;border-bottom:1px solid #2d2d31}
 .rp-efb-head>div{display:grid;gap:2px}
 .rp-efb-head strong{font-size:15px;letter-spacing:-.015em}
@@ -111,6 +111,7 @@
 .rp-brief-flags span[data-kind="info"]{border-color:#44444a;color:#d1d1d5}
 .rp-brief-section{padding:11px 0;border-bottom:1px solid #242428}
 .rp-brief-section p{margin:0;font-size:var(--pd-type-body);line-height:1.55;color:#b3b3b8;word-break:break-word}
+.rp-brief-weather details{margin-top:8px}.rp-brief-wx-heading{display:flex;justify-content:space-between;gap:12px;margin-block:8px}.rp-brief-wx-heading [data-cat="VFR"]{color:#44c579}.rp-brief-wx-heading [data-cat="MVFR"]{color:#669dff}.rp-brief-wx-heading [data-cat="IFR"]{color:#f27171}.rp-brief-wx-heading [data-cat="LIFR"]{color:#f080d1}.rp-brief-readouts{margin:8px 0;display:grid;gap:4px}.rp-brief-readouts>div{display:flex;justify-content:space-between;gap:12px}.rp-brief-readouts dt{text-transform:capitalize;color:var(--muted);font-size:.875rem}.rp-brief-readouts dd{margin:0;font-size:.875rem;font-variant-numeric:tabular-nums}.rp-brief-section .rp-brief-meta{margin-block:6px;font-size:.8125rem;color:var(--muted)}.rp-brief-section .rp-brief-warning{margin-block:6px;font-size:.875rem;color:#dbc384}.rp-brief-section .rp-brief-raw{font-family:ui-monospace,monospace;font-size:.875rem;overflow-wrap:anywhere}.rp-brief-section>a{display:inline-flex;align-items:center;min-height:44px;font-size:.875rem}.rp-brief-body>button{width:100%;margin-top:12px;min-height:44px}
 .rp-brief-source{padding-top:11px;font-size:var(--pd-type-label);line-height:1.55;color:#696970}
 .rp-brief-source a{color:#cfcfca}
 .rp-empty-state{padding:18px 0;color:#77777e;font-size:var(--pd-type-label);line-height:1.5}

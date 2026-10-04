@@ -70,7 +70,10 @@ function render(){
   top.querySelector('span').textContent=[parts.length?parts.join(' → '):'Route not set',ac||'No aircraft selected','saved on this device'].join(' · ');
   const actions=top.querySelector('.pd-flight-journey-actions'),all=document.createElement('a');all.href='/flights.html';all.textContent='Saved flights';actions.append(all);
  }else{
-  top.innerHTML='<div><small>FLIGHT WORKFLOW</small><b>Start a connected flight plan</b><span>Save a route in Route Planner to carry one flight through every step.</span></div><div class="pd-flight-journey-actions"><a href="/route-planner.html">Start in Route Planner →</a></div>';
+  top.innerHTML='<div><b>Planning a flight?</b></div><div class="pd-flight-journey-actions"><a href="/route-planner.html">Connect a saved route</a></div>';
+  wrap.append(top);
+  if(sub)sub.insertAdjacentElement('afterend',wrap);else if(hero)hero.insertAdjacentElement('afterend',wrap);else main.prepend(wrap);
+  return;
  }
  const nav=document.createElement('nav');nav.className='pd-flight-journey-steps';nav.setAttribute('aria-label','Flight planning steps');
  STEPS.forEach((step,i)=>{

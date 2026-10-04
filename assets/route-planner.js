@@ -22,7 +22,7 @@ function renderRouteSequence(){
 function initWorkspace(){
  const toggle=$('#rpEditorToggle'),editor=$('#rpRouteEditor'),workspace=$('#rpWorkspace');
  if(toggle&&editor&&workspace){
-  const open=localStorage.getItem('pd-route-editor-open')==='true';
+  const open=!$('#rpRoute').value.trim()||localStorage.getItem('pd-route-editor-open')==='true';
   toggle.setAttribute('aria-expanded',String(open));editor.hidden=!open;workspace.classList.toggle('rp-editor-closed',!open);
   toggle.addEventListener('click',()=>{
    const open=toggle.getAttribute('aria-expanded')!=='true';

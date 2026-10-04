@@ -38,7 +38,7 @@ check(step6.includes('html.pd-compact-ui')&&step6.includes('html.pd-reduced-moti
 check(step6.includes('.pd-toggle-switch'),'EFB-style switch treatment missing');
 
 // Pricing = factual comparison.
-check(pricing.includes('Free tools. Optional account backup.')||pricing.includes('Free pilot tools. Pro for checkride prep and saved workflows.'),'Pricing still uses a sales-heavy hero');
+check(pricing.includes('PilotDesk Pro. $5 a month.')&&pricing.includes('Keep core tools free.'),'Pricing still uses a sales-heavy hero');
 check((pricing.match(/class="pd-plan-card/g)||[]).length===2,'Pricing should compare only Free and Pro as active plans');
 check(pricing.includes('pd-pricing-school-note')&&pricing.includes('School features are still being tested before pricing is finalized.'),'Flight School status must explain availability without implying a purchasable school plan');
 check(step6.includes('.pd-plan-grid{grid-template-columns:1fr 1fr!important'),'Pricing comparison is not reduced to two factual columns');

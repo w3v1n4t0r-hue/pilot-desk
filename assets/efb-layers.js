@@ -136,7 +136,7 @@ function start(RP,L){
   brief.className='rp-efb-panel rp-brief-panel';
   brief.setAttribute('aria-label','Route brief');
   brief.hidden=true;
-  brief.innerHTML='<div class="rp-efb-head"><div><span class="rp-eyebrow">ROUTE INTELLIGENCE</span><strong>Route Brief</strong></div><button type="button" data-close-brief aria-label="Close route brief">×</button></div><div id="rpBriefBody" class="rp-brief-body"><div class="rp-empty-state">Build a route to load route-specific weather, hazards, TFRs and NOTAM context.</div></div>';
+  brief.innerHTML='<div class="rp-efb-head"><div><span class="rp-eyebrow">FLIGHT PLANNING</span><strong>Route Brief</strong></div><button type="button" data-close-brief aria-label="Close route brief">×</button></div><div id="rpBriefBody" class="rp-brief-body"><div class="rp-empty-state">Build a route to load route-specific weather, hazards, TFRs and NOTAM context.</div></div>';
   mapEl.appendChild(brief);
 
   const radarControls=document.createElement('div');

@@ -77,5 +77,24 @@ function reportTime(properties={},now=Date.now()){
  return 'Observed '+new Date(at).toISOString().slice(0,16).replace('T',' ')+' UTC · '+age+' min ago'+(age>=120?' · Older report; verify current conditions':'');
 }
 
-return{pirep,navigation,metarCategory,metarColor,airportStatus,svg,weatherSvg,reportTime,escape};
+function metarDetails(p={}){
+ const raw=String(p.rawOb||p.raw_text||p.raw||'');
+ const number=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
+ const windMatch=raw.match(/\b(\d{3}|VRB)(\d{2,3})(?:G(\d{2,3}))?KT\b/);
+ const speed=number(p.wspd)??(windMatch?Number(windMatch[2]):null);
+ const direction=p.wdir??windMatch?.[1];
+ const gust=number(p.wgst)??(windMatch?.[3]?Number(windMatch[3]):null);
+ const wind=speed===0?'Calm':speed===null?'Unavailable':(String(direction).toUpperCase()==='VRB'?'Variable':number(direction)!==null?String(number(direction)).padStart(3,'0')+'°T':'Direction unavailable')+' '+speed+(gust!==null?' G'+gust:'')+' kt';
+ const visibility=p.visib??p.visibility;
+ const visMatch=raw.match(/\b((?:\d+ )?\d+\/\d+|P?\d+(?:\.\d+)?)SM\b/);
+ const vis=visibility!==null&&visibility!==undefined&&visibility!==''?String(visibility)+' SM':visMatch?visMatch[1].replace(/^P/,'>')+' SM':'Unavailable';
+ const rawLayers=Array.from(raw.matchAll(/\b(FEW|SCT|BKN|OVC|VV)(\d{3}|\/\/\/)(?:CB|TCU)?(?=\s|$)/g),m=>({cover:m[1],base:m[2]==='///'?null:Number(m[2])*100}));
+ const layers=Array.isArray(p.clouds)&&p.clouds.length?p.clouds:rawLayers;
+ const ceilings=layers.filter(x=>['BKN','OVC','VV','OVX'].includes(String(x.cover).toUpperCase()));
+ const heights=ceilings.map(x=>number(x.base)).filter(x=>x!==null);
+ const ceiling=ceilings.some(x=>number(x.base)===null)?'Height unavailable':heights.length?Math.min(...heights).toLocaleString('en-US')+' ft AGL':layers.length||/\b(CLR|SKC|NSC|NCD|CAVOK)\b/.test(raw)?'No ceiling reported':'Unavailable';
+ return{wind,visibility:vis,ceiling};
+}
+
+return{pirep,navigation,metarCategory,metarColor,airportStatus,svg,weatherSvg,reportTime,metarDetails,escape};
 });

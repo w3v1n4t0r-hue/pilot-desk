@@ -57,7 +57,7 @@ console.log('Tower lookup join and unavailable-data fallback passed');
 // Reproduce a zoom-out while an airport request is still in flight.
 const ensureSource=source.slice(source.indexOf('  async function ensureData('),source.indexOf('  function toggleLayer('));
 let resolveZoomRequest,zoom=8,rendered=0,cleared=0;
-const zoomContext={endpointFor:()=>'/airports',MIN_ZOOM:{airports:6},map:{getZoom:()=>zoom},setLayerStatus:()=>{},groups:{airports:{clearLayers:()=>cleared++}},data:{},lastFetch:{},dataTime:{},dataPending:{},fetchSeq:{},dataStatus:{},getBoundsString:()=> 'test',fetchJson:()=>new Promise(resolve=>resolveZoomRequest=resolve),state:{enabled:{airports:true}},renderGeoLayer:()=>rendered++,renderBrief:()=>{},Date};
+const zoomContext={endpointFor:()=>'/airports',MIN_ZOOM:{airports:6},map:{getZoom:()=>zoom},setLayerStatus:()=>{},groups:{airports:{clearLayers:()=>cleared++}},data:{},lastFetch:{},dataTime:{},dataPending:{},fetchSeq:{},dataStatus:{},dataBounds:{},AbortController,metarBoundsString:()=> '0,0,1,1',weatherBoundsContain:()=>false,getBoundsString:()=> 'test',fetchJson:()=>new Promise(resolve=>resolveZoomRequest=resolve),state:{enabled:{airports:true}},renderGeoLayer:()=>rendered++,renderBrief:()=>{},Date};
 vm.createContext(zoomContext);vm.runInContext(ensureSource,zoomContext);
 const pendingZoom=vm.runInContext("ensureData('airports',false)",zoomContext);
 zoom=4;await vm.runInContext("ensureData('airports',false)",zoomContext);
@@ -65,17 +65,19 @@ resolveZoomRequest({geojson:{features:[]}});await pendingZoom;
 assert.equal(rendered,0);assert.equal(cleared,1);
 console.log('Zoom-out race passed: obsolete airport response cannot restore hidden symbols.');
 
-// Weather observations retain their real coordinates even at national scale.
+// Weather refresh retains marker identity and the true station coordinates.
 const weatherRender=source.slice(source.indexOf('  function renderGeoLayer('),source.indexOf('  function refreshVectorStyles('));
-let weatherDisplayed;
-const weatherContext={ensureGroup:()=>({clearLayers(){}}),map:{getZoom:()=>4},window:{PilotDeskMapDensity:{group(){throw Error('Weather must not cluster');}}},state:{},paneFor:()=> 'weather',styleFor:()=>({}),pointFor:()=>({}),popupFor:()=>'',L:{geoJSON:(features)=>{weatherDisplayed=features;return {addTo(){}};}}};
+const displayed=new Set(),created=[];
+const weatherContext={weatherMarkers:new Map(),ensureGroup:()=>({hasLayer:m=>displayed.has(m),addLayer:m=>displayed.add(m),removeLayer:m=>displayed.delete(m)}),map:{getZoom:()=>4},window:{PilotDeskChartSymbols:{metarCategory:()=> 'VFR'}},esc:String,field:(p,names)=>names.map(n=>p[n]).find(Boolean)||'',state:{},styleFor:()=>({}),popupFor:(_key,f)=>f.properties.rawOb,pointFor:(_key,f,ll)=>{const m={ll,bindPopup(fn){this.popup=fn},bindTooltip(){},setStyle(){},setRadius(){},setTooltipContent(){},isPopupOpen:()=>true,setPopupContent(fn){this.popup=fn}};created.push(m);return m;},L:{latLng:(lat,lng)=>({lat,lng})}};
 vm.createContext(weatherContext);vm.runInContext(weatherRender,weatherContext);
-weatherContext.observations={type:'FeatureCollection',features:reports};
+weatherContext.observations={type:'FeatureCollection',features:[point(-97,48,0),point(-96,47,1)]};
 vm.runInContext("renderGeoLayer('metar',observations)",weatherContext);
-assert.equal(weatherDisplayed.features.length,reports.length);
-assert.deepEqual(weatherDisplayed.features.map(f=>f.geometry.coordinates),reports.map(f=>f.geometry.coordinates));
-assert.ok(weatherDisplayed.features.every(f=>f.properties._pdMembers===null));
-console.log('Weather station coordinates retained without clustering at national zoom.');
+assert.equal(created.length,2);assert.deepEqual(created.map(m=>[m.ll.lng,m.ll.lat]),[[-97,48],[-96,47]]);
+weatherContext.observations.features[0].properties.rawOb='Updated report';
+vm.runInContext("renderGeoLayer('metar',observations)",weatherContext);
+assert.equal(created.length,2);assert.equal(created[0].popup(),'Updated report');
+weatherContext.observations.features.pop();vm.runInContext("renderGeoLayer('metar',observations)",weatherContext);assert.equal(displayed.size,1);
+console.log('Weather coordinates and marker identity retained through report refresh; removed stations cleared.');
 
 // Legacy preferences cannot restore duplicate airport boxes, while METARs stay enabled.
 const settingsCode=source.slice(source.indexOf('  const DEFAULTS='),source.indexOf('  const briefData='));
@@ -106,3 +108,41 @@ vm.createContext(resizeContext);vm.runInContext(resizeCode,resizeContext);
 vm.runInContext('resizeWeatherDots()',resizeContext);assert.deepEqual(radiusChanges,[4,4]);
 detailZoom=14;radiusChanges=[];vm.runInContext('resizeWeatherDots()',resizeContext);assert.deepEqual(radiusChanges,[6,6]);
 console.log('Close-up weather marker resize preserves existing layers.');
+
+// Close-up pan/zoom reuses only contained, recent weather; refresh and age force a request.
+const containCode=source.slice(source.indexOf('  function weatherBoundsContain('),source.indexOf('  function endpointFor('));
+vm.runInContext(containCode,zoomContext);
+zoom=12;let weatherRequests=0;
+zoomContext.MIN_ZOOM.metar=3;zoomContext.state.enabled.metar=true;
+zoomContext.endpointFor=()=>'/metar';zoomContext.getBoundsString=()=> '47.94,-97.18,47.95,-97.17';
+zoomContext.metarBoundsString=()=> '47.69,-97.43,48.20,-96.92';
+zoomContext.data.metar={features:[]};zoomContext.dataBounds.metar=[47.69,-97.43,48.20,-96.92];zoomContext.dataTime.metar=Date.now();zoomContext.lastFetch.metar='/previous';
+zoomContext.fetchJson=async()=>{weatherRequests++;return {geojson:{features:[]}};};
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(weatherRequests,0);
+zoomContext.getBoundsString=()=> '48.3,-97.18,48.4,-97.17';
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(weatherRequests,1);
+zoomContext.dataTime.metar=Date.now()-61000;
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(weatherRequests,2);
+delete zoomContext.lastFetch.metar;
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(weatherRequests,3);
+let oldSignal,finishOld;
+zoomContext.fetchJson=(_url,controller)=>{oldSignal=controller.signal;return new Promise(resolve=>finishOld=resolve);};
+delete zoomContext.lastFetch.metar;
+const oldWeather=vm.runInContext("ensureData('metar',false)",zoomContext);
+zoomContext.endpointFor=()=>'/metar-next';zoomContext.fetchJson=async()=>({geojson:{features:[]}});
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(oldSignal.aborted,true);
+finishOld({geojson:{features:[{obsolete:true}]}});await oldWeather;
+assert.equal(zoomContext.data.metar.features.length,0);
+console.log('Contained weather reuse, freshness, manual refresh, and obsolete-request cancellation passed.');
+// Returning to cached coverage cancels a pending request for a different viewport.
+zoomContext.endpointFor=()=>'/metar-outside';zoomContext.dataBounds.metar=[47.69,-97.43,48.20,-96.92];
+zoomContext.getBoundsString=()=> '48.3,-97.18,48.4,-97.17';
+zoomContext.fetchJson=(_url,controller)=>{oldSignal=controller.signal;return new Promise(resolve=>finishOld=resolve);};
+const outsideRequest=vm.runInContext("ensureData('metar',false)",zoomContext);
+zoomContext.getBoundsString=()=> '47.94,-97.18,47.95,-97.17';
+await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(oldSignal.aborted,true);
+finishOld({geojson:{features:[{wrongRegion:true}]}});await outsideRequest;
+assert.equal(zoomContext.data.metar.features.length,0);
+console.log('Returning to cached coverage cannot restore another region’s pending weather.');
+assert.equal(vm.runInContext('weatherBoundsContain([20,-130,55,-60],[47.94,-97.18,47.95,-97.17])',zoomContext),false);
+console.log('National weather results cannot replace a local station query.');

@@ -82,3 +82,17 @@ html[data-pd-theme="dark"] body{
   background:#050607!important;
   color:#f2f3f3!important;
 }
+
+/* Shared working surfaces: graphite depth, readable metadata and quiet focus. */
+:root{--muted2:#92999f;--line:#30363c;--line-hi:#59636d}
+.topbar .brand small{display:none!important}
+.topbar .brand b{font-size:16px!important;letter-spacing:-.015em}
+:where(.calc-box,.pd-account-card,.pd-account-dashboard,.pd-owner,.pd-plan-card,.pd-training-progress,.pd-panel,.rp-panel){clip-path:none}
+:where(input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea){transition:border-color 140ms ease,background-color 140ms ease}
+:where(input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea):hover{border-color:var(--line-hi)!important}
+:where(input,select,textarea):focus-visible{border-color:var(--silver)!important}
+:where(.pd-btn,.utility-btn,.calc-btn,.pd-home-command){min-height:44px}
+:where(.pd-product-nav,.pd-flight-subnav) a[aria-current=page]{background:var(--panel2)!important;color:var(--text)!important}
+:where(.pd-card-head,.category-head) h2{letter-spacing:-.025em}
+:where(.result,.rp-fuel-ledger dd,.wx-metric strong){font-variant-numeric:tabular-nums}
+@media(prefers-reduced-motion:reduce){:where(input,select,textarea){transition:none}}

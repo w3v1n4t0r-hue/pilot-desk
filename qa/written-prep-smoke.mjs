@@ -29,10 +29,10 @@ ok(Boolean(standards),'FAA training standards matrix must load for Written Prep 
 
 
 ok(bankManifest.legacyGeneratedFamiliesExcluded===true,'Legacy generated question families must remain excluded from the live bank');
-ok(bankManifest.acsQuestionCount===40,`Expected 40 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
-ok(bankManifest.supplementalPtsQuestionCount===8,`Expected 8 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
-ok(bankManifest.totalQuestionCount===48,`Expected 48 total curated live questions; got ${bankManifest.totalQuestionCount}`);
-const minimumByTrack={ppl:6,ira:8,cpl:7,cfi:10,cfii:8,atp:9};
+ok(bankManifest.acsQuestionCount===60,`Expected 60 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
+ok(bankManifest.supplementalPtsQuestionCount===12,`Expected 12 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
+ok(bankManifest.totalQuestionCount===72,`Expected 72 total curated live questions; got ${bankManifest.totalQuestionCount}`);
+const minimumByTrack={ppl:10,ira:12,cpl:11,cfi:14,cfii:12,atp:13};
 for(const [track,min] of Object.entries(minimumByTrack))ok(banks[track]?.length>=min,`${track.toUpperCase()} curated bank fell below ${min} questions`);
 
 for(const [track,items] of Object.entries(banks)){
@@ -86,7 +86,12 @@ for(const q of figureParallel){
 }
 const figureQuestions=all.filter(q=>q.figureRef?.url&&q.figureRef?.figure);
 ok(figureQuestions.length>=23,`At least 23 live questions should require an official FAA figure; got ${figureQuestions.length}`);
-ok(figureQuestions.length/all.length>=0.45,'At least 45% of the live bank should be FAA-figure based');
+// Preserve the existing official-figure layer while adding distinct non-figure scenarios.
+const newScenarios=all.filter(q=>q.reviewedAt==='2026-10-04'&&q.id.startsWith('curated-'));
+ok(newScenarios.length===24,'Expansion must add 24 distinct original scenarios');
+for(const track of Object.keys(banks))ok(newScenarios.filter(q=>q.experienceLevel===track).length===4,`${track} must gain four original scenarios`);
+has(html,'not a complete exam bank','Limited coverage must remain visible before sign-in');
+has(js,'does not cover the complete syllabus','Timed practice must disclose coverage limits');
 
 has(html,'Choose your test and a study session.','Written Prep should explain the practice flow');
 ok(!html.includes('5,000'),'Written Prep must not market the removed generated-volume bank');
@@ -136,7 +141,7 @@ has(edge,'function prepareQuestion','Server answer-choice shuffle missing');
 has(edge,"['applied','advanced'].includes(String(v))",'Server must reject foundation difficulty');
 has(edge,'standardCode:q.standardCode','Question payload must include standards element');
 has(edge,'figureRef:q.figureRef||null','Question payload must include FAA figure references');
-has(edge,'choiceExplanations:Array.isArray(qq.choiceExplanations)','Answer feedback must include per-choice rationales');
+has(edge,'choiceExplanations:choiceRationales(qq,track)','Answer feedback must include per-choice rationales');
 has(edge,'standardBreakdown','Dashboard must grade by standards element');
 has(edge,'difficultyBreakdown','Dashboard must grade by difficulty');
 has(edge,'passingScore:trackMeta[track].passingScore','Session result must use track passing score');
@@ -144,7 +149,7 @@ has(edge,"grade:grade(percent)",'Sessions must receive a letter grade');
 has(edge,"mode==='exam'&&!done?null",'Practice exam must suppress correctness feedback until completion');
 has(edge,'nextDue(streak,correct)','Review scheduling missing');
 has(edge,'mastery(corr,total,streak)','Mastery tracking missing');
-has(edge,'Math.min(60,pool.length)','Practice exam must cap cleanly at the reviewed pool size');
+has(edge,'Math.min(trackMeta[track].officialQuestions,pool.length)','Practice exam must cap cleanly at the reviewed pool size');
 
 for(const table of ['written_prep_stats','written_prep_sessions','written_prep_bookmarks']){
  has(migration,`create table if not exists public.${table}`,`Missing ${table} table`);
@@ -163,6 +168,54 @@ has(astroHome,'href="/written-prep.html"','Written Prep must remain directly dis
 has(training,'href="/written-prep.html"','Written Prep missing from training hub');
 has(account,'renderPrepOverview','Written Prep progress missing from signed-in account home base');
 has(account,"ensureOwnerMetric('pdMetricPrepToday'",'Owner dashboard must track Written Prep usage');
+
+// Execute answer feedback with DOM doubles: a single element has no forEach.
+const optionRows=Array.from({length:3},()=>({dataset:{},input:{disabled:false}}));
+const feedbackBox={hidden:true,dataset:{},innerHTML:''};
+const feedbackContext={
+ $:(selector,row)=>selector==='input'?row.input:selector==='#pdPrepFeedback'?feedbackBox:optionRows[0],
+ $$:()=>optionRows,esc:value=>String(value??''),
+};
+vm.runInNewContext(js.slice(js.indexOf('function markFeedback'),js.indexOf('async function startMode')),feedbackContext);
+feedbackContext.markFeedback({correct:false,selected:0,correctIndex:2,correctAnswer:'third',explanation:'Explanation',choiceExplanations:['first rationale','second rationale','third rationale'],sourceUrl:'https://www.faa.gov/'});
+ok(optionRows.every(row=>row.input.disabled),'Submitting an answer must disable every option');
+ok(optionRows[0].dataset.state==='wrong'&&optionRows[2].dataset.state==='correct','Feedback must mark selected and correct options');
+ok(!feedbackBox.hidden&&feedbackBox.innerHTML.includes('third rationale'),'Feedback must display all rationales without a client runtime exception');
+
+const {stripTypeScriptTypes}=await import('node:module');
+const helpers=edge.slice(edge.indexOf('function shuffle'),edge.indexOf('function publicQuestion'));
+const helperContext={banks,Math:Object.create(Math)};
+vm.runInNewContext(stripTypeScriptTypes(helpers),helperContext);
+for(const q of all){
+ for(const [r1,r2] of [[0,0],[0,.99],[.4,0],[.4,.99],[.99,0],[.99,.99]]){
+  const random=[r1,r2];helperContext.Math.random=()=>random.shift();
+  const prepared=helperContext.prepareQuestion(q);
+  ok(prepared.options[prepared.correct]===q.options[q.correct],`${q.id}: shuffle changed the answer key`);
+  for(let i=0;i<3;i++)ok(prepared.choiceExplanations[i]===q.choiceExplanations[q.options.indexOf(prepared.options[i])],`${q.id}: shuffled explanation mismatch`);
+  const legacy={...prepared,choiceExplanations:q.choiceExplanations};
+  const repaired=helperContext.choiceRationales(legacy,q.experienceLevel);
+  ok(repaired.every((r,i)=>r===prepared.choiceExplanations[i]),`${q.id}: saved-session rationale repair failed`);
+ }
+}
+
+helperContext.Math.random=Math.random;
+helperContext.trackMeta=trackMeta;
+helperContext.grade=v=>v>=90?'A':v>=80?'B':v>=70?'C':'F';
+vm.runInNewContext(stripTypeScriptTypes(edge.slice(edge.indexOf('function selectQuestions'),edge.indexOf('Deno.serve'))),helperContext);
+vm.runInNewContext(stripTypeScriptTypes(edge.slice(edge.indexOf('function publicQuestion'),edge.indexOf('function nextDue'))),helperContext);
+for(const [track,bank] of Object.entries(banks)){
+ const first=bank[0],stats=[{question_id:first.id,last_result:false,mastery:0,due_at:new Date(0).toISOString()}];
+ for(const mode of ['learn','random','exam','missed','marked']){
+  const questions=helperContext.selectQuestions(track,mode,'all',stats,[first.id]);
+  ok(questions.length>0&&new Set(questions.map(q=>q.id)).size===questions.length,`${track}/${mode}: empty or repeated session`);
+  if(mode==='missed'||mode==='marked')ok(questions.length===1&&questions[0].id===first.id,`${track}/${mode}: incorrect review pool`);
+  if(mode==='exam')ok(questions.length===Math.min(trackMeta[track].officialQuestions,bank.length),`${track}: timed set has the wrong question count`);
+  const publicItem=helperContext.publicQuestion(questions[0],0,questions.length);
+  ok(!('correct' in publicItem)&&!('choiceExplanations' in publicItem),`${track}/${mode}: public question leaks the answer key`);
+ }
+ const advanced=helperContext.selectQuestions(track,'random','advanced',[],[]);
+ ok(advanced.every(q=>q.difficulty==='advanced'),`${track}: difficulty filter must restrict the session`);
+}
 
 if(failures.length){console.error('Written Prep checks failed:\n- '+failures.join('\n- '));process.exit(1)}
 console.log(`Written Prep checks passed: ${bankManifest.totalQuestionCount} curated live questions; generated template families excluded, ${figureQuestions.length} FAA-figure items, exact FAA samples, per-choice rationales, secure grading, standards mapping, and account persistence verified.`);

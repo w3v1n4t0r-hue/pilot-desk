@@ -80,7 +80,7 @@ function renderCurrencyOverview(){
  box.dataset.state=x.days<0?'expired':x.days<=14?'soon':'ok';strong.textContent=x.days<0?Math.abs(x.days)+'d past':x.days===0?'Today':x.days+'d';span.textContent=x.label+' · pilot-entered '+x.date;
 }
 async function renderPrepOverview(profile){
- const box=$('#pdAccountPrep');if(!box||!state.session)return;const strong=$('strong',box),span=$('span',box),goal=profile?.training_goal||'',track=['ppl','ira','cpl','cfi','cfii','atp'].includes(goal)?goal:(goal==='multi'?'cpl':localStorage.getItem('pd-written-track')||'ppl');
+ const box=$('#pdAccountPrep');if(!box||!state.session)return;const strong=$('strong',box),span=$('span',box),goal=profile?.training_goal||'',track=['ppl','ira','cpl','cfi','cfii','atp','foi'].includes(goal)?goal:(goal==='multi'?'cpl':localStorage.getItem('pd-written-track')||'ppl');
  try{
   const url=new URL(SUPABASE_URL+'/functions/v1/written-prep');url.searchParams.set('track',track);url.searchParams.set('difficulty','all');
   const r=await fetch(url,{headers:edgeHeaders(),cache:'no-store'}),d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Written Prep unavailable');

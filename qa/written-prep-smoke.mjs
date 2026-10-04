@@ -29,10 +29,10 @@ ok(Boolean(standards),'FAA training standards matrix must load for Written Prep 
 
 
 ok(bankManifest.legacyGeneratedFamiliesExcluded===true,'Legacy generated question families must remain excluded from the live bank');
-ok(bankManifest.acsQuestionCount===60,`Expected 60 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
-ok(bankManifest.supplementalPtsQuestionCount===12,`Expected 12 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
-ok(bankManifest.totalQuestionCount===72,`Expected 72 total curated live questions; got ${bankManifest.totalQuestionCount}`);
-const minimumByTrack={ppl:10,ira:12,cpl:11,cfi:14,cfii:12,atp:13};
+ok(bankManifest.acsQuestionCount===110,`Expected 110 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
+ok(bankManifest.supplementalPtsQuestionCount===22,`Expected 22 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
+ok(bankManifest.totalQuestionCount===155,`Expected 155 total curated live questions; got ${bankManifest.totalQuestionCount}`);
+const minimumByTrack={ppl:20,ira:22,cpl:21,cfi:24,cfii:22,atp:23,foi:23};
 for(const [track,min] of Object.entries(minimumByTrack))ok(banks[track]?.length>=min,`${track.toUpperCase()} curated bank fell below ${min} questions`);
 
 for(const [track,items] of Object.entries(banks)){
@@ -87,9 +87,12 @@ for(const q of figureParallel){
 const figureQuestions=all.filter(q=>q.figureRef?.url&&q.figureRef?.figure);
 ok(figureQuestions.length>=23,`At least 23 live questions should require an official FAA figure; got ${figureQuestions.length}`);
 // Preserve the existing official-figure layer while adding distinct non-figure scenarios.
-const newScenarios=all.filter(q=>q.reviewedAt==='2026-10-04'&&q.id.startsWith('curated-'));
+const newScenarios=all.filter(q=>q.reviewedAt==='2026-10-04'&&q.id.startsWith('curated-')&&!q.id.includes('-expansion-'));
+const expanded=all.filter(q=>q.id.includes('-expansion-'));
+ok(expanded.length===83,'All-track release must add 83 separately authored questions');
+ok(bankManifest.handbookQuestionCount===23&&banks.foi.every(q=>q.standardType==='Handbook'&&q.standardCode.startsWith('AIH.')),'FOI must use handbook chapter references rather than invented ACS codes');
 ok(newScenarios.length===24,'Expansion must add 24 distinct original scenarios');
-for(const track of Object.keys(banks))ok(newScenarios.filter(q=>q.experienceLevel===track).length===4,`${track} must gain four original scenarios`);
+for(const track of ['ppl','ira','cpl','cfi','cfii','atp'])ok(newScenarios.filter(q=>q.experienceLevel===track).length===4,`${track} must gain four original scenarios`);
 has(html,'not a complete exam bank','Limited coverage must remain visible before sign-in');
 has(js,'does not cover the complete syllabus','Timed practice must disclose coverage limits');
 
@@ -104,7 +107,7 @@ has(html,'id="pdPrepStandard"','Per-question standard badge missing');
 has(html,'id="pdPrepGrade"','Practice grade UI missing');
 has(html,'ACCOUNT REQUIRED','Account wall copy missing');
 has(html,'/account.html?next=%2Fwritten-prep.html','Account gate must return users to Written Prep');
-for(const track of ['ppl','ira','cpl','cfi','cfii','atp'])has(html,`data-track="${track}"`,`Missing ${track.toUpperCase()} Written Prep track`);
+for(const track of ['ppl','ira','cpl','cfi','cfii','atp','foi'])has(html,`data-track="${track}"`,`Missing ${track.toUpperCase()} Written Prep track`);
 for(const mode of ['learn','missed','marked','random','exam'])has(html,`data-mode="${mode}"`,`Missing ${mode} study mode`);
 
 has(js,'/functions/v1/written-prep','Client must use secure Written Prep edge function');
@@ -132,7 +135,7 @@ has(bankWrapper,"authoring?:'curated-manual'",'Typed bank must expose manual-cur
 has(bankWrapper,'figureRef?:','Typed bank must support FAA figure references');
 has(bankWrapper,'choiceExplanations?:','Typed bank must support per-choice rationales');
 
-for(const [track,meta] of Object.entries({ppl:['PAR',60,120],ira:['IRA',60,120],cpl:['CAX',100,150],cfi:['FIA',100,150],cfii:['FII',50,150],atp:['ATM',125,210]})){
+for(const [track,meta] of Object.entries({ppl:['PAR',60,120],ira:['IRA',60,120],cpl:['CAX',100,150],cfi:['FIA',100,150],cfii:['FII',50,150],atp:['ATM',125,210],foi:['FOI',50,90]})){
  const [code,count,minutes]=meta;ok(trackMeta[track].testCode===code&&trackMeta[track].officialQuestions===count&&trackMeta[track].officialMinutes===minutes&&trackMeta[track].passingScore===70,`${track.toUpperCase()} official test metadata mismatch`);
 }
 
@@ -213,8 +216,48 @@ for(const [track,bank] of Object.entries(banks)){
   const publicItem=helperContext.publicQuestion(questions[0],0,questions.length);
   ok(!('correct' in publicItem)&&!('choiceExplanations' in publicItem),`${track}/${mode}: public question leaks the answer key`);
  }
+ const topic=bank[0].area;
+ const topicSet=helperContext.selectQuestions(track,'learn','all',[],[],topic);
+ ok(topicSet.length>0&&topicSet.every(q=>q.area===topic),`${track}: subject study must use only the chosen subject`);
+ const mixedExam=helperContext.selectQuestions(track,'exam','all',[],[],topic);
+ ok(mixedExam.length===Math.min(trackMeta[track].officialQuestions,bank.length),`${track}: timed practice must cover the mixed bank despite a subject selection`);
+ ok(helperContext.selectQuestions(track,'random','all',[],[],'nonexistent').length===0,`${track}: an unknown topic must not silently use the whole bank`);
  const advanced=helperContext.selectQuestions(track,'random','advanced',[],[]);
  ok(advanced.every(q=>q.difficulty==='advanced'),`${track}: difficulty filter must restrict the session`);
+}
+
+has(js,'startTimer(a.simulatedMinutes,a.createdAt)','Resuming timed practice must retain elapsed wall time');
+has(edge,'s.track!==track','Answers must reject a mismatched session track');
+// Execute the authenticated handler against an isolated in-memory REST transport.
+let handler;const storedSessions=new Map(),storedStats=[],testUser='qa-user';
+const response=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json'}});
+const fakeFetch=async(url,init={})=>{
+ const u=new URL(url),method=init.method||'GET',name=u.pathname.split('/').at(-1);
+ if(u.pathname==='/auth/v1/user')return response(init.headers?.Authorization==='Bearer qa-token'?{id:testUser}:{},init.headers?.Authorization==='Bearer qa-token'?200:401);
+ if(name==='written_prep_sessions'){
+  if(method==='POST'){const row={...JSON.parse(init.body),id:`session-${storedSessions.size}`,created_at:new Date().toISOString()};storedSessions.set(row.id,row);return response([row])}
+  const id=u.searchParams.get('id')?.replace(/^eq\./,'');
+  if(id){const row=storedSessions.get(id);if(method==='PATCH'){Object.assign(row,JSON.parse(init.body));return response([row])}return response(row?[row]:[])}
+  return response([]);
+ }
+ if(name==='written_prep_stats'){if(method==='POST'){storedStats.push(JSON.parse(init.body));return response(null)}return response(storedStats.filter(r=>r.track===u.searchParams.get('track')?.replace(/^eq\./,'')))}
+ if(name==='written_prep_bookmarks')return response([]);
+ throw new Error(`Unmocked transport ${method} ${u.pathname}`);
+};
+const runtime={banks,trackMeta,publicSources:mod.publicSources,bankManifest,Response,Request,URL,Date,Math,console,fetch:fakeFetch,Deno:{env:{get:k=>k==='SUPABASE_URL'?'https://qa.invalid':'qa-key'},serve:h=>{handler=h}}};
+vm.runInNewContext(stripTypeScriptTypes(edge.split('\n').slice(2).join('\n')),runtime);
+const invoke=async(body,token='qa-token')=>handler(new Request('https://qa.invalid/functions/v1/written-prep',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)}));
+ok((await invoke({action:'start',track:'foi'},'invalid')).status===401,'Live handler must reject invalid authentication');
+for(const track of Object.keys(banks)){
+ const topic=banks[track][0].area,start=await invoke({action:'start',track,mode:'learn',topic}),data=await start.json();
+ ok(start.status===200&&data.session?.question.area===topic,`${track}: authenticated subject session failed`);
+ const saved=storedSessions.get(data.session.id),item=saved.question_payload[0];
+ const wrongTrack=track==='ppl'?'foi':'ppl';
+ ok((await invoke({action:'answer',track:wrongTrack,sessionId:saved.id,choice:item.correct})).status===404,`${track}: mismatched track must fail before a stat write`);
+ const answered=await invoke({action:'answer',track,sessionId:saved.id,choice:item.correct}),result=await answered.json();
+ ok(answered.status===200&&result.feedback?.correct===true,`${track}: authenticated grading failed`);
+ ok(result.feedback?.choiceExplanations?.[item.correct].startsWith('Correct.'),`${track}: feedback rationale order failed`);
+ ok(storedStats.at(-1)?.user_id===testUser&&storedStats.at(-1)?.track===track,`${track}: answer persistence must use authenticated owner and track`);
 }
 
 if(failures.length){console.error('Written Prep checks failed:\n- '+failures.join('\n- '));process.exit(1)}

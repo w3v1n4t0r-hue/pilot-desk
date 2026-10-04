@@ -19,6 +19,14 @@ const FAA={
 };
 const cluster=(id,title,codes,sources,figures=[],oral=[])=>({id,title,codes,sources,figures,oral});
 const tracks={
+ foi:{key:'foi',title:'Fundamentals of Instructing',short:'FOI',standard:'FAA-H-8083-9',standardType:'Handbook',standardUrl:'https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook',testCode:'FOI',knowledgeTest:true,questionTarget:100,clusters:[
+ cluster('human','Human behavior',['AIH.2'],['Aviation Instructor’s Handbook Chapter 2']),
+ cluster('learning','Learning process',['AIH.3'],['Aviation Instructor’s Handbook Chapter 3']),
+ cluster('communication','Communication',['AIH.4'],['Aviation Instructor’s Handbook Chapter 4']),
+ cluster('teaching','Teaching process',['AIH.5'],['Aviation Instructor’s Handbook Chapter 5']),
+ cluster('assessment','Assessment',['AIH.6'],['Aviation Instructor’s Handbook Chapter 6']),
+ cluster('planning','Planning instruction',['AIH.7'],['Aviation Instructor’s Handbook Chapter 7']),
+ cluster('responsibility','Instructor responsibilities',['AIH.8'],['Aviation Instructor’s Handbook Chapter 8'])]},
  ppl:{
   key:'ppl',title:'Private Pilot',short:'PPL',standard:'FAA-S-ACS-6C',standardType:'ACS',standardUrl:FAA.ppl,testCode:'PAR',knowledgeTest:true,questionTarget:250,
   clusters:[

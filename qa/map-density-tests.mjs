@@ -57,7 +57,7 @@ console.log('Tower lookup join and unavailable-data fallback passed');
 // Reproduce a zoom-out while an airport request is still in flight.
 const ensureSource=source.slice(source.indexOf('  async function ensureData('),source.indexOf('  function toggleLayer('));
 let resolveZoomRequest,zoom=8,rendered=0,cleared=0;
-const zoomContext={endpointFor:()=>'/airports',MIN_ZOOM:{airports:6},map:{getZoom:()=>zoom},setLayerStatus:()=>{},groups:{airports:{clearLayers:()=>cleared++}},data:{},lastFetch:{},dataTime:{},dataPending:{},fetchSeq:{},dataStatus:{},dataBounds:{},AbortController,metarBoundsString:()=> '0,0,1,1',weatherBoundsContain:()=>false,getBoundsString:()=> 'test',fetchJson:()=>new Promise(resolve=>resolveZoomRequest=resolve),state:{enabled:{airports:true}},renderGeoLayer:()=>rendered++,renderBrief:()=>{},Date};
+const zoomContext={PRO_LAYERS:new Set(['pirep','gairmet','airsigmet','cwa']),hasFeature:()=>true,endpointFor:()=>'/airports',MIN_ZOOM:{airports:6},map:{getZoom:()=>zoom},setLayerStatus:()=>{},groups:{airports:{clearLayers:()=>cleared++}},data:{},lastFetch:{},dataTime:{},dataPending:{},fetchSeq:{},dataStatus:{},dataBounds:{},AbortController,metarBoundsString:()=> '0,0,1,1',weatherBoundsContain:()=>false,getBoundsString:()=> 'test',fetchJson:()=>new Promise(resolve=>resolveZoomRequest=resolve),state:{enabled:{airports:true}},renderGeoLayer:()=>rendered++,renderBrief:()=>{},Date};
 vm.createContext(zoomContext);vm.runInContext(ensureSource,zoomContext);
 const pendingZoom=vm.runInContext("ensureData('airports',false)",zoomContext);
 zoom=4;await vm.runInContext("ensureData('airports',false)",zoomContext);
@@ -68,7 +68,7 @@ console.log('Zoom-out race passed: obsolete airport response cannot restore hidd
 // Weather refresh retains marker identity and the true station coordinates.
 const weatherRender=source.slice(source.indexOf('  function renderGeoLayer('),source.indexOf('  function refreshVectorStyles('));
 const displayed=new Set(),created=[];
-const weatherContext={weatherMarkers:new Map(),ensureGroup:()=>({hasLayer:m=>displayed.has(m),addLayer:m=>displayed.add(m),removeLayer:m=>displayed.delete(m)}),map:{getZoom:()=>4},window:{PilotDeskChartSymbols:{metarCategory:()=> 'VFR'}},esc:String,field:(p,names)=>names.map(n=>p[n]).find(Boolean)||'',state:{},styleFor:()=>({}),popupFor:(_key,f)=>f.properties.rawOb,pointFor:(_key,f,ll)=>{const m={ll,bindPopup(fn){this.popup=fn},bindTooltip(){},setStyle(){},setRadius(){},setTooltipContent(){},isPopupOpen:()=>true,setPopupContent(fn){this.popup=fn}};created.push(m);return m;},L:{latLng:(lat,lng)=>({lat,lng})}};
+const weatherContext={PRO_LAYERS:new Set(['pirep','gairmet','airsigmet','cwa']),hasFeature:()=>true,weatherMarkers:new Map(),ensureGroup:()=>({hasLayer:m=>displayed.has(m),addLayer:m=>displayed.add(m),removeLayer:m=>displayed.delete(m)}),map:{getZoom:()=>4},window:{PilotDeskChartSymbols:{metarCategory:()=> 'VFR'}},esc:String,field:(p,names)=>names.map(n=>p[n]).find(Boolean)||'',state:{},styleFor:()=>({}),popupFor:(_key,f)=>f.properties.rawOb,pointFor:(_key,f,ll)=>{const m={ll,bindPopup(fn){this.popup=fn},bindTooltip(){},setStyle(){},setRadius(){},setTooltipContent(){},isPopupOpen:()=>true,setPopupContent(fn){this.popup=fn}};created.push(m);return m;},L:{latLng:(lat,lng)=>({lat,lng})}};
 vm.createContext(weatherContext);vm.runInContext(weatherRender,weatherContext);
 weatherContext.observations={type:'FeatureCollection',features:[point(-97,48,0),point(-96,47,1)]};
 vm.runInContext("renderGeoLayer('metar',observations)",weatherContext);
@@ -81,7 +81,7 @@ console.log('Weather coordinates and marker identity retained through report ref
 
 // Legacy preferences cannot restore duplicate airport boxes, while METARs stay enabled.
 const settingsCode=source.slice(source.indexOf('  const DEFAULTS='),source.indexOf('  const briefData='));
-const settingsContext={localStorage:{getItem:()=>JSON.stringify({enabled:{airports:true,metar:true,radar:true}})}};
+const settingsContext={PRO_LAYERS:new Set(['pirep','gairmet','airsigmet','cwa']),hasFeature:()=>false,localStorage:{getItem:()=>JSON.stringify({enabled:{airports:true,metar:true,radar:true}})}};
 vm.createContext(settingsContext);
 assert.equal(vm.runInContext(settingsCode+';state.enabled.airports',settingsContext),false);
 assert.equal(vm.runInContext('state.enabled.metar',settingsContext),true);

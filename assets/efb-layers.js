@@ -19,6 +19,8 @@ function start(RP,L){
   const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=(n,d)=>Number.isFinite(Number(n))?Number(n).toFixed(d==null?0:d):'—';
   const B=window.PilotDeskRouteBrief;
+  const PRO_LAYERS=new Set(['pirep','gairmet','airsigmet','cwa']);
+  const hasFeature=feature=>window.PilotDeskProAccess?.isEnabled(feature)===true;
   const DEFAULTS={radar:false,metar:true,pirep:false,gairmet:false,airsigmet:false,cwa:false,tfr:true,sua:false,airspace:false,notams:true,airports:false,navaids:false,fixes:false,airways:false,obstacles:false,rings:false};
   const MIN_ZOOM={metar:3,pirep:5,gairmet:3,airsigmet:3,cwa:3,tfr:3,sua:5,airspace:6,airports:6,navaids:7,fixes:8,airways:6,obstacles:8};
   const AWC=new Set(['metar','pirep','gairmet','airsigmet','cwa','obstacles']);
@@ -38,6 +40,7 @@ function start(RP,L){
   };
   // Printed chart airport symbols and METAR dots replace the duplicate airport overlay.
   state.enabled.airports=false;
+  for(const key of PRO_LAYERS)if(!hasFeature('advancedWeather'))state.enabled[key]=false;
   const briefData={},briefStatus={},briefTime={};
   const weatherMarkers=new Map();
   const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},dataBounds={},notams={},briefWx={dep:null,dst:null,alt:null};
@@ -82,7 +85,7 @@ function start(RP,L){
   briefButton.id='rpBriefToggle';
   briefButton.className='utility-btn';
   briefButton.setAttribute('aria-expanded','false');
-  briefButton.textContent='ROUTE BRIEF';
+  briefButton.textContent='PRO ROUTE BRIEF';
   toolbar.insertBefore(briefButton,document.getElementById('rpMapStatus'));
 
   const panel=document.createElement('aside');
@@ -126,6 +129,7 @@ function start(RP,L){
       toggleRow('obstacles','Obstacles','AWC'),
       toggleRow('rings','Distance rings','Route'),
     '</section>',
+    '<p class="rp-layer-foot" id="rpProWeatherAccess">Pro adds PIREPs, SIGMETs, G-AIRMETs and CWAs on the chart. <a href="/pricing.html?from=chart-weather">View Pro · $5/month</a>. METARs, radar and charts stay free.</p>',
     '<p class="rp-layer-foot">Planning display only. Confirm current weather, NOTAMs, TFRs and chart data with an official briefing source.</p>'
   ].join('');
   const mapEl=document.getElementById('rpMap');
@@ -161,7 +165,7 @@ function start(RP,L){
     return '<label class="rp-layer-row"><span><input type="radio" name="rpEfbBase" value="'+value+'" '+(state.baseMode===value?'checked':'')+'> '+esc(label)+'</span><small data-layer-status="base-'+value+'"></small></label>';
   }
   function toggleRow(key,label,source){
-    return '<label class="rp-layer-row"><span><input type="checkbox" data-layer="'+key+'" '+(state.enabled[key]?'checked':'')+'> '+esc(label)+'</span><small><span data-layer-status="'+key+'"></span><em>'+esc(source)+'</em></small></label>';
+    return '<label class="rp-layer-row"><span><input type="checkbox" data-layer="'+key+'" '+(state.enabled[key]?'checked':'')+(PRO_LAYERS.has(key)&&!hasFeature('advancedWeather')?' disabled':'')+'> '+esc(label)+'</span><small><span data-layer-status="'+key+'"></span><em>'+(PRO_LAYERS.has(key)?'PRO · ':'')+esc(source)+'</em></small></label>';
   }
 
   layersButton.addEventListener('click',()=>togglePanel(panel,layersButton));
@@ -331,6 +335,7 @@ function start(RP,L){
   }
 
   async function ensureData(key,forBrief){
+    if(PRO_LAYERS.has(key)&&!hasFeature('advancedWeather'))return null;
     const endpoint=endpointFor(key);
     if(!endpoint)return null;
     const min=MIN_ZOOM[key]||3;
@@ -381,6 +386,7 @@ function start(RP,L){
   }
 
   function toggleLayer(key,on){
+    if(on&&PRO_LAYERS.has(key)&&!hasFeature('advancedWeather')){state.enabled[key]=false;const input=panel.querySelector('[data-layer="'+key+'"]');if(input)input.checked=false;return;}
     if(key==='radar'){
       radarControls.hidden=!on;
       if(on)refreshRadar();else removeRadar();
@@ -486,6 +492,7 @@ function start(RP,L){
     return '<div class="rp-route-popup"><b>'+esc(name||key.toUpperCase())+'</b>'+(key==='airports'?'<br>'+esc(window.PilotDeskChartSymbols.airportStatus(p).label)+'<br><span class="rp-mini">Tower operating hours are not checked.</span>':'')+(type?'<br>'+esc(type):'')+(alt?'<br>'+esc(alt):'')+'<br><span class="rp-mini">FAA / AWC live planning data</span>'+add+'</div>';
   }
   function renderGeoLayer(key,geojson){
+    if(PRO_LAYERS.has(key)&&!hasFeature('advancedWeather'))return;
     const g=ensureGroup(key);
     if(key==='metar'){
       const retained=new Set();
@@ -731,6 +738,7 @@ function start(RP,L){
   function renderBrief(){
     const body=document.getElementById('rpBriefBody');
     if(!body)return;
+    if(!hasFeature('routeBrief')){body.innerHTML='<div class="rp-empty-state"><span class="rp-eyebrow">PILOTDESK PRO · $5 / MONTH</span><h3>Review the route in one place.</h3><p>Pro combines endpoint and alternate weather, route advisory intersections, TFR and NOTAM context, fuel margin and ETA.</p><ul><li>Compare hazards with your planned route.</li><li>Review destination and alternate context.</li><li>Keep fuel, time and source timestamps together.</li></ul><p><a href="/pricing.html?from=route-brief">Unlock Pro route planning →</a></p><p><a href="/flight-brief.html">Use the free Flight Brief</a> · <a href="https://aviationweather.gov/" target="_blank" rel="noopener">Official weather</a></p><small>This is a feature preview, not a current briefing. Basic charts, navlog, METARs, radar and official sources remain free.</small></div>';return;}
     const pts=RP.getPoints();
     if(pts.length<2){
       body.innerHTML='<div class="rp-empty-state">Build a route to load route-specific weather, hazards, TFRs and NOTAM context.</div>';
@@ -812,6 +820,7 @@ function start(RP,L){
     }catch(e){return 'Fuel plan incomplete: '+e.message;}
   }
   async function loadRouteContext(){
+    if(!hasFeature('routeBrief')){briefLoading=false;renderBrief();return;}
     const pts=RP.getPoints();
     if(pts.length<2){renderBrief();return}
     clearTimeout(briefRefreshTimer);briefContextKey=B.planningKey(pts,window.PilotDeskRoutePerformance?.getSettings()||{});
@@ -887,6 +896,25 @@ function start(RP,L){
     if(!brief.hidden)closePanel(brief,briefButton);
   });
 
+  let paidWeather=false,paidBrief=false;
+  function syncProAccess(){
+    const weather=hasFeature('advancedWeather'),route=hasFeature('routeBrief');
+    for(const key of PRO_LAYERS){
+      const input=panel.querySelector('[data-layer="'+key+'"]');
+      if(input)input.disabled=!weather;
+      if(!weather){state.enabled[key]=false;if(input)input.checked=false;toggleLayer(key,false);}
+      else if(!paidWeather&&saved.enabled?.[key]===true){state.enabled[key]=true;if(input)input.checked=true;toggleLayer(key,true);}
+    }
+    panel.querySelector('#rpPirepFilter').disabled=!weather;
+    const accessNote=panel.querySelector('#rpProWeatherAccess');
+    if(accessNote)accessNote.hidden=weather;
+    if(!route){routeContextSeq++;clearTimeout(briefRefreshTimer);briefLoading=false;briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;for(const key of Object.keys(briefData))delete briefData[key];}
+    else if(!paidBrief&&RP.getPoints().length>1)void loadRouteContext();
+    paidWeather=weather;paidBrief=route;renderBrief();
+  }
+  document.addEventListener('pilotdesk:billing',syncProAccess);
+  window.PilotDeskBilling?.ready?.then(syncProAccess);
+  syncProAccess();
   if(state.baseMode==='auto')applyAutoChart();else setBase(state.baseMode);
   Object.keys(state.enabled).forEach(key=>{if(state.enabled[key])toggleLayer(key,true)});
   setTimeout(()=>{

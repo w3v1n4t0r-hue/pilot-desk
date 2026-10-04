@@ -228,3 +228,15 @@
 
 /* Overview images use Leaflet's projected bounds, not responsive article media rules. */
 #rpMap .leaflet-image-layer{max-width:none!important;max-height:none!important}
+
+/* Keep the chart workspace above introductory content. */
+main.rp-workspace{padding-top:16px!important}
+.rp-workspace .pd-flight-hero{padding:0!important;margin:0 0 10px!important}
+.rp-workspace .pd-flight-hero h1{font-size:28px!important;margin:0 0 6px!important}
+.rp-workspace .pd-flight-hero .pd-star{float:right;margin:0!important}
+.rp-workspace .pd-flight-subnav{margin:10px 0!important}
+.rp-workspace .breadcrumbs{margin-bottom:8px}
+.rp-workspace>.safety-strip{margin:14px 0}
+#rpMap{background:#cbd7dc!important}
+.rp-workspace .rp-map-toolbar{gap:6px;padding:10px}
+@media(max-width:600px){.rp-workspace .pd-flight-hero h1{font-size:24px!important}.rp-workspace .pd-flight-hero .fine{font-size:14px}.rp-workspace .rp-map-toolbar{gap:6px}}

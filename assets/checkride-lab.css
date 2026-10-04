@@ -56,3 +56,9 @@
  .pd-lab-summary-grid{grid-template-columns:1fr}
  .pd-lab-breakdown-row{grid-template-columns:1fr;gap:4px}
 }
+
+/* Keep setup and the free preview within easy reach. */
+.pd-lab-hero{padding-top:20px!important;margin-bottom:18px!important}
+.pd-lab-hero h1{font-size:clamp(30px,4vw,44px)!important;line-height:1.15!important}
+#pdLabAccess{margin-top:20px}
+#pdLabAccess .pd-actions{gap:12px;flex-wrap:wrap}

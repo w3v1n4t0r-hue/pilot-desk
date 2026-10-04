@@ -25,7 +25,7 @@ const planner=fs.readFileSync('assets/route-planner.js','utf8');
 const overviewCode=planner.slice(planner.indexOf('function syncOverview(){'),planner.indexOf('async function loadChartOverview'));
 let selected='sectional',created=0,removed=0,status='';
 const bounds=[[23,-126],[51,-65]];
-const context={map:{hasLayer:()=>false,removeLayer:()=>removed++,getZoom:()=>4},tile:{options:{minZoom:7}},overview:{addTo(){}},chartOverview:null,overviewKey:null,overviewManifest:{sectional:{url:'/sectional.webp',bounds,generatedAt:'2026-10-03',sourceUpdated:'Source edition'},low:{url:'/low.webp',bounds,generatedAt:'2026-10-03'}},localStorage:{getItem:()=>selected},L:{imageOverlay:(url,b,o)=>{assert.equal(b,bounds);assert.equal(o.pane,'pdChartOverviewPane');created++;return {addTo:()=>({})};}},$:()=>null,CHARTS:{sectional:{label:'Sectional'},low:{label:'Low'}},setMapStatus:s=>status=s};
+const context={map:{hasLayer:()=>false,removeLayer:()=>removed++,getZoom:()=>4},tile:{options:{minZoom:7}},overview:{addTo(){}},chartOverview:null,overviewKey:null,overviewManifest:{sectional:{url:'/sectional.webp',bounds,generatedAt:'2026-10-03',sourceUpdated:'Source edition'},low:{url:'/low.webp',bounds,generatedAt:'2026-10-03'}},localStorage:{getItem:()=>selected},L:{imageOverlay:(url,b,o)=>{assert.equal(b,bounds);assert.equal(o.pane,'pdChartOverviewPane');created++;return {addTo(){return this},once(event,callback){if(event==='load')callback();return this}};}},$:()=>null,CHARTS:{sectional:{label:'Sectional'},low:{label:'Low'}},setMapStatus:s=>status=s};
 vm.createContext(context);vm.runInContext(overviewCode,context);
 vm.runInContext('syncOverview();syncOverview()',context);
 assert.equal(created,1);assert.match(status,/generated 2026-10-03/);

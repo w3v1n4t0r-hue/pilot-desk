@@ -16,3 +16,18 @@
 .pd-plan-pillar{display:grid;grid-template-columns:62px 1fr;gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
 .pd-plan-pillar b{font-size:10px;letter-spacing:.11em;color:var(--text)}
 .pd-plan-pillar span{font-size:12px;line-height:1.5;color:var(--muted)}
+
+.pd-pricing .pd-pricing-hero{padding:24px 0 18px}
+.pd-pricing .pd-plan-grid{margin:24px 0}
+.pd-pricing .pd-plan-card>small{font-size:14px!important}
+.pd-pricing .pd-plan-sub{min-height:0;margin-bottom:14px}
+.pd-pricing .pd-plan-card ul{padding-top:14px;margin-bottom:18px}
+.pd-pricing .pd-plan-card>details{margin-bottom:16px}
+.pd-pricing .pd-pricing-status{font-size:14px}
+.pd-pricing-principles p{font-size:16px;line-height:1.6;margin:10px 0}
+.pd-pricing-principles .fine{font-size:14px}
+.pd-workflow-example{margin:18px 0;border-top:1px solid var(--line)}
+.pd-workflow-example summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-size:16px;font-weight:600}
+.pd-workflow-example dl{display:grid;grid-template-columns:100px minmax(0,1fr);gap:12px;font-size:16px;line-height:1.5}
+.pd-workflow-example dt{font-weight:600}.pd-workflow-example dd{margin:0;color:var(--muted)}
+@media(max-width:600px){.pd-plan-card,.pd-pricing-principles>div{padding:20px}.pd-workflow-example dl{grid-template-columns:1fr;gap:6px}.pd-workflow-example dd{margin-bottom:10px}.pd-pricing-hero h1{font-size:36px!important}}

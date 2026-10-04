@@ -15,7 +15,7 @@ async function render(snapshot){
   if(pro){pro.setAttribute('aria-disabled','true');pro.classList.add('disabled')}
   note('The PilotDesk paid product is installed, but Stripe checkout is not connected yet. No card can be charged until billing credentials are added.','warn');
  }else if(s.configured===null)note('Checking checkout availability…');
- else note('Secure Stripe checkout is available. Sign in first so Pro stays attached to your PilotDesk account.');
+ else note('Sign in to subscribe. Pro stays attached to your PilotDesk account.');
  if(new URL(location.href).searchParams.get('billing')==='cancelled'&&!s.isPro)note('Checkout was canceled. Nothing was charged.','warn');
  if(s.error)note(s.error,'warn');
  if(school&&s.schoolConfigured===false&&!s.isSchool){school.setAttribute('aria-disabled','true');school.classList.add('disabled')}

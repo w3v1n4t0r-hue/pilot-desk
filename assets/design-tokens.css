@@ -84,9 +84,9 @@ html[data-pd-theme="dark"] body{
 }
 
 /* Shared working surfaces: graphite depth, readable metadata and quiet focus. */
-:root{--muted2:#92999f;--line:#30363c;--line-hi:#59636d}
+:root{--muted2:#92999f!important;--line:#30363c!important;--line-hi:#59636d!important}
 .topbar .brand small{display:none!important}
-.topbar .brand b{font-size:16px!important;letter-spacing:-.015em}
+.topbar .brand b,html.pd-streamlined-app .topbar .brand b{font-size:16px!important;letter-spacing:-.015em}
 :where(.calc-box,.pd-account-card,.pd-account-dashboard,.pd-owner,.pd-plan-card,.pd-training-progress,.pd-panel,.rp-panel){clip-path:none}
 :where(input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea){transition:border-color 140ms ease,background-color 140ms ease}
 :where(input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea):hover{border-color:var(--line-hi)!important}

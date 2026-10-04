@@ -54,8 +54,15 @@ const schema = {
 
       <section class="pd-home-example" aria-labelledby="home-wind-title">
         <div class="pd-home-example-head"><span class="eyebrow">CROSSWIND COMPONENT</span></div>
-        <h2 id="home-wind-title">Check the crosswind.</h2>
-        <p>Runway 350° · wind from 320°</p>
+        <div class="pd-home-wind-heading">
+          <div><h2 id="home-wind-title">Check the crosswind.</h2><p>Runway 350° · wind from 320°</p></div>
+          <svg class="pd-home-wind-diagram" viewBox="0 0 112 100" role="img" aria-label="Wind from 320 degrees meets runway heading 350 degrees at a 30-degree angle">
+            <circle cx="58" cy="54" r="38" class="pd-wind-ring" />
+            <g transform="rotate(-10 58 54)"><rect x="53" y="20" width="10" height="68" class="pd-wind-runway" /><path d="M58 25v8m0 8v8m0 8v8m0 8v8" class="pd-wind-centerline" /></g>
+            <path d="M20 9L48 42M37 38l11 4-2-12" class="pd-wind-direction" />
+            <text x="81" y="23">30°</text>
+          </svg>
+        </div>
         <label for="pdHomeWind">Wind speed <output id="pdHomeWindValue">18 kt</output></label>
         <input id="pdHomeWind" type="range" min="0" max="40" step="1" value="18" aria-describedby="pdHomeWindNote" />
         <div class="pd-home-example-results" aria-live="polite" aria-atomic="true">

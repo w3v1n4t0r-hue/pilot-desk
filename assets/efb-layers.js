@@ -304,7 +304,8 @@ function start(RP,L){
     return [Math.max(-90,Math.min(b.getSouth(),lat-.25)),Math.max(-180,Math.min(b.getWest(),lon-.25)),Math.min(90,Math.max(b.getNorth(),lat+.25)),Math.min(180,Math.max(b.getEast(),lon+.25))].map(v=>v.toFixed(3)).join(',');
   }
   function weatherBoundsContain(outer,inner){
-    return outer&&inner&&outer[0]<=inner[0]&&outer[1]<=inner[1]&&outer[2]>=inner[2]&&outer[3]>=inner[3];
+    // Broad AWC queries can omit local stations. Always request detail after a wide view.
+    return outer&&inner&&outer[2]-outer[0]<=2&&outer[3]-outer[1]<=2&&outer[0]<=inner[0]&&outer[1]<=inner[1]&&outer[2]>=inner[2]&&outer[3]>=inner[3];
   }
   function endpointFor(key){
     if(key==='airports')return null;

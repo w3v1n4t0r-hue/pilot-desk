@@ -142,3 +142,5 @@ await vm.runInContext("ensureData('metar',false)",zoomContext);assert.equal(oldS
 finishOld({geojson:{features:[{wrongRegion:true}]}});await outsideRequest;
 assert.equal(zoomContext.data.metar.features.length,0);
 console.log('Returning to cached coverage cannot restore another region’s pending weather.');
+assert.equal(vm.runInContext('weatherBoundsContain([20,-130,55,-60],[47.94,-97.18,47.95,-97.17])',zoomContext),false);
+console.log('National weather results cannot replace a local station query.');

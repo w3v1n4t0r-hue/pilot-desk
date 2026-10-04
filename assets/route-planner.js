@@ -59,7 +59,7 @@ function manualPointToken(ll,tokens=editableTokens()){
  let name;do{name='PT'+String(plotCount++).padStart(2,'0')}while(names.has(name));
  return `${name},${ll.lat.toFixed(5)},${ll.lng.toFixed(5)}`;
 }
-function insertPoint(index,ll){const tokens=editableTokens();if(!Number.isInteger(index)||index<0||index>tokens.length)return;if(tokens.length>=300)return msg('Keep a route to 300 plotted points or fewer.');tokens.splice(index,0,manualPointToken(ll,tokens));editRoute(tokens.join(' '))}
+function insertPoint(index,ll){const tokens=editableTokens();if(!Number.isInteger(index)||index<0||index>tokens.length)return;if(tokens.length>=300)return msg('Keep a route to 300 plotted points or fewer.');const token=manualPointToken(ll,tokens);tokens.splice(index,0,token);editRoute(tokens.join(' '));msg(`${parseManual(token).id} added from chart. Recalculating route…`)}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(n,d=1)=>Number.isFinite(n)?n.toFixed(d):'—';
 const msg=t=>{$('#rpStatus').textContent=t};

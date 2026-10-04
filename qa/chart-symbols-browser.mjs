@@ -9,6 +9,8 @@ const page=await browser.newPage({viewport:{width:1365,height:900}}),errors=[];
 page.on('pageerror',error=>errors.push(error.message));
 await page.route('**/*',async route=>{
  const url=new URL(route.request().url());
+ // Paid weather-symbol rendering uses an explicit test-only billing fixture.
+ if(url.hostname==='pd.test'&&url.pathname==='/assets/billing.js')return route.fulfill({contentType:'application/javascript',body:"window.PilotDeskBilling={ready:Promise.resolve(),snapshot:()=>({isPro:true,isSchool:false,error:null})};"});
  if(url.hostname==='unpkg.com'){const cached=url.pathname.endsWith('.js')?process.env.PILOTDESK_LEAFLET_JS:process.env.PILOTDESK_LEAFLET_CSS;return cached?route.fulfill({path:cached}):route.continue();}
  if(url.pathname.startsWith('/api/')){
   let status=200,body={geojson:{type:'FeatureCollection',features:[]}};

@@ -110,7 +110,7 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   const window={addEventListener:(type,fn)=>{windowListeners[type]=fn},PilotDeskChartTiles:require('../assets/chart-tiles.js'),PilotDeskRouteNavigation:require('../assets/route-navigation.js'),PilotDeskNavlog:nav,PilotDeskFlights:{list:()=>[]}};
   const fetch=async url=>({ok:true,json:async()=>url.includes('airport-search')?{results:[{id:'KGFK',name:'Grand Forks',state:'ND',country:'US',lat:47.9493,lon:-97.1761},{id:'KFAKE',synthetic:true,lat:null,lon:null}]}:url.includes('ident=GEP')?{point:{id:'GEP',name:'Gopher',lat:45.1457,lon:-93.3732,source:'faa-navaid',status:'RESTRICTED'}}:{point:{id:'GFK',name:'Grand Forks VOR',lat:47.954,lon:-97.185,source:'navaid'}}});
   const context={window,document,localStorage,Date:class extends Date{static now(){return clock}},fetch:async url=>{requests.push(url);const response=await fetch(url);return{...response,json:async()=>({...await response.json(),source:{url:'https://faa.gov/qa-fixture',cycle:'2609'}})}},AbortController,AbortSignal,location:{search:''},URLSearchParams,CustomEvent:class{constructor(type,options){this.type=type;this.detail=options?.detail}},setTimeout:fn=>{const id=++timerId;timers.set(id,fn);return id},clearTimeout:id=>timers.delete(id),confirm:()=>true};
-  vm.createContext(context);vm.runInContext(fs.readFileSync('assets/route-navigation.js','utf8'),context);window.PilotDeskRouteNavigation=context.PilotDeskRouteNavigation;vm.runInContext(rpjs,context);
+  vm.createContext(context);vm.runInContext(fs.readFileSync('assets/route-navigation.js','utf8'),context);window.PilotDeskRouteNavigation=context.PilotDeskRouteNavigation;vm.runInContext(rpjs.replace(/\}\)\(\);\s*$/, 'window.__routeEditingTest={rewriteDraggedPoint,manualPointToken,setPoints:pts=>{lastPoints=pts},renderRouteSequence};})();'),context);
   documentListeners.DOMContentLoaded();
   windowListeners.beforeprint();
   if(printDetails.some(detail=>!detail.open))throw new Error('Print hid an advanced planning section');
@@ -175,6 +175,31 @@ if(!sitemap.includes('/procedures.html'))throw new Error('Procedures page missin
   if(!el('#rpRouteEditor').hidden||el('#rpEditorToggle').getAttribute('aria-expanded')!=='false')throw new Error('Editor toggle did not close the accessible panel');
   el('#rpEditorToggle').listeners.click();
   if(el('#rpRouteEditor').hidden||el('#rpEditorToggle').getAttribute('aria-expanded')!=='true')throw new Error('Editor toggle did not restore the accessible panel');
+  // A published airport dragged away must no longer identify the new coordinate as that airport.
+  el('#rpRoute').value='KGFK KFAR';
+  window.__routeEditingTest.setPoints([{id:'KGFK',lat:47.95,lon:-97.18,source:'airport'},{id:'KFAR',lat:46.92,lon:-96.82,source:'airport'}]);
+  window.__routeEditingTest.rewriteDraggedPoint(0,{id:'KGFK',source:'airport'},{lat:48.1,lng:-97.2});
+  if(!/^PT\d+,48.10000,-97.20000 KFAR$/.test(el('#rpRoute').value))throw new Error('Dragged airport still masquerades as a published airport');
+  el('#rpUndo').listeners.click();
+  if(el('#rpRoute').value!=='KGFK KFAR')throw new Error('Undo did not restore published airport identifiers');
+  // An expanded airway list edits the actual plotted stops rather than its shorthand tokens.
+  el('#rpRoute').value='ENTRY V1 EXIT';
+  window.__routeEditingTest.setPoints([{id:'ENTRY',lat:47,lon:-97},{id:'MID',lat:47.5,lon:-97},{id:'EXIT',lat:48,lon:-97}]);
+  window.__routeEditingTest.renderRouteSequence();
+  if(!el('#rpRouteSequence').innerHTML.includes('Remove MID')||el('#rpRouteSequence').innerHTML.includes('Remove V1'))throw new Error('Airway sequence disagrees with plotted waypoints');
+  el('#rpRouteSequence').listeners.click({target:{closest:()=>({dataset:{routeAction:'remove',routeIndex:'1'}})}});
+  if(el('#rpRoute').value!=='ENTRY,47.0000000,-97.0000000 EXIT,48.0000000,-97.0000000')throw new Error('Airway stop removal edited the wrong token');
+  el('#rpUndo').listeners.click();
+  if(el('#rpRoute').value!=='ENTRY V1 EXIT')throw new Error('Undo did not restore airway shorthand');
+  // Restored drafts must not cause new chart point names to collide.
+  const unique=window.__routeEditingTest.manualPointToken({lat:47,lng:-97},Array.from({length:100},(_,i)=>'PT'+String(i+1).padStart(2,'0')+',47,-97'));
+  if(unique.split(',')[0]!=='PT101')throw new Error('Manual chart waypoint names collide with a restored route');
+  el('#rpRoute').value='A,47,-97 B,48,-97';
+  window.__routeEditingTest.setPoints([]);
+  window.PilotDeskRoutePlanner.insertPoint(1,{lat:47.5,lng:-97});
+  if(!/^A,47,-97 PT\d+,47.50000,-97.00000 B,48,-97$/.test(el('#rpRoute').value))throw new Error('Chart insertion did not split the chosen leg');
+  el('#rpUndo').listeners.click();
+  if(el('#rpRoute').value!=='A,47,-97 B,48,-97')throw new Error('Chart insertion could not be undone');
   el('#rpClearRoute').listeners.click();
   if(storage.has('pd-route-last')||storage.has('pd-route-draft-v1')||el('#rpRoute').value)throw new Error('Clear did not remove the restored route and draft');
 }

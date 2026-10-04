@@ -47,6 +47,7 @@ function showReview(record){
  $('#pdLabContinue').addEventListener('click',()=>{box.hidden=true;state.awaitingReview=false;$('#pdLabAnswerForm').hidden=false;askBase()},{once:true});
 }
 function submitAnswer(answer){
+ if(!window.PilotDeskProAccess?.isEnabled('fullOral'))return void gate();
  const s=state.session;if(!s||state.awaitingReview)return;
  if(state.probe){
   const p=state.probe,coverage=scoreAnswer(answer,p.record.question);addTurn('user','YOUR FOLLOW-UP ANSWER','Response',answer);
@@ -78,6 +79,7 @@ function finish(){
  window.pdTrack?.('Checkride Lab Completed',{track:s.track,mode:s.mode,score:x.avg});
 }
 function start(){
+ if(!window.PilotDeskProAccess?.isEnabled('fullOral'))return void gate();
  state.session=makeSession();state.current=null;state.probe=null;state.awaitingReview=false;$('#pdLabSetup').hidden=true;$('#pdLabSummary').hidden=true;$('#pdLabSession').hidden=false;$('#pdLabConversation').replaceChildren();$('#pdLabReview').hidden=true;$('#pdLabAnswerForm').hidden=false;
  addTurn('examiner','CHECKRIDE LAB',data[state.track].title,state.mode==='mock'?'I will work across the rating. I may probe an answer before moving on. Feedback comes at the end.':'I will ask a question, probe missing concepts when useful, and show a coverage review before we move on.');
  askBase();
@@ -98,12 +100,13 @@ function packetLines(withResults=false){
  return lines;
 }
 function downloadPacket(withResults=false){
+ if(!window.PilotDeskProAccess?.isEnabled('fullOral'))return void gate();
  const t=data[state.session?.track||state.track]||selectTrack(),blob=pdfBlob(packetLines(withResults)),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='pilotdesk-'+state.track+'-checkride-'+(withResults?'debrief':'packet')+'.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);window.pdTrack?.('Checkride Packet Downloaded',{track:state.track,results:withResults})
 }
 async function gate(){
  const host=$('#pdLabAccess');let access={isPro:false};try{access=await window.PilotDeskProAccess.snapshot()}catch{}state.access=access;
  if(access.isPro){host.innerHTML='<div><span class="eyebrow">'+(access.isSchool?'FLIGHT SCHOOL ACCESS':'PILOTDESK PRO')+'</span><h2>Checkride Lab available.</h2><p>Examiner follow-up practice, mock oral sessions, and PDF packets are active on this account.</p></div>';$('#pdLabSetup').hidden=false}
- else{host.innerHTML='<div class="pd-lab-lock"><div><span class="eyebrow">PILOTDESK PRO</span><h2>Checkride Lab is a Pro feature.</h2><p>Free PilotDesk still includes the oral-prep preview. Pro adds examiner follow-up conversations, full mock-orals, debriefs, and PDF study packets.</p></div><a class="pd-btn" href="/pricing.html?from=checkride-lab">View Pro plan</a></div>';$('#pdLabSetup').hidden=true}
+ else{$('#pdLabSession').hidden=true;$('#pdLabSummary').hidden=true;host.innerHTML='<div class="pd-lab-lock"><div><span class="eyebrow">PILOTDESK PRO</span><h2>Checkride Lab is a Pro feature.</h2><p>Free PilotDesk still includes the oral-prep preview. Pro adds examiner follow-up conversations, full mock-orals, debriefs, and PDF study packets.</p></div><a class="pd-btn" href="/pricing.html?from=checkride-lab">View Pro plan · $5/month</a><a class="pd-btn secondary" href="/learn/oral-exam/">Try two oral subjects free</a></div>';$('#pdLabSetup').hidden=true}
 }
 function init(){
  const q=new URLSearchParams(location.search),track=q.get('track');if(data[track]){$('#pdLabTrack').value=track;state.track=track}

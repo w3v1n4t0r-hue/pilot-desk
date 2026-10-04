@@ -7,7 +7,7 @@ async function snapshot(){
  if(!billing)return {isPro:false,isSchool:false,plan:'free',limits};
  try{await billing.ready}catch{}
  const s=billing.snapshot?.()||{};
- return {isPro:Boolean(s.isPro),isSchool:Boolean(s.isSchool),plan:s.isSchool?'school':s.isPro?'pro':'free',limits};
+ return {isPro:Boolean(s.isPro)&&!s.error,isSchool:Boolean(s.isSchool)&&!s.error,plan:s.isSchool?'school':s.isPro?'pro':'free',limits};
 }
 async function canCreate(kind,currentCount){
  const s=await snapshot(),limit=limits[kind];
@@ -15,11 +15,14 @@ async function canCreate(kind,currentCount){
  return Number(currentCount||0)<limit;
 }
 async function canUseFullOral(){return (await snapshot()).isPro}
+const paidFeatures=new Set(['routeBrief','advancedWeather','fullOral']);
+function isEnabled(feature){const s=window.PilotDeskBilling?.snapshot?.();return paidFeatures.has(feature)&&Boolean(s?.isPro)&&!s?.error}
+async function canUseFeature(feature){if(!paidFeatures.has(feature))return false;return (await snapshot()).isPro}
 function upgradeUrl(source='feature'){
  const u=new URL('/pricing.html',location.origin);
  u.searchParams.set('from',String(source||'feature').slice(0,64));
  return u.pathname+u.search;
 }
-window.PilotDeskProAccess={limits,snapshot,canCreate,canUseFullOral,upgradeUrl};
+window.PilotDeskProAccess={limits,snapshot,canCreate,canUseFullOral,canUseFeature,isEnabled,upgradeUrl};
 snapshot().then(s=>document.dispatchEvent(new CustomEvent('pilotdesk:pro-access',{detail:s}))).catch(()=>{});
 })();

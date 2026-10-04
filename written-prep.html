@@ -18,7 +18,7 @@
 <main class="shell pd-prep-shell" id="main-content">
 <section class="pd-prep-hero">
  <div class="pd-prep-hero-copy"><span class="eyebrow">PILOTDESK · WRITTEN PREP</span><h1>FAA knowledge test practice</h1><p>Choose your test and a study session. Review the explanation and FAA reference after each answer.</p><div class="pd-prep-hero-actions"><a href="#pdPrepApp" class="pd-prep-primary">CHOOSE A TEST</a><a href="/skill-gap.html" class="pd-prep-secondary">REVIEW SUBJECTS</a><a href="/learn/study-plan/" class="pd-prep-secondary">PRO STUDY PLAN</a><a href="/learn/coverage/" class="pd-prep-secondary">FAA COVERAGE MATRIX</a></div></div>
- <div class="pd-prep-instrument"><div><span>TESTS</span><strong>6</strong></div><div><span>REVIEW</span><strong>By topic</strong></div><div><span>PRICE</span><strong>$0</strong></div><small>72 practice questions across six tracks. A focused supplement, not a complete exam bank.</small></div>
+ <div class="pd-prep-instrument"><div><span>TESTS</span><strong>7</strong></div><div><span>REVIEW</span><strong>By topic</strong></div><div><span>PRICE</span><strong>$0</strong></div><small>155 practice questions across seven tracks. A focused supplement, not a complete exam bank.</small></div>
 </section>
 
 
@@ -32,12 +32,13 @@
   <button type="button" data-track="cpl"><b>CPL</b><span>CAX · ACS</span></button>
   <button type="button" data-track="cfi"><b>CFI</b><span>FIA · ACS</span></button>
   <button type="button" data-track="cfii"><b>CFII</b><span>FII · PTS</span></button>
+  <button type="button" data-track="foi"><b>FOI</b><span>FOI · Handbook</span></button>
   <button type="button" data-track="atp"><b>ATP</b><span>ATM · ACS</span></button>
  </div>
  <div class="pd-prep-difficulty" role="group" aria-label="Question difficulty"><span>DIFFICULTY</span><button type="button" data-difficulty="all" class="active">ALL QUESTIONS</button><button type="button" data-difficulty="applied">APPLIED</button><button type="button" data-difficulty="advanced">ADVANCED</button></div>
 
  <section id="pdPrepGate" class="pd-prep-gate" hidden>
-  <div class="pd-prep-gate-mark">ACCOUNT REQUIRED</div><h2>Free account. No subscription.</h2><p>Your account saves missed questions, marked questions, scores and progress by FAA standard so you can leave and come back without starting over.</p><div class="pd-prep-gate-grid"><div><b>Missed questions</b><span>Questions you miss stay easy to find and review again.</span></div><div><b>ACS / PTS scores</b><span>See which FAA standards are costing you points.</span></div><div><b>Weak-area session</b><span>Unseen, missed and low-scoring questions come up first.</span></div></div><a class="pd-prep-primary" href="/account.html?next=%2Fwritten-prep.html">CREATE / SIGN IN TO FREE ACCOUNT</a><small>No subscription and no payment method.</small>
+  <div class="pd-prep-gate-mark">ACCOUNT REQUIRED</div><h2>Free account. No subscription.</h2><p>Your account saves missed questions, marked questions, scores and progress by FAA standard so you can leave and come back without starting over.</p><div class="pd-prep-gate-grid"><div><b>Missed questions</b><span>Questions you miss stay easy to find and review again.</span></div><div><b>FAA topic scores</b><span>See which FAA standards are costing you points.</span></div><div><b>Weak-area session</b><span>Unseen, missed and low-scoring questions come up first.</span></div></div><a class="pd-prep-primary" href="/account.html?next=%2Fwritten-prep.html">CREATE / SIGN IN TO FREE ACCOUNT</a><small>No subscription and no payment method.</small>
  </section>
 
  <div id="pdPrepWorkspace" hidden>
@@ -46,6 +47,8 @@
   <div class="pd-prep-streakline" aria-label="Recent Written Prep activity"><div><strong id="pdPrepStudyStreak">0-day study streak</strong><span>Completed sessions</span></div><div class="pd-prep-streak-dots" id="pdPrepStreakDots" aria-hidden="true"></div></div>
 
   <section id="pdPrepResume" class="pd-prep-resume" hidden><div><span class="eyebrow">SESSION IN PROGRESS</span><h3 id="pdPrepResumeTitle">Resume study</h3><p id="pdPrepResumeCopy"></p></div><button type="button" id="pdPrepResumeBtn">Resume session</button></section>
+  <section class="pd-prep-study-plan" aria-label="Study sequence"><div><b>1. Work one subject</b><p>Choose a subject, answer the questions, and read the reasoning for each choice.</p></div><div><b>2. Close the gaps</b><p>Repeat missed and marked questions. Use the linked FAA references when a concept is unclear.</p></div><div><b>3. Check the whole track</b><p>Run a timed mixed set with feedback at the end. Review the misses before your next set.</p></div></section>
+  <label class="pd-prep-topic" for="pdPrepTopic">SUBJECT <select id="pdPrepTopic"><option value="all">All subjects</option></select><span>Study and review use this subject. Timed practice mixes all subjects at your selected difficulty.</span></label>
   <section class="pd-prep-modes pd-prep-study-entry" id="pdPrepModes" aria-label="Start a Written Prep session">
    <button type="button" data-mode="learn"><span>01</span><b>Weak-area session</b><small>Unseen, missed and low-scoring questions first.</small></button>
    <button type="button" data-mode="missed"><span>02</span><b>Review misses</b><small>Study only the questions you most recently missed.</small></button>
@@ -62,7 +65,7 @@
 
 
 
-  <details class="pd-task-options"><summary>Detailed study progress</summary><div class="pd-task-options-body">  <section class="pd-prep-skillmap"><div class="pd-prep-section-head"><div><span class="eyebrow">ACS / PTS KNOWLEDGE AREAS</span><h2>Progress by subject</h2></div><a class="pd-prep-weak-link" id="pdPrepWeakLink" href="/skill-gap.html">Review weak subjects</a></div><div id="pdPrepSkillMap" class="pd-prep-skill-grid"><div class="pd-prep-empty">No answers yet for this rating.</div></div></section>
+  <details class="pd-task-options"><summary>Detailed study progress</summary><div class="pd-task-options-body">  <section class="pd-prep-skillmap"><div class="pd-prep-section-head"><div><span class="eyebrow">FAA KNOWLEDGE AREAS</span><h2>Progress by subject</h2></div><a class="pd-prep-weak-link" id="pdPrepWeakLink" href="/skill-gap.html">Review weak subjects</a></div><div id="pdPrepSkillMap" class="pd-prep-skill-grid"><div class="pd-prep-empty">No answers yet for this rating.</div></div></section>
   <section class="pd-prep-skillmap pd-prep-missed-topics"><div class="pd-prep-section-head"><div><span class="eyebrow">REVIEW MISSED QUESTIONS</span><h2>Misses grouped by topic</h2></div><button class="pd-prep-secondary" type="button" data-mode="missed">STUDY ALL MISSES</button></div><div id="pdPrepMissedTopics" class="pd-prep-missed-topic-list"><div class="pd-prep-empty">No missed questions for this rating.</div></div></section>
   <section class="pd-prep-skillmap pd-prep-standards"><div class="pd-prep-section-head"><div><span class="eyebrow" id="pdPrepStandardsEyebrow">ACS ELEMENTS</span><h2>Scores by FAA standard</h2></div><span id="pdPrepStandardsCount">0 elements attempted</span></div><div id="pdPrepStandardMap" class="pd-prep-standard-grid"><div class="pd-prep-empty">Answer questions to see your score by FAA standard.</div></div></section>
   <section class="pd-prep-skillmap"><div class="pd-prep-section-head"><div><span class="eyebrow">BY DIFFICULTY</span><h2>How the hard questions are going</h2></div></div><div id="pdPrepDifficultyMap" class="pd-prep-difficulty-grid"><div class="pd-prep-empty">No answers yet.</div></div></section></div></details>

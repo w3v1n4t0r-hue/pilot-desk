@@ -1,8 +1,8 @@
 import {banks as generatedBanks,trackMeta as generatedTrackMeta,publicSources as generatedPublicSources,bankManifest as generatedManifest} from './question-bank.js';
 
-export type Track='ppl'|'ira'|'cpl'|'cfi'|'cfii'|'atp';
+export type Track='ppl'|'ira'|'cpl'|'cfi'|'cfii'|'atp'|'foi';
 export type Difficulty='foundation'|'applied'|'advanced';
-export type StandardType='ACS'|'PTS';
+export type StandardType='ACS'|'PTS'|'Handbook';
 export type PrepQuestion={
   id:string;
   area:string;

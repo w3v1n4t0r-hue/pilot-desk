@@ -38,6 +38,7 @@ function start(RP,L){
   // Printed chart airport symbols and METAR dots replace the duplicate airport overlay.
   state.enabled.airports=false;
   const briefData={},briefStatus={},briefTime={};
+  const weatherMarkers=new Map();
   const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},dataBounds={},notams={},briefWx={dep:null,dst:null};
   let radarOverlay=null,notamGroup=L.layerGroup(),ringsGroup=L.layerGroup(),radarTimer=null,briefLoading=false;
   let routeContextSeq=0,notamSeq=0,radarSeq=0,radarPending=null;
@@ -485,6 +486,26 @@ function start(RP,L){
   }
   function renderGeoLayer(key,geojson){
     const g=ensureGroup(key);
+    if(key==='metar'){
+      const retained=new Set();
+      for(const feature of geojson.features||[]){
+        const coordinates=feature.geometry?.coordinates,p=feature.properties||{};
+        if(feature.geometry?.type!=='Point'||!Array.isArray(coordinates)||!Number.isFinite(coordinates[0])||!Number.isFinite(coordinates[1])||Math.abs(coordinates[0])>180||Math.abs(coordinates[1])>90)continue;
+        const id=field(p,['icaoId','id','stationId']),stamp=id+':'+coordinates.slice(0,2).join(',');
+        retained.add(stamp);let marker=weatherMarkers.get(stamp);
+        if(!marker){
+          marker=pointFor('metar',feature,L.latLng(coordinates[1],coordinates[0]));
+          marker.bindPopup(()=>popupFor('metar',marker.feature),{className:'rp-weather-popup',maxWidth:320});
+          marker.bindTooltip('',{direction:'top',className:'rp-point-label'});weatherMarkers.set(stamp,marker);
+        }
+        marker.feature=feature;marker.setStyle(styleFor('metar',feature));marker.setRadius(map.getZoom()<7?4:6);
+        marker.setTooltipContent(esc(id)+' · '+esc(window.PilotDeskChartSymbols.metarCategory(p)));
+        if(!g.hasLayer(marker))g.addLayer(marker);
+        if(marker.isPopupOpen())marker.setPopupContent(()=>popupFor('metar',marker.feature));
+      }
+      for(const [stamp,marker] of weatherMarkers)if(!retained.has(stamp)){g.removeLayer(marker);weatherMarkers.delete(stamp);}
+      return;
+    }
     g.clearLayers();
     const visible=(geojson.features||[]).filter(f=>key!=='airports'||window.PilotDeskMapDensity.publicAirport(f)).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
     const size=map.getZoom()<10?({pirep:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;

@@ -65,17 +65,19 @@ resolveZoomRequest({geojson:{features:[]}});await pendingZoom;
 assert.equal(rendered,0);assert.equal(cleared,1);
 console.log('Zoom-out race passed: obsolete airport response cannot restore hidden symbols.');
 
-// Weather observations retain their real coordinates even at national scale.
+// Weather refresh retains marker identity and the true station coordinates.
 const weatherRender=source.slice(source.indexOf('  function renderGeoLayer('),source.indexOf('  function refreshVectorStyles('));
-let weatherDisplayed;
-const weatherContext={ensureGroup:()=>({clearLayers(){}}),map:{getZoom:()=>4},window:{PilotDeskMapDensity:{group(){throw Error('Weather must not cluster');}}},state:{},paneFor:()=> 'weather',styleFor:()=>({}),pointFor:()=>({}),popupFor:()=>'',L:{geoJSON:(features)=>{weatherDisplayed=features;return {addTo(){}};}}};
+const displayed=new Set(),created=[];
+const weatherContext={weatherMarkers:new Map(),ensureGroup:()=>({hasLayer:m=>displayed.has(m),addLayer:m=>displayed.add(m),removeLayer:m=>displayed.delete(m)}),map:{getZoom:()=>4},window:{PilotDeskChartSymbols:{metarCategory:()=> 'VFR'}},esc:String,field:(p,names)=>names.map(n=>p[n]).find(Boolean)||'',state:{},styleFor:()=>({}),popupFor:(_key,f)=>f.properties.rawOb,pointFor:(_key,f,ll)=>{const m={ll,bindPopup(fn){this.popup=fn},bindTooltip(){},setStyle(){},setRadius(){},setTooltipContent(){},isPopupOpen:()=>true,setPopupContent(fn){this.popup=fn}};created.push(m);return m;},L:{latLng:(lat,lng)=>({lat,lng})}};
 vm.createContext(weatherContext);vm.runInContext(weatherRender,weatherContext);
-weatherContext.observations={type:'FeatureCollection',features:reports};
+weatherContext.observations={type:'FeatureCollection',features:[point(-97,48,0),point(-96,47,1)]};
 vm.runInContext("renderGeoLayer('metar',observations)",weatherContext);
-assert.equal(weatherDisplayed.features.length,reports.length);
-assert.deepEqual(weatherDisplayed.features.map(f=>f.geometry.coordinates),reports.map(f=>f.geometry.coordinates));
-assert.ok(weatherDisplayed.features.every(f=>f.properties._pdMembers===null));
-console.log('Weather station coordinates retained without clustering at national zoom.');
+assert.equal(created.length,2);assert.deepEqual(created.map(m=>[m.ll.lng,m.ll.lat]),[[-97,48],[-96,47]]);
+weatherContext.observations.features[0].properties.rawOb='Updated report';
+vm.runInContext("renderGeoLayer('metar',observations)",weatherContext);
+assert.equal(created.length,2);assert.equal(created[0].popup(),'Updated report');
+weatherContext.observations.features.pop();vm.runInContext("renderGeoLayer('metar',observations)",weatherContext);assert.equal(displayed.size,1);
+console.log('Weather coordinates and marker identity retained through report refresh; removed stations cleared.');
 
 // Legacy preferences cannot restore duplicate airport boxes, while METARs stay enabled.
 const settingsCode=source.slice(source.indexOf('  const DEFAULTS='),source.indexOf('  const briefData='));

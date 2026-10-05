@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import {calculatorExamples} from './calculator-examples.mjs';
 
 const context={window:{}};
 vm.createContext(context);
@@ -254,10 +255,14 @@ for(const [slug,key,title,desc,fields,results] of calcs){
   const inputList=fields.map(([,label,,u])=>`<li><strong>${esc(label)}</strong>${u?` — enter the value in ${esc(u)}.`:'.'}</li>`).join('');
   const guidance=pageGuidance[slug];
   if(!guidance) throw new Error(`Missing page-specific calculator guidance for ${slug}`);
+  const example=calculatorExamples[slug];
+  if(!example) throw new Error(`Missing worked example for ${slug}`);
+  const workedExample=`<section data-pd-worked-example><h2>Worked example</h2><p>${esc(example[2])}</p><p>${esc(example[3])}</p></section>`;
   const educational=`<div class="info-card" data-pd-seo-depth="1">
     <h2>How to use the ${esc(title)} calculator</h2>
     <p>${esc(guidance[0])}</p>
     <h3>Inputs</h3><ul>${inputList}</ul>
+    ${workedExample}
     <h2>Formula and method</h2>
     <p>${esc(formula)}</p>
     <h2>What the result means</h2>

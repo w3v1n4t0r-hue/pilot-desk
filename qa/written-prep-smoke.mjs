@@ -23,6 +23,11 @@ const acsTracks=['ppl','ira','cpl','cfi','atp'];
 const expectedDocs={ppl:'FAA-S-ACS-6C',ira:'FAA-S-ACS-8C',cpl:'FAA-S-ACS-7B',cfi:'FAA-S-ACS-25',atp:'FAA-S-ACS-11A'};
 const prefixes={ppl:['PA.'],ira:['IR.'],cpl:['CA.'],cfi:['FI.','AI.'],atp:['AA.']};
 const all=Object.values(banks).flat();
+ok(html.includes('data-pd-public-lesson')&&html.includes('300 fpm'),'Public Written Prep page needs a worked lesson without sign-in');
+ok(html.includes('data-pd-bank-coverage')&&html.includes('not complete coverage'),'Public bank coverage must explain its limits');
+for(const [track,label] of Object.entries({ppl:'Private',ira:'Instrument',cpl:'Commercial',cfi:'CFI',cfii:'CFII',atp:'ATP',foi:'Fundamentals of Instruction'})){
+  ok(html.includes(`${label} (${banks[track].length})`),`Public coverage count is stale for ${track}`);
+}
 const ids=new Set();
 const standardsContext={window:{}};vm.runInNewContext(standardsSource,standardsContext);const standards=standardsContext.window.PilotDeskTrainingStandards;
 ok(Boolean(standards),'FAA training standards matrix must load for Written Prep authoring QA');

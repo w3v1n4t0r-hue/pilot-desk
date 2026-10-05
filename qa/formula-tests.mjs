@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
+import {calculatorExamples} from '../scripts/calculator-examples.mjs';
 
 const nodes=new Map();
 const head={appendChild(){},append(){}};
@@ -38,6 +39,19 @@ for(const point of [[10,1500],[20,1500],[15,1000],[15,2000]])if(!geometry.contai
 function run(key,inputs){nodes.clear();for(const [id,value] of Object.entries(inputs))nodes.set(id,{value:String(value)});for(let i=0;i<4;i++)nodes.set('out'+i,{textContent:'—'});F[key]();return [0,1,2,3].map(i=>nodes.get('out'+i)?.textContent)}
 const n=s=>Number(String(s).replace(/,/g,'').match(/[-+]?\d*\.?\d+/)?.[0]);
 const near=(actual,expected,tol,msg)=>{if(!Number.isFinite(actual)||Math.abs(actual-expected)>tol)throw new Error(`${msg}: expected ${expected} ±${tol}, got ${actual}`)};
+
+// Check the published examples against real engine outputs, including units and
+// rounding. Missing examples must fail rather than silently leaving a thin page.
+if(Object.keys(calculatorExamples).length!==allCalcs.length)throw new Error('Worked example coverage differs from calculator coverage');
+for(const [slug,key,,,fields] of allCalcs){
+  const example=calculatorExamples[slug];
+  if(!example)throw new Error(`Missing worked example: ${slug}`);
+  const output=run(key,Object.fromEntries(fields.map(([id,,value])=>[id,value])));
+  near(n(output[0]),example[0],example[1],`Published worked example: ${slug}`);
+  const html=fs.readFileSync(`calculators/${slug}/index.html`,'utf8');
+  const escaped=example[2].replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  if(!html.includes('data-pd-worked-example')||!html.includes(escaped))throw new Error(`Worked example missing from static HTML: ${slug}`);
+}
 
 let o=run('crosswind',{runway:180,windDir:220,windSpeed:20});near(n(o[0]),12.9,.2,'Crosswind');near(n(o[1]),15.3,.2,'Headwind');near(n(o[2]),40,.1,'Wind angle');
 o=run('pressureAltitude',{elev:1000,altimeter:29.42});near(n(o[0]),1500,1,'Pressure altitude');

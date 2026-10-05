@@ -50,7 +50,8 @@ const submit=read('scripts/submit-indexnow.py');ok(submit.includes("glob('sitema
 
 const sourcePages=[...must.filter(p=>p.endsWith('.html')),'flight-training.html','for-flight-schools.html'];
 for(const p of sourcePages){const h=read(p);ok((h.match(/<h1\b/g)||[]).length===1,`${p} must have one H1`);ok(/rel="canonical"/.test(h),`${p} missing canonical`);ok(/faa\.gov|current approved|exact aircraft POH\/AFM|controlling source/i.test(h),`${p} missing source/verification language`);ok(!/\b(seamless|effortless|powerful|game-changing|revolutionary|unlock|elevate)\b/i.test(h),`${p} contains marketing/AI-ish filler`)}
-const c172=read('guides/cessna-172-glide-distance.html');ok(c172.includes('not</strong> a published Cessna 172 performance claim'),'C172 guide must label generic example as non-aircraft-specific');
+const c172=read('guides/cessna-172-glide-distance.html');ok(c172.includes('noindex,follow')&&c172.includes('/guides/glide-range.html#aircraft-data'),'C172 fallback must send readers to the consolidated aircraft-data section');
+const glideSource=read('guides/glide-range.html');ok(glideSource.includes('id="aircraft-data"')&&glideSource.includes('not Cessna performance data'),'consolidated guide must distinguish hypothetical math from aircraft performance');
 const avgas=read('guides/avgas-weight-per-gallon.html');ok(avgas.includes('6.01 lb per U.S. gallon at 59°F'),'Avgas guide standard value/source note missing');
 const descent=read('guides/three-degree-descent-rate-chart.html');ok(descent.includes('120 kt')&&descent.includes('637 fpm')&&descent.includes('600 fpm'),'3-degree chart regression value missing');
 

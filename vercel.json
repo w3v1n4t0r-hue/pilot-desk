@@ -111,6 +111,16 @@
       "source": "/guides/standard-rate-turn.html",
       "destination": "/guides/turn-radius-rate.html#standard-rate-turn",
       "permanent": true
+    },
+    {
+      "source": "/guides/how-far-can-an-airplane-glide.html",
+      "destination": "/guides/glide-range.html",
+      "permanent": true
+    },
+    {
+      "source": "/guides/cessna-172-glide-distance.html",
+      "destination": "/guides/glide-range.html#aircraft-data",
+      "permanent": true
     }
   ],
   "rewrites": [

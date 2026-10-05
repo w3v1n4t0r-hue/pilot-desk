@@ -3,7 +3,7 @@ import fs from 'node:fs';
 const errors=[];
 const fail=x=>errors.push(x);
 const newGuides=[
-  'guides/how-far-can-an-airplane-glide.html',
+  'guides/glide-range.html',
   'guides/best-glide-speed-vs-glide-ratio.html',
   'guides/emergency-glide-planning.html',
   'guides/checkride-study-guides.html'
@@ -23,10 +23,10 @@ for(const file of newGuides){
 const calc=fs.readFileSync('calculators/glide-range/index.html','utf8');
 if(!/<title>[^<]*Glide Distance Calculator[^<]*<\/title>/i.test(calc))fail('glide calculator: search-intent title missing');
 if(!/<h1>[^<]*Glide Distance Calculator[^<]*<\/h1>/i.test(calc))fail('glide calculator: search-intent H1 missing');
-for(const href of ['/guides/glide-range.html','/guides/how-far-can-an-airplane-glide.html','/guides/best-glide-speed-vs-glide-ratio.html','/guides/emergency-glide-planning.html'])if(!calc.includes(`href="${href}"`))fail(`glide calculator: missing cluster link ${href}`);
+for(const href of ['/guides/glide-range.html','/guides/best-glide-speed-vs-glide-ratio.html','/guides/emergency-glide-planning.html'])if(!calc.includes(`href="${href}"`))fail(`glide calculator: missing cluster link ${href}`);
 
 const glide=fs.readFileSync('guides/glide-range.html','utf8');
-for(const href of ['/calculators/glide-range/','/guides/how-far-can-an-airplane-glide.html','/guides/best-glide-speed-vs-glide-ratio.html','/guides/emergency-glide-planning.html','/guides/pilot-math-formulas.html'])if(!glide.includes(`href="${href}"`))fail(`glide guide: missing cluster link ${href}`);
+for(const href of ['/calculators/glide-range/','/guides/best-glide-speed-vs-glide-ratio.html','/guides/emergency-glide-planning.html','/guides/pilot-math-formulas.html'])if(!glide.includes(`href="${href}"`))fail(`glide guide: missing cluster link ${href}`);
 
 const multi=fs.readFileSync('guides/multiengine-checkride-study-guide.html','utf8');
 if(!multi.includes('"datePublished"'))fail('multi-engine guide: datePublished missing');

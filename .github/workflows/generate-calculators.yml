@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/generate-calculator-pages.mjs'
+      - 'scripts/calculator-examples.mjs'
+      - 'scripts/editorial-copy.mjs'
       - 'scripts/strengthen-guides.mjs'
       - 'scripts/clean-guide-boilerplate.mjs'
       - 'scripts/normalize-guide-schema.mjs'
@@ -24,6 +26,8 @@ on:
     branches: [main]
     paths:
       - 'scripts/generate-calculator-pages.mjs'
+      - 'scripts/calculator-examples.mjs'
+      - 'scripts/editorial-copy.mjs'
       - 'scripts/strengthen-guides.mjs'
       - 'scripts/clean-guide-boilerplate.mjs'
       - 'scripts/normalize-guide-schema.mjs'

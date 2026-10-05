@@ -55,6 +55,7 @@ for(const [slug,key,,,fields] of allCalcs){
 
 let o=run('crosswind',{runway:180,windDir:220,windSpeed:20});near(n(o[0]),12.9,.2,'Crosswind');near(n(o[1]),15.3,.2,'Headwind');near(n(o[2]),40,.1,'Wind angle');
 o=run('pressureAltitude',{elev:1000,altimeter:29.42});near(n(o[0]),1500,1,'Pressure altitude');
+o=run('windTriangle',{course:90,tas:100,windDir:180,windSpeed:20});near(n(o[0]),101.5,.1,'Navigation guide: south-wind heading');near(n(o[1]),98,.1,'Navigation guide: groundspeed');
 o=run('fuelRequired',{fuel:50,burn:10,time:2.5,reserve:45});near(n(o[0]),32.5,.1,'Fuel required');near(n(o[1]),25,.1,'Trip fuel');near(n(o[2]),17.5,.1,'Fuel margin');
 o=run('pivotal',{gs:100});near(n(o[0]),885,1,'Pivotal altitude');
 o=run('hydro',{psi:36});near(n(o[0]),51.6,.1,'FAA dynamic hydroplaning speed');

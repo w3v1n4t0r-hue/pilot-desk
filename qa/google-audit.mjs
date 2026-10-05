@@ -52,11 +52,11 @@ if(!site.includes("v=8.6*Math.sqrt(p)")||!hydroCalc.includes('8.6 × √(main-ti
 const climb=read('guides/vx-vy-altitude.html');
 if(!climb.includes('Airplane Flying Handbook')||!climb.includes('best angle of climb')||!climb.includes('best rate of climb')||!climb.includes('AFM/POH'))fail('Vx/Vy guide is missing its learning context or aircraft-specific source');
 const navigation=read('guides/navigation-reference.html');
-if(!navigation.includes('Worked wind-triangle example')||!navigation.includes('about 30.6 minutes')||!navigation.includes('current charts'))fail('navigation hub is missing its worked planning example or source limits');
+if(!navigation.includes('Course 090°, wind from 180°')||!navigation.includes('about 30.6 minutes')||!navigation.includes('current charts'))fail('navigation hub is missing its worked planning example or source limits');
 const weather=read('guides/aviation-weather-reference.html');
 if(!weather.includes('complete weather picture')||!weather.includes('current official observations')||!weather.includes('valid time'))fail('weather hub is missing its briefing workflow');
 const performance=read('guides/aircraft-performance-reference.html');
-if(!performance.includes('At 60° of bank')||!performance.includes('repeatable performance-chart workflow')||!performance.includes('current AFM/POH'))fail('performance hub is missing worked relationships or aircraft-specific workflow');
+if(!performance.includes('At 60° of bank')||!performance.includes('Read the chart inputs and corrections')||!performance.includes('current AFM/POH'))fail('performance hub is missing worked relationships or aircraft-specific workflow');
 const recipro=read('guides/reciprocal-heading.html');
 if(!recipro.includes('id="runway-designators"')||!recipro.includes('184° is designated Runway 18')||!recipro.includes('aim_html/chap2_section_3.html'))fail('reciprocal-heading guide is missing consolidated, sourced runway-designator guidance');
 const crosswind=read('guides/crosswind-component.html');

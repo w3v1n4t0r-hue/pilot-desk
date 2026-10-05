@@ -7,6 +7,8 @@ for(const [source,destination] of [['/guides/how-far-can-an-airplane-glide.html'
  const h=read(source.slice(1));assert(h.includes('noindex,follow'));assert(h.includes(`url=${destination}`));
  for(const file of fs.readdirSync('.').filter(f=>/^sitemap.*\.xml$/.test(f)))assert(!read(file).includes(`<loc>https://www.pilot-desk.com${source}</loc>`));
 }
+assert(!read('guides/glide-range.html').includes('href="/guides/glide-range.html"'));
+assert(!read('guides.html').includes('<h2>Cessna 172 Glide Distance</h2>'));
 const sheet=read('guides/pilot-math-cheat-sheet.html');assert(sheet.includes('8.6 × √main-tire pressure'));assert(sheet.includes('51.6 kt'));assert(!sheet.includes('Common FAA training estimate'));
 assert(read('sources.html').includes('8.6 × √main-tire pressure'));
 assert(read('guides/density-altitude.html').includes('<h2>5,000 ft field elevation at 30°C</h2>'));

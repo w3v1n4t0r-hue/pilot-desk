@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {editPublicCopy} from './editorial-copy.mjs';
 
 // Keep this pass available for future exact copy fixes, but do not rewrite
 // natural pilot-facing phrases just to make them sound more productized.
@@ -8,7 +9,7 @@ const replacements=[];
 const files=[];
 function walk(dir='.'){
   for(const ent of fs.readdirSync(dir,{withFileTypes:true})){
-    if(['.git','node_modules'].includes(ent.name)) continue;
+    if(['.git','node_modules','dist','.astro-public'].includes(ent.name)) continue;
     const p=path.join(dir,ent.name);
     if(ent.isDirectory()) walk(p);
     else if(ent.isFile()&&ent.name.endsWith('.html')) files.push(p);
@@ -20,6 +21,7 @@ let changed=0;
 for(const file of files){
   let html=fs.readFileSync(file,'utf8');
   const before=html;
+  html=editPublicCopy(html,path.relative(process.cwd(),file));
   for(const [pattern,replacement] of replacements) html=html.replace(pattern,replacement);
   if(html!==before){
     fs.writeFileSync(file,html);

@@ -1,7 +1,26 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 const failures=[];
 const ok=(condition,message)=>{if(!condition)failures.push(message)};
+// Keep the user's editorial preference across every public route, including
+// pages outside the original curated list. Technical source/safety labels stay.
+let scanned=0;
+function checkPublicHeadings(dir='.'){
+  for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+    if(['.git','node_modules','dist','.astro-public'].includes(entry.name))continue;
+    const file=path.join(dir,entry.name);
+    if(entry.isDirectory()){checkPublicHeadings(file);continue;}
+    if(!entry.isFile()||!entry.name.endsWith('.html'))continue;
+    scanned++;
+    const html=fs.readFileSync(file,'utf8');
+    for(const match of html.matchAll(/<h[1-6]\b[^>]*>([\s\S]*?)<\/h[1-6]>/gi)){
+      const text=match[1].replace(/<[^>]+>/g,'').trim();
+      ok(!/\bworked\b|^What the result means$|^Common mistakes to avoid$|^How to use the .+ calculator$/i.test(text),`${file}: generic editorial heading returned: ${text}`);
+    }
+  }
+}
+checkPublicHeadings();
 const curated=[
   'calculators/glide-range/index.html',
   'flight-training.html',
@@ -132,4 +151,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log(`Human-copy smoke passed across ${curated.length} hand-edited aviation and training pages.`);
+console.log(`Human-copy smoke passed across ${scanned} public HTML pages, with source checks on ${curated.length} aviation and training pages.`);

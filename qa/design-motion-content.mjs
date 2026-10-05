@@ -37,7 +37,7 @@ for(const row of redirects){
  for(const file of fs.readdirSync('dist').filter(x=>/^sitemap.*\.xml$/.test(x)))assert.ok(!read('dist/'+file).includes(row.source),`${file} still indexes ${row.source}`);
 }
 assert.match(read('guides/wind-triangle.html'),/cancel the rightward drift/);
-assert.match(read('guides/metar-taf.html'),/Worked TAF timeline/);
+assert.match(read('guides/metar-taf.html'),/Reading TEMPO and FM periods in UTC/);
 assert.match(read('assets/motion.css'),/prefers-reduced-motion:reduce/);
 assert.match(read('assets/calculators-2026.css'),/pd-calc-output-panel\{position:static;grid-row:auto\}/);
 console.log('Design/content regressions passed: shortest-angle rotation, CG motion/reduced motion/scale/invalid states, seven redirects, anchors and sitemap exclusions.');

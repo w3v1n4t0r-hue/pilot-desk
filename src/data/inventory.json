@@ -384,8 +384,8 @@
     "group": "Aviation"
   },
   {
-    "title": "How Far Can a Cessna 172 Glide?",
-    "href": "/guides/cessna-172-glide-distance.html",
+    "title": "Using aircraft POH glide data",
+    "href": "/guides/glide-range.html#aircraft-data",
     "type": "Guide",
     "group": "Aviation"
   },
@@ -551,13 +551,7 @@
     "type": "Guide",
     "group": "Aviation"
   },
-  {
-    "title": "How far can an airplane glide?",
-    "href": "/guides/how-far-can-an-airplane-glide.html",
-    "type": "Guide",
-    "group": "Aviation"
-  },
-  {
+{
     "title": "Dynamic hydroplaning speed",
     "href": "/guides/hydroplaning-speed.html",
     "type": "Guide",

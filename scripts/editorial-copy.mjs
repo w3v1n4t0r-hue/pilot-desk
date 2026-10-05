@@ -18,9 +18,9 @@ const headings={
  "guides/aircraft-performance-reference.html":{"A repeatable performance-chart workflow": "Read the chart inputs and corrections"},
  "guides/three-degree-descent.html":{"Worked descent example": "Descent rate on a 3° path"},
 
- 'guides/density-altitude.html':{'Worked example':'5,000 ft pressure altitude at 30°C'},
+ 'guides/density-altitude.html':{'Worked example':'5,000 ft field elevation at 30°C','5,000 ft pressure altitude at 30°C':'5,000 ft field elevation at 30°C'},
  'guides/maneuvering-speed-weight.html':{'Worked example':'Va at a lower weight'},
- 'guides/climb-rate-vs-climb-gradient.html':{'Worked example in both directions':'500 fpm at 90 knots'},
+ 'guides/climb-rate-vs-climb-gradient.html':{'Worked example in both directions':'300 ft/NM at 120 and 140 knots','500 fpm at 90 knots':'300 ft/NM at 120 and 140 knots'},
  'guides/weight-and-balance.html':{'Worked example: add the moments':'Add the station moments'},
  'guides/types-of-altitude.html':{'Worked example':'A 5,000-foot airport on a hot day'},
  'guides/wing-loading.html':{'Worked example: the same airplane at two weights':'The same wing at 2,400 and 2,000 pounds'},
@@ -40,6 +40,13 @@ const headings={
 };
 // Each match is an entire paragraph starting with a known legacy sentence.
 const paragraphs={
+ 'guides/glide-range.html':[["If you're trying to calculate how far an airplane can glide,",'Still-air glide distance is height available multiplied by glide ratio. Keep the distance units consistent, then account separately for wind, terrain, turns and aircraft configuration.']],
+ 'guides/crosswind-component.html':[["If you're looking for a crosswind chart",'Resolve the wind into a component across the runway and a headwind or tailwind along it. Use wind and runway directions on the same north reference.']],
+ 'guides/wind-triangle.html':[["If you're trying to convert airspeed",'The airplane’s air-velocity vector plus the wind vector gives its motion over the ground. For a desired course, solve that relationship to find the heading and groundspeed.']],
+ 'guides/metar-taf.html':[["If you're learning how to read a METAR",'A METAR is a station observation; a TAF is a forecast for a stated period. Read the station and UTC times first, then decode the weather groups.']],
+ 'guides/density-altitude.html':[["If you're searching for what density altitude",'Density altitude is the altitude in the standard atmosphere corresponding to the current air density. It is not the airplane’s geometric altitude.']],
+
+ 'guides/pilot-math-formulas.html':[["Looking for a pilot math formula or aviation formula?",'Aviation uses exact relationships, engineering models, unit conversions and rules of thumb. This reference states the assumptions and links each calculation to its tool.']],
  'poh-chart-studio.html':[['Pick known chart points first,','Start with known chart points. Estimate a value between them, check it against the plotted result, then change one input and repeat. Check the scales and units before accepting the answer.']],
  'e6b-flight-computer.html':[['A digital E6B can cover more than the classic wheel.','PilotDesk also includes climb-gradient, descent-rate, glide-distance and turn calculations. Use the linked guide for the calculation you need.'],['Suppose a training cross-country leg','At 105 kt groundspeed, a 90 NM leg takes 90 ÷ 105 = 0.857 hours, or about 51 minutes. At 9 gal/hr, trip fuel is about 7.7 gal. Add the applicable start, taxi, climb, alternate, reserve and contingency fuel separately.']],
  'for-flight-schools.html':[['Calculator URLs can keep the entered values,','Calculator links retain the entered values. Send a student the setup from a lesson, then have them change one input and explain the result.']],
@@ -64,5 +71,7 @@ export function editPublicCopy(html,file){
    return replacement===null?'':`<p>${replacement}</p>`;
  });
  if(file==='guides/vmc-vs-vyse.html')html=html.replace('<h2>What does VYSE mean?</h2>','');
+ html=html.replaceAll('/guides/how-far-can-an-airplane-glide.html','/guides/glide-range.html').replaceAll('/guides/cessna-172-glide-distance.html','/guides/glide-range.html#aircraft-data');
+ if(file==='guides/pilot-math-formulas.html')html=html.replace(/>\\n(?=\s*<)/g,'>\n');
  return html;
 }

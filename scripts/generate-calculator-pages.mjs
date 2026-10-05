@@ -156,7 +156,6 @@ const seoH1BySlug={
 
 const guideClusters={
   'glide-range':[
-    ['/guides/how-far-can-an-airplane-glide.html','How far can an airplane glide?'],
     ['/guides/best-glide-speed-vs-glide-ratio.html','Best glide speed vs glide ratio'],
     ['/guides/emergency-glide-planning.html','Emergency glide planning']
   ]
@@ -183,7 +182,7 @@ for(const [slug,key,title,desc,fields,results] of calcs){
 
   const siblings=(categories[category]||[]).filter(x=>x!==slug);
   const position=Math.max(0,(categories[category]||[]).indexOf(slug));
-  const relatedSlugs=[...siblings.slice(position,position+4),...siblings.slice(0,4)].slice(0,4);
+  const relatedSlugs=[...new Set([...siblings.slice(position),...siblings])].slice(0,4);
   const relatedLinks=relatedSlugs.map(x=>`<a href="/calculators/${x}/">${esc(calcBySlug.get(x)||x)}</a>`).join('');
   const guideLink=guideFor[slug]?`<a href="${guideFor[slug]}">Read the ${esc(title)} guide</a>`:'';
   const guideClusterLinks=(guideClusters[slug]||[]).map(([href,label])=>`<a href="${href}">${esc(label)}</a>`).join('');

@@ -16,7 +16,7 @@ assert(safety.includes('more than 90 minutes old')&&safety.includes('official or
 assert(safety.includes('Ads load separately')&&safety.includes('Advertising content does not change calculator formulas'),'Ad independence statement missing');
 assert(safety.includes('secondary cross-check')&&safety.includes('/sources.html'),'Source hierarchy guidance missing');
 
-assert(privacy.includes('Effective September 14, 2026'),'Privacy policy effective date not updated');
+assert(privacy.includes('Effective October 5, 2026'),'Privacy policy effective date not updated');
 assert(privacy.includes('search text')&&privacy.includes('Weight &amp; Balance entries'),'Sensitive analytics exclusions missing');
 assert(privacy.includes('does not sell aircraft-profile data, calculator-input data, or PilotDesk account data'),'Data sale statement missing');
 assert(privacy.includes('Core tools do not require an account')&&privacy.includes('Supabase'),'Account privacy disclosures missing');

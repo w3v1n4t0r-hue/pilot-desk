@@ -11,6 +11,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 for(const ent of files){
   const file=path.join(dir,ent.name);
   let html=fs.readFileSync(file,'utf8');
+  if(/<meta[^>]+http-equiv=["']refresh["']/i.test(html))continue;
   const before=html;
   const slug=ent.name.replace(/\.html$/,'');
   const h1=strip((html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)||[])[1])||slug.replaceAll('-',' ');
@@ -113,6 +114,7 @@ const corePages={
 for(const [file,data] of Object.entries(corePages)){
   if(!fs.existsSync(file)) continue;
   let html=fs.readFileSync(file,'utf8');
+  if(/<meta[^>]+http-equiv=["']refresh["']/i.test(html))continue;
   const before=html;
   if(file==='flight-training.html'){
     html=html.replace(/<meta name="description" content="[^"]*">/i,'<meta name="description" content="Free aviation tools for flight students and CFIs: calculators, weather, E6B, checklist practice, POH chart training and planning references.">');

@@ -34,10 +34,10 @@ ok(Boolean(standards),'FAA training standards matrix must load for Written Prep 
 
 
 ok(bankManifest.legacyGeneratedFamiliesExcluded===true,'Legacy generated question families must remain excluded from the live bank');
-ok(bankManifest.acsQuestionCount===110,`Expected 110 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
-ok(bankManifest.supplementalPtsQuestionCount===22,`Expected 22 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
-ok(bankManifest.totalQuestionCount===155,`Expected 155 total curated live questions; got ${bankManifest.totalQuestionCount}`);
-const minimumByTrack={ppl:20,ira:22,cpl:21,cfi:24,cfii:22,atp:23,foi:23};
+ok(bankManifest.acsQuestionCount===140,`Expected 140 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
+ok(bankManifest.supplementalPtsQuestionCount===28,`Expected 28 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
+ok(bankManifest.totalQuestionCount===197,`Expected 197 total curated live questions; got ${bankManifest.totalQuestionCount}`);
+const minimumByTrack={ppl:26,ira:28,cpl:27,cfi:30,cfii:28,atp:29,foi:29};
 for(const [track,min] of Object.entries(minimumByTrack))ok(banks[track]?.length>=min,`${track.toUpperCase()} curated bank fell below ${min} questions`);
 
 for(const [track,items] of Object.entries(banks)){
@@ -95,7 +95,7 @@ ok(figureQuestions.length>=23,`At least 23 live questions should require an offi
 const newScenarios=all.filter(q=>q.reviewedAt==='2026-10-04'&&q.id.startsWith('curated-')&&!q.id.includes('-expansion-'));
 const expanded=all.filter(q=>q.id.includes('-expansion-'));
 ok(expanded.length===83,'All-track release must add 83 separately authored questions');
-ok(bankManifest.handbookQuestionCount===23&&banks.foi.every(q=>q.standardType==='Handbook'&&q.standardCode.startsWith('AIH.')),'FOI must use handbook chapter references rather than invented ACS codes');
+ok(bankManifest.handbookQuestionCount===29&&banks.foi.every(q=>q.standardType==='Handbook'&&q.standardCode.startsWith('AIH.')),'FOI must use handbook chapter references rather than invented ACS codes');
 ok(newScenarios.length===24,'Expansion must add 24 distinct original scenarios');
 for(const track of ['ppl','ira','cpl','cfi','cfii','atp'])ok(newScenarios.filter(q=>q.experienceLevel===track).length===4,`${track} must gain four original scenarios`);
 has(html,'not a complete exam bank','Limited coverage must remain visible before sign-in');
@@ -264,6 +264,23 @@ for(const track of Object.keys(banks)){
  ok(result.feedback?.choiceExplanations?.[item.correct].startsWith('Correct.'),`${track}: feedback rationale order failed`);
  ok(storedStats.at(-1)?.user_id===testUser&&storedStats.at(-1)?.track===track,`${track}: answer persistence must use authenticated owner and track`);
 }
+
+// Applied curriculum: substantive feedback and balanced choices in every track.
+const curriculum=all.filter(q=>q.id.includes('-curriculum-'));
+ok(curriculum.length===42,'Curriculum release must contain 42 distinct original scenarios');
+for(const track of Object.keys(banks)){
+ const items=curriculum.filter(q=>q.experienceLevel===track);
+ ok(items.length===6,`${track} must gain six curriculum scenarios`);
+ for(const answer of [0,1,2])ok(items.filter(q=>q.correct===answer).length===2,`${track} new answer keys must be balanced`);
+}
+for(const q of curriculum){
+ ok(q.reviewedAt==='2026-10-06',`${q.id} source-check date must be recorded`);
+ ok(q.choiceExplanations.every(x=>x.length>=50),`${q.id} must explain each misconception`);
+ ok(/\.pdf$/.test(q.sourceUrl),`${q.id} should link directly to its verified handbook chapter`);
+}
+has(html,'data-pd-curriculum-topics','Public topic guide must remain available before sign-in');
+has(html,'0.375 inch aft','Public balance lesson must preserve the checked computation');
+has(html,'has not received independent CFI sign-off','Source checks must not be presented as independent instructor review');
 
 if(failures.length){console.error('Written Prep checks failed:\n- '+failures.join('\n- '));process.exit(1)}
 console.log(`Written Prep checks passed: ${bankManifest.totalQuestionCount} curated live questions; generated template families excluded, ${figureQuestions.length} FAA-figure items, exact FAA samples, per-choice rationales, secure grading, standards mapping, and account persistence verified.`);

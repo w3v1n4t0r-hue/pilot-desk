@@ -3,3 +3,29 @@ PilotDesk Written Prep source scope: FAA-published sample-question concepts, cur
 2026-10-04: Added 24 original scenario questions (four per track), retaining all 23 official-figure items and all exact FAA samples. Each new item links to an FAA handbook or AIM source and explains all three choices. These are original practice questions, not active FAA test items or a claim of full syllabus coverage. Timed practice uses the available selected bank and scaled time. Shuffle regression checks exercise all six permutations and repair rationale order in previously saved sessions.
 
 2026-10-04 all-track release: 83 original scenario questions added, including 23 FOI handbook-linked items. Total 155 across PAR/IRA/CAX/FIA/FII/ATM/FOI. Preserves all prior IDs, 23 FAA-figure items, and saved question snapshots. FOI chapter identifiers (AIH.2–AIH.8) describe handbook coverage, not official test-result codes. Subject selection applies to study/review; timed sets mix the selected difficulty across the full track. Timed resume subtracts elapsed wall time. Bank remains an incomplete supplemental practice bank. Sources: current FAA testing matrix, PHAK, Aviation Instructor’s Handbook, Instrument Flying Handbook and Instrument Procedures Handbook.
+
+
+2026-10-06 — Applied curriculum release (42 original questions; six per track)
+Source checks record editorial verification, not independent CFI approval. Existing question IDs, official samples, figures and saved-session grading are preserved. Legacy generated families remain excluded.
+ph5 https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf
+ph8 https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf
+ph10 https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf
+ph11 https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf
+ph12 https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf
+ph13 https://www.faa.gov/sites/faa.gov/files/15_phak_ch13.pdf
+ph16 https://www.faa.gov/sites/faa.gov/files/18_phak_ch16.pdf
+ph17 https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf
+af4 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/05_afh_ch4.pdf
+af7 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/08_afh_ch7.pdf
+af11 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/12_afh_ch11.pdf
+af13 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/14_afh_ch13.pdf
+af16 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf
+ai3 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf
+ai4 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/06_aih_chapter_4.pdf
+ai6 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/08_aih_chapter_6.pdf
+ai7 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf
+ai8 https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/10_aih_chapter_8.pdf
+aib https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/14_aih_appendix_b.pdf
+Departure gradient context https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/instrument_procedures_handbook/FAA-H-8083-16B_Chapter_1.pdf
+Checked computations: CG 40*20/2300=0.3478 inch aft; true north wind triangle asin(20/100)=11.54 degrees left, GS=sqrt(10000-400)=97.98 kt; reserve 22-(2*8)-(0.75*8)=0 gal margin; 12000/6076=1.975 NM; 400*120/60=800 fpm; 6/120*60=3 min vs 6/90*60=4 min; 1.1^2=1.21 energy; 50*sqrt(1/cos45)=59.46 kt; pivotal 100^2/11.3=884.96 ft vs 80^2/11.3=566.37 ft; power loading 2500/200=12.5 vs 2800/200=14; slant sqrt(3^2+4^2)=5 NM; 500*150/60=1250 fpm; public lesson 50*18/2400=0.375 inch aft.
+Sources verified against FAA hosted chapter PDFs downloaded 2026-10-06. Topics: PHAK 5 load factor, turn geometry and single-control VA limitation; 8 cold altitude, pitot/static failures and compass dip; 10 shifting weights; 11 power loading; 12 hail under anvil; 13 ceiling and true METAR winds; 16 variation, wind vectors, DME and time/fuel units; 17 hypoxia cognition/euphoria. AFH 4 energy, 7 pivotal altitude, 11 featureless terrain, 13 conventional critical engine, 16 Mach and engine rpm. AIH 3 memory/transfer, 4 interference, 6 comprehensive assessment, 7 lesson conditions, Appendix B plausible distractors.

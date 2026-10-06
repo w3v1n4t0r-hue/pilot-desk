@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import {calculatorExamples,calculatorExampleTitles} from './calculator-examples.mjs';
+import {calculatorUseCases} from './calculator-use-cases.mjs';
 
 const context={window:{}};
 vm.createContext(context);
@@ -204,7 +205,7 @@ for(const [slug,key,title,desc,fields,results] of calcs){
   if(!example) throw new Error(`Missing worked example for ${slug}`);
   const workedExample=`<section data-pd-worked-example><h2>${esc(calculatorExampleTitles[slug])}</h2><p>${esc(example[2])}</p><p>${esc(example[3])}</p></section>`;
   const educational=`<div class="info-card" data-pd-seo-depth="1">
-    ${workedExample}
+    ${workedExample}${calculatorUseCases[slug]?'\n    '+calculatorUseCases[slug]:''}
     <h2>Formula and method</h2>
     <p>${esc(formula)}</p>
     ${sourceNotes[slug]||''}</div>

@@ -39,6 +39,14 @@ for(const needle of ['.pd-training-goal-grid','.pd-training-path','.pd-training-
   check(css.includes(needle),`Training UX styling missing: ${needle}`);
 }
 
+const privatePage=fs.readFileSync('training/private-pilot.html','utf8');
+check((privatePage.match(/data-private-lesson=/g)||[]).length===9,'Private Pilot path must contain nine substantive lessons');
+for(const topic of ['qualifications','airworthiness','weather','planning','airspace','performance','systems','human','emergency'])check(privatePage.includes(`id="private-${topic}"`),`Private Pilot lesson missing: ${topic}`);
+check(privatePage.includes('53 Private Pilot practice questions')&&privatePage.includes('Independent CFI review has not been completed'),'Private Pilot bank size and review status must be honest');
+check((privatePage.match(/Show the explanation/g)||[]).length===9,'Each Private Pilot case must offer a revealable explanation');
+check(privatePage.includes('3.95 NM')&&privatePage.includes('900 ft ground roll'),'Private Pilot worked calculations must preserve their units and assumptions');
+check(privatePage.includes('topic=Pilot%20Qualifications')&&privatePage.includes('topic=Emergency%20Planning'),'Private Pilot lessons must link into their actual practice subjects');
+
 if(failures.length){
   console.error(`Training-system checks failed with ${failures.length} issue(s):`);
   failures.forEach(x=>console.error(' - '+x));

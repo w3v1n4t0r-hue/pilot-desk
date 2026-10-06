@@ -34,10 +34,10 @@ ok(Boolean(standards),'FAA training standards matrix must load for Written Prep 
 
 
 ok(bankManifest.legacyGeneratedFamiliesExcluded===true,'Legacy generated question families must remain excluded from the live bank');
-ok(bankManifest.acsQuestionCount===140,`Expected 140 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
+ok(bankManifest.acsQuestionCount===167,`Expected 167 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
 ok(bankManifest.supplementalPtsQuestionCount===28,`Expected 28 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
-ok(bankManifest.totalQuestionCount===197,`Expected 197 total curated live questions; got ${bankManifest.totalQuestionCount}`);
-const minimumByTrack={ppl:26,ira:28,cpl:27,cfi:30,cfii:28,atp:29,foi:29};
+ok(bankManifest.totalQuestionCount===224,`Expected 224 total curated live questions; got ${bankManifest.totalQuestionCount}`);
+const minimumByTrack={ppl:53,ira:28,cpl:27,cfi:30,cfii:28,atp:29,foi:29};
 for(const [track,min] of Object.entries(minimumByTrack))ok(banks[track]?.length>=min,`${track.toUpperCase()} curated bank fell below ${min} questions`);
 
 for(const [track,items] of Object.entries(banks)){
@@ -281,6 +281,13 @@ for(const q of curriculum){
 has(html,'data-pd-curriculum-topics','Public topic guide must remain available before sign-in');
 has(html,'0.375 inch aft','Public balance lesson must preserve the checked computation');
 has(html,'has not received independent CFI sign-off','Source checks must not be presented as independent instructor review');
+
+const privatePath=all.filter(q=>q.id.includes('-private-path-'));
+ok(privatePath.length===27,'Private Pilot path must add 27 distinct applied scenarios');
+for(const prefix of ['PA.I.A','PA.I.B','PA.I.C','PA.I.D','PA.I.E','PA.I.F','PA.I.G','PA.I.H','PA.IX'])ok(privatePath.filter(q=>q.standardCode===prefix).length===3,`Private path needs three items for ${prefix}`);
+for(const q of privatePath)ok(q.choiceExplanations.every(x=>x.length>=50),`${q.id} needs substantive feedback for every choice`);
+has(js,"state.topic=params.get('topic')||'all'",'Study lessons must select a practice subject through the URL');
+has(js,"encodeURIComponent('/written-prep.html'+location.search)",'Sign-in must preserve the selected practice track and topic');
 
 if(failures.length){console.error('Written Prep checks failed:\n- '+failures.join('\n- '));process.exit(1)}
 console.log(`Written Prep checks passed: ${bankManifest.totalQuestionCount} curated live questions; generated template families excluded, ${figureQuestions.length} FAA-figure items, exact FAA samples, per-choice rationales, secure grading, standards mapping, and account persistence verified.`);

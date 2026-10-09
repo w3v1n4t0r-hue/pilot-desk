@@ -1,5 +1,8 @@
 import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const html=fs.readFileSync('route-planner.html','utf8');
+for(const dependency of ['route-review-core.js','route-brief-core.js','route-performance.js','route-planner.js'])assert(html.indexOf('/assets/'+dependency)<html.indexOf('/assets/route-review.js'),'Review must load after '+dependency);
 const require=createRequire(import.meta.url),C=require('../assets/route-review-core.js'),B=require('../assets/route-brief-core.js');
 assert.equal(C.routeImport('KGFK DCT KDVL')[0].route,'KGFK KDVL');
 assert.equal(C.routeImport('P1,47,-97 P2,48,-97')[0].route,'P1,47,-97 P2,48,-97');
@@ -16,7 +19,7 @@ const start=Date.parse('2026-10-09T18:00Z'),end=start+3600000;
 const taf={validTimeFrom:start/1000,validTimeTo:(end+3600000)/1000,fcsts:[{timeFrom:start/1000,timeTo:(end+3600000)/1000,wdir:270,wspd:10,visib:'P6',clouds:[{cover:'BKN',base:4000}]},{timeFrom:start/1000,timeTo:end/1000,fcstChange:'TEMPO',visib:2,clouds:[{cover:'BKN',base:800}]}]};
 const selected=C.selectTaf(taf,start);assert.equal(selected.prevailing.category,'VFR');assert.equal(selected.groups[0].category,'IFR');assert.equal(selected.groups.length,1);assert.equal(C.selectTaf(taf,end).groups.length,0);assert.equal(C.selectTaf(taf,end+3600000).covered,false);
 assert.equal(C.forecastConditions({visib:null}).category,'UNKNOWN');
-assert.equal(C.visibility('1 1/2'),1.5);assert.equal(C.visibility('P6'),6.1);
+assert.equal(C.visibility('1 1/2'),1.5);assert.equal(C.visibility('P6'),6.1);assert(B.forecastHtml({...taf,fcsts:[{...taf.fcsts[0],visib:'6+'}]},start).includes('&gt;6 SM')); 
 const n=C.notamImport(JSON.stringify({notams:[{number:'TEST',location:'KGFK',text:'RWY 09 CLSD',effectiveStart:new Date(start).toISOString(),effectiveEnd:new Date(end).toISOString()}]}))[0];
 assert.equal(n.category,'RUNWAY');assert.equal(C.noticeStatus(n,start,end),'FLIGHT WINDOW');assert.equal(C.noticeStatus(n,end,end+1000),'OUTSIDE FLIGHT WINDOW');assert.equal(C.noticeStatus({text:'Original text'},start,end),'TIME UNVERIFIED');
 assert.equal(C.notamImport('Original notice one\n\nOriginal notice two').length,2);assert.throws(()=>C.notamImport('{}'),/array/);

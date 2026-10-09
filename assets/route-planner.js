@@ -25,11 +25,29 @@ function initWorkspace(){
   const open=!$('#rpRoute').value.trim()||localStorage.getItem('pd-route-editor-open')==='true';
   toggle.setAttribute('aria-expanded',String(open));editor.hidden=!open;workspace.classList.toggle('rp-editor-closed',!open);
   toggle.addEventListener('click',()=>{
-   const open=toggle.getAttribute('aria-expanded')!=='true';
-   toggle.setAttribute('aria-expanded',String(open));editor.hidden=!open;
-   workspace.classList.toggle('rp-editor-closed',!open);localStorage.setItem('pd-route-editor-open',String(open));
-   map?.invalidateSize({pan:false});
-   if(open)$('#rpRoute').focus({preventScroll:true});
+   if(toggle.dataset.pdToggling==='true')return;
+   const nextOpen=toggle.getAttribute('aria-expanded')!=='true';
+   const apply=()=>{
+    toggle.setAttribute('aria-expanded',String(nextOpen));
+    editor.hidden=!nextOpen;
+    workspace.classList.toggle('rp-editor-closed',!nextOpen);
+    try{localStorage.setItem('pd-route-editor-open',String(nextOpen))}catch{}
+    requestAnimationFrame(()=>map?.invalidateSize({pan:false}));
+    if(nextOpen)$('#rpRoute').focus({preventScroll:true});
+   };
+   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||navigator.connection?.saveData;
+   if(!nextOpen&&!reduced&&typeof editor.animate==='function'){
+    toggle.dataset.pdToggling='true';
+    let animation;
+    try{animation=editor.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:'translateX(-7px)'}],
+      {duration:150,easing:'ease-in',fill:'forwards'});}
+    catch{delete toggle.dataset.pdToggling;apply();return}
+    animation.finished.catch(()=>{}).then(()=>{
+      animation.cancel();
+      delete toggle.dataset.pdToggling;
+      apply();
+    });
+   }else apply();
   });
  }
  $('#rpRouteSequence')?.addEventListener('click',e=>{

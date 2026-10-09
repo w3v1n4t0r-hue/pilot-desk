@@ -10,8 +10,7 @@
   }
   :where(.pd-btn,.utility-btn,.pd-home-command,.pd-popular-tool,.pd-home-desk-item,.rp-map-toolbar button):not(:disabled):hover{transform:translateY(-1px)}
   :where(.pd-btn,.utility-btn,.pd-home-command,.pd-popular-tool,.rp-map-toolbar button):not(:disabled):active{transform:translateY(0)}
-  /* Never transform the map, chart tiles, canvas or Leaflet controls. */
-  .leaflet-container :is(button,a,.leaflet-control){transform:none!important}
+  /* Do not apply animations to chart tiles, canvas, or Leaflet overlays. */
 }
 :where(.pd-btn,.utility-btn,.pd-home-command,.rp-map-toolbar button,.rp-efb-panel button,.pd-flight-subnav a):focus-visible{
   outline:2px solid var(--silver,#c8cdd3);

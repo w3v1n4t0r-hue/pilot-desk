@@ -74,3 +74,9 @@
 @media print{
   .rp-efb-panel:not([hidden]),.pd-motion-value-updated{animation:none!important}
 }
+
+/* A closed route editor releases its grid column to the chart. */
+@media (min-width:981px){
+  .rp-grid.rp-editor-closed{grid-template-columns:minmax(0,1fr)}
+  .rp-grid.rp-editor-closed .rp-map-card{grid-column:1}
+}

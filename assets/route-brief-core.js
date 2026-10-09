@@ -26,6 +26,22 @@ function tafStatus(taf,reference=null,now=Date.now()){
  else{if(now>=to.getTime())notes.push('Forecast validity has ended.');if(reference!=null&&(reference<from.getTime()||reference>=to.getTime()))notes.push('Forecast does not cover the planned time.');}
  return{issue,from,to,notes};
 }
+function forecastHtml(taf,reference){
+ const C=typeof module==='object'&&module.exports?require('./route-review-core.js'):window.PilotDeskDepartureReview;
+ if(!C)return '';
+ if(reference==null)return '<p class="rp-brief-warning">Set UTC departure and build the route to select a forecast period.</p>';
+ const selected=C.selectTaf(taf,reference);
+ const row=(g,label)=>'<div class="rp-forecast-period"><div class="rp-brief-wx-heading"><b>'+esc(label)+'</b><strong data-cat="'+esc(g.category)+'">'+esc(g.category)+'</strong></div><p>'+esc(g.windDir==='VRB'?'Wind variable':g.windDir!=null?'Wind '+g.windDir+'° true':'Wind unavailable')+' · '+esc(g.windSpeed??'—')+' kt'+(g.gust!=null?' gust '+esc(g.gust):'')+'</p><p>Visibility '+esc(/^P/.test(String(g.visib))?'>'+String(g.visib).slice(1):/^M/.test(String(g.visib))?'<'+String(g.visib).slice(1):g.visibility??'unavailable')+(g.visibility!=null?' SM':'')+' · Ceiling '+esc(g.ceiling==null?'not reported':g.ceiling+' ft AGL')+(g.wx?' · '+esc(g.wx):'')+'</p><p class="rp-brief-meta">Period '+esc(stamp(g.timeFrom))+' to '+esc(stamp(g.timeTo))+'</p></div>';
+ return '<section class="rp-selected-forecast"><h4>TAF at planned time · '+esc(stamp(reference))+'</h4>'+(selected.prevailing?row(selected.prevailing,'Prevailing'):'')+selected.groups.map(g=>row(g,(g.fcstChange||'Conditional')+(g.probability?' '+g.probability+'%':''))).join('')+(selected.reason?'<p class="rp-brief-warning">'+esc(selected.reason)+'</p>':'')+'</section>';
+}
+const notamCache=new Map(),notamPending=new Map();
+function requestNotams(id,force=false){
+ id=stationId(id);if(!id)return Promise.reject(Error('Invalid airport identifier.'));
+ const cached=notamCache.get(id);if(!force&&cached&&Date.now()-cached.at<120000)return cached.error?Promise.reject(cached.error):Promise.resolve(cached.value);
+ if(notamPending.has(id))return notamPending.get(id);
+ const task=(async()=>{try{const response=await fetch('/api/notams?station='+encodeURIComponent(id),{signal:AbortSignal.timeout(14000)}),value=await response.json();if(!response.ok){const e=Error(value.error||'NOTAM request failed.');e.payload=value;throw e;}notamCache.set(id,{value,at:Date.now()});return value;}catch(error){notamCache.set(id,{error,at:Date.now()});throw error;}finally{notamPending.delete(id);if(notamCache.size>100)notamCache.delete(notamCache.keys().next().value);}})();
+ notamPending.set(id,task);return task;
+}
 function weatherHtml(role,id,result,reference,symbols,now=Date.now()){
  const title=role+' weather'+(id?' · '+id:'');
  const head='<section class="rp-brief-section rp-brief-weather"><h3>'+esc(title)+'</h3>';
@@ -38,13 +54,13 @@ function weatherHtml(role,id,result,reference,symbols,now=Date.now()){
  let taf='<p class="rp-brief-warning">TAF unavailable. No forecast was returned for this airport.</p>';
  if(t){const status=tafStatus(t,reference,now);taf='<details data-brief-detail="'+esc(role)+'-taf"><summary>TAF</summary><p class="rp-brief-meta">Issued '+esc(status.issue?stamp(status.issue):'time unavailable')+'</p><p class="rp-brief-meta">Valid '+esc(status.from?stamp(status.from):'time unavailable')+' to '+esc(status.to?stamp(status.to):'time unavailable')+'</p><p class="rp-brief-raw">'+esc(t.rawTAF||t.raw_text||'Raw forecast unavailable.')+'</p></details>'+status.notes.map(note=>'<p class="rp-brief-warning">'+esc(note)+'</p>').join('');}
  const partial=result.errors?.length?'<p class="rp-brief-meta">Some weather sources did not respond. Review the returned products.</p>':'';
- return head+metar+taf+(reference==null?'<p class="rp-brief-meta">Planned time unavailable; compare forecast validity manually.</p>':'<p class="rp-brief-meta">Planned '+(role==='Departure'?'departure':'arrival')+' '+esc(stamp(reference))+'</p>')+'<p class="rp-brief-meta">'+esc(result.source||'Weather source unavailable')+' · Retrieved '+esc(stamp(result.fetchedAt))+'</p>'+partial+'<a href="/weather.html?station='+encodeURIComponent(id)+'">Open airport weather</a></section>';
+ return head+forecastHtml(t,reference)+metar+taf+(reference==null?'<p class="rp-brief-meta">Planned time unavailable; compare forecast validity manually.</p>':'<p class="rp-brief-meta">Planned '+(role==='Departure'?'departure':'arrival')+' '+esc(stamp(reference))+'</p>')+'<p class="rp-brief-meta">'+esc(result.source||'Weather source unavailable')+' · Retrieved '+esc(stamp(result.fetchedAt))+'</p>'+partial+'<a href="/weather.html?station='+encodeURIComponent(id)+'">Open airport weather</a></section>';
 }
-function notamHtml(p,j){
+function notamHtml(p,j,start=null,end=null){
  const head='<details class="rp-brief-section" data-brief-detail="notam-'+esc(p.id)+'"><summary>'+esc(p.role+' · '+p.id)+' NOTAMs'+(!j?' · loading':!j.error&&j.configured!==false?' · '+Number(j.count||0):' · unavailable')+'</summary>';
  if(!j)return head+'<p>Loading airport notices…</p></details>';
- if(j.error||j.configured===false)return head+'<p class="rp-brief-warning">NOTAMs unavailable. No absence of notices is implied.</p><a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener">Check FAA NOTAM Search</a></details>';
- const rows=(j.notams||[]).map(n=>'<div class="rp-notam-item"><b>'+esc([n.category||'NOTAM',n.number].filter(Boolean).join(' · '))+'</b><p class="rp-brief-meta">Effective '+esc(stamp(n.effectiveStart))+' to '+esc(stamp(n.effectiveEnd))+'</p><p class="rp-brief-raw">'+esc(n.text||'Notice text unavailable.')+'</p></div>').join('');
+ if(j.error||j.configured===false)return head+'<p class="rp-brief-warning">NOTAMs unavailable. '+(j.configured===false?'Automatic FAA NOTAM feed is not configured. ':'')+'No absence of notices is implied.</p><a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener">Check FAA NOTAM Search</a></details>';
+ const rows=(j.notams||[]).map(n=>'<div class="rp-notam-item"><p class="rp-brief-meta">'+esc(start!=null&&end!=null?(typeof module==='object'&&module.exports?require('./route-review-core.js'):window.PilotDeskDepartureReview).noticeStatus(n,start,end):'FLIGHT TIME UNAVAILABLE')+'</p><b>'+esc([n.category||'NOTAM',n.number].filter(Boolean).join(' · '))+'</b><p class="rp-brief-meta">Effective '+esc(stamp(n.effectiveStart))+' to '+esc(stamp(n.effectiveEnd))+'</p><p class="rp-brief-raw">'+esc(n.text||'Notice text unavailable.')+'</p></div>').join('');
  return head+'<p class="rp-brief-meta">FAA · Retrieved '+esc(stamp(j.fetchedAt))+'</p>'+(rows||'<p>No notices returned by this request. Confirm coverage at the source.</p>')+'<a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener">Check FAA NOTAM Search</a></details>';
 }
 function advisoryHtml(key,items,status,retrieved){
@@ -55,5 +71,5 @@ function advisoryHtml(key,items,status,retrieved){
  return '<div class="rp-notam-item"><b>'+esc(id)+' · '+esc(x.relation.intersects?'intersects route':x.relation.distanceNm.toFixed(1)+' NM from route')+'</b><p class="rp-brief-meta">'+esc(timing)+'</p><p class="rp-brief-raw">'+esc(raw)+'</p></div>';}).join('');
  return '<details class="rp-brief-section" data-brief-detail="advisory-'+esc(key)+'"><summary>'+esc(name)+' · '+(status==='available'?items.length+' route items':esc(status||'not loaded'))+'</summary><p class="rp-brief-meta">'+(status==='available'?'Retrieved '+esc(stamp(retrieved||null)):esc(status==='loading'?'Loading route area…':'Coverage unavailable. No clear-route conclusion is available.'))+'</p>'+rows+(status==='available'&&!items.length?'<p>No route/near-route geometry detected in this retrieved dataset. Effective times and altitude still require review.</p>':'')+'</details>';
 }
-return{dateValue,stamp,stationId,isAirport,airportCandidates,planningKey,tafStatus,weatherHtml,notamHtml,advisoryHtml};
+return{forecastHtml,requestNotams,dateValue,stamp,stationId,isAirport,airportCandidates,planningKey,tafStatus,weatherHtml,notamHtml,advisoryHtml};
 });

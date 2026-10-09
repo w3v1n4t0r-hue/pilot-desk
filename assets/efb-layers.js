@@ -639,7 +639,7 @@ function start(RP,L){
     await Promise.all(candidates.map(async p=>{
       const id=String(p.id).toUpperCase();
       try{
-        const j=await fetchJson('/api/notams?station='+encodeURIComponent(id));
+        const j=await B.requestNotams(id);
         if(seq!==notamSeq)return;notams[id]=j;total+=Number(j.count||0);
         if(Number(j.count||0)>0&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)){
           const icon=L.divIcon({className:'rp-notam-marker',html:'<span>!</span><b>'+Number(j.count||0)+'</b>',iconSize:[30,22],iconAnchor:[15,11]});
@@ -786,7 +786,7 @@ function start(RP,L){
       B.weatherHtml('Destination',B.isAirport(pts.at(-1))?B.stationId(dst):'',briefWx.dst,arrival,window.PilotDeskChartSymbols),
       alternate?B.weatherHtml('Alternate',alternate,briefWx.alt,null,window.PilotDeskChartSymbols):'',
       briefSection('NOTAMs',notamText),
-      ...airportRows.slice(0,8).map(p=>B.notamHtml(p,notams[p.id])),
+      ...airportRows.slice(0,8).map(p=>B.notamHtml(p,notams[p.id],departure,arrival)),
       ...['airsigmet','gairmet','cwa','tfr'].map(key=>B.advisoryHtml(key,key==='tfr'?tfrRel: key==='airsigmet'?sigRel:key==='gairmet'?gairRel:cwaRel,briefStatus[key],briefTime[key])),
       briefSection('Data coverage',['tfr','airsigmet','gairmet','cwa'].map(key=>key.toUpperCase()+': '+(briefStatus[key]==='available'?'route area retrieved '+B.stamp(briefTime[key]||null)+(Date.now()-briefTime[key]>60000?' · Earlier retrieval; refresh before use':''):briefStatus[key]||'not loaded')).join(' · ')),
       '<button type="button" class="utility-btn" data-refresh-brief '+(briefLoading?'disabled':'')+'>'+(briefLoading?'Updating route data…':'Refresh route data')+'</button>',

@@ -240,3 +240,15 @@ main.rp-workspace{padding-top:16px!important}
 #rpMap{background:#cbd7dc!important}
 .rp-workspace .rp-map-toolbar{gap:6px;padding:10px}
 @media(max-width:600px){.rp-workspace .pd-flight-hero h1{font-size:24px!important}.rp-workspace .pd-flight-hero .fine{font-size:14px}.rp-workspace .rp-map-toolbar{gap:6px}}
+
+/* Route imports and the departure review share the planning panel controls. */
+.rp-import-route,.rp-import-notams{margin-block:12px;border-block:1px solid var(--line);padding-block:8px}
+.rp-import-route summary,.rp-import-notams summary,.rp-imported-notice summary{display:flex;align-items:center;min-height:44px;cursor:pointer;overflow-wrap:anywhere}
+.rp-departure-review{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.rp-departure-review h3{margin:0 0 8px;font-size:20px}.rp-departure-review h4{margin:8px 0;font-size:14px}
+.rp-departure-weather{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+.rp-selected-forecast{margin-block:12px;padding-block:8px;border-block:1px solid var(--line)}
+.rp-forecast-period{padding-block:8px;font-variant-numeric:tabular-nums}.rp-forecast-period+.rp-forecast-period{border-top:1px solid var(--line)}
+.rp-imported-notice{padding-block:8px;border-top:1px solid var(--line)}
+#rpDepartureReviewStatus,#rpReviewWindBasis{overflow-wrap:anywhere}#rpImportChoices[hidden]{display:none}
+@media(max-width:700px){.rp-departure-weather{grid-template-columns:1fr}.rp-departure-review .pd-actions button{flex:1 1 100%}}

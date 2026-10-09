@@ -1,0 +1,41 @@
+(function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.PilotDeskDepartureReview=factory();})(typeof window==='object'?window:this,function(){
+'use strict';
+function category(ceiling,vis){return ceiling<500||vis<1?'LIFR':ceiling<1000||vis<3?'IFR':ceiling<=3000||vis<=5?'MVFR':'VFR';}
+function timestamp(v){if(v===null||v===undefined||v==='')return null;const n=typeof v==='number'?v:/^\d+$/.test(String(v))?Number(v):null;const ms=n===null?Date.parse(v):n<1e12?n*1000:n;if(!Number.isFinite(ms))return null;if(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?Z$/.test(v)&&new Date(ms).toISOString().slice(0,16)!==v.slice(0,16))return null;return ms;}
+function utcInput(v){if(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?$/.test(v))v+='Z';const n=timestamp(v);return n===null?'':new Date(n).toISOString().slice(0,16);}
+function visibility(v){if(v===null||v===undefined||v==='')return null;const text=String(v).trim();if(/^(?:P6|6\+)$/.test(text))return 6.1;if(/^M/.test(text)){const limit=visibility(text.slice(1));return limit===null?null:Math.max(0,limit-0.000001);}const fraction=text.match(/^(?:(\d+)\s+)?(\d+)\/(\d+)$/);if(fraction)return Number(fraction[1]||0)+Number(fraction[2])/Number(fraction[3]);const n=Number(text);return Number.isFinite(n)?n:null;}
+function forecastConditions(group){let ceiling=null;for(const c of group.clouds||[])if(['BKN','OVC','VV','OVX'].includes(c.cover)&&Number.isFinite(c.base))ceiling=ceiling===null?c.base:Math.min(ceiling,c.base);if(Number.isFinite(group.vertVis))ceiling=ceiling===null?group.vertVis:Math.min(ceiling,group.vertVis);const vis=visibility(group.visib);return {ceiling,visibility:vis,category:vis===null?'UNKNOWN':category(ceiling??Infinity,vis),windDir:group.wdir,windSpeed:group.wspd,gust:group.wgst,wx:group.wxString||''};}
+function selectTaf(taf,time){const t=timestamp(time),from=timestamp(taf?.validTimeFrom),to=timestamp(taf?.validTimeTo);if(!taf||t===null||from===null||to===null||t<from||t>=to)return {covered:false,reason:taf?'TAF does not cover this planned time.':'No TAF returned.',groups:[]};const all=Array.isArray(taf.fcsts)?taf.fcsts:[],active=all.filter(f=>{const a=timestamp(f.timeFrom),b=timestamp(f.timeTo);return a!==null&&b!==null&&t>=a&&t<b;});const prevailing=active.filter(f=>!f.fcstChange||f.fcstChange==='FM').sort((a,b)=>timestamp(b.timeFrom)-timestamp(a.timeFrom))[0];const conditional=active.filter(f=>f!==prevailing);const notes=[];if(!prevailing)notes.push('No decoded prevailing group covers this time. Read the raw TAF.');if(conditional.length)notes.push('Temporary, probability, or becoming groups need review.');return {covered:!!prevailing,prevailing:prevailing?{...prevailing,...forecastConditions(prevailing)}:null,groups:conditional.map(f=>({...f,...forecastConditions(f)})),notes,reason:notes.join(' ')};}
+function classifyNotam(text){const t=String(text).toUpperCase();if(/\bRWY\b|RUNWAY/.test(t))return 'RUNWAY';if(/\bTWY\b|TAXIWAY/.test(t))return 'TAXIWAY';if(/\bIAP\b|APPROACH/.test(t))return 'APPROACH';if(/GPS|GNSS|VOR|NAVAID/.test(t))return 'NAVAID';if(/LGT|LIGHT/.test(t))return 'LIGHTING';if(/TFR|AIRSPACE|RESTRICT/.test(t))return 'AIRSPACE';if(/OBST|CRANE|TOWER/.test(t))return 'OBSTACLE';return 'OTHER';}
+function notamImport(text){if(typeof text!=='string'||text.length>1_000_000)throw new Error('NOTAM imports must be smaller than 1 MB.');const raw=text.trim();if(!raw)throw new Error('Paste NOTAM text or JSON first.');let items;if(raw[0]==='{'||raw[0]==='['){let j;try{j=JSON.parse(raw);}catch{throw new Error('The NOTAM JSON could not be read.');}items=Array.isArray(j)?j:j.notams||j.items||j.features;if(!Array.isArray(items))throw new Error('Expected a NOTAM array or an object containing notams.');}else items=raw.split(/\n\s*\n/).map(text=>({text}));if(items.length>500)throw new Error('Import no more than 500 notices.');return items.map((item,i)=>{const p=item?.properties||item||{},n=p.coreNOTAMData?.notam||p.notam||p,text=String(n.text||n.traditionalMessage||n.icaoMessage||p.text||'').trim().slice(0,12000);if(!text)throw new Error('A NOTAM is missing its original text.');return {id:`import-${i}`,number:String(n.number||n.notamNumber||'Imported notice'),location:String(n.location||n.icaoLocation||text.match(/\bK[A-Z0-9]{3}\b/)?.[0]||''),effectiveStart:n.effectiveStart||n.effectiveStartDate||null,effectiveEnd:n.effectiveEnd||n.effectiveEndDate||null,text,category:classifyNotam(text),imported:true};});}
+function noticeStatus(n,start,end){const from=timestamp(n.effectiveStart),to=timestamp(n.effectiveEnd);if(from===null||to===null||to<=from)return 'TIME UNVERIFIED';return from<end&&to>start?'FLIGHT WINDOW':'OUTSIDE FLIGHT WINDOW';}
+
+function routeImport(text){
+ if(typeof text!=='string'||text.length>1_000_000)throw Error('Route imports must be smaller than 1 MB.');
+ const raw=text.trim();if(!raw)throw Error('Paste a route or select a file first.');
+ let value={route:raw};if(/^[{[]/.test(raw)){try{value=JSON.parse(raw)}catch{throw Error('The route JSON could not be read.')}}
+ const rows=Array.isArray(value)?value:value.flights||value.routes||value['pd-saved-flights']||[value.flight||value];
+ if(!Array.isArray(rows)||!rows.length||rows.length>100)throw Error('Import one route or up to 100 saved flights.');
+ const number=(v,min,max,label)=>{if(v==null||v==='')return v;const n=Number(v);if(!Number.isFinite(n)||n<min||n>max)throw Error('Check imported '+label+'.');return n;};
+ return rows.map((f,i)=>{
+  if(!f||typeof f!=='object')throw Error('The file contains an invalid flight.');
+  const points=f.points||f.route?.points||f.ids;if(points&&!Array.isArray(points))throw Error('Route points must be an array.');
+  let tokens=points?points.map(p=>{if(typeof p==='string')return p;if(!p||!/^[-A-Z0-9_]{2,12}$/i.test(p.id||p.ident||'')||!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||Math.abs(p.lat)>85||Math.abs(p.lon)>180)throw Error('A waypoint has invalid coordinates.');const id=String(p.id||p.ident);return p.type==='PA'||p.source==='airport'?id:id+','+p.lat+','+p.lon;}):String(f.route||'').replace(/→|;/g,' ').split(/\s+/).filter(Boolean);
+  if(!Array.isArray(tokens))throw Error('No route found in this file.');
+  tokens=tokens.map(t=>String(t).toUpperCase()).filter(t=>t!=='DCT');
+  if(tokens.length<2||tokens.length>300)throw Error('Enter 2 to 300 route tokens.');
+  for(const t of tokens){const m=t.match(/^([-A-Z0-9_]{2,12}),(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/);if(m){if(Math.abs(Number(m[2]))>85||Math.abs(Number(m[3]))>180)throw Error('A waypoint has invalid coordinates.');}else if(!/^[-A-Z0-9_.]{2,30}$/.test(t))throw Error('Invalid route token: '+t);}
+  if(tokens.some((t,j)=>j&&t===tokens[j-1]))throw Error('The route has consecutive duplicate points.');
+  const inputs={};for(const [k,min,max]of [['tas',1,1000],['burn',0,1000],['windDir',0,360],['windSpeed',0,300],['variation',-180,180]])if(f[k]!=null)inputs[k]=number(f[k],min,max,k);
+  if(f.fuelBurn!=null&&f.burn==null)inputs.burn=number(f.fuelBurn,0,1000,'fuel burn');
+  const p=f.planning||{},planning={forecast:null,phases:{...p.phases},legOverrides:p.legOverrides||{}};
+  for(const k of ['onboard','taxi','alternate','reserveMinutes','reserveBurn','extra'])if(p[k]!=null)planning[k]=number(p[k],0,10000,k);
+  for(const k of ['alternateAirport','alternateNotes'])if(p[k]!=null)planning[k]=String(p[k]).slice(0,k==='alternateAirport'?4:500);
+  const departure=p.departureUtc||f.departureUtc||f.etd;if(departure){planning.departureUtc=utcInput(departure);if(!planning.departureUtc)throw Error('Imported departure time is invalid.');}
+  if(p.aircraftPerformance)planning.aircraftPerformance=p.aircraftPerformance;
+  if(p.importedNotams)planning.importedNotams=notamImport(JSON.stringify(p.importedNotams));
+  return {name:String(f.name||'Imported route '+(i+1)).slice(0,100),route:tokens.join(' '),inputs,planning,hasPlanning:!!f.planning,aircraftId:typeof f.aircraftId==='string'?f.aircraftId:''};
+ });
+}
+return{timestamp,utcInput,visibility,forecastConditions,selectTaf,classifyNotam,notamImport,noticeStatus,routeImport};
+});

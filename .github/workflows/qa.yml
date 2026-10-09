@@ -99,6 +99,8 @@ jobs:
         run: node qa/account-system-smoke.mjs
       - name: Run billing readiness checks
         run: node qa/billing-smoke.mjs
+      - name: Verify billing user and backend flows
+        run: node qa/billing-flow-tests.mjs
       - name: Run Pro freemium product checks
         run: node qa/pro-freemium-smoke.mjs
       - name: Verify Pro workflow access and upgrade states
@@ -141,8 +143,6 @@ jobs:
         run: node qa/map-density-tests.mjs
       - name: Verify cloud backup conflict and failure handling
         run: node qa/cloud-backup-tests.mjs
-      - name: Verify billing user and backend flows
-        run: node qa/billing-flow-tests.mjs
       - name: Verify signup and reset requests
         run: node qa/account-request-tests.mjs
       - name: Run FAA routing, POH tables, and offline pack tests

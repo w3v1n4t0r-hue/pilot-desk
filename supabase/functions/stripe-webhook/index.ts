@@ -8,7 +8,7 @@ async function validStripeSignature(payload:string,header:string,secret:string){
 Deno.serve(async(req:Request)=>{
  if(req.method!=="POST")return json(405,{error:"Method not allowed"});
  const base=(Deno.env.get("SUPABASE_URL")||"").replace(/\/+$/,""),admin=envKey("SUPABASE_SECRET_KEYS","SUPABASE_SERVICE_ROLE_KEY"),stripeKey=Deno.env.get("STRIPE_SECRET_KEY")||"",secret=Deno.env.get("STRIPE_WEBHOOK_SECRET")||"",proPrice=Deno.env.get("STRIPE_PRO_PRICE_ID")||"",schoolPrice=Deno.env.get("STRIPE_SCHOOL_PRICE_ID")||"";
- if(!base||!admin||!stripeKey||!secret)return json(503,{error:"Webhook is not configured."});
+ if(!base||!admin||!/^(sk|rk)_live_/.test(stripeKey)||!/^whsec_/.test(secret)||proPrice!=="price_1UOlFP0t3Muvn8bKKGHb2CtZ")return json(503,{error:"Live webhook is not configured."});
  const raw=await req.text(),sig=req.headers.get("Stripe-Signature")||"";if(!(await validStripeSignature(raw,sig,secret)))return json(400,{error:"Invalid signature"});
  let event:any;try{event=JSON.parse(raw)}catch{return json(400,{error:"Invalid payload"})}
  const ah=admin.startsWith("sb_secret_")?{apikey:admin}:{apikey:admin,Authorization:"Bearer "+admin};
@@ -18,15 +18,20 @@ Deno.serve(async(req:Request)=>{
   const customer=typeof sub.customer==="string"?sub.customer:sub.customer?.id||"";const subId=String(sub.id||"");const price=String(sub.items?.data?.[0]?.price?.id||"");let userId=String(sub.metadata?.supabase_user_id||userHint||"");
   if(!userId&&customer){const row=await rowByCustomer(customer);userId=String(row?.user_id||"")}
   if(!userId)return;
-  const status=String(sub.status||"inactive");const active=["active","trialing"].includes(status);let plan=String(sub.metadata?.pilotdesk_plan||"");
-  if(price&&price===schoolPrice)plan="school";else if(price&&price===proPrice)plan="pro";if(!active&&status==="canceled")plan="free";if(!["free","pro","school"].includes(plan))plan=active?"pro":"free";
+  if(!price||(price!==proPrice&&(!schoolPrice||price!==schoolPrice)))throw new Error("Unrecognized subscription price; refusing to grant paid access.");
+  const status=String(sub.status||"inactive");const active=["active","trialing"].includes(status);
+  let plan=price===proPrice?"pro":"school";if(!active&&status==="canceled")plan="free";
   const end=sub.current_period_end?new Date(Number(sub.current_period_end)*1000).toISOString():null;
   const body={user_id:userId,stripe_customer_id:customer||null,stripe_subscription_id:subId||null,stripe_price_id:price||null,plan,status,current_period_end:end,cancel_at_period_end:Boolean(sub.cancel_at_period_end),updated_at:new Date().toISOString()};
   const r=await fetch(base+"/rest/v1/billing_subscriptions?on_conflict=user_id",{method:"POST",headers:{...ah,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(body)});if(!r.ok)throw new Error("Billing sync failed "+r.status);
  };
  try{
   const obj=event?.data?.object||{};
-  if(["customer.subscription.created","customer.subscription.updated","customer.subscription.deleted"].includes(event.type))await sync(obj);
+  if(["customer.subscription.created","customer.subscription.updated","customer.subscription.deleted"].includes(event.type)){
+   const id=String(obj.id||"");if(!id)throw new Error("Missing Stripe subscription ID.");
+   const current=await stripeGet("/v1/subscriptions/"+encodeURIComponent(id));
+   await sync(current);
+  }
   else if(event.type==="checkout.session.completed"&&obj?.subscription){
    const sub=await stripeGet("/v1/subscriptions/"+encodeURIComponent(String(obj.subscription)));await sync(sub,String(obj.client_reference_id||obj.metadata?.supabase_user_id||""));
   }

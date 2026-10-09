@@ -37,6 +37,8 @@ jobs:
         run: node qa/smoke.mjs
       - name: Run QoL smoke checks
         run: node qa/qol-smoke.mjs
+      - name: Check lightweight motion and accessibility
+        run: node qa/motion-polish-smoke.mjs
       - name: Run product polish checks
         run: node qa/product-polish-smoke.mjs
       - name: Run app bootstrap checks

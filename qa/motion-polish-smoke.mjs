@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+const read=path=>fs.readFileSync(path,'utf8');
+const styles=read('assets/motion-polish.css');
+const script=read('assets/motion-polish.js');
+const route=read('route-planner.html');
+const routeCode=read('assets/route-planner.js');
+const bootstrap=read('assets/app-bootstrap.js');
+const shared=read('assets/styles.css');
+
+new vm.Script(script,{filename:'motion-polish.js'});
+new vm.Script(routeCode,{filename:'route-planner.js'});
+assert.match(shared,/motion-polish\.css/,'all pages share motion styles');
+assert.match(bootstrap,/motion-polish\.js/,'Astro/shared pages load motion script');
+assert.match(route,/src="\/assets\/motion-polish\.js"/,'static route planner loads motion script');
+assert.match(styles,/prefers-reduced-motion:reduce/);
+assert.match(script,/prefers-reduced-motion: reduce/);
+assert.match(script,/navigator\.connection\?\.saveData/);
+assert.match(script,/rpSummaryDistance/);
+assert.match(script,/rpMapStatus/);
+assert.match(script,/\.pd-home-hero-copy/);
+assert.match(script,/\.pd-home-example/);
+assert.match(routeCode,/pdToggling/,'route editor waits for the closing transition');
+assert.match(styles,/rp-grid\.rp-editor-closed/,'closed editor must release chart space');
+assert.doesNotMatch(styles,/\.leaflet-(?:map-pane|tile-pane|marker-pane)[^{]*\{/,'map transforms cannot be overridden');
+assert.doesNotMatch(script,/setInterval|requestAnimationFrame\s*\(/,'avoid continuous animation loops');
+console.log('Motion polish checks passed: integration, syntax, reduced motion, chart safety and loading feedback.');

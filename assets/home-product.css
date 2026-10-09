@@ -1,0 +1,232 @@
+/* PilotDesk homepage product presentation. Visible design, not decorative loading effects. */
+.pd-home-2026 .pd-home-hero{
+  padding:40px 0 24px!important;
+  background:transparent!important;
+}
+.pd-home-2026 .pd-home-hero-inner{
+  grid-template-columns:minmax(0,1.05fr) minmax(420px,1fr)!important;
+  gap:26px 44px!important;
+  align-items:center!important;
+}
+.pd-home-2026 .pd-home-hero-copy .eyebrow{
+  letter-spacing:.15em!important;
+  color:#AFBAC6!important;
+}
+.pd-home-2026 .pd-home-hero h1{
+  max-width:650px!important;
+  font-size:clamp(42px,4.1vw,62px)!important;
+  font-weight:630!important;
+  line-height:1.035!important;
+  letter-spacing:-.048em!important;
+}
+.pd-home-2026 .pd-home-hero-copy>p{
+  max-width:490px!important;
+  line-height:1.7!important;
+}
+.pd-home-2026 .pd-home-hero-links{
+  gap:9px!important;
+  margin-top:30px!important;
+}
+.pd-home-2026 .pd-home-hero-links>.pd-btn{
+  padding-inline:20px!important;
+  min-height:48px!important;
+  font-weight:650!important;
+}
+.pd-home-2026 .pd-home-hero-links>.pd-home-command{
+  min-height:48px!important;
+  padding:0 14px!important;
+  gap:12px!important;
+  border-color:#37404A!important;
+  background:#0D1115!important;
+  font-size:13px!important;
+}
+.pd-home-2026 .pd-home-hero-links>.pd-home-command:hover{
+  background:#171E25!important;border-color:#64707C!important;
+}
+.pd-home-2026 .pd-home-hero-links>.pd-home-command span{color:#8997A6}
+.pd-home-2026 .pd-home-product{
+  position:relative;
+  display:grid;
+  min-width:0;
+  border:1px solid #3B454F;
+  border-top:2px solid #CED3D8;
+  background:linear-gradient(155deg,#151B21 0%,#0B0F14 68%);
+  box-shadow:0 19px 40px rgba(0,0,0,.26),inset 0 1px rgba(255,255,255,.04);
+  overflow:hidden;
+  color:#E8EDF1;
+  clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,0 100%);
+}
+.pd-home-2026 .pd-home-product-head{
+  display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding:13px 18px;
+  border-bottom:1px solid #333C46;
+  font:600 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.11em;color:#B7C1CB;
+}
+.pd-home-2026 .pd-home-product-tag{color:#8D9AA8;font-size:10px}
+.pd-home-2026 .pd-home-product-title-row{
+  display:flex;justify-content:space-between;align-items:end;gap:14px;
+  padding:19px 20px 13px;
+}
+.pd-home-2026 .pd-home-product-overline{
+  color:#94A1AF;font:11px/1.5 ui-monospace,monospace;letter-spacing:.09em;
+}
+.pd-home-2026 .pd-home-product h2{
+  margin:2px 0 0!important;
+  font-size:24px!important;
+  color:#EFF3F5!important;
+  letter-spacing:-.028em!important;
+  line-height:1.25!important;
+}
+.pd-home-2026 .pd-home-product-open{
+  flex-shrink:0;display:inline-flex;align-items:center;gap:7px;min-height:38px;
+  font-size:12px;color:#D1DBE5;
+  text-decoration:none;border-bottom:1px solid #4C5966;
+}
+.pd-home-2026 .pd-home-product-open:hover{color:white;border-color:#E3E7EA}
+.pd-home-2026 .pd-home-product-airports{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(55px,.8fr) minmax(0,1fr);
+  align-items:center;gap:10px;padding:3px 20px 17px;
+}
+.pd-home-2026 .pd-home-product-airports>div{
+  display:grid;gap:4px;min-width:0;
+}
+.pd-home-2026 .pd-home-product-airports>div:last-child{text-align:right}
+.pd-home-2026 .pd-home-product-airports span{
+  font:10px/1.5 ui-monospace,Consolas,monospace;
+  letter-spacing:.09em;color:#A4B0BB;
+}
+.pd-home-2026 .pd-home-product-airports strong{
+  font:650 25px/1.15 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.02em;color:#EFF2F4;
+}
+.pd-home-2026 .pd-home-product-airports svg{width:100%;height:26px;color:#6C7B89}
+.pd-home-2026 .pd-home-product-map{
+  position:relative;
+  border-block:1px solid #3A4652;
+  background:#101820;
+  overflow:hidden;
+}
+.pd-home-2026 .pd-home-product-map-head{
+  position:absolute;top:0;left:0;right:0;z-index:1;
+  display:flex;justify-content:space-between;gap:8px;
+  padding:11px 16px;
+  background:linear-gradient(180deg,rgba(7,13,19,.88),transparent);
+  color:#A6B4C2;font:10px/1.4 ui-monospace,Consolas,monospace;
+  letter-spacing:.07em;
+}
+.pd-home-2026 .pd-home-route-schematic{
+  display:block;width:100%;height:auto;min-height:166px;max-height:210px;
+}
+.pd-home-2026 .pd-home-product-tools{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  border-bottom:1px solid #333C46;
+}
+.pd-home-2026 .pd-home-product-tools span{
+  display:grid;place-items:center;min-height:44px;padding:8px 5px;
+  border-right:1px solid #333C46;
+  color:#AFBCC9;text-align:center;
+  font:10px/1.45 ui-monospace,Consolas,monospace;letter-spacing:.045em;
+}
+.pd-home-2026 .pd-home-product-tools span:last-child{border-right:0}
+.pd-home-2026 .pd-home-product-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;padding:13px 19px;min-height:50px;
+  color:#B4BFC9;font-size:12px;
+}
+.pd-home-2026 .pd-home-product-bottom a{
+  color:#E0E6EC;font-weight:650;white-space:nowrap;
+  text-decoration:none;
+}
+.pd-home-2026 .pd-home-product-bottom a:hover{text-decoration:underline}
+.pd-home-2026 .pd-home-proof{
+  padding-top:19px!important;
+  margin-top:7px!important;
+}
+.pd-home-2026 .pd-home-proof>span{
+  font-size:12px!important;
+  letter-spacing:.008em!important;
+}
+/* Keep the functional crosswind slider, but give it its own space rather than
+   letting a calculator overpower the route planner on first view. */
+.pd-home-2026 .pd-home-crosswind{
+  display:grid!important;grid-template-columns:minmax(0,.85fr) minmax(360px,1.15fr)!important;
+  align-items:center!important;
+  gap:32px 65px!important;
+  padding-block:42px!important;
+}
+.pd-home-2026 .pd-home-crosswind-copy h2{
+  max-width:360px;margin:12px 0!important;
+  font-size:clamp(29px,3vw,40px)!important;
+  letter-spacing:-.037em!important;
+}
+.pd-home-2026 .pd-home-crosswind-copy p{max-width:390px!important}
+.pd-home-2026 .pd-home-crosswind-links{
+  display:flex;flex-wrap:wrap;gap:14px 20px;margin-top:24px;
+}
+.pd-home-2026 .pd-home-crosswind-links a{color:var(--text);font-size:13px}
+.pd-home-2026 .pd-home-crosswind .pd-home-example{
+  width:100%;max-width:600px;justify-self:end;
+  background:#10161B!important;
+  border-color:#3E4852!important;border-top-color:#C6CDD4!important;
+  box-shadow:0 12px 32px rgba(0,0,0,.2);
+}
+@media(hover:hover) and (pointer:fine){
+  .pd-home-2026 .pd-home-product{
+    transition:border-color 180ms ease,box-shadow 180ms ease;
+  }
+  .pd-home-2026 .pd-home-product:hover{
+    border-color:#65717D;box-shadow:0 22px 44px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.045);
+  }
+  .pd-home-2026 .pd-home-product-open,
+  .pd-home-2026 .pd-home-product-bottom a{
+    transition:color 160ms ease,border-color 160ms ease;
+  }
+}
+@media (prefers-reduced-motion:no-preference){
+  .pd-home-2026 .pd-home-product-track{
+    stroke-dasharray:360;stroke-dashoffset:360;
+    animation:pd-home-route-draw .9s cubic-bezier(.2,.7,.2,1) .15s forwards;
+  }
+  @keyframes pd-home-route-draw{to{stroke-dashoffset:0}}
+}
+@media(max-width:1000px){
+  .pd-home-2026 .pd-home-hero-inner{
+    grid-template-columns:minmax(0,1fr) minmax(360px,.95fr)!important;
+    gap:24px!important;
+  }
+  .pd-home-2026 .pd-home-product-title-row{padding:16px 16px 11px}
+  .pd-home-2026 .pd-home-product-airports{padding-inline:16px}
+}
+@media(max-width:820px){
+  .pd-home-2026 .pd-home-hero-inner{grid-template-columns:1fr!important;gap:28px!important}
+  .pd-home-2026 .pd-home-product{width:100%;max-width:620px}
+  .pd-home-2026 .pd-home-hero{padding-top:30px!important}
+  .pd-home-2026 .pd-home-crosswind{
+    grid-template-columns:1fr!important;gap:24px!important;
+  }
+  .pd-home-2026 .pd-home-crosswind .pd-home-example{max-width:none;justify-self:stretch}
+}
+@media(max-width:480px){
+  .pd-home-2026 .pd-home-hero h1{font-size:clamp(36px,10vw,46px)!important}
+  .pd-home-2026 .pd-home-hero-links{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .pd-home-2026 .pd-home-hero-links>.pd-btn{grid-column:1/-1}
+  .pd-home-2026 .pd-home-hero-links>.pd-home-command{
+    min-height:48px!important;padding-inline:9px!important;justify-content:center;
+  }
+  .pd-home-2026 .pd-home-product-head{padding:10px 12px;letter-spacing:.04em}
+  .pd-home-2026 .pd-home-product-title-row{padding:13px 12px 10px}
+  .pd-home-2026 .pd-home-product h2{font-size:21px!important}
+  .pd-home-2026 .pd-home-product-open{font-size:11px}
+  .pd-home-2026 .pd-home-product-airports{padding-inline:12px;gap:5px}
+  .pd-home-2026 .pd-home-product-airports strong{font-size:21px}
+  .pd-home-2026 .pd-home-product-map-head{padding:8px 10px;font-size:9px}
+  .pd-home-2026 .pd-home-product-tools span{font-size:9px}
+  .pd-home-2026 .pd-home-product-bottom{padding:10px 12px;font-size:11px}
+  .pd-home-2026 .pd-home-crosswind{padding-block:28px!important}
+}
+@media print{
+  .pd-home-2026 .pd-home-product-track{animation:none;stroke-dashoffset:0}
+}

@@ -1,5 +1,8 @@
 import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const html=fs.readFileSync('route-planner.html','utf8');
+for(const dependency of ['route-review-core.js','route-brief-core.js','route-performance.js','route-planner.js'])assert(html.indexOf('/assets/'+dependency)<html.indexOf('/assets/route-review.js'),'Review must load after '+dependency);
 const require=createRequire(import.meta.url),C=require('../assets/route-review-core.js'),B=require('../assets/route-brief-core.js');
 assert.equal(C.routeImport('KGFK DCT KDVL')[0].route,'KGFK KDVL');
 assert.equal(C.routeImport('P1,47,-97 P2,48,-97')[0].route,'P1,47,-97 P2,48,-97');

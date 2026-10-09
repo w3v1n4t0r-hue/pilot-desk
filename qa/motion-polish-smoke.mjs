@@ -20,7 +20,7 @@ assert.match(script,/navigator\.connection\?\.saveData/);
 assert.match(script,/rpSummaryDistance/);
 assert.match(script,/rpMapStatus/);
 assert.match(script,/\.pd-home-hero-copy/);
-assert.match(script,/\.pd-home-example/);
+assert.match(script,/\.pd-home-product/);
 assert.match(routeCode,/pdToggling/,'route editor waits for the closing transition');
 assert.match(styles,/rp-grid\.rp-editor-closed/,'closed editor must release chart space');
 assert.doesNotMatch(styles,/\.leaflet-(?:map-pane|tile-pane|marker-pane)[^{]*\{/,'map transforms cannot be overridden');

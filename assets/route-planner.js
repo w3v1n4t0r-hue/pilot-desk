@@ -32,10 +32,11 @@ function initWorkspace(){
     editor.hidden=!nextOpen;
     workspace.classList.toggle('rp-editor-closed',!nextOpen);
     try{localStorage.setItem('pd-route-editor-open',String(nextOpen))}catch{}
-    requestAnimationFrame(()=>map?.invalidateSize({pan:false}));
+    if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>map?.invalidateSize({pan:false}));
+    else map?.invalidateSize({pan:false});
     if(nextOpen)$('#rpRoute').focus({preventScroll:true});
    };
-   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||navigator.connection?.saveData;
+   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||window.navigator?.connection?.saveData;
    if(!nextOpen&&!reduced&&typeof editor.animate==='function'){
     toggle.dataset.pdToggling='true';
     let animation;

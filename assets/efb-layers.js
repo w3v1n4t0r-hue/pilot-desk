@@ -480,7 +480,7 @@ function start(RP,L){
       return '<div class="rp-route-popup"><b>PIREP'+(alt?' · '+esc(alt):'')+'</b><br>'+esc(symbol.label)+'<br>'+esc(raw||'Pilot report')+'<br><small>'+esc(window.PilotDeskChartSymbols.reportTime(p))+'</small></div>';
     }
     if(key==='airsigmet'||key==='gairmet'||key==='cwa'){
-      const hazard=field(p,['hazard','hazardType','type','seriesId']),raw=field(p,['rawAirSigmet','rawOb','rawText','raw']);
+      const hazard=field(p,['hazard','hazardType','type','seriesId']),raw=field(p,['rawSigmet','rawAirSigmet','cwaText','rawOb','rawText','raw']);
       return '<div class="rp-route-popup"><b>'+esc(key==='airsigmet'?'SIGMET':key==='gairmet'?'G-AIRMET':'CWA')+(hazard?' · '+esc(hazard):'')+'</b><br>'+esc(raw||'Current advisory')+'</div>';
     }
     const name=field(p,['IDENT','ident','ID','NAME','name','DESIGNATOR','designator']);
@@ -674,57 +674,7 @@ function start(RP,L){
     renderBrief();
   }
 
-  function flattenRings(geometry){
-    if(!geometry)return[];
-    if(geometry.type==='Polygon')return geometry.coordinates||[];
-    if(geometry.type==='MultiPolygon')return (geometry.coordinates||[]).flat();
-    return[];
-  }
-  function xy(coord,lat0){
-    return {x:Number(coord[0])*Math.cos(lat0*Math.PI/180)*60,y:Number(coord[1])*60};
-  }
-  function orient(a,b,c){return (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x)}
-  function intersects(a,b,c,d){
-    const o1=orient(a,b,c),o2=orient(a,b,d),o3=orient(c,d,a),o4=orient(c,d,b);
-    const between=(p,q,r)=>r.x>=Math.min(p.x,q.x)&&r.x<=Math.max(p.x,q.x)&&r.y>=Math.min(p.y,q.y)&&r.y<=Math.max(p.y,q.y);
-    return (o1*o2<0&&o3*o4<0)||(o1===0&&between(a,b,c))||(o2===0&&between(a,b,d))||(o3===0&&between(c,d,a))||(o4===0&&between(c,d,b));
-  }
-  function pointInRing(point,ring){
-    let inside=false;
-    for(let i=0,j=ring.length-1;i<ring.length;j=i++){
-      const xi=Number(ring[i][0]),yi=Number(ring[i][1]),xj=Number(ring[j][0]),yj=Number(ring[j][1]);
-      const cross=((yi>point[1])!==(yj>point[1]))&&(point[0]<(xj-xi)*(point[1]-yi)/((yj-yi)||1e-12)+xi);
-      if(cross)inside=!inside;
-    }
-    return inside;
-  }
-  function pointSegDistanceNm(p,a,b){
-    const lat0=(Number(p[1])+Number(a[1])+Number(b[1]))/3;
-    const P=xy(p,lat0),A=xy(a,lat0),B=xy(b,lat0);
-    const dx=B.x-A.x,dy=B.y-A.y,l2=dx*dx+dy*dy;
-    if(!l2)return Math.hypot(P.x-A.x,P.y-A.y);
-    const t=Math.max(0,Math.min(1,((P.x-A.x)*dx+(P.y-A.y)*dy)/l2));
-    return Math.hypot(P.x-(A.x+t*dx),P.y-(A.y+t*dy));
-  }
-  function relationToRoute(feature){
-    const pts=RP.getPoints();
-    if(pts.length<2)return {intersects:false,distanceNm:Infinity};
-    const route=pts.map(p=>[Number(p.lon),Number(p.lat)]);
-    const rings=flattenRings(feature&&feature.geometry);
-    if(!rings.length)return {intersects:false,distanceNm:Infinity};
-    for(const ring of rings){
-      if(route.some(p=>pointInRing(p,ring)))return {intersects:true,distanceNm:0};
-      for(let i=0;i<route.length-1;i++){
-        const lat0=(route[i][1]+route[i+1][1])/2,A=xy(route[i],lat0),B=xy(route[i+1],lat0);
-        for(let j=0;j<ring.length-1;j++){
-          if(intersects(A,B,xy(ring[j],lat0),xy(ring[j+1],lat0)))return {intersects:true,distanceNm:0};
-        }
-      }
-    }
-    let min=Infinity;
-    for(const ring of rings)for(const v of ring)for(let i=0;i<route.length-1;i++)min=Math.min(min,pointSegDistanceNm(v,route[i],route[i+1]));
-    return {intersects:false,distanceNm:min};
-  }
+  function relationToRoute(feature){return B.relationToRoute(feature,RP.getPoints());}
 
   function destinationNotam(){
     const pts=RP.getPoints(),dst=pts.length?String(pts[pts.length-1].id||'').toUpperCase():'';
@@ -787,7 +737,7 @@ function start(RP,L){
       alternate?B.weatherHtml('Alternate',alternate,briefWx.alt,null,window.PilotDeskChartSymbols):'',
       briefSection('NOTAMs',notamText),
       ...airportRows.slice(0,8).map(p=>B.notamHtml(p,notams[p.id],departure,arrival)),
-      ...['airsigmet','gairmet','cwa','tfr'].map(key=>B.advisoryHtml(key,key==='tfr'?tfrRel: key==='airsigmet'?sigRel:key==='gairmet'?gairRel:cwaRel,briefStatus[key],briefTime[key])),
+      ...['airsigmet','gairmet','cwa','tfr'].map(key=>B.advisoryHtml(key,key==='tfr'?tfrRel: key==='airsigmet'?sigRel:key==='gairmet'?gairRel:cwaRel,briefStatus[key],briefTime[key],departure,arrival)),
       briefSection('Data coverage',['tfr','airsigmet','gairmet','cwa'].map(key=>key.toUpperCase()+': '+(briefStatus[key]==='available'?'route area retrieved '+B.stamp(briefTime[key]||null)+(Date.now()-briefTime[key]>60000?' · Earlier retrieval; refresh before use':''):briefStatus[key]||'not loaded')).join(' · ')),
       '<button type="button" class="utility-btn" data-refresh-brief '+(briefLoading?'disabled':'')+'>'+(briefLoading?'Updating route data…':'Refresh route data')+'</button>',
       '<div class="rp-brief-source">Horizontal intersections are approximate; altitude, effective times and full route legality are not validated. Automatic flags describe data relationships only; they are not a go/no-go decision. <a href="https://www.1800wxbrief.com/" target="_blank" rel="noopener">Official briefing</a></div>'
@@ -807,8 +757,8 @@ function start(RP,L){
   async function loadRouteAdvisory(key,seq){
     const bbox=window.PilotDeskMapDensity.routeBounds(RP.getPoints());briefStatus[key]='loading';
     if(!bbox){delete briefData[key];briefStatus[key]='unsupported route area';return;}
-    try{const url=key==='tfr'?'/api/tfrs?bbox='+encodeURIComponent(bbox):'/api/aviation-layers?product='+key+'&bbox='+encodeURIComponent(bbox),j=await fetchJson(url);
-      if(seq!==routeContextSeq)return;briefData[key]=j.geojson||{type:'FeatureCollection',features:[]};briefStatus[key]='available';briefTime[key]=Date.parse(j.fetchedAt)||0;renderBrief();
+    try{const j=await B.requestLayer(key,bbox);
+      if(seq!==routeContextSeq)return;briefData[key]=j.geojson||{type:'FeatureCollection',features:[]};briefStatus[key]=j.partial||j.possiblyTruncated?'partial':'available';briefTime[key]=Date.parse(j.fetchedAt)||0;renderBrief();
     }catch{if(seq!==routeContextSeq)return;delete briefData[key];briefStatus[key]='unavailable';renderBrief();}
   }
   function alternateReview(){const s=window.PilotDeskRoutePerformance?.getSettings()||{};return s.alternateAirport?String(s.alternateAirport).toUpperCase()+' · '+(s.alternateNotes||'No alternate notes entered.')+' · Pilot-entered; requirements and suitability are not checked.':'No alternate airport entered. Review whether one is required; the planner does not decide this for you.';}

@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url),B=require('../assets/route-brief-core.js');
+const route=[{lat:40,lon:-100},{lat:40,lon:-99}],point=(lon,lat)=>({geometry:{type:'Point',coordinates:[lon,lat]}});
+assert.equal(B.relationToRoute(point(-99.5,40.1),route).intersects,false);
+assert(Math.abs(B.relationToRoute(point(-99.5,40.1),route).distanceNm-6)<.1);
+const polygon={geometry:{type:'Polygon',coordinates:[[[-99.6,39.9],[-99.4,39.9],[-99.4,40.1],[-99.6,40.1],[-99.6,39.9]]]}};
+assert.equal(B.relationToRoute(polygon,route).intersects,true);
+assert.equal(B.relationToRoute({geometry:{type:'LineString',coordinates:[[-99.5,39],[-99.5,41]]}},route).intersects,true);
+assert.equal(B.relationToRoute({geometry:null},route).unknown,true);
+// Distance must include route endpoints to polygon edges, not only polygon vertices.
+assert(B.relationToRoute({geometry:{type:'Polygon',coordinates:[[[-100.1,40.1],[-98.9,40.1],[-98.9,40.2],[-100.1,40.2],[-100.1,40.1]]]}},route).distanceNm<6.1);
+const start=Date.parse('2026-10-09T18:00Z'),end=start+3600000,p={validTimeFrom:start/1000,validTimeTo:end/1000};
+assert(B.advisoryTiming('sigmet',p,start,end).startsWith('FLIGHT WINDOW'));
+assert(B.advisoryTiming('cwa',p,end,end+1).startsWith('OUTSIDE'));
+assert(B.advisoryTiming('sigmet',{},start,end).startsWith('TIME UNVERIFIED'));
+assert(B.advisoryTiming('gairmet',{validTime:start},start,end).includes('in flight window'));
+assert(B.advisoryTiming('gairmet',{validTime:start-1},start,end).includes('before departure'));
+assert(B.advisoryTiming('pirep',{obsTime:start},start,end).includes('not a departure forecast'));
+assert(B.advisoryTiming('tfr',{},start,end).startsWith('TIME UNVERIFIED'));
+const escaped=B.advisoryHtml('sigmet',[{feature:{properties:{...p,rawSigmet:'<img src=x onerror=alert(1)>',hazard:'ICE'}},relation:{intersects:true}}],'available',start,start,end);
+assert(!escaped.includes('<img'));assert(escaped.includes('ICE'));assert(escaped.includes('FLIGHT WINDOW'));
+const urls=[];let partial=false;
+global.fetch=async input=>{const u=new URL(input);urls.push(u);if(partial&&u.searchParams.get('fore')==='9')return{ok:false,status:503,text:async()=>''};return{ok:true,status:200,text:async()=>JSON.stringify({type:'FeatureCollection',features:[{...polygon,properties:{validTime:'2026-10-09T18:00Z',forecast:u.searchParams.get('fore')}}]})};};
+const handler=require('../api/aviation-layers.js');
+async function invoke(query){const result={};const res={setHeader(){},status(code){result.status=code;return this;},json(body){result.body=body;return result;}};await handler({method:'GET',query},res);return result;}
+let result=await invoke({product:'airsigmet',bbox:'39,-101,41,-98'});
+assert.equal(result.status,200);assert.equal(result.body.providerProduct,'sigmet');assert.equal(urls[0].pathname,'/api/data/sigmet');assert(!urls[0].searchParams.has('bbox'));
+await invoke({product:'sigmet',bbox:'39,-102,41,-98'});assert.equal(urls.length,1,'Global warnings should share provider cache across route areas');
+partial=true;result=await invoke({product:'gairmet',forecasts:'all',bbox:'39,-101,41,-98'});
+assert.equal(result.status,200);assert.equal(result.body.partial,true);assert.deepEqual(result.body.forecastHours,[0,3,6,12]);assert.equal(result.body.geojson.features.length,4);
+assert.deepEqual(urls.slice(1).map(u=>Number(u.searchParams.get('fore'))).sort((a,b)=>a-b),[0,3,6,9,12]);
+result=await invoke({product:'pirep',bbox:'39,-101,41,-98'});assert.equal(result.status,200);assert.equal(urls.at(-1).searchParams.get('age'),'3');
+assert.equal((await invoke({product:'pirep',bbox:'bad'})).status,400);
+// Unknown NOTAM payloads must fail, rather than become a false zero-notice result.
+const oldId=process.env.FAA_NOTAM_CLIENT_ID,oldSecret=process.env.FAA_NOTAM_CLIENT_SECRET;
+process.env.FAA_NOTAM_CLIENT_ID='TEST';process.env.FAA_NOTAM_CLIENT_SECRET='TEST';
+global.fetch=async()=>({ok:true,status:200,text:async()=>'{"unexpected":"shape"}'});
+let notamResponse;await require('../api/notams.js')({method:'GET',query:{station:'KGFK'}},{setHeader(){},status(code){notamResponse={status:code};return this;},json(body){notamResponse.body=body;return this;}});
+assert.equal(notamResponse.status,502);
+if(oldId===undefined)delete process.env.FAA_NOTAM_CLIENT_ID;else process.env.FAA_NOTAM_CLIENT_ID=oldId;
+if(oldSecret===undefined)delete process.env.FAA_NOTAM_CLIENT_SECRET;else process.env.FAA_NOTAM_CLIENT_SECRET=oldSecret;
+console.log('Route feeds checks passed: corridor geometry, product time semantics, escaped source text, modern SIGMET endpoint, shared provider cache, five G-AIRMET snapshots, partial failures, PIREP query and invalid NOTAM payload handling.');

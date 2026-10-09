@@ -61,15 +61,60 @@ function notamHtml(p,j,start=null,end=null){
  if(!j)return head+'<p>Loading airport notices…</p></details>';
  if(j.error||j.configured===false)return head+'<p class="rp-brief-warning">NOTAMs unavailable. '+(j.configured===false?'Automatic FAA NOTAM feed is not configured. ':'')+'No absence of notices is implied.</p><a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener">Check FAA NOTAM Search</a></details>';
  const rows=(j.notams||[]).map(n=>'<div class="rp-notam-item"><p class="rp-brief-meta">'+esc(start!=null&&end!=null?(typeof module==='object'&&module.exports?require('./route-review-core.js'):window.PilotDeskDepartureReview).noticeStatus(n,start,end):'FLIGHT TIME UNAVAILABLE')+'</p><b>'+esc([n.category||'NOTAM',n.number].filter(Boolean).join(' · '))+'</b><p class="rp-brief-meta">Effective '+esc(stamp(n.effectiveStart))+' to '+esc(stamp(n.effectiveEnd))+'</p><p class="rp-brief-raw">'+esc(n.text||'Notice text unavailable.')+'</p></div>').join('');
- return head+'<p class="rp-brief-meta">FAA · Retrieved '+esc(stamp(j.fetchedAt))+'</p>'+(rows||'<p>No notices returned by this request. Confirm coverage at the source.</p>')+'<a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener">Check FAA NOTAM Search</a></details>';
+ return head+'<p class="rp-brief-meta">FAA · Retrieved '+esc(stamp(j.fetchedAt))+'</p>'+(j.partial?'<p class="rp-brief-warning">This response is partial; additional notices may exist.</p>':'')+(rows||'<p>No notices returned by this request. Confirm coverage at the source.</p>')+'<a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener">Check FAA NOTAM Search</a></details>';
 }
-function advisoryHtml(key,items,status,retrieved){
- const name={tfr:'TFRs',airsigmet:'SIGMETs',gairmet:'G-AIRMETs',cwa:'Center weather advisories'}[key]||key;
- const rows=items.map(x=>{const p=x.feature.properties||{},id=p.notamId||p.NOTAM_KEY||p.seriesId||p.hazard||p.hazardType||name;
- const raw=p.rawAirSigmet||p.rawOb||p.rawText||p.raw||p.description||p.hazard||'Review the complete product at the source.';
- const timing=key==='tfr'?'FAA effective dates '+String(p.effectiveStart||'unavailable')+' to '+String(p.effectiveEnd||'unavailable')+'; confirm exact active times.':'Valid '+stamp(p.validTimeFrom??p.validTime??p.timeFrom)+' to '+stamp(p.validTimeTo??p.expireTime??p.timeTo);
- return '<div class="rp-notam-item"><b>'+esc(id)+' · '+esc(x.relation.intersects?'intersects route':x.relation.distanceNm.toFixed(1)+' NM from route')+'</b><p class="rp-brief-meta">'+esc(timing)+'</p><p class="rp-brief-raw">'+esc(raw)+'</p></div>';}).join('');
- return '<details class="rp-brief-section" data-brief-detail="advisory-'+esc(key)+'"><summary>'+esc(name)+' · '+(status==='available'?items.length+' route items':esc(status||'not loaded'))+'</summary><p class="rp-brief-meta">'+(status==='available'?'Retrieved '+esc(stamp(retrieved||null)):esc(status==='loading'?'Loading route area…':'Coverage unavailable. No clear-route conclusion is available.'))+'</p>'+rows+(status==='available'&&!items.length?'<p>No route/near-route geometry detected in this retrieved dataset. Effective times and altitude still require review.</p>':'')+'</details>';
+const layerCache=new Map(),layerPending=new Map();
+function requestLayer(product,bbox,force=false){
+ if(product==='airsigmet')product='sigmet';
+ const url=product==='tfr'?'/api/tfrs?bbox='+encodeURIComponent(bbox):'/api/aviation-layers?product='+encodeURIComponent(product)+'&bbox='+encodeURIComponent(bbox)+(product==='gairmet'?'&forecasts=all':'');
+ const old=layerCache.get(url);if(!force&&old&&Date.now()-old.at<60000)return Promise.resolve(old.value);
+ if(layerPending.has(url))return layerPending.get(url);
+ const task=(async()=>{try{const r=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(16000)}),value=await r.json();if(!r.ok)throw Error(value.error||'Aviation feed unavailable.');if(!Array.isArray(value.geojson?.features))throw Error('Aviation feed returned unreadable geometry.');layerCache.set(url,{at:Date.now(),value});if(layerCache.size>50)layerCache.delete(layerCache.keys().next().value);return value;}finally{layerPending.delete(url);}})();layerPending.set(url,task);return task;
 }
-return{forecastHtml,requestNotams,dateValue,stamp,stationId,isAirport,airportCandidates,planningKey,tafStatus,weatherHtml,notamHtml,advisoryHtml};
+function pointSegDistanceNm(p,a,b){
+ const lat=(p[1]+a[1]+b[1])/3*Math.PI/180,xy=c=>[c[0]*Math.cos(lat)*60,c[1]*60],P=xy(p),A=xy(a),B=xy(b),dx=B[0]-A[0],dy=B[1]-A[1],l=dx*dx+dy*dy,t=l?Math.max(0,Math.min(1,((P[0]-A[0])*dx+(P[1]-A[1])*dy)/l)):0;
+ return Math.hypot(P[0]-A[0]-t*dx,P[1]-A[1]-t*dy);
+}
+function pointInRing(p,ring){let inside=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;}
+function segmentsIntersect(a,b,c,d){
+ const orient=(p,q,r)=>(q[0]-p[0])*(r[1]-p[1])-(q[1]-p[1])*(r[0]-p[0]),o=[orient(a,b,c),orient(a,b,d),orient(c,d,a),orient(c,d,b)],on=(p,q,r)=>r[0]>=Math.min(p[0],q[0])&&r[0]<=Math.max(p[0],q[0])&&r[1]>=Math.min(p[1],q[1])&&r[1]<=Math.max(p[1],q[1]);
+ return o[0]*o[1]<0&&o[2]*o[3]<0||Math.abs(o[0])<1e-9&&on(a,b,c)||Math.abs(o[1])<1e-9&&on(a,b,d)||Math.abs(o[2])<1e-9&&on(c,d,a)||Math.abs(o[3])<1e-9&&on(c,d,b);
+}
+function relationToRoute(feature,points){
+ const route=points.map(p=>[Number(p.lon),Number(p.lat)]),g=feature?.geometry;
+ if(route.length<2||!g)return{intersects:false,distanceNm:Infinity,unknown:true};
+ const polygons=g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[],lines=polygons.flat();
+ if(g.type==='LineString')lines.push(g.coordinates);if(g.type==='MultiLineString')lines.push(...g.coordinates);
+ if(g.type==='Point')lines.push([g.coordinates]);
+ if(!lines.length||lines.some(line=>!Array.isArray(line)||line.some(c=>!Array.isArray(c)||c.length<2||!Number.isFinite(c[0])||!Number.isFinite(c[1]))))return{intersects:false,distanceNm:Infinity,unknown:true};
+ for(const polygon of polygons)if(route.some(p=>pointInRing(p,polygon[0])&&!polygon.slice(1).some(hole=>pointInRing(p,hole))))return{intersects:true,distanceNm:0};
+ let min=Infinity;
+ for(const line of lines)for(let i=0;i<route.length-1;i++){
+  for(const v of line)min=Math.min(min,pointSegDistanceNm(v,route[i],route[i+1]));
+  for(let j=0;j<line.length-1;j++){
+   if(segmentsIntersect(route[i],route[i+1],line[j],line[j+1]))return{intersects:true,distanceNm:0};
+   min=Math.min(min,pointSegDistanceNm(route[i],line[j],line[j+1]),pointSegDistanceNm(route[i+1],line[j],line[j+1]));
+  }
+ }
+ return{intersects:min<.01,distanceNm:min};
+}
+function advisoryTiming(key,p,start,end){
+ if(key==='pirep')return 'OBSERVATION · '+stamp(p.obsTime??p.observationTime)+' · not a departure forecast';
+ if(key==='gairmet'){const time=dateValue(p.validTime)?.getTime();return 'FORECAST SNAPSHOT · '+stamp(p.validTime)+(start==null||end==null?' · FLIGHT TIME UNAVAILABLE':time==null?' · TIME UNVERIFIED':time<start?' · before departure':time>end?' · after arrival':' · in flight window');}
+ if(key==='tfr')return 'TIME UNVERIFIED · FAA effective dates '+String(p.effectiveStart||'unavailable')+' to '+String(p.effectiveEnd||'unavailable')+' · confirm exact times at FAA';
+ const from=dateValue(p.validTimeFrom??p.timeFrom)?.getTime(),to=dateValue(p.validTimeTo??p.expireTime??p.timeTo)?.getTime();
+ return (start==null||end==null?'FLIGHT TIME UNAVAILABLE':from==null||to==null||to<=from?'TIME UNVERIFIED':from<=end&&to>start?'FLIGHT WINDOW':'OUTSIDE FLIGHT WINDOW')+' · valid '+stamp(from)+' to '+stamp(to);
+}
+function advisoryHtml(key,items,status,retrieved,start=null,end=null){
+ const name={tfr:'TFRs',sigmet:'SIGMETs',airsigmet:'SIGMETs',gairmet:'G-AIRMETs',pirep:'PIREPs / AIREPs',cwa:'Center weather advisories'}[key]||key;
+ const rows=items.map(x=>{const p=x.feature.properties||{},id=p.notamId||p.NOTAM_KEY||p.seriesId||p.tag||p.icaoId||name;
+ const raw=p.rawSigmet||p.rawAirSigmet||p.cwaText||p.rawOb||p.rawText||p.raw||p.description||p.dueTo||p.due_to||p.hazard||'Review the complete product at the source.';
+ const relationship=x.relation.unknown?'geometry unavailable':x.relation.intersects?'intersects route':x.relation.distanceNm.toFixed(1)+' NM from route';
+ const height=(key==='sigmet'||key==='airsigmet'||key==='cwa')&&(p.base!=null||p.top!=null)?' · '+String(p.base??'unknown')+'–'+String(p.top??'unknown')+' ft MSL':key==='pirep'&&(p.fltlvl!=null||p.fltLvl!=null)?' · reported FL '+String(p.fltlvl??p.fltLvl):key==='gairmet'?' · altitude limits: review AWC product':'';
+ const detail=key==='tfr'?'<a href="https://tfr.faa.gov/" target="_blank" rel="noopener">Review FAA TFR details</a>':'';
+ return '<div class="rp-notam-item"><b>'+esc([id,p.hazard||p.airepType||''].filter(Boolean).join(' · '))+' · '+esc(relationship)+'</b><p class="rp-brief-meta">'+esc(advisoryTiming(key,p,start,end)+height)+'</p><p class="rp-brief-raw">'+esc(raw)+'</p>'+detail+'</div>';}).join('');
+ const available=status==='available'||status==='partial';
+ return '<details class="rp-brief-section" data-brief-detail="advisory-'+esc(key)+'"><summary>'+esc(name)+' · '+(available?items.length+' route items'+(status==='partial'?' · partial':''):esc(status||'not loaded'))+'</summary><p class="rp-brief-meta">'+(available?(key==='tfr'?'FAA':'AWC')+' · Retrieved '+esc(stamp(retrieved||null)):esc(status==='loading'?'Loading route area…':'Coverage unavailable. No clear-route conclusion is available.'))+'</p>'+(status==='partial'?'<p class="rp-brief-warning">Some forecast snapshots or results are missing. Coverage is incomplete.</p>':'')+rows+(available&&!items.length?'<p>No route/near-route geometry detected in this retrieved dataset. This does not establish complete coverage at the planned time.</p>':'')+'</details>';
+}
+return{requestLayer,relationToRoute,advisoryTiming,forecastHtml,requestNotams,dateValue,stamp,stationId,isAirport,airportCandidates,planningKey,tafStatus,weatherHtml,notamHtml,advisoryHtml};
 });

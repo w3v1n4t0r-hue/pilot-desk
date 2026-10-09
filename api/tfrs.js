@@ -108,6 +108,7 @@ module.exports=async function handler(req,res){
       source:'Federal Aviation Administration TFR GeoServer',
       sourceUrl:'https://tfr.faa.gov/',
       fetchedAt:new Date().toISOString(),
+      possiblyTruncated:features.length>=300,
       geojson:{type:'FeatureCollection',features}
     });
   }catch(e){

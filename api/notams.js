@@ -11,7 +11,7 @@ function getItems(payload){
   if(Array.isArray(payload&&payload.items))return payload.items;
   if(Array.isArray(payload&&payload.notams))return payload.notams;
   if(Array.isArray(payload&&payload.features))return payload.features;
-  return [];
+  return null;
 }
 function classify(text){
   const s=String(text||'').toUpperCase();
@@ -60,8 +60,10 @@ module.exports=async function handler(req,res){
     res.setHeader('Cache-Control','no-store');
     return res.status(503).json({
       configured:false,
+      accessRequired:true,
       station,
-      error:'FAA NOTAM API credentials are not configured on the PilotDesk server.',
+      error:'Automatic FAA NOTAM access is not configured on the PilotDesk server.',
+      accessUrl:'https://www.faa.gov/about/initiatives/notam/faqs',
       officialSearch:'https://notams.aim.faa.gov/notamSearch/'
     });
   }
@@ -83,11 +85,14 @@ module.exports=async function handler(req,res){
         configured:true,
         station,
         error:r.status===401||r.status===403?'FAA NOTAM credentials were rejected.':'FAA NOTAM API returned '+r.status+'.',
-        detail:body.slice(0,160)
       });
     }
     const payload=body?JSON.parse(body):{};
-    const normalized=getItems(payload).map(normalize).filter(x=>x.text||x.number);
+    const items=getItems(payload);
+    if(!items)throw Error('Unexpected provider response');
+    const normalized=items.map(normalize).filter(x=>x.text||x.number);
+    const total=Number(payload.totalCount??payload.total??normalized.length);
+    const partial=normalized.length!==items.length||total>normalized.length||Boolean(payload.hasMore||payload.nextPage);
     const counts=normalized.reduce((a,n)=>{a[n.category]=(a[n.category]||0)+1;return a},{});
     res.setHeader('Cache-Control','public, s-maxage=120, stale-while-revalidate=300');
     return res.status(200).json({
@@ -96,6 +101,7 @@ module.exports=async function handler(req,res){
       source:'Federal Aviation Administration NOTAM API',
       fetchedAt:new Date().toISOString(),
       count:normalized.length,
+      partial,
       counts,
       notams:normalized
     });

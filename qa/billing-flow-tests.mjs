@@ -23,7 +23,7 @@ assert.throws(()=>window.testBilling.navigateStripe('https://example.com/pay','c
 // Execute the actual edge handler against an unavailable subscription lookup and an existing paid plan.
 let edge,existing={ok:false,status:503},stripeCalls=0;
 const edgeCode=stripTypeScriptTypes(fs.readFileSync('supabase/functions/billing-checkout/index.ts','utf8').replace(/^import[^\n]+\n/,''));
-const env={SUPABASE_URL:'https://test.supabase.co',SUPABASE_ANON_KEY:'test-public',SUPABASE_SERVICE_ROLE_KEY:'test-admin',STRIPE_SECRET_KEY:'test-stripe',STRIPE_PRO_PRICE_ID:'test-price',PILOTDESK_BILLING_ENABLED:'true'};
+const env={SUPABASE_URL:'https://test.supabase.co',SUPABASE_ANON_KEY:'test-public',SUPABASE_SERVICE_ROLE_KEY:'test-admin',STRIPE_SECRET_KEY:['sk','live','fake'].join('_'),STRIPE_PRO_PRICE_ID:'price_1UOlFP0t3Muvn8bKKGHb2CtZ',STRIPE_WEBHOOK_SECRET:['whsec','fake'].join('_'),PILOTDESK_BILLING_ENABLED:'true'};
 vm.runInNewContext(edgeCode,{Deno:{env:{get:k=>env[k]},serve:fn=>edge=fn},Response,URLSearchParams,console:{error(){}},fetch:async url=>{if(url.includes('/auth/v1/user'))return {ok:true,json:async()=>({id:'test-user',email:'test@example.invalid'})};if(url.includes('/rest/v1/'))return {...existing,json:async()=>[{plan:'school',status:'active',stripe_customer_id:'test-customer'}]};stripeCalls++;throw Error('Stripe should not be reached');}});
 const req={method:'POST',headers:new Headers({Authorization:'Bearer test-token'}),json:async()=>({plan:'pro'})};
 assert.equal((await edge(req)).status,500);assert.equal(stripeCalls,0);

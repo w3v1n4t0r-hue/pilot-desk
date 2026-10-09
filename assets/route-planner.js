@@ -185,6 +185,27 @@ window.addEventListener('afterprint',()=>{
 $('#rpClearRoute').addEventListener('click',()=>{clearTimeout(autoTimer);editRoute('');hasFitted=false;localStorage.removeItem('pd-route-last');localStorage.removeItem(DRAFT_KEY);$('#rpDraftNotice')?.remove();msg('Route cleared. Saved flights are unchanged.')});$('#rpUseDemo').addEventListener('click',()=>{editRoute('KGFK KFAR KMSP');$('#rpTas').value='120';$('#rpBurn').value='10';$('#rpWindDir').value='270';$('#rpWindSpeed').value='20';$('#rpVariation').value='3';scheduleAutoBuild(0)});$('#rpProcedures').addEventListener('click',e=>{const b=e.target.closest('[data-proc-attach]');if(!b)return;const p=procedureIndex[Number(b.dataset.procAttach)];if(p)attachProcedure(p)});$('#rpSavedRoutes')?.addEventListener('click',e=>{const b=e.target.closest('[data-rp-duplicate]');if(b)duplicateSavedRoute(b.dataset.rpDuplicate)});
 document.addEventListener('pilotdesk:flights-changed',renderSavedRoutes);
 ['rpRoute','rpTas','rpBurn','rpWindDir','rpWindSpeed','rpVariation'].forEach(id=>{const el=$('#'+id);if(!el)return;el.addEventListener('input',saveDraft);el.addEventListener(id==='rpRoute'?'input':'change',()=>{rememberRoute();saveDraft();invalidateRoute();scheduleAutoBuild(id==='rpRoute'?700:250)})});
-$('#rpRoutePack').addEventListener('click',e=>{const b=e.target.closest('[data-pack-remove]');if(!b)return;const arr=loadPack();arr.splice(Number(b.dataset.packRemove),1);savePack(arr);renderPack()});$('#rpClearPack').addEventListener('click',()=>{if(confirm('Clear all locally attached FAA procedures?')){savePack([]);renderPack()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('.rp-map-card')?.classList.contains('is-fullscreen'))toggleFullscreen()});if(!new URLSearchParams(location.search).has('flight')&&!restoreDraft())try{const s=JSON.parse(localStorage.getItem('pd-route-last')||'null');if(s&&s.route){$('#rpRoute').value=s.route;$('#rpTas').value=s.tas??120;$('#rpBurn').value=s.burn??10;$('#rpWindDir').value=s.wd??270;$('#rpWindSpeed').value=s.ws??20;$('#rpVariation').value=s.variation??0;updateLiveSummary(null,s.route);saveDraft();restoreDraft()}}catch{}rememberRoute();renderRouteSequence()}
+$('#rpRoutePack').addEventListener('click',e=>{const b=e.target.closest('[data-pack-remove]');if(!b)return;const arr=loadPack();arr.splice(Number(b.dataset.packRemove),1);savePack(arr);renderPack()});$('#rpClearPack').addEventListener('click',()=>{if(confirm('Clear all locally attached FAA procedures?')){savePack([]);renderPack()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('.rp-map-card')?.classList.contains('is-fullscreen'))toggleFullscreen()});if(!new URLSearchParams(location.search).has('flight')&&!restoreDraft())try{const s=JSON.parse(localStorage.getItem('pd-route-last')||'null');if(s&&s.route){$('#rpRoute').value=s.route;$('#rpTas').value=s.tas??120;$('#rpBurn').value=s.burn??10;$('#rpWindDir').value=s.wd??270;$('#rpWindSpeed').value=s.ws??20;$('#rpVariation').value=s.variation??0;updateLiveSummary(null,s.route);saveDraft();restoreDraft()}}catch{}
+// A deliberate homepage airport search takes precedence over an older local draft.
+// Saved-flight links use ?flight= and are never overwritten by this handoff.
+const startParams=new URLSearchParams(location.search);
+const startFrom=(startParams.get('from')||'').trim().toUpperCase();
+const startTo=(startParams.get('to')||'').trim().toUpperCase();
+if(!startParams.has('flight')&&/^[A-Z0-9]{2,5}$/.test(startFrom)&&/^[A-Z0-9]{2,5}$/.test(startTo)){
+  const route=startFrom+' '+startTo;
+  $('#rpRoute').value=route;
+  const editor=$('#rpRouteEditor'),toggle=$('#rpEditorToggle'),workspace=$('#rpWorkspace');
+  if(editor&&toggle&&workspace){
+    editor.hidden=false;
+    toggle.setAttribute('aria-expanded','true');
+    workspace.classList.remove('rp-editor-closed');
+    try{localStorage.setItem('pd-route-editor-open','true')}catch{}
+  }
+  updateLiveSummary(null,route);
+  saveDraft();
+  invalidateRoute();
+  scheduleAutoBuild(0);
+}
+rememberRoute();renderRouteSequence()}
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init,{once:true}):init();
 })();

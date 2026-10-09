@@ -14,7 +14,7 @@ assert.match(home,/href="\/route-planner\.html"/);
 assert.equal((home.match(/id="pdHomeWind"/g)||[]).length,1,'retain one functional crosswind control');
 assert.equal((home.match(/id="pdHomeCross"/g)||[]).length,1);
 assert.equal((home.match(/id="pdHomeHead"/g)||[]).length,1);
-assert(home.indexOf('class="pd-home-crosswind"')>home.indexOf('class="pd-home-desk"'),'crosswind should follow returning-user desk');
+assert(home.indexOf('pd-home-crosswind"')>home.indexOf('id="pdHomeDesk"'),'crosswind should follow returning-user desk');
 assert(home.indexOf('class="pd-home-product"')<home.indexOf('class="pd-home-proof"'),'show product above the fold');
 for(const link of ['/weather.html','/tools.html','/daily/','/flight-training.html'])
   assert(home.includes(`href="${link}"`),`retain ${link}`);

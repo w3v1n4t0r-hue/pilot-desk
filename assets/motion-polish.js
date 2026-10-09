@@ -46,11 +46,11 @@
  function homeEntrance(){
    if(!document.body.classList.contains('pd-home-2026'))return;
    const hero=document.querySelector('.pd-home-hero-copy');
-   const calculator=document.querySelector('.pd-home-example');
-   play(hero,[{opacity:.45,transform:'translateY(9px)'},{opacity:1,transform:'none'}],
-     {duration:260,easing:'cubic-bezier(.22,.72,.18,1)'});
-   play(calculator,[{opacity:.6,transform:'translateY(7px)'},{opacity:1,transform:'none'}],
-     {duration:300,delay:60,easing:'cubic-bezier(.22,.72,.18,1)'});
+   const preview=document.querySelector('.pd-home-product');
+   play(hero,[{opacity:.65,transform:'translateY(9px)'},{opacity:1,transform:'none'}],
+     {duration:270,easing:'cubic-bezier(.22,.72,.18,1)'});
+   play(preview,[{opacity:.65,transform:'translateY(11px)'},{opacity:1,transform:'none'}],
+     {duration:340,delay:70,easing:'cubic-bezier(.22,.72,.18,1)'});
  }
  function homeWind(){
    const slider=document.getElementById('pdHomeWind');

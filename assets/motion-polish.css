@@ -1,0 +1,76 @@
+/* PilotDesk motion polish: native, small, and never applied to FAA map tiles. */
+:root{
+  --pd-polish-quick:140ms;
+  --pd-polish-normal:190ms;
+  --pd-polish-ease:cubic-bezier(.22,.72,.18,1);
+}
+@media (hover:hover) and (pointer:fine){
+  :where(.pd-btn,.utility-btn,.pd-home-command,.pd-home-text-link,.pd-home-business-actions a,.pd-flight-subnav a,.pd-popular-tool,.pd-home-lessons a,.pd-home-desk-item,.rp-map-toolbar button):not(:disabled){
+    transition:background-color var(--pd-polish-quick) ease,border-color var(--pd-polish-quick) ease,color var(--pd-polish-quick) ease,opacity var(--pd-polish-quick) ease,transform var(--pd-polish-quick) var(--pd-polish-ease),box-shadow var(--pd-polish-quick) ease;
+  }
+  :where(.pd-btn,.utility-btn,.pd-home-command,.pd-popular-tool,.pd-home-desk-item,.rp-map-toolbar button):not(:disabled):hover{transform:translateY(-1px)}
+  :where(.pd-btn,.utility-btn,.pd-home-command,.pd-popular-tool,.rp-map-toolbar button):not(:disabled):active{transform:translateY(0)}
+  /* Never transform the map, chart tiles, canvas or Leaflet controls. */
+  .leaflet-container :is(button,a,.leaflet-control){transform:none!important}
+}
+:where(.pd-btn,.utility-btn,.pd-home-command,.rp-map-toolbar button,.rp-efb-panel button,.pd-flight-subnav a):focus-visible{
+  outline:2px solid var(--silver,#c8cdd3);
+  outline-offset:3px;
+}
+:where([role="tab"],[aria-pressed],.pd-flight-subnav a,[role="switch"]){
+  transition:background-color var(--pd-polish-quick) ease,border-color var(--pd-polish-quick) ease,color var(--pd-polish-quick) ease;
+}
+:where([role="tab"][aria-selected="true"],[aria-pressed="true"],.pd-flight-subnav a[aria-current="page"]){
+  border-color:var(--line-hi,#525a64);
+}
+:where(.rp-panel,.pd-home-example,.pd-home-desk-item,.pd-home-lessons a,.pd-popular-tool){
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.rp-workspace .rp-map-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.rp-map-toolbar button[aria-expanded="true"],.rp-map-toolbar button[aria-pressed="true"]{
+  background:var(--panel2,#1b1f24);
+  border-color:var(--line-hi,#56616e);
+}
+.rp-workspace .rp-route-editor:not([hidden]){transform-origin:left top}
+.rp-efb-panel:not([hidden]){animation:pd-panel-show var(--pd-polish-normal) var(--pd-polish-ease) both}
+@keyframes pd-panel-show{from{opacity:.2;transform:translateX(7px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:700px){
+  .rp-efb-panel:not([hidden]){animation-name:pd-panel-show-mobile}
+  @keyframes pd-panel-show-mobile{from{opacity:.2;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+}
+:where(.rp-panel,section,div)>details[open]>:not(summary){animation:pd-disclosure-content var(--pd-polish-normal) var(--pd-polish-ease)}
+@keyframes pd-disclosure-content{from{opacity:.65;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.pd-motion-value-updated{
+  animation:pd-value-flash 350ms ease-out;
+}
+@keyframes pd-value-flash{
+  0%{color:var(--silver,#c8cdd3)}
+  100%{color:inherit}
+}
+:where(#rpMapStatus,#rpDepartureReviewStatus,#rpReviewWindBasis,#rpWeather)[data-pd-loading="true"]{position:relative}
+:where(#rpMapStatus,#rpDepartureReviewStatus,#rpReviewWindBasis)[data-pd-loading="true"]::before{
+  content:"";display:inline-block;width:7px;height:7px;border:1px solid currentColor;
+  border-radius:50%;margin-right:8px;vertical-align:middle;opacity:.75;
+  animation:pd-loading-pulse .9s ease-in-out infinite alternate;
+}
+@keyframes pd-loading-pulse{from{opacity:.3;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.pd-home-2026 .pd-home-example-results strong{font-variant-numeric:tabular-nums}
+.pd-home-2026 .pd-home-example{box-shadow:inset 0 1px 0 rgba(255,255,255,.075),0 10px 28px rgba(0,0,0,.14)}
+.pd-home-2026 .pd-home-wind-diagram [class^="pd-wind-"]{transition:stroke var(--pd-polish-quick) ease,fill var(--pd-polish-quick) ease}
+.pd-home-2026 .pd-home-hero-links a{white-space:normal}
+.pd-home-2026 .pd-popular-tool:focus-visible,.pd-home-2026 .pd-home-lessons a:focus-visible{
+  position:relative;z-index:1;outline:2px solid var(--silver,#c8cdd3);outline-offset:-2px;
+}
+.pd-home-2026 .pd-home-route-steps li{transition:background-color var(--pd-polish-quick) ease}
+@media (prefers-reduced-motion:reduce){
+  .rp-efb-panel:not([hidden]),:where(.rp-panel,section,div)>details[open]>:not(summary),.pd-motion-value-updated,
+  :where(#rpMapStatus,#rpDepartureReviewStatus,#rpReviewWindBasis)[data-pd-loading="true"]::before{
+    animation:none!important;
+  }
+  :where(.pd-btn,.utility-btn,.pd-home-command,.pd-popular-tool,.pd-home-desk-item,.rp-map-toolbar button):hover{
+    transform:none!important
+  }
+}
+@media print{
+  .rp-efb-panel:not([hidden]),.pd-motion-value-updated{animation:none!important}
+}

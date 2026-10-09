@@ -8,12 +8,14 @@ Deno.serve(async(req:Request)=>{
  if(req.method==="OPTIONS")return new Response(null,{status:204,headers:cors});
  if(!["GET","POST"].includes(req.method))return json(405,{error:"Method not allowed"});
  const base=(Deno.env.get("SUPABASE_URL")||"").replace(/\/+$/,""),pub=envKey("SUPABASE_PUBLISHABLE_KEYS","SUPABASE_ANON_KEY"),admin=envKey("SUPABASE_SECRET_KEYS","SUPABASE_SERVICE_ROLE_KEY");
- const stripeKey=Deno.env.get("STRIPE_SECRET_KEY")||"",proPrice=Deno.env.get("STRIPE_PRO_PRICE_ID")||"",schoolPrice=Deno.env.get("STRIPE_SCHOOL_PRICE_ID")||"",billingEnabled=Deno.env.get("PILOTDESK_BILLING_ENABLED")==="true";
- if(req.method==="GET")return json(200,{configured:Boolean(billingEnabled&&base&&pub&&admin&&stripeKey&&proPrice),schoolConfigured:Boolean(billingEnabled&&base&&pub&&admin&&stripeKey&&schoolPrice)});
+ const stripeKey=Deno.env.get("STRIPE_SECRET_KEY")||"",proPrice=Deno.env.get("STRIPE_PRO_PRICE_ID")||"",schoolPrice=Deno.env.get("STRIPE_SCHOOL_PRICE_ID")||"",webhookSecret=Deno.env.get("STRIPE_WEBHOOK_SECRET")||"",billingEnabled=Deno.env.get("PILOTDESK_BILLING_ENABLED")==="true";
+ // Checkout is live-only and fail-closed. The known Pro price is from PilotDesk's verified live Stripe account.
+ const liveReady=/^(sk|rk)_live_/.test(stripeKey)&&proPrice==="price_1UOlFP0t3Muvn8bKKGHb2CtZ"&&/^whsec_/.test(webhookSecret);
+ if(req.method==="GET")return json(200,{configured:Boolean(billingEnabled&&base&&pub&&admin&&liveReady),schoolConfigured:Boolean(billingEnabled&&base&&pub&&admin&&liveReady&&schoolPrice)});
  const token=(req.headers.get("Authorization")||"").replace(/^Bearer\s+/i,"").trim();
  if(!base||!pub||!admin)return json(503,{error:"Billing backend is unavailable."});
  if(!billingEnabled)return json(503,{error:"PilotDesk paid checkout is intentionally disabled until launch checks are complete.",code:"billing_disabled"});
- if(!stripeKey||!proPrice)return json(503,{error:"PilotDesk checkout is not connected to Stripe yet.",code:"billing_not_configured"});
+ if(!liveReady)return json(503,{error:"PilotDesk live billing is not fully configured. Checkout is unavailable.",code:"billing_not_configured"});
  if(!token)return json(401,{error:"Sign in required."});
  try{
   const userRes=await fetch(base+"/auth/v1/user",{headers:{apikey:pub,Authorization:"Bearer "+token}});
@@ -28,6 +30,13 @@ Deno.serve(async(req:Request)=>{
   const existingRows=await existingRes.json();const existing=Array.isArray(existingRows)?existingRows[0]:null;
   if(existing&&["active","trialing"].includes(String(existing.status)))return json(409,{error:"This account already has an active subscription. Use billing management to change plans.",code:"already_subscribed"});
   let customerId=existing?.stripe_customer_id||"";
+  // Accounts previously tested with a sandbox customer ID must not get stuck when moving to live billing.
+  if(customerId){
+   const checked=await fetch("https://api.stripe.com/v1/customers/"+encodeURIComponent(customerId),{headers:{Authorization:"Bearer "+stripeKey}});
+   if(checked.status===404)customerId="";
+   else if(!checked.ok)throw new Error("Unable to verify existing Stripe billing profile.");
+   else if((await checked.json())?.deleted)customerId="";
+  }
   if(!customerId){
    const customer=await stripePost("/v1/customers",{"email":String(user.email||""),"metadata[supabase_user_id]":user.id,"metadata[pilotdesk]":"true"});
    customerId=String(customer.id||"");if(!customerId)throw new Error("Stripe did not return a customer.");

@@ -35,5 +35,7 @@ must(portal.includes('/auth/v1/user'),'Billing portal does not authenticate the 
 must(webhook.includes('Stripe-Signature'),'Webhook signature check is missing');
 must(webhook.includes('customer.subscription.updated')&&webhook.includes('customer.subscription.deleted'),'Subscription lifecycle events are incomplete');
 must(webhook.includes('billing_subscriptions'),'Webhook does not sync subscription authority');
+must(checkout.includes('liveReady')&&checkout.includes('STRIPE_WEBHOOK_SECRET'),'Checkout must require live Stripe and webhook readiness');
+must(webhook.includes('Unrecognized subscription price; refusing to grant paid access.'),'Webhook must fail closed for unrecognized prices');
 
 console.log('Billing readiness checks passed: RLS authority, launch switch, checkout, portal, lifecycle sync, Pro gates, and ad-free entitlement wiring are present.');

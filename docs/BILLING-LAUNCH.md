@@ -15,6 +15,19 @@ Set these in the PilotDesk Supabase project Edge Function secrets:
 
 Keep `PILOTDESK_BILLING_ENABLED` unset or false during setup and test-mode verification.
 
+## Current live Stripe setup (October 2026)
+
+- Live Stripe account: **Pilot-Desk** (not Pilot-Desk sandbox).
+- Live Pro product has a verified recurring **$5 USD/month** price.
+- Set `STRIPE_PRO_PRICE_ID=price_1UOlFP0t3Muvn8bKKGHb2CtZ` in Supabase Edge Function secrets.
+- Live Stripe webhook is registered at the endpoint below and has four subscription/checkout events enabled.
+- Live Stripe customer portal is configured for invoice history, payment-method updates, and cancellation at period end.
+- **Secrets must be entered in Supabase project Edge Function secrets by an authorized project operator**: the available Supabase integration does not expose a secret-management operation.
+- Retrieve the live webhook's **signing secret** securely from Stripe; do not paste it in GitHub, client-side code, chat, or logs. If no longer visible, rotate the webhook secret in Stripe.
+- Use a live-mode Stripe secret or restricted key with the necessary Stripe API scopes. Never reuse the sandbox key.
+- **Keep `PILOTDESK_BILLING_ENABLED=false` until a real checkout and webhook-based entitlement test passes**. The deployed checkout function now requires a live key, this exact live Pro price, a webhook-signing-secret-shaped value, and explicit opt-in; these checks do not prove the secret matches until an event is actually delivered.
+- The webhook must process signed events successfully before launching, and `billing_subscriptions` must reflect active Pro status on the purchased account.
+
 ## Stripe webhook
 
 Endpoint:

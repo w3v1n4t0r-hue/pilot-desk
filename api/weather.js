@@ -132,9 +132,9 @@ module.exports=async function handler(req,res){
   const id=upstreamId(requested);
   const started=Date.now();
   const [awcMetar,awcTaf,awcAirport,noaaMetar,noaaTaf]=await Promise.all([
-    fetchJson(`${AWC}metar?ids=${encodeURIComponent(id)}&format=json`,2800),
-    fetchJson(`${AWC}taf?ids=${encodeURIComponent(id)}&format=json`,2800),
-    fetchJson(`${AWC}airport?ids=${encodeURIComponent(id)}&format=json`,2400),
+    fetchJson(`${AWC}metar?ids=${encodeURIComponent(id)}&format=json`,4500),
+    fetchJson(`${AWC}taf?ids=${encodeURIComponent(id)}&format=json`,6000),
+    fetchJson(`${AWC}airport?ids=${encodeURIComponent(id)}&format=json`,4000),
     fetchText(`${NOAA}observations/metar/stations/${encodeURIComponent(id)}.TXT`,3200),
     fetchText(`${NOAA}forecasts/taf/stations/${encodeURIComponent(id)}.TXT`,3200)
   ]);

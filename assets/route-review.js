@@ -16,7 +16,7 @@ function render(){
 function invalidate(){sequence++;loadedKey='';weather.clear();notices.clear();$('rpDepartureReviewStatus').textContent='Plan changed. Load the review again for the current route and departure.';render();}
 async function review(applyWinds){
  if(loading)return;
- if(!window.pdNavlogResult){await rp()?.rebuild();}
+ if(!window.pdNavlogResult){if(applyWinds&&perf()?.getSettings().forecast)perf().clearForecast();await rp()?.rebuild();}
  let points=rp()?.getPoints()||[],time=windowTimes();
  if(points.length<2||time.departure==null){$('rpDepartureReviewStatus').textContent='Build a valid route and enter a valid UTC departure first.';return;}
  if(applyWinds&&!Number(perf().getSettings().phases?.cruiseAltitude)){$('rpDepartureReviewStatus').textContent='Enter cruise altitude under Aircraft performance & forecast winds first.';return;}
@@ -28,7 +28,7 @@ async function review(applyWinds){
   await Promise.all(airports.map(async p=>{const [w,n]=await Promise.all([rp().getWeather(p.id,true),B().requestNotams(p.id,true).catch(e=>({...e.payload,error:e.message}))]);if(seq!==sequence||expected!==key())return;weather.set(p.id,w);notices.set(p.id,n);}));
   if(seq!==sequence||expected!==key())return;
   const failed=airports.some(p=>notices.get(p.id)?.error||notices.get(p.id)?.configured===false),limited=B().airportCandidates(points,perf().getSettings().alternateAirport).length>8;
-  $('rpDepartureReviewStatus').textContent=(applyWinds&&!applied?'Forecast winds were not applied. Review the wind error; the wind basis below describes the current navlog. ':'')+(failed?'Airport data loaded; automatic NOTAM coverage is unavailable or incomplete. Import notices or check FAA NOTAM Search. ':'Airport data loaded. Review source times and forecast coverage.')+(limited?' Airport review is limited to eight airports, including departure, destination and alternate.':'')+(!airports.length?' This route has no airport points; manual coordinates do not identify airports.':'');render();
+  $('rpDepartureReviewStatus').textContent=(applyWinds&&!applied?'Forecast winds were not applied: '+$('rpWindsStatus').textContent+' The wind basis below describes the current navlog. ':'')+(failed?'Airport data loaded; automatic NOTAM coverage is unavailable or incomplete. Import notices or check FAA NOTAM Search. ':'Airport data loaded. Review source times and forecast coverage.')+(limited?' Airport review is limited to eight airports, including departure, destination and alternate.':'')+(!airports.length?' This route has no airport points; manual coordinates do not identify airports.':'');render();
  }catch(e){$('rpDepartureReviewStatus').textContent='Review could not load. '+e.message;}finally{loading=false;$('rpLoadDepartureReview').disabled=false;$('rpRefreshAirportReview').disabled=false;}
 }
 async function readFile(input,target,status){try{const file=input.files?.[0];if(!file)return;if(file.size>1_000_000)throw Error('Select a file smaller than 1 MB.');target.value=await file.text();status.textContent='File loaded. Review it, then import.';}catch(e){status.textContent=e.message;}}

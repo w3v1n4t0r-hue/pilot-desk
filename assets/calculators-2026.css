@@ -183,3 +183,10 @@
   .wb-result-deck .wb-results{grid-template-columns:1fr!important}
   .wb-result-deck .wb-results .result.primary{grid-column:auto!important}
 }
+
+/* Bank and lift vectors are a route-scoped calculator enhancement. */
+.pd-bank-visual{margin-top:24px;border-top:1px solid var(--line);padding-top:24px}
+.pd-bank-visual svg{display:block;width:100%;max-width:420px;margin:auto}
+.pd-bank-visual [data-bank-wing]{transform-origin:180px 150px;transition:transform 220ms cubic-bezier(.2,.8,.2,1)}
+.pd-bank-visual p{font-variant-numeric:tabular-nums}
+@media(prefers-reduced-motion:reduce){.pd-bank-visual [data-bank-wing]{transition:none}}

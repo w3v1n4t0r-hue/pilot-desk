@@ -1,9 +1,10 @@
 const sectionDefinitions = [
   {
     label: 'Tools',
-    paths: ['/tools.html', '/calculators/', '/weight-balance.html', '/e6b-flight-computer.html', '/flight-planning-workspace.html', '/history.html'],
+    paths: ['/aerodynamic-lab.html', '/tools.html', '/calculators/', '/weight-balance.html', '/e6b-flight-computer.html', '/flight-planning-workspace.html', '/history.html'],
     items: [
       ['/tools.html', 'Free aviation calculators', 'Browse every PilotDesk calculator by subject'],
+      ['/aerodynamic-lab.html', 'Aerodynamic lab', 'Explore lift, drag and wing geometry'],
       ['/e6b-flight-computer.html', 'E6B flight computer', 'Flight math in one place'],
       ['/weight-balance.html', 'Weight & balance', 'Build and save a loading scenario'],
       ['/flight-planning-workspace.html', 'Flight math', 'Wind, time, fuel, and descent calculations'],

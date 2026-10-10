@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'aerodynamic-lab.html'
+      - 'assets/aero-*'
+      - 'assets/bank-visual.js'
+      - 'qa/aero-*'
       - 'sw.js'
       - 'assets/app-bootstrap.js'
       - 'assets/styles.css'
@@ -19,6 +23,10 @@ on:
   push:
     branches: [main]
     paths:
+      - 'aerodynamic-lab.html'
+      - 'assets/aero-*'
+      - 'assets/bank-visual.js'
+      - 'qa/aero-*'
       - 'sw.js'
       - 'assets/app-bootstrap.js'
       - 'assets/styles.css'
@@ -72,4 +80,6 @@ jobs:
             if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
             sleep 0.5
           done
+          node qa/aero-equations.mjs
+          node qa/aero-browser.mjs
           node qa/offline-e2e.mjs

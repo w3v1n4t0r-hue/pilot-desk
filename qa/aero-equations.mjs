@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import '../assets/aero-core.js';
+const p={speed:50,density:1.225,area:16,span:10,efficiency:.8,cl:.6,cd0:.025,chord:1.6,viscosity:.00001789,temperature:288.15};
+const r=PDAero.calculate(p);
+assert.equal(r.q,1531.25);assert.equal(r.lift,14700);assert.equal(r.ar,6.25);
+assert.ok(Math.abs(r.cdi-.0229183118)<1e-9);
+assert.equal(PDAero.calculate({...p,speed:100}).lift,4*r.lift);
+assert.equal(PDAero.calculate({...p,speed:100}).drag,4*r.drag);
+assert.ok(PDAero.calculate({...p,span:20}).induced<r.induced);
+assert.equal(PDAero.calculate({...p,cl:0}).induced,0);
+assert.equal(PDAero.calculate({...p,cl:-.6}).lift,-r.lift);
+assert.equal(PDAero.calculate({...p,cl:0,cd0:0}).ld,null);
+for(const change of [{speed:0},{density:NaN},{efficiency:1.1},{cd0:-1},{area:Infinity},{temperature:-1}])assert.throws(()=>PDAero.calculate({...p,...change}));
+console.log('NASA equation reference values, scaling, sign and invalid-input checks passed.');

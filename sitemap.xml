@@ -2,9 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://www.pilot-desk.com/</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/about.html</loc><lastmod>2026-09-25</lastmod></url>
+<url><loc>https://www.pilot-desk.com/aerodynamic-lab.html</loc><lastmod>2026-10-10</lastmod></url>
 <url><loc>https://www.pilot-desk.com/aircraft.html</loc><lastmod>2026-10-01</lastmod></url>
 <url><loc>https://www.pilot-desk.com/airport.html</loc><lastmod>2026-09-25</lastmod></url>
-<url><loc>https://www.pilot-desk.com/calculators/accelerated-stall/</loc><lastmod>2026-10-05</lastmod></url>
+<url><loc>https://www.pilot-desk.com/calculators/accelerated-stall/</loc><lastmod>2026-10-09</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/arc-distance/</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/ballast/</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/climb-gradient/</loc><lastmod>2026-10-05</lastmod></url>
@@ -23,7 +24,7 @@
 <url><loc>https://www.pilot-desk.com/calculators/holding-leg-distance/</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/hydroplaning/</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/isa-temperature/</loc><lastmod>2026-10-05</lastmod></url>
-<url><loc>https://www.pilot-desk.com/calculators/load-factor/</loc><lastmod>2026-10-05</lastmod></url>
+<url><loc>https://www.pilot-desk.com/calculators/load-factor/</loc><lastmod>2026-10-09</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/mach-number/</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/maneuvering-speed-weight/</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/moment-cg/</loc><lastmod>2026-10-05</lastmod></url>
@@ -144,9 +145,9 @@
 <url><loc>https://www.pilot-desk.com/poh-chart-studio.html</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/pricing.html</loc><lastmod>2026-10-04</lastmod></url>
 <url><loc>https://www.pilot-desk.com/procedures.html</loc><lastmod>2026-09-25</lastmod></url>
-<url><loc>https://www.pilot-desk.com/route-planner.html</loc><lastmod>2026-10-04</lastmod></url>
+<url><loc>https://www.pilot-desk.com/route-planner.html</loc><lastmod>2026-10-09</lastmod></url>
 <url><loc>https://www.pilot-desk.com/sources.html</loc><lastmod>2026-10-05</lastmod></url>
-<url><loc>https://www.pilot-desk.com/tools.html</loc><lastmod>2026-10-05</lastmod></url>
+<url><loc>https://www.pilot-desk.com/tools.html</loc><lastmod>2026-10-09</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/acs-far-reference.html</loc><lastmod>2026-09-25</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/certificates-ratings.html</loc><lastmod>2026-09-25</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/cfi.html</loc><lastmod>2026-10-05</lastmod></url>

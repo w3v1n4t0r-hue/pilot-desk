@@ -1,0 +1,54 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {diagramModel,vector,shortestAngle,DIAGRAM_KEYS,NM_FT} from '../src/scripts/calculator-motion-model.mjs';
+const source=fs.readFileSync('assets/site.js','utf8');
+function formula(key,values){
+ const fields=Object.fromEntries(Object.entries(values).map(([id,value])=>[id,{value:String(value)}]));
+ for(let i=0;i<3;i++)fields['out'+i]={textContent:''};
+ const ctx={document:{getElementById:id=>fields[id]},window:{},console};
+ vm.runInNewContext(source.slice(0,source.indexOf('function resultText()'))+';globalThis.calculators=F;',ctx);
+ ctx.calculators[key]();return [0,1,2].map(i=>fields['out'+i].textContent);
+}
+const number=text=>Number(String(text).replaceAll(',','').match(/[+-]?\d+(?:\.\d+)?/)?.[0]);
+const near=(a,b,tolerance=.06)=>assert(Math.abs(a-b)<=tolerance,`${a} != ${b}`);
+for(let runway=0;runway<=360;runway+=45){
+ const values={runway,windDir:355,windSpeed:24,gustSpeed:36},m=diagramModel('crosswind',values),out=formula('crosswind',values);
+ near(Math.abs(m.cross),number(out[0]));near(Math.abs(m.head),number(out[1]));near(m.cross*m.cross+m.head*m.head,24*24,1e-6);
+}
+for(const course of [0,90,180,270,359])for(const windDir of [0,60,180,270,355]){
+ const values={course,tas:120,windDir,windSpeed:23},m=diagramModel('windTriangle',values),out=formula('windTriangle',values);
+ near(m.heading,number(out[0]));near(m.gs,number(out[1]));
+ const actual=vector(m.gs,course);near(m.ground[0],actual[0],1e-6);near(m.ground[1],actual[1],1e-6);
+}
+assert.equal(diagramModel('windTriangle',{course:0,tas:50,windDir:90,windSpeed:80}),null);
+assert.equal(diagramModel('windTriangle',{course:0,tas:50,windDir:0,windSpeed:80}),null);
+near(shortestAngle(359,1),361);near(shortestAngle(1,359),-1);
+for(const gs of [60,120,180]){
+ const m=diagramModel('threeDegree',{gs});near(m.height/m.distance/NM_FT,Math.tan(3*Math.PI/180),1e-10);
+ near(m.height/m.minutes,number(formula('threeDegree',{gs})[0]),.51);
+}
+const descent=diagramModel('tod',{altitude:6000,gradient:300,gs:120});near(descent.distance,20);near(descent.minutes,10);
+const glide=diagramModel('glide',{alt:3000,ratio:10});near(glide.distance,number(formula('glide',{alt:3000,ratio:10})[0]),.051);
+const climb=diagramModel('obstacleGradient',{obstacle:600,margin:200,distance:4});near(climb.height,800);near(climb.height/climb.distance,number(formula('obstacleGradient',{obstacle:600,margin:200,distance:4})[0]));
+for(const bank of [10,30,60]){
+ const m=diagramModel('turnRadius',{tas:120,bank}),out=formula('turnRadius',{tas:120,bank});near(m.radius,number(out[0]),.006);near(m.rate,number(out[2]),.006);
+ const b=diagramModel('loadFactor',{bank});near(b.factor,number(formula('loadFactor',{bank})[0]),.006);
+}
+const fuel=diagramModel('fuelRequired',{fuel:10,burn:8,time:2,reserve:45});near(fuel.trip,16);near(fuel.reserve,6);near(fuel.remaining,-12);assert(fuel.remaining<0,'shortfall must not be drawn as spare fuel');
+for(const pa of [0,5000,12000]){
+ const v={pa,oat:30},m=diagramModel('densityAltitude',v);near(m.second,number(formula('densityAltitude',v)[0]),.51);
+}
+assert.equal(diagramModel('cloudBase',{temp:10,dew:15}),null);
+assert.equal(diagramModel('turnRadius',{tas:100,bank:0}),null);
+assert.equal(diagramModel('tod',{altitude:6000,gradient:0,gs:120}),null);
+assert.equal(diagramModel('densityAltitude',{pa:NaN,oat:20}),null);
+assert.equal(diagramModel('unknown',{}),null);assert.equal(DIAGRAM_KEYS.size,24);
+const manifest=fs.readFileSync('dist/assets/offline-precache.js','utf8');
+assert(manifest.includes('calculator-motion-runtime')&&manifest.includes('calculator-motion.css'),'animation runtime and styles must be available offline');
+const runtime=fs.readFileSync('src/scripts/calculator-motion.js','utf8');
+assert(runtime.includes("DIAGRAM_KEYS.has(key)"),'invalid initial inputs must still mount a correctable diagram');
+assert(runtime.includes("svg.toggleAttribute('hidden',!m)"),'invalid models must clear the graphic');
+assert(runtime.includes('reduced.matches')&&runtime.includes('pagehide'));
+assert(fs.statSync('dist/assets/calculator-motion-runtime.js').size<140*1024,'optional runtime stays within its route-specific budget');
+console.log('Calculator diagrams passed: vector closure, north crossing, wind feasibility, profile rates, turns, fuel shortfalls, altitude models and offline release assets.');

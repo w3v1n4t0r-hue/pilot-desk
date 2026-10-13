@@ -1,0 +1,31 @@
+/* Calculator-only motion surfaces. The FAA map uses its existing styles. */
+.pd-calculator-animated{--accent:var(--silver);--pd-accent:var(--silver)}
+.pd-calculator-animated .pd-has-calculator-diagram{grid-template-columns:minmax(0,1fr)!important}
+.pd-calculator-animated .pd-has-calculator-diagram>.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.pd-calculator-animated .pd-calc-output-panel{border-top-color:var(--silver)!important;background:var(--panel)!important}
+.pd-calculator-animated .pd-calc-output-panel .result.primary{background:var(--panel2)!important}
+.pd-calculator-animated .pd-calc-output-panel .result.primary strong{color:var(--silver2)!important;font-size:clamp(24px,3vw,34px)!important;overflow-wrap:anywhere}
+.pd-calculator-diagram{margin:0 0 20px;padding:0 0 18px;border-bottom:1px solid var(--line);min-width:0}
+.pd-diagram-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;margin-bottom:8px}
+.pd-diagram-heading>b{font-size:16px;font-weight:500;color:var(--silver2)}
+.pd-diagram-replay{min-height:44px;padding:8px 14px;border:1px solid var(--line-hi);background:transparent;color:var(--silver2);cursor:pointer;font:inherit;font-size:13px;transform-origin:center}
+.pd-diagram-replay:disabled{opacity:.5;cursor:default}
+.pd-calculator-diagram>svg{display:block;width:100%;height:auto;max-height:340px;overflow:visible}
+.pd-calculator-diagram>svg[hidden],.pd-calculator-diagram [hidden]{display:none!important}
+.pd-calculator-diagram figcaption,.pd-diagram-invalid{font-size:12px;color:var(--muted);line-height:1.55;margin:8px 0 0;max-width:none}
+.pd-diagram-line{stroke:#a9afb8;stroke-width:1.7;fill:none}
+.pd-diagram-dashed{stroke-dasharray:5 5}
+.pd-diagram-bright{stroke:#f2f3f5;stroke-width:2.2}
+.pd-diagram-secondary{opacity:.42}
+.pd-diagram-label{font:14px ui-monospace,SFMono-Regular,Consolas,monospace;fill:#a9afb8}
+.pd-diagram-alert{fill:#e5b8b8}
+.pd-diagram-point{fill:#f2f3f5}
+.pd-calculator-animated .pd-crosswind-display.pd-diagram-replaced{display:none}
+.pd-diagram-gust{font-size:13px;color:var(--silver2);margin:8px 0}
+.pd-diagram-existing-warning{font-size:12px;color:#e5b8b8;line-height:1.5;margin:8px 0;padding:8px;border-left:2px solid #926363}
+.pd-calculator-animated .pd-cabin-object{width:44px;height:44px;display:block;margin-bottom:8px;pointer-events:none}
+@media(max-width:980px){.pd-calculator-animated .pd-calc-output-panel{display:flex;flex-direction:column}.pd-calculator-animated .pd-calc-results-head{order:0}.pd-calculator-animated .pd-calc-output-panel .results{order:1}.pd-calculator-animated .pd-calculator-diagram{order:2;margin:20px 0 0;border-bottom:0;border-top:1px solid var(--line);padding:16px 0 0}.pd-calculator-animated .pd-calc-result-summary{order:3}.pd-calculator-animated .pd-has-calculator-diagram>.sidebar{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.pd-calculator-animated .pd-cabin-object,.pd-calculator-animated button{transform:none!important;opacity:1!important}}
+@media print{.pd-diagram-replay{display:none!important}.pd-calculator-diagram{break-inside:avoid}}
+
+html.pd-reduced-motion .pd-calculator-animated .pd-cabin-object,html.pd-reduced-motion .pd-calculator-animated button{transform:none!important;opacity:1!important}

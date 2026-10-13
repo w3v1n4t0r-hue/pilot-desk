@@ -32,5 +32,9 @@ if(path==='/checklist-trainer.html')load('/assets/trainer-pro.js');
 if(!isAstroNative)load('/assets/experience.js');
 if(['/planner.html','/airport.html','/aircraft.html','/route-planner.html','/flights.html','/weather.html','/weight-balance.html','/flight-planning-workspace.html','/procedures.html','/flight-brief.html'].includes(path))load('/assets/flight-journey.js');
 load('/assets/motion-polish.js');
+if(calc||path==='/weight-balance.html'||path.includes('weight-balance-builder')){
+ const style=document.createElement('link');style.rel='stylesheet';style.href='/assets/calculator-motion.css';document.head.append(style);
+ load('/assets/calculator-motion-runtime.js');
+}
 load('/assets/system-states.js');load('/assets/errors.js');load('/assets/analytics.js');load('/assets/update.js');
 })();

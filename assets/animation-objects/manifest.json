@@ -1,0 +1,190 @@
+{
+  "source": "https://higgsfield.ai/3d-jutsu/1591e771-a13d-4dfc-972a-504dd4685df3",
+  "revision": 1,
+  "coordinateSystem": "SVG: x right, y down; clockwise rotation positive",
+  "assets": [
+    {
+      "file": "aircraft-plan.svg",
+      "name": "aircraft-plan",
+      "pivot": [
+        0,
+        0
+      ],
+      "forward": "up",
+      "parts": [
+        "air-plan-fuselage",
+        "air-plan-wings",
+        "air-plan-tail",
+        "air-plan-canopy"
+      ]
+    },
+    {
+      "file": "aircraft-profile.svg",
+      "name": "aircraft-profile",
+      "pivot": [
+        0,
+        0
+      ],
+      "forward": "right",
+      "parts": [
+        "air-profile-fuselage",
+        "air-profile-fin",
+        "air-profile-canopy",
+        "air-profile-wing",
+        "air-profile-tailplane"
+      ]
+    },
+    {
+      "file": "baggage.svg",
+      "name": "baggage",
+      "pivot": [
+        0,
+        0
+      ],
+      "forward": null,
+      "parts": [
+        "bag-case",
+        "bag-band-l",
+        "bag-band-r",
+        "bag-handle"
+      ]
+    },
+    {
+      "file": "compass.svg",
+      "name": "compass",
+      "pivot": [
+        0,
+        0
+      ],
+      "forward": null,
+      "parts": [
+        "compass-heading-pointer",
+        "compass-axis",
+        "compass-axis-y",
+        "compass-ring",
+        "compass-tick-0",
+        "compass-tick-10",
+        "compass-tick-100",
+        "compass-tick-110",
+        "compass-tick-120",
+        "compass-tick-130",
+        "compass-tick-140",
+        "compass-tick-150",
+        "compass-tick-160",
+        "compass-tick-170",
+        "compass-tick-180",
+        "compass-tick-190",
+        "compass-tick-20",
+        "compass-tick-200",
+        "compass-tick-210",
+        "compass-tick-220",
+        "compass-tick-230",
+        "compass-tick-240",
+        "compass-tick-250",
+        "compass-tick-260",
+        "compass-tick-270",
+        "compass-tick-280",
+        "compass-tick-290",
+        "compass-tick-30",
+        "compass-tick-300",
+        "compass-tick-310",
+        "compass-tick-320",
+        "compass-tick-330",
+        "compass-tick-340",
+        "compass-tick-350",
+        "compass-tick-40",
+        "compass-tick-50",
+        "compass-tick-60",
+        "compass-tick-70",
+        "compass-tick-80",
+        "compass-tick-90"
+      ]
+    },
+    {
+      "file": "fuel-segments.svg",
+      "name": "fuel-segments",
+      "pivot": [
+        0,
+        0
+      ],
+      "forward": null,
+      "parts": [
+        "fuel-remaining",
+        "fuel-reserve",
+        "fuel-trip",
+        "fuel-outline"
+      ]
+    },
+    {
+      "file": "obstacle.svg",
+      "name": "obstacle",
+      "pivot": [
+        0,
+        0
+      ],
+      "forward": null,
+      "parts": [
+        "obs-tower",
+        "obs-antenna",
+        "obs-crossbrace",
+        "obs-ground"
+      ]
+    },
+    {
+      "file": "runway.svg",
+      "name": "runway",
+      "pivot": [
+        0,
+        0
+      ],
+      "forward": null,
+      "parts": [
+        "rwy-surface",
+        "rwy-centerline-0",
+        "rwy-centerline-1",
+        "rwy-centerline-2",
+        "rwy-centerline-3",
+        "rwy-centerline-4",
+        "rwy-centerline-5",
+        "rwy-threshold",
+        "rwy-threshold-001",
+        "rwy-threshold-002",
+        "rwy-threshold-003",
+        "rwy-threshold-004",
+        "rwy-threshold-005",
+        "rwy-threshold-006",
+        "rwy-threshold-007",
+        "rwy-edges"
+      ]
+    },
+    {
+      "file": "seat.svg",
+      "name": "seat",
+      "pivot": [
+        0,
+        0
+      ],
+      "forward": null,
+      "parts": [
+        "seat-back",
+        "seat-cushion",
+        "seat-headrest",
+        "seat-seam",
+        "seat-seam-r"
+      ]
+    },
+    {
+      "file": "wind-vector.svg",
+      "name": "wind-vector",
+      "pivot": [
+        0,
+        2.5
+      ],
+      "forward": "up",
+      "parts": [
+        "wind-shaft",
+        "wind-tip"
+      ]
+    }
+  ]
+}

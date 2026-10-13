@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#121416">
+ <title>PilotDesk | Route Review</title>
+ <meta name="description" content="PilotDesk route-review workspace with route import, departure forecasts, wind and fuel calculations, and a clearly labeled sample map.">
+ <link rel="stylesheet" href="/assets/design-tokens.css"><link rel="stylesheet" href="/assets/route-review-workspace/styles.css"><link rel="stylesheet" href="/assets/route-review-workspace/briefing.css">
+</head>
+<body>
+ <a class="skip-link" href="#main-content">Skip to route review</a>
+ <header class="review-topbar">
+  <a class="brand" href="/" aria-label="PilotDesk home"><img class="brand-logo" src="/favicon.svg" alt="" width="40" height="40"><span>Pilot<span class="brand-light">Desk</span></span></a>
+  <nav aria-label="Workspace"><a href="/route-planner.html">Route planner</a><a href="/tools.html">Tools</a><button id="saved-btn">Saved routes <span id="saved-count">0</span></button></nav>
+  <div class="header-right"><span class="private">Sample map · provider briefing</span><button id="data-btn" class="quiet">Data &amp; legend</button><a class="account-link" href="/account.html">Account</a></div>
+ </header>
+ <main id="main-content">
+  <aside class="sidebar">
+   <div class="sidebar-heading"><div class="eyebrow">FLIGHT PLANNING</div><h1>Route review</h1><p>See what’s along your route.</p></div>
+   <div class="tabs" role="tablist" aria-label="Route panels"><button role="tab" aria-selected="true" aria-controls="route-panel" id="tab-route" data-tab="route">Route</button><button role="tab" aria-selected="false" aria-controls="briefing-panel" id="tab-briefing" data-tab="briefing" tabindex="-1">Briefing</button><button role="tab" aria-selected="false" aria-controls="weather-panel" id="tab-weather" data-tab="weather" tabindex="-1">Layers <span id="wx-count"></span></button><button role="tab" aria-selected="false" aria-controls="notes-panel" id="tab-notes" data-tab="notes" tabindex="-1">Notes</button></div>
+   <div class="sidebar-scroll">
+    <section id="route-panel" role="tabpanel" aria-labelledby="tab-route">
+     <button id="import-route-btn" class="full-width import-launch">Import a PilotDesk route ↗</button><div class="section-label">ROUTE <button id="reverse-btn" class="text-button" title="Reverse route">↕ Reverse</button></div>
+     <div id="route-stops"></div>
+     <div class="airport-search"><label for="airport-search">Add an airport</label><div class="input-icon"><span aria-hidden="true">⌕</span><input id="airport-search" type="search" placeholder="ICAO, name, or city" autocomplete="off" aria-controls="airport-results"></div><div id="airport-results" class="search-results"></div></div>
+     <div class="route-actions"><button id="fit-btn">Fit route</button><button id="copy-btn">Copy route</button></div>
+     <div class="divider"></div>
+     <div class="section-label">FLIGHT SETTINGS</div>
+     <div class="settings-grid"><label>Cruise altitude<select id="altitude"><option value="3500">3,500 ft MSL</option><option value="5500">5,500 ft MSL</option><option value="7000" selected>7,000 ft MSL</option><option value="9500">9,500 ft MSL</option><option value="12000">12,000 ft MSL</option><option value="18000">18,000 ft MSL</option></select></label><label>True airspeed<div class="unit-input"><input id="tas" type="number" min="60" max="500" step="5" value="120"><span>KT</span></div></label></div>
+     <label class="full-label">Review corridor <select id="corridor"><option value="10">10 NM each side</option><option value="20" selected>20 NM each side</option><option value="40">40 NM each side</option></select></label>
+     <label class="full-label">Estimated departure · UTC<input id="etd" type="datetime-local" step="60"></label><button id="open-briefing-btn" class="full-width briefing-launch">Forecast, fuel &amp; NOTAM review →</button><div class="totals"><div><span>DISTANCE</span><strong id="total-nm">—</strong><small>NM</small></div><div><span>EST. TIME</span><strong id="total-time">—</strong><small id="total-basis">NO WIND</small></div></div>
+     <div class="section-label">LEGS <span class="muted">TRUE COURSE</span></div><div id="legs"></div>
+     <div class="divider"></div><label class="full-label">Try a sample route<select id="examples"></select></label>
+     <p class="fine-print">Regional airport sample. Routes use direct airport-to-airport legs. Altitude is a review filter, not a recommended cruising altitude.</p>
+    </section>
+    <section id="briefing-panel" role="tabpanel" aria-labelledby="tab-briefing" hidden>
+<div class="section-label">DEPARTURE BRIEFING <span class="muted">UTC</span></div><p class="panel-hint" id="briefing-etd"></p>
+<button id="fetch-briefing-btn" class="full-width primary">Load forecasts &amp; NOTAMs ↻</button><p id="briefing-status" class="source-status" role="status" aria-live="polite">No briefing loaded.</p>
+<label class="full-label">Winds for calculations<select id="wind-mode"><option value="manual">Entered winds</option><option value="forecast">Forecast winds aloft</option></select></label>
+<div class="settings-grid"><label>Wind from · ° true<input id="manual-wind-dir" type="number" value="0" min="0" max="360"></label><label>Wind speed · KT<input id="manual-wind-speed" type="number" value="0" min="0" max="250"></label></div>
+<div class="settings-grid"><label>Cruise fuel burn · US GPH<input id="fuel-burn" type="number" value="10" min="0" max="500" step="0.1"></label><label>Usable fuel · US GAL<input id="fuel-onboard" type="number" min="0" max="10000" step="0.1" placeholder="Enter fuel"></label></div>
+<details class="fuel-allowances"><summary>Fuel allowances</summary><div class="settings-grid"><label>Taxi · GAL<input id="taxi-fuel" type="number" value="0" min="0" step="0.1"></label><label>Reserve · MIN<input id="reserve-minutes" type="number" value="45" min="0" max="600"></label><label>Alternate · GAL<input id="alternate-fuel" type="number" value="0" min="0" step="0.1"></label><label>Extra · GAL<input id="extra-fuel" type="number" value="0" min="0" step="0.1"></label><label>Reserve burn · GPH<input id="reserve-burn" type="number" min="0" max="500" step="0.1" placeholder="Cruise burn"></label></div></details>
+<div id="calculation-summary"></div><button id="navlog-btn" class="full-width">Open calculated navlog ↗</button>
+<div class="divider"></div><div class="section-label">AIRPORT FORECASTS <span class="muted">ETD / ETA</span></div><div id="forecast-airports"></div>
+<div class="divider"></div><div class="section-label">NOTAM REVIEW <span id="notam-count" class="muted"></span></div><p class="panel-hint">Notices are matched to route airports and the whole flight window. Unknown dates stay visible.</p><button id="import-notams-btn" class="full-width">Import NOTAMs from a briefing ↗</button><div id="notam-list"></div>
+<p class="fine-print">Forecast surface wind stays in the airport panel. Navlog calculations use winds aloft or your entered winds. Cruise estimates exclude climb, descent, and aircraft performance limits.</p>
+</section><section id="weather-panel" role="tabpanel" aria-labelledby="tab-weather" hidden><div class="section-label">AIRPORT CONDITIONS <span class="muted">SAMPLE</span></div><div id="airport-weather"></div><div class="divider"></div><div class="section-label">ALONG THE ROUTE</div><p class="panel-hint">Within your corridor at the selected time and altitude. Review keeps these items even if a map layer is off.</p><div id="review-list"></div></section>
+    <section id="notes-panel" role="tabpanel" aria-labelledby="tab-notes" hidden><label class="full-label" for="notes">Your route notes</label><textarea id="notes" rows="12" placeholder="What do you want to check before this flight?"></textarea><p class="fine-print">Notes save with this route on this device.</p><button id="download-btn" class="full-width">Download review</button></section>
+   </div>
+   <div class="sidebar-footer"><button id="save-btn" class="primary">Save route <span aria-hidden="true">↗</span></button><span class="local-tag">ON THIS DEVICE</span></div>
+  </aside>
+  <section class="map-workspace" aria-label="Interactive route map">
+   <div class="map-toolbar"><div><span class="eyebrow">CURRENT ROUTE</span><strong id="route-title">KGFK <span>→</span> KMOT <span>→</span> KXWA</strong></div><button id="layers-btn" aria-expanded="true" aria-controls="layer-panel"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 3 8 4-8 4-8-4 8-4zm-8 8 8 4 8-4M2 15l8 4 8-4"/></svg>Layers <span id="layer-count">6</span></button></div>
+   <div id="map-container">
+    <canvas id="map" tabindex="0" aria-label="Interactive reference map. Drag to pan, scroll to zoom. Use arrow keys to pan and plus or minus to zoom. Select airports from search for keyboard access."></canvas>
+    <div class="map-badge"><span class="status-dot"></span>REFERENCE MAP <span class="badge-divider"></span> <span>Sample layers</span></div>
+    <div class="zoom-controls"><button id="zoom-in" aria-label="Zoom in">+</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="home-btn" aria-label="Fit route" title="Fit route"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7V3h4m6 0h4v4M3 13v4h4m6 0h4v-4M7 10h6m-3-3v6"/></svg></button></div>
+    <div class="map-help">Drag to pan · Scroll to zoom · Click to inspect</div>
+    <div id="layer-panel" class="layer-panel"><div class="section-label">MAP LAYERS <button id="close-layers" class="text-button" aria-label="Close layers">×</button></div><label class="layer-row"><span><i class="layer-symbol airport-icon">⊕</i> Airports</span><input type="checkbox" data-layer="airports" checked></label><label class="layer-row"><span><i class="layer-symbol metar-icon">●</i> METAR categories</span><input type="checkbox" data-layer="metars" checked></label><label class="layer-row"><span><i class="layer-symbol radar-icon">▥</i> Radar</span><input type="checkbox" data-layer="radar" checked></label><label class="layer-row"><span><i class="layer-symbol pirep-icon">◇</i> PIREPs</span><input type="checkbox" data-layer="pireps" checked></label><label class="layer-row"><span><i class="layer-symbol sigmet-icon">⬡</i> SIGMETs</span><input type="checkbox" data-layer="sigmet" checked></label><label class="layer-row"><span><i class="layer-symbol gairmet-icon">⬡</i> G-AIRMETs</span><input type="checkbox" data-layer="gairmet" checked></label><label class="layer-row"><span><i class="layer-symbol tfr-icon">◎</i> TFRs</span><input type="checkbox" data-layer="tfr" checked></label><div class="layer-note">Weather &amp; restrictions are simulated.</div><button id="legend-btn" class="text-button">Open map legend ↗</button></div>
+    <div id="detail-panel" class="detail-panel" hidden></div>
+    <div class="scale"><span id="scale-line"></span><small id="scale-label">50 NM</small></div>
+    <div class="coordinates" id="coordinates">47.95°N / 101.00°W</div>
+   </div>
+   <div class="briefing-bar"><div class="briefing-time"><span class="eyebrow">SAMPLE BRIEFING</span><strong>09 OCT <span id="time-label">18:00Z</span></strong></div><div class="time-slider"><input id="time" type="range" min="18" max="23" step="1" value="18" aria-label="Sample briefing time"><div><span>18Z</span><span>19Z</span><span>20Z</span><span>21Z</span><span>22Z</span><span>23Z</span></div></div><button id="reset-time" class="quiet">Reset time</button></div>
+   <div class="review-bar"><div class="review-heading"><span class="review-indicator">!</span><div><strong id="review-summary">Route items to review</strong><span id="review-subtitle">20 NM corridor · 7,000 ft MSL</span></div><button id="review-open" class="text-button">Review all ↗</button></div><div id="review-chips"></div></div>
+  </section>
+ </main>
+ <div id="toast" role="status" aria-live="polite"></div>
+ <dialog id="modal"><div class="modal-top"><div id="modal-title"></div><button id="modal-close" aria-label="Close dialog">×</button></div><div id="modal-body"></div></dialog>
+ <script type="module" src="/assets/route-review-workspace/app.mjs"></script>
+</body>
+</html>

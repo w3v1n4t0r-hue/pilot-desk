@@ -109,7 +109,7 @@ function mountDiagram(key){
    targets.push(...arrowTarget(nodes.air,...a,...b),...arrowTarget(nodes.wind,...b,...c),...arrowTarget(nodes.ground,...a,...c),[nodes.aircraft,{tx:b[0],ty:b[1],angle:m.heading}]);
    nodes.note.textContent=`Heading ${fmt(m.heading)}° · groundspeed ${fmt(m.gs)} kt`;
   }else if(m.kind==='profile'){
-   const xmax=Math.max(10,Math.ceil(m.distance/10)*10),ymax=Math.max(3000,Math.ceil(m.height/1000)*1000),endX=42+m.distance/xmax*390,highY=216-m.height/ymax*172;
+   const xmax=Math.max(5,Math.ceil(m.distance/5)*5),ymax=Math.max(1000,Math.ceil(m.height/1000)*1000),endX=42+m.distance/xmax*390,highY=216-m.height/ymax*172;
    const start=[42,m.climb?216:highY],end=[endX,m.climb?highY:216];m.path={start,end};
    const newDomain=`${xmax}:${ymax}`;immediate||=domain!==newDomain;domain=newDomain;
    targets.push([nodes.path,{sx:start[0],sy:start[1],ex:end[0],ey:end[1]}]);targets.push([nodes.aircraft,{tx:start[0],ty:start[1]-7,angle:Math.atan2(end[1]-start[1],end[0]-start[0])*180/Math.PI}]);

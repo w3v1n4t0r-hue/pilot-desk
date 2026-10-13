@@ -13,7 +13,7 @@ export function diagramModel(key, v) {
     const angle = ((v.windDir-v.runway+540)%360)-180;
     return {kind:'crosswind',title:'Runway wind',runway:norm(v.runway),wind:norm(v.windDir),speed:v.windSpeed,
       cross:v.windSpeed*Math.sin(rad(angle)),head:v.windSpeed*Math.cos(rad(angle)),gust:v.gustSpeed,
-      caption:'Solid arrow: reported wind. Outline: gust, when entered.'};
+      caption:'Solid: wind. Dashed: components. Faint: gust, when entered.'};
   }
   if (key === 'windTriangle') {
     if (!finite([v.course,v.tas,v.windDir,v.windSpeed]) || v.tas <= 0 || v.windSpeed < 0) return null;
@@ -28,16 +28,16 @@ export function diagramModel(key, v) {
   }
   if (['threeDegree','tod','glide','climbGradient','fpmGradient','gradientAngle','obstacleGradient'].includes(key)) {
     let distance=10,height,gs=v.gs,climb=false,angle,obstacle=null;
-    if(key==='threeDegree'){if(!finite([gs])||gs<=0)return null;height=distance*NM_FT*Math.tan(rad(3));angle=3;}
+    if(key==='threeDegree'){if(!finite([gs])||gs<=0)return null;distance=gs/60;height=distance*NM_FT*Math.tan(rad(3));angle=3;}
     if(key==='tod'){if(!finite([v.altitude,v.gradient,gs])||v.altitude<0||v.gradient<=0||gs<=0)return null;height=v.altitude;distance=height/v.gradient;angle=Math.atan(v.gradient/NM_FT)*180/Math.PI;}
     if(key==='glide'){if(!finite([v.alt,v.ratio])||v.alt<0||v.ratio<=0)return null;height=v.alt;distance=height*v.ratio/NM_FT;angle=Math.atan(1/v.ratio)*180/Math.PI;}
-    if(key==='climbGradient'){if(!finite([v.gradient,gs])||v.gradient<0||gs<=0)return null;height=distance*v.gradient;climb=true;angle=Math.atan(v.gradient/NM_FT)*180/Math.PI;}
-    if(key==='fpmGradient'){if(!finite([v.fpm,gs])||gs<=0)return null;height=distance*Math.abs(v.fpm)*60/gs;climb=v.fpm>=0;angle=Math.atan(Math.abs(v.fpm)*60/gs/NM_FT)*180/Math.PI;}
-    if(key==='gradientAngle'){if(!finite([v.angle])||Math.abs(v.angle)>45)return null;angle=Math.abs(v.angle);height=distance*NM_FT*Math.tan(rad(angle));climb=v.angle>=0;}
+    if(key==='climbGradient'){if(!finite([v.gradient,gs])||v.gradient<0||gs<=0)return null;distance=gs/60;height=distance*v.gradient;climb=true;angle=Math.atan(v.gradient/NM_FT)*180/Math.PI;}
+    if(key==='fpmGradient'){if(!finite([v.fpm,gs])||gs<=0)return null;distance=gs/60;height=Math.abs(v.fpm);climb=v.fpm>=0;angle=Math.atan(Math.abs(v.fpm)*60/gs/NM_FT)*180/Math.PI;}
+    if(key==='gradientAngle'){if(!finite([v.angle])||Math.abs(v.angle)>45)return null;angle=Math.abs(v.angle);distance=1;height=distance*NM_FT*Math.tan(rad(angle));climb=v.angle>=0;}
     if(key==='obstacleGradient'){if(!finite([v.obstacle,v.distance,v.margin])||v.obstacle<0||v.margin<0||v.distance<=0)return null;distance=v.distance;height=v.obstacle+v.margin;obstacle=v.obstacle;climb=true;angle=Math.atan(height/(distance*NM_FT))*180/Math.PI;}
     if(!finite([distance,height,angle]))return null;
     return {kind:'profile',title:climb?'Climb profile':key==='glide'?'Glide profile':'Descent profile',distance,height,gs,climb,angle,obstacle,
-      minutes:gs>0?distance/gs*60:null,caption:'Height and distance use separate scales. The aircraft is a diagram marker.'};
+      minutes:gs>0?distance/gs*60:null,caption:(['threeDegree','climbGradient','fpmGradient'].includes(key)?'One minute at the entered groundspeed. ':key==='gradientAngle'?'One nautical mile at the entered angle. ':'')+'Height and distance use separate scales.'};
   }
   if(['turnRadius','rateTurn','stdRate','arcDistance'].includes(key)) {
     let radius,rate,bank=v.bank,degrees=360;

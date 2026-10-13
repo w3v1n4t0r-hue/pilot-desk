@@ -10,17 +10,17 @@ const desk=read('assets/home-desk.js');
 const sw=read('sw.js');
 
 for(const text of [
-  'Your next flight starts here.',
+  'your next flight.',
   'Plan a flight',
-  'Common pilot calculations','Three daily questions',
-  'Study for the flying you do.','FAA, weather and aircraft references'
+  'The tools you reach for.','Three daily questions',
+  'Prepare for your checkride.','FAA, weather and aircraft references'
 ])ok(home.includes(text),`homepage is missing its core value signal: ${text}`);
 for(const text of ['Plan a Flight','Use a Calculator','Study for a Written'])ok(data.includes(text),`homepage quick action is missing: ${text}`);
 for(const href of ['/route-planner.html','/tools.html','/written-prep.html','/daily/','/flight-training.html','/sources.html'])ok(home.includes(href),`homepage is missing core destination ${href}`);
 for(const href of ['/calculators/density-altitude/','/calculators/crosswind/','/weather.html','/airport.html'])ok(data.includes(href),`homepage quick tools are missing ${href}`);
 ok(home.includes('home-desk.css')&&home.includes('home-desk.js'),'homepage desk assets are not connected');
 ok(home.includes('Pick up where you left off')&&desk.includes('RECENT TOOL'),'homepage should help users resume a local workflow');
-ok(css.includes('@media(max-width:640px)')&&css.includes('min-width:0'),'homepage responsive styles should handle small screens');
+ok(css.includes('@media(max-width:480px)')&&css.includes('min-width:0'),'homepage responsive styles should handle small screens');
 for(const asset of ['/assets/home-desk.css','/assets/home-desk.js'])ok(sw.includes(asset),`service worker is missing ${asset}`);
 
 if(failures.length){console.error(`Homepage value checks failed (${failures.length})`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}

@@ -9,7 +9,7 @@ export class Briefing {
  for(const id of ['fuel-onboard','reserve-burn','taxi-fuel','alternate-fuel','extra-fuel'])$(id).addEventListener('change',()=>this.refresh());
  $('fetch-briefing-btn').addEventListener('click',()=>this.fetchData());$('open-briefing-btn').addEventListener('click',()=>host.tab('briefing'));$('import-route-btn').addEventListener('click',()=>this.importModal());$('import-notams-btn').addEventListener('click',()=>this.notamModal());$('navlog-btn').addEventListener('click',()=>this.navlog());
  document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b||b.disabled)return;if(b.dataset.importChoice!==undefined){try{await this.applyImport(this.importedChoices[Number(b.dataset.importChoice)]);}catch(e){$('route-import-error').textContent=e.message;}}if(b.dataset.removeNotice!==undefined){this.importedNotams.splice(Number(b.dataset.removeNotice),1);this.refresh();}});
- this.refresh();this.hashImport();
+ this.refresh();this.hashImport();window.addEventListener('hashchange',()=>this.hashImport());
  }
  settings(){const base=this.host.getBase(),s={altitude:base.altitude,tas:base.tas};for(const [k,id]of Object.entries(fields)){const v=$(id).value;s[k]=['departure','windMode'].includes(k)?v:['onboard','reserveBurn'].includes(k)&&v===''?null:v===''?NaN:Number(v);}return s;}
  key(){const s=this.settings();return JSON.stringify([this.host.getRoute().map(p=>[p.id,p.lat,p.lon]),s.altitude,s.departure,s.tas]);}

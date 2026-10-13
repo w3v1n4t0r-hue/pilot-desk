@@ -33,3 +33,7 @@ await test('Repository endpoint enforces POST and returns useful validation erro
  const resolve=await run('POST','route-review-resolve',{ids:['https://evil.example']});assert.equal(resolve.statusCode,400);
 });
 console.log(`${count} import, forecast, calculation, NOTAM, and API checks passed.`);
+
+await test('Malformed successful weather responses stay unavailable rather than empty',async()=>{const real=globalThis.fetch;globalThis.fetch=async url=>{if(url.includes('/metar?')||url.includes('/taf?'))return Response.json({unexpected:true});return Response.json({configured:false,notams:[]});};try{const result=await handleBriefing(new Request('https://private/api/briefing',{method:'POST',body:JSON.stringify({points:[{id:'KJFK',lat:40.6,lon:-73.7},{id:'KBOS',lat:42.4,lon:-71}],altitude:7000,tas:120,departureUtc:'2026-10-13T18:00Z'})}));const j=await result.json();assert.match(j.metars.error,/unsupported/);assert.match(j.tafs.error,/unsupported/);}finally{globalThis.fetch=real;}});
+
+await test('Impossible UTC dates are rejected before provider requests',async()=>{const response=await handleBriefing(new Request('https://private/api/briefing',{method:'POST',body:JSON.stringify({points:r,altitude:7000,tas:120,departureUtc:'2026-02-30T18:00Z'})}));assert.equal(response.status,400);});

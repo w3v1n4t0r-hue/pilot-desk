@@ -16,8 +16,8 @@ assert.equal(D.routeBounds([{lat:0,lon:179},{lat:1,lon:-179}]),null);
 assert.equal(D.routeBounds([{lat:91,lon:0},{lat:1,lon:1}]),null);
 // Verify the actual route intersection helper does not flag separated collinear edges.
 const source=fs.readFileSync('assets/efb-layers.js','utf8');
-const helpers=source.slice(source.indexOf('  function orient('),source.indexOf('  function pointInRing('));
-const intersects=vm.runInNewContext(helpers+';intersects');
+const B=createRequire(import.meta.url)('../assets/route-brief-core.js');
+const intersects=(a,b,c,d)=>B.relationToRoute({geometry:{type:'LineString',coordinates:[[c.x,c.y],[d.x,d.y]]}},[{lon:a.x,lat:a.y},{lon:b.x,lat:b.y}]).intersects;
 assert.equal(intersects({x:0,y:0},{x:1,y:0},{x:2,y:0},{x:3,y:0}),false);
 assert.equal(intersects({x:0,y:0},{x:3,y:0},{x:2,y:0},{x:4,y:0}),true);
 assert.equal(intersects({x:0,y:0},{x:2,y:2},{x:0,y:2},{x:2,y:0}),true);
@@ -26,13 +26,13 @@ console.log('Map density checks passed: all group members retained, highest prio
 // Actual advisory requests use route bounds and ignore obsolete responses.
 const advisorySource=source.slice(source.indexOf('  async function loadRouteAdvisory('),source.indexOf('  function alternateReview('));
 let complete,requestUrl='';
-const advisoryContext={window:{PilotDeskMapDensity:D},RP:{getPoints:()=>[{lat:47,lon:-97},{lat:49,lon:-94}]},routeContextSeq:1,briefStatus:{},briefData:{},briefTime:{},renderBrief:()=>{},fetchJson:async url=>{requestUrl=url;return await new Promise(resolve=>complete=resolve);}};
+const advisoryContext={window:{PilotDeskMapDensity:D},RP:{getPoints:()=>[{lat:47,lon:-97},{lat:49,lon:-94}]},routeContextSeq:1,briefStatus:{},briefData:{},briefTime:{},renderBrief:()=>{},B:{requestLayer:async(key,bbox)=>{requestUrl='?bbox='+bbox;return await new Promise(resolve=>complete=resolve);}}};
 vm.createContext(advisoryContext);vm.runInContext(advisorySource,advisoryContext);
 const request=vm.runInContext("loadRouteAdvisory('tfr',1)",advisoryContext);
 assert.match(decodeURIComponent(requestUrl),/bbox=46.000,-98.000,50.000,-93.000/);
 advisoryContext.routeContextSeq=2;complete({geojson:{features:[polygon]}});await request;
 assert.equal(advisoryContext.briefData.tfr,undefined);
-advisoryContext.fetchJson=async()=>{throw Error('Test outage');};await vm.runInContext("loadRouteAdvisory('tfr',2)",advisoryContext);assert.equal(advisoryContext.briefStatus.tfr,'unavailable');
+advisoryContext.B.requestLayer=async()=>{throw Error('Test outage');};await vm.runInContext("loadRouteAdvisory('tfr',2)",advisoryContext);assert.equal(advisoryContext.briefStatus.tfr,'unavailable');
 console.log('Route coverage checks passed: route bounds used, obsolete responses ignored, and outages identified.');
 
 const airportDensity = (await import('../assets/map-density.js')).default;
@@ -148,7 +148,7 @@ assert.equal(vm.runInContext('weatherBoundsContain([20,-130,55,-60],[47.94,-97.1
 console.log('National weather results cannot replace a local station query.');
 
 // Terminal briefing preserves source times, identifies partial products, and checks forecast coverage.
-const B=createRequire(import.meta.url)('../assets/route-brief-core.js');
+
 const symbols=createRequire(import.meta.url)('../assets/chart-symbols.js');
 const now=Date.parse('2026-10-04T03:00:00Z');
 assert.equal(B.stamp('1791082800'),'2026-10-04 03:00 UTC');
@@ -172,7 +172,7 @@ assert.equal(B.planningKey(points,{onboard:10}),B.planningKey(points,{onboard:20
 assert.match(B.notamHtml({id:'KGFK',role:'Departure'},{error:'outage'}),/No absence of notices is implied/);
 assert.match(B.notamHtml({id:'KGFK',role:'Departure'},{count:1,notams:[{text:'<b>RWY CLSD</b>',number:'1'}]}),/&lt;b&gt;RWY CLSD/);
 // An alternate request started for a previous plan cannot overwrite the new brief.
-const weatherSource=source.slice(source.indexOf('  async function loadBriefWeather('),source.indexOf('  function flattenRings('));
+const weatherSource=source.slice(source.indexOf('  async function loadBriefWeather('),source.indexOf('  function relationToRoute('));
 let finishWeather;const wxCalls=[];
 const weatherBriefContext={B,RP:{getPoints:()=>points,getWeather:(id,force)=>{wxCalls.push({id,force});return new Promise(resolve=>{if(id==='KMSP')finishWeather=resolve;else resolve(wx);});}},window:{PilotDeskRoutePerformance:{getSettings:()=>({alternateAirport:'KMSP'})}},routeContextSeq:1,briefWx:{dep:null,dst:null,alt:null},renderBrief:()=>{}};
 vm.createContext(weatherBriefContext);vm.runInContext(weatherSource,weatherBriefContext);

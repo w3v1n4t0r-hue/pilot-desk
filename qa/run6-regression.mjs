@@ -35,3 +35,19 @@ for(const name of ['crosswind-mfd','calculation-account','efb-layers']){
 }
 for(const asset of ['crosswind-mfd.js','calculation-account.js','efb-layers.js','supabase-client.js'])assert.match(read('sw.js'),new RegExp("NETWORK_FIRST_ASSETS[\\s\\S]*'/assets/"+asset.replaceAll('.','\\.')+"'"),'network-first release asset '+asset);
 console.log('Run 6 regression PASS: initial header, social metadata, map keyboard order, crosswind invalid state, navigation transitions, auth client.');
+
+// Module workspaces must not mix a new HTML release with cached old imports.
+if(fs.existsSync('route-review.html')){
+ const app='/assets/route-review-workspace/app.mjs';
+ assert.ok(release[app],'route review module is fingerprinted');
+ assert.ok(read('dist/route-review.html').includes(release[app]),'HTML uses release module');
+ for(const [source,target] of Object.entries(release).filter(([url])=>url.startsWith('/assets/route-review-workspace/')&&url.endsWith('.mjs'))){
+  const content=read('dist'+target);
+  assert.doesNotMatch(content,/from ['"]\.\/[^'"]+(?<!\.[a-f0-9]{12})\.mjs['"]/,'module imports must use release paths: '+source);
+  for(const match of content.matchAll(/from ['"](\.\/[^'"]+\.mjs)['"]/g)){
+   const {posix}=await import('node:path');
+   assert.ok(fs.existsSync('dist'+posix.normalize(posix.join(posix.dirname(target),match[1]))),'module dependency exists: '+match[1]);
+  }
+ }
+ console.log('Module release checks passed: route review entry and relative imports use existing fingerprinted dependencies.');
+}

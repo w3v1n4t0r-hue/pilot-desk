@@ -7,18 +7,23 @@ import { createHash } from 'node:crypto';
 // a cached, unversioned dependency. Source files remain the editing authority.
 const root=path.resolve('dist');
 const walk=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]);
-const assets=walk(path.join(root,'assets')).filter(p=>/\.(js|css)$/.test(p)&&!p.endsWith('offline-precache.js')).sort();
+const assets=walk(path.join(root,'assets')).filter(p=>/\.(mjs|js|css)$/.test(p)&&!p.endsWith('offline-precache.js')).sort();
 const hash=createHash('sha256');
 for(const file of assets)hash.update(path.relative(root,file)).update(fs.readFileSync(file));
 const release=hash.digest('hex').slice(0,12);
 const manifest=Object.fromEntries(assets.map(file=>{
  const url='/'+path.relative(root,file).split(path.sep).join('/');
- return [url,url.replace(/\.(js|css)$/,'.'+release+'.$1')];
+ return [url,url.replace(/\.(mjs|js|css)$/,'.'+release+'.$1')];
 }));
-const rewrite=text=>text.replace(/\/assets\/[\w./-]+\.(?:js|css)(?:\?[^\s"'<>)]*)?/g,url=>manifest[url.split('?')[0]]||url);
+const rewrite=text=>text.replace(/\/assets\/[\w./-]+\.(?:mjs|js|css)(?:\?[^\s"'<>)]*)?/g,url=>manifest[url.split('?')[0]]||url);
 for(const file of assets){
  const original='/'+path.relative(root,file).split(path.sep).join('/');
- const content=rewrite(fs.readFileSync(file,'utf8'));
+ const content=rewrite(fs.readFileSync(file,'utf8')).replace(/((?:from\s*|import\s*\(\s*)['"])(\.{1,2}\/[^'"\s]+\.(?:mjs|js))(['"])/g,(_match,before,spec,after)=>{
+  const target=manifest[path.posix.normalize(path.posix.join(path.posix.dirname(original),spec))];
+  if(!target)return before+spec+after;
+  const relative=path.posix.relative(path.posix.dirname(original),target);
+  return before+(relative.startsWith('.')?relative:'./'+relative)+after;
+ });
  fs.writeFileSync(file,content);
  fs.writeFileSync(path.join(root,manifest[original].slice(1)),content);
 }
@@ -28,7 +33,7 @@ for(const file of walk(root).filter(p=>p.endsWith('.html')))fs.writeFileSync(fil
 const precache=path.join(root,'assets/offline-precache.js');
 const oldManifest=fs.readFileSync(precache,'utf8');
 const swSource=fs.readFileSync(path.join(root,'sw.js'),'utf8');
-const dependencies=[...new Set([...(oldManifest+swSource).matchAll(/\/assets\/[\w./-]+\.(?:js|css)/g)].map(m=>manifest[m[0]]).filter(Boolean))];
+const dependencies=[...new Set([...(oldManifest+swSource).matchAll(/\/assets\/[\w./-]+\.(?:mjs|js|css)/g)].map(m=>manifest[m[0]]).filter(Boolean))];
 fs.writeFileSync(precache,oldManifest+'\nself.PILOTDESK_OFFLINE_ASSETS=[...new Set([...self.PILOTDESK_OFFLINE_ASSETS,...'+JSON.stringify(dependencies)+'])];\n');
 const sw=rewrite(swSource).replace(/const CACHE='([^']+)'/,`const CACHE='$1-${release}'`);
 fs.writeFileSync(path.join(root,'sw.js'),sw);

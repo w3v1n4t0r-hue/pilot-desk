@@ -5,15 +5,17 @@
  <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#121416">
  <title>PilotDesk | Route Review</title>
  <meta name="description" content="PilotDesk route-review workspace with route import, departure forecasts, wind and fuel calculations, and a clearly labeled sample map.">
- <link rel="stylesheet" href="/assets/design-tokens.css"><link rel="stylesheet" href="/assets/route-review-workspace/styles.css"><link rel="stylesheet" href="/assets/route-review-workspace/briefing.css">
+ <link rel="stylesheet" href="/assets/styles.css"><link rel="stylesheet" href="/assets/route-review-workspace/styles.css"><link rel="stylesheet" href="/assets/route-review-workspace/briefing.css">
 </head>
 <body>
+ <header class="topbar"><a class="brand" href="/"><span class="brandmark"><img src="/favicon.svg" alt="" width="40" height="40"></span><span><b>PilotDesk</b><small>FLIGHT TOOLS</small></span></a></header>
+ <div class="pd-route-review-content">
  <a class="skip-link" href="#main-content">Skip to route review</a>
- <header class="review-topbar">
-  <a class="brand" href="/" aria-label="PilotDesk home"><img class="brand-logo" src="/favicon.svg" alt="" width="40" height="40"><span>Pilot<span class="brand-light">Desk</span></span></a>
-  <nav aria-label="Workspace"><a href="/route-planner.html">Route planner</a><a href="/tools.html">Tools</a><button id="saved-btn">Saved routes <span id="saved-count">0</span></button></nav>
+ <div class="review-topbar" role="region" aria-label="Route review controls">
+  <span class="workspace-title">Route review</span>
+  <nav aria-label="Workspace"><a href="/route-planner.html">Route planner</a><a href="/tools.html">Tools</a><button id="saved-btn">Saved reviews <span id="saved-count">0</span></button></nav>
   <div class="header-right"><span class="private">Sample map · provider briefing</span><button id="data-btn" class="quiet">Map key</button><a class="account-link" href="/account.html">Account</a></div>
- </header>
+ </div>
  <main id="main-content">
   <aside class="sidebar">
    <div class="sidebar-heading"><h1>Route review</h1></div>
@@ -47,7 +49,7 @@
 </section><section id="weather-panel" role="tabpanel" aria-labelledby="tab-weather" hidden><div class="section-label">Airport weather <span class="muted">SAMPLE</span></div><div id="airport-weather"></div><div class="divider"></div><div class="section-label">Along the route</div><p class="panel-hint">Within your corridor at the selected time and altitude. Review keeps these items even if a map layer is off.</p><div id="review-list"></div></section>
     <section id="notes-panel" role="tabpanel" aria-labelledby="tab-notes" hidden><label class="full-label" for="notes">Your route notes</label><textarea id="notes" rows="12" placeholder="What do you want to check before this flight?"></textarea><p class="fine-print">Notes save with this route on this device.</p><button id="download-btn" class="full-width">Download review</button></section>
    </div>
-   <div class="sidebar-footer"><button id="save-btn" class="primary">Save route <span aria-hidden="true">↗</span></button><span class="local-tag">Saved on this device</span></div>
+   <div class="sidebar-footer"><button id="save-btn" class="primary">Save review <span aria-hidden="true">↗</span></button><span class="local-tag">Review only · this device</span></div>
   </aside>
   <section class="map-workspace" aria-label="Interactive route map">
    <div class="map-toolbar"><div><span class="eyebrow">Route</span><strong id="route-title">KGFK <span>→</span> KMOT <span>→</span> KXWA</strong></div><button id="layers-btn" aria-expanded="false" aria-controls="layer-panel"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 3 8 4-8 4-8-4 8-4zm-8 8 8 4 8-4M2 15l8 4 8-4"/></svg>Layers <span id="layer-count">6</span></button></div>
@@ -67,6 +69,8 @@
  </main>
  <div id="toast" role="status" aria-live="polite"></div>
  <dialog id="modal"><div class="modal-top"><div id="modal-title"></div><button id="modal-close" aria-label="Close dialog">×</button></div><div id="modal-body"></div></dialog>
+ </div>
+ <script defer src="/assets/app-bootstrap.js"></script>
  <script type="module" src="/assets/route-review-workspace/app.mjs"></script>
 </body>
 </html>

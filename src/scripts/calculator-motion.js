@@ -62,7 +62,7 @@ function mountDiagram(key){
   svg.replaceChildren();kind=m.kind;nodes={};domain='';
   if(kind==='journey'){
    nodes.lanes=m.lanes.map((_,i)=>{const y=m.lanes.length===1?132:62+i*72;const track=line(svg,true);track.setAttribute('x1','36');track.setAttribute('x2','438');track.setAttribute('y1',y);track.setAttribute('y2',y);return {path:line(svg),name:label(svg,36,y-19),answer:label(svg,36,y+23),y};});
-   nodes.aircraft=icon('aircraftProfile',svg,3.2);nodes.scale=label(svg,300,254);
+   nodes.ticks=Array.from({length:5},()=>({mark:line(svg),text:label(svg,0,nodes.lanes[0].y+23)}));nodes.aircraft=icon('aircraftProfile',svg,3.2);nodes.scale=label(svg,300,254);
   }else if(kind==='airspeed'){
    nodes.cas=el('rect',{x:36,y:75,height:24,fill:'#77838d'},svg);nodes.tas=el('rect',{x:36,y:155,height:24,fill:'#d9dde0'},svg);
    nodes.casLabel=label(svg,36,62);nodes.tasLabel=label(svg,36,142);nodes.note=label(svg,36,223);nodes.scale=label(svg,300,254);
@@ -105,8 +105,8 @@ function mountDiagram(key){
    const maximum=Math.max(1,...m.lanes.map(l=>l.distance)),scale=390/maximum;
    const newDomain=String(maximum);immediate||=domain!==newDomain;domain=newDomain;
    m.path={start:[36,nodes.lanes[0].y],end:[36+m.lanes[0].distance*scale,nodes.lanes[0].y]};
-   m.lanes.forEach((lane,i)=>{const n=nodes.lanes[i];n.name.textContent=lane.label;n.answer.textContent=`${fmt(lane.answer,2)} ${lane.unit}`;targets.push([n.path,{x1:36,y1:n.y,x2:36+lane.distance*scale,y2:n.y}]);});
-   targets.push([nodes.aircraft,{tx:36,ty:nodes.lanes[0].y-7,angle:0}]);nodes.scale.textContent=`Full ruler: ${fmt(maximum,2)} NM`;
+   m.lanes.forEach((lane,i)=>{const n=nodes.lanes[i];n.name.textContent=lane.label+(i===0?` → ${fmt(lane.answer,2)} ${lane.unit}`:'');n.answer.toggleAttribute('hidden',i===0);n.answer.textContent=`${fmt(lane.answer,2)} ${lane.unit}`;targets.push([n.path,{x1:36,y1:n.y,x2:36+lane.distance*scale,y2:n.y}]);});
+   nodes.ticks.forEach((tick,i)=>{const x=36+m.lanes[0].distance*scale*i/4,y=nodes.lanes[0].y;tick.mark.setAttribute('x1',x);tick.mark.setAttribute('x2',x);tick.mark.setAttribute('y1',y-3);tick.mark.setAttribute('y2',y+5);tick.text.setAttribute('x',x);tick.text.setAttribute('text-anchor',i===0?'start':i===4?'end':'middle');tick.text.textContent=fmt((m.minutes??m.seconds)*i/4,1);tick.mark.toggleAttribute('hidden',i>0&&m.lanes[0].distance===0);tick.text.toggleAttribute('hidden',i>0&&m.lanes[0].distance===0);});targets.push([nodes.aircraft,{tx:36,ty:nodes.lanes[0].y-7,angle:0}]);nodes.scale.textContent=`Full ruler: ${fmt(maximum,2)} NM`;
   }else if(m.kind==='airspeed'){
    const maximum=Math.max(50,Math.ceil(Math.max(m.cas,m.tas)/50)*50),scale=390/maximum;
    const newDomain=String(maximum);immediate||=domain!==newDomain;domain=newDomain;

@@ -21,8 +21,8 @@ export function diagramModel(key, v) {
       {distance,label:`Speed: ${distance} NM in ${v.time} hr`,answer:distance/v.time,unit:'kt'}
     ]:[{distance,label:'Straight leg',answer:distance,unit:'NM'}];
     if(!finite([seconds,...lanes.map(l=>l.answer)]))return null;
-    return {kind:'journey',title:key==='tsd'?'Time, distance and speed':'Straight-leg distance',lanes,seconds,
-      caption:key==='tsd'?'Each row is a separate calculation. Replay follows the first row.':'Straight leg only; this does not show a full holding circuit.'};
+    return {kind:'journey',title:key==='tsd'?'Time, distance and speed':'Straight-leg distance',lanes,seconds,minutes:key==='tsd'?seconds/60:null,
+      caption:key==='tsd'?'Each row is a separate calculation. First-row ticks are minutes; replay follows that row.':'Ticks show seconds on the straight leg, not a full holding circuit.'};
   }
   if(key==='tasApprox'){
     if(!finite([v.cas,v.alt])||v.cas<=0)return null;

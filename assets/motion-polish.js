@@ -44,7 +44,7 @@
    });
  }
  function homeEntrance(){
-   if(!document.body.classList.contains('pd-home-2026'))return;
+   if(!document.body.classList.contains('pd-home-2026')||document.querySelector('[data-pd-preview]'))return;
    const hero=document.querySelector('.pd-home-hero-copy');
    const preview=document.querySelector('.pd-home-product');
    play(hero,[{opacity:.65,transform:'translateY(9px)'},{opacity:1,transform:'none'}],
@@ -55,7 +55,7 @@
  function homeWind(){
    const slider=document.getElementById('pdHomeWind');
    const gauge=document.querySelector('.pd-home-wind-diagram');
-   if(!slider||!gauge)return;
+   if(!slider||!gauge||document.querySelector('[data-pd-wind-vector]'))return;
    let last=Number(slider.value);
    slider.addEventListener('change',()=>{
      const next=Number(slider.value);

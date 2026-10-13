@@ -9,12 +9,12 @@ const storageKey='pd-calc-inputs:'+location.pathname;
 const defaults=Object.fromEntries(inputs.map(i=>[i.id,i.defaultValue]));
 const calcKey=document.body.dataset.calc||location.pathname.split('/').filter(Boolean).pop()||'calculator';
 const QUICK_HELP={
-  crosswind:'Use runway heading and wind direction from the same magnetic/true reference. The primary result is crosswind magnitude and side.',
-  densityAltitude:'Pressure altitude + OAT drive the result. Use the aircraft POH/AFM charts—not density altitude alone—for takeoff and climb performance.',
+  crosswind:'Keep runway and wind directions in the same true or magnetic reference.',
+  densityAltitude:'Use your aircraft’s POH/AFM to check takeoff and climb performance.',
   fuelRequired:'Fuel on board is compared with trip fuel plus the entered reserve. Confirm the reserve you enter matches the operation you are planning.',
-  windTriangle:'Use a true course with true wind, or keep all directional references consistently magnetic. The result gives heading, groundspeed, and WCA.',
+  windTriangle:'Use a true course with true wind, or keep all directional references consistently magnetic. ',
   tasApprox:'This is the common 2% per 1,000 ft training estimate. It is not a substitute for aircraft-specific air-data or performance information.',
-  climbGradient:'Enter the required gradient in ft/NM and the groundspeed you expect during the climb. The primary result is required FPM.',
+  climbGradient:'Enter the required gradient in ft/NM and the groundspeed you expect during the climb. The result is the climb rate you need.',
   threeDegree:'Enter groundspeed to estimate the FPM for a 3° path. The exact result and the common GS × 5 shortcut are shown together.',
   momentCg:'The calculated CG is arithmetic only. Compare it with the approved envelope and weight limits for the exact aircraft.',
   rateTurn:'Use true airspeed and bank angle. The results show turn rate, time for 360°, and turn radius.',
@@ -36,8 +36,8 @@ if(results){results.setAttribute('aria-live','polite');results.setAttribute('ari
 const advisoryBox=document.createElement('div');advisoryBox.className='safety-warning';advisoryBox.id='pdAdvisory';advisoryBox.setAttribute('aria-live','polite');
 const inputHeading=document.createElement('div');inputHeading.className='pd-calc-section-head';inputHeading.innerHTML='<b>Inputs</b>';
 const resultsHeading=document.createElement('div');resultsHeading.className='pd-calc-section-head pd-calc-results-head';resultsHeading.innerHTML='<b>Results</b>';
-const quickHelp=document.createElement('div');quickHelp.className='pd-calc-quick-help';quickHelp.innerHTML='<b>Before you calculate</b><span></span>';
-quickHelp.querySelector('span').textContent=QUICK_HELP[calcKey]||'Confirm each input, unit, and reference before using the result. PilotDesk shows the arithmetic; approved sources control operational decisions.';
+const quickHelp=document.createElement('div');quickHelp.className='pd-calc-quick-help';quickHelp.innerHTML='<span></span>';
+quickHelp.querySelector('span').textContent=QUICK_HELP[calcKey]||'Check your units and use current aircraft data before flight.';
 const resultSummary=document.createElement('details');resultSummary.className='pd-calc-result-summary';resultSummary.setAttribute('aria-live','polite');resultSummary.hidden=true;
 resultSummary.innerHTML='<summary>Result summary</summary><strong></strong>';
 const actions=document.createElement('div');actions.className='calc-actions';actions.setAttribute('aria-label','Calculation actions');actions.innerHTML='<button class="pd-calc-save" type="button" data-pd-save-calculation>Save calculation</button><button type="button" data-pd-copy-result>Copy result</button><button type="button" data-pd-reset>Reset</button><button type="button" data-pd-copy-link>Copy link</button><button type="button" data-pd-share>Share setup</button><button type="button" data-pd-print>Print</button><a href="/feedback.html?type=calculation" data-pd-report>Report result</a>';

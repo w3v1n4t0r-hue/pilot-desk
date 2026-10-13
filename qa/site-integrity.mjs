@@ -16,7 +16,7 @@ function localExists(url, file=''){
   if(p==='/calculators/weight-balance-builder'||p==='/calculators/weight-balance-builder/')return fs.existsSync('weight-balance.html');
   p=decodeURIComponent(p).replace(/^\//,'');
   const outputRoot=path.relative(root,file).split(path.sep)[0];
-  if(/^assets\/[\w./-]+\.[0-9a-f]{12}\.(?:css|mjs|js)$/.test(p)&&['.astro-public','dist'].includes(outputRoot)){
+  if((/^assets\/[\w./-]+\.[0-9a-f]{12}\.(?:css|mjs|js)$/.test(p)||/^_astro\/[\w./-]+$/.test(p))&&['.astro-public','dist'].includes(outputRoot)){
     return fs.existsSync(path.join(root,outputRoot,p));
   }
   const candidates=[p,path.join(p,'index.html')];

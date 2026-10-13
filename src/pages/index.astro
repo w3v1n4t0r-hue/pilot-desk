@@ -37,13 +37,12 @@ const schema = {
   bodyClass="pd-home-2026"
 >
   <link slot="head" rel="stylesheet" href="/assets/home-desk.css" />
-  <link slot="head" rel="stylesheet" href="/assets/home-product.css" />
   <section class="pd-home-hero" aria-labelledby="pdHomeTitle">
     <div class="pd-home-hero-inner">
       <div class="pd-home-hero-copy">
-        <div class="eyebrow">PILOTDESK</div>
-        <h1 id="pdHomeTitle">Flight planning and pilot tools.</h1>
-        <p>Build a route, check the weather, run the numbers or study for your next checkride.</p>
+        <div class="eyebrow">For the flight ahead</div>
+        <h1 id="pdHomeTitle">Plan <span>your next flight.</span></h1>
+        <p>Charts, weather, flight calculations and checkride prep. All in your browser.</p>
         <nav class="pd-home-hero-links" aria-label="Start a pilot task">
           <a class="pd-btn" href="/route-planner.html" data-pd-home-cta="Start Planning">Plan a flight</a>
           <a class="pd-home-command" href="/weather.html" data-pd-home-cta="Weather">Check weather <span aria-hidden="true">↗</span></a>
@@ -51,15 +50,10 @@ const schema = {
         </nav>
       </div>
 
-      <section class="pd-home-product" aria-labelledby="pdHomeProductTitle">
-        <div class="pd-home-product-head">
-          <span>FLIGHT PLANNER</span>
-          <span class="pd-home-product-tag">START A ROUTE</span>
-        </div>
+      <section data-pd-preview class="pd-home-product" aria-labelledby="pdHomeProductTitle">
         <div class="pd-home-product-body">
-          <div class="pd-home-product-overline">YOUR NEXT FLIGHT</div>
           <h2 id="pdHomeProductTitle">Where are you flying?</h2>
-          <p>Enter your airports. The route planner will load them so you can add waypoints and review weather, time and fuel.</p>
+          <p>Start with your departure and destination.</p>
           <form class="pd-home-route-form" action="/route-planner.html" method="get" autocomplete="off" aria-label="Start a route">
             <div class="pd-home-route-fields">
               <label for="pdHomeDeparture">Departure airport
@@ -79,7 +73,7 @@ const schema = {
       </section>
 
       <div class="pd-home-proof" aria-label="PilotDesk basics">
-        <span>Core tools work without an account</span><span>FAA, AWC and eCFR references</span>
+        <span>Free calculators · no account needed</span><span>FAA charts · AWC weather</span>
       </div>
     </div>
   </section>
@@ -96,21 +90,21 @@ const schema = {
       <div class="pd-home-desk-grid" id="pdHomeDeskItems"></div>
     </section>
 
-    <section class="pd-home-section pd-home-crosswind" aria-labelledby="pdHomeTryToolTitle">
+    <section data-pd-reveal class="pd-home-section pd-home-crosswind" aria-labelledby="pdHomeTryToolTitle">
       <div class="pd-home-crosswind-copy">
-        <div class="eyebrow">TRY A CALCULATOR</div>
-        <h2 id="pdHomeTryToolTitle">Numbers you can use.</h2>
-        <p>Check a crosswind component here, then open the full tool with your own runway and wind. No account needed.</p>
+        <div class="eyebrow">Crosswind</div>
+        <h2 id="pdHomeTryToolTitle">Wind changes.<br />See the difference.</h2>
+        <p>Move the wind-speed slider. Watch the crosswind and headwind change.</p>
         <div class="pd-home-crosswind-links"><a href="/tools.html">All calculators →</a><a href="/flight-training.html">Study →</a><a href="/daily/">Daily questions →</a></div>
       </div>
       <section class="pd-home-example" aria-labelledby="home-wind-title">
-        <div class="pd-home-example-head"><span class="eyebrow">CROSSWIND COMPONENT</span></div>
+        <div class="pd-home-example-head"><span class="eyebrow">Runway wind</span></div>
         <div class="pd-home-wind-heading">
-          <div><h2 id="home-wind-title">Check the crosswind.</h2><p>Runway 350° · wind from 320°</p></div>
+          <div><h2 id="home-wind-title">Crosswind component</h2><p>Runway 350° · wind from 320°</p></div>
           <svg class="pd-home-wind-diagram" viewBox="0 0 112 100" role="img" aria-label="Wind from 320 degrees meets runway heading 350 degrees at a 30-degree angle">
             <circle cx="58" cy="54" r="38" class="pd-wind-ring" />
             <g transform="rotate(-10 58 54)"><rect x="53" y="20" width="10" height="68" class="pd-wind-runway" /><path d="M58 25v8m0 8v8m0 8v8m0 8v8" class="pd-wind-centerline" /></g>
-            <path d="M20 9L48 42M37 38l11 4-2-12" class="pd-wind-direction" />
+            <path data-pd-wind-vector d="M20 9L48 42M37 38l11 4-2-12" class="pd-wind-direction" />
             <text x="81" y="23">30°</text>
           </svg>
         </div>
@@ -125,18 +119,18 @@ const schema = {
       </section>
     </section>
 
-    <section class="pd-home-section" id="popular-tools">
+    <section data-pd-reveal class="pd-home-section" id="popular-tools">
       <div class="pd-home-section-head">
         <div>
-          <div class="eyebrow">TOOL INDEX</div>
-          <h2>Common pilot calculations</h2>
-          <p>Wind, performance, loading and fuel. Each tool includes its method and an example.</p>
+          <div class="eyebrow">Calculators</div>
+          <h2>The tools you reach for.</h2>
+          <p>Wind, altitude, fuel and weight & balance.</p>
         </div>
         <a href="/tools.html" data-pd-home-cta="All Calculators">Free aviation calculators →</a>
       </div>
       <div class="pd-popular-grid">
         {popularTools.map(([href, title, path]) => (
-          <a class="pd-popular-tool" href={href} data-pd-home-cta={title}>
+          <a data-pd-hover class="pd-popular-tool" href={href} data-pd-home-cta={title}>
             <svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg><span>{title}</span>
           </a>
         ))}
@@ -144,12 +138,12 @@ const schema = {
       <button class="pd-home-command" id="pdHomeSearch" type="button">Search all tools <kbd>/</kbd></button>
     </section>
 
-    <section class="pd-home-section" aria-labelledby="flight-lessons-title">
+    <section data-pd-reveal class="pd-home-section" aria-labelledby="flight-lessons-title">
       <div class="pd-home-section-head">
         <div>
-          <div class="eyebrow">PILOT MATH GUIDES</div>
-          <h2 id="flight-lessons-title">Guides to common flight calculations</h2>
-          <p>Read the method, then try your own values in the related calculator.</p>
+          <div class="eyebrow">Pilot guides</div>
+          <h2 id="flight-lessons-title">Know what the numbers mean.</h2>
+          <p>Short guides to wind, performance and navigation.</p>
         </div>
         <a href="/guides.html">Browse aviation guides →</a>
       </div>
@@ -160,37 +154,37 @@ const schema = {
       </div>
     </section>
 
-    <section class="pd-home-section pd-home-route" aria-labelledby="route-title">
+    <section data-pd-reveal class="pd-home-section pd-home-route" aria-labelledby="route-title">
       <div>
-        <div class="eyebrow">ROUTE PLANNING</div>
-        <h2 id="route-title">Build the route. Review each leg.</h2>
+        <div class="eyebrow">Flight planning</div>
+        <h2 id="route-title">Your route, on FAA charts.</h2>
         <p>Find airports and fixes, plot on FAA charts, and calculate a navlog using your aircraft and wind inputs.</p>
         <div class="pd-actions"><a class="pd-btn" href="/route-planner.html">Open Route Planner</a><a href="/aircraft.html">Your aircraft →</a></div>
       </div>
       <ol class="pd-home-route-steps">
         <li><b>Enter waypoints</b><span>Airport identifiers, navigation fixes or coordinates.</span></li>
         <li><b>Run the numbers</b><span>Distance, course, heading, time and fuel by leg.</span></li>
-        <li><b>Check the context</b><span>FAA chart layers, endpoint weather and procedure links.</span></li>
+        <li><b>Review weather & procedures</b><span>Charts, airport weather and published procedures.</span></li>
       </ol>
     </section>
 
-    <section class="pd-home-section pd-home-learn" aria-labelledby="learn-title">
-      <div class="pd-home-section-head"><div><div class="eyebrow">LEARN</div><h2 id="learn-title">Study for the flying you do.</h2><p>FAA references, oral practice and tools connected to each subject.</p></div><a href="/flight-training.html">Open Learn →</a></div>
+    <section data-pd-reveal class="pd-home-section pd-home-learn" aria-labelledby="learn-title">
+      <div class="pd-home-section-head"><div><div class="eyebrow">LEARN</div><h2 id="learn-title">Prepare for your checkride.</h2><p>FAA references, oral practice and tools connected to each subject.</p></div><a href="/flight-training.html">Open Learn →</a></div>
       <div class="pd-home-ratings">
         <a href="/training/private-pilot.html">Private</a><a href="/training/instrument-rating.html">Instrument</a><a href="/training/commercial-pilot.html">Commercial</a><a href="/training/multiengine.html">Multi-engine</a><a href="/training/cfi.html">CFI</a><a href="/training/cfii.html">CFII</a>
       </div>
       <div class="pd-home-study-links"><a href="/written-prep.html">Written prep →</a><a href="/learn/oral-exam/">Oral exam guide →</a><a href="/daily/">Three daily questions →</a></div>
     </section>
 
-    <section class="pd-home-section pd-home-weather" aria-labelledby="weather-title">
-      <div><div class="eyebrow">AIRPORT WEATHER</div><h2 id="weather-title">Read the report. Check the time.</h2><p>Look up METARs and TAFs with the raw report, decoded conditions, and observation or issue time kept together.</p></div>
-      <div class="pd-home-weather-links"><a href="/weather.html"><b>Check an airport</b><span>Current reports and runway-wind context →</span></a><a href="/guides/metar-taf.html"><b>Practice the decode</b><span>Wind, ceilings and forecast change groups →</span></a></div>
+    <section data-pd-reveal class="pd-home-section pd-home-weather" aria-labelledby="weather-title">
+      <div><div class="eyebrow">Weather</div><h2 id="weather-title">METARs and TAFs.</h2><p>Find airport weather, read the report and check when it was issued.</p></div>
+      <div class="pd-home-weather-links"><a href="/weather.html"><b>Check an airport</b><span>Current reports and runway-wind context →</span></a><a href="/guides/metar-taf.html"><b>Learn to read METARs</b><span>Wind, ceilings and forecast change groups →</span></a></div>
     </section>
 
-    <section class="pd-home-section pd-home-account" data-pd-home-account aria-label="PilotDesk account">
+    <section data-pd-reveal class="pd-home-section pd-home-account" data-pd-home-account aria-label="PilotDesk account">
       <div>
-        <div class="eyebrow">OPTIONAL ACCOUNT</div>
-        <h2 data-pd-home-account-title>Sign in when you want progress saved.</h2>
+        <div class="eyebrow">Your account</div>
+        <h2 data-pd-home-account-title>Keep your progress.</h2>
         <p data-pd-home-account-copy>Free accounts save Daily, Written Prep, and profile progress. Pro adds aircraft and saved-flight cloud backup plus an ad-free signed-in experience.</p>
       </div>
       <div class="pd-home-business-actions" data-pd-home-account-actions>
@@ -199,7 +193,7 @@ const schema = {
       </div>
     </section>
 
-    <section class="pd-home-section pd-home-trust">
+    <section data-pd-reveal class="pd-home-section pd-home-trust">
       <div>
         <div class="eyebrow">SOURCES</div>
         <h2>FAA, weather and aircraft references</h2>
@@ -208,7 +202,7 @@ const schema = {
       <a href="/sources.html">Sources & methods →</a>
     </section>
 
-    <section class="pd-home-section pd-home-faq" aria-labelledby="faq-title">
+    <section data-pd-reveal class="pd-home-section pd-home-faq" aria-labelledby="faq-title">
       <div class="pd-home-section-head">
         <div><h2 id="faq-title">Common questions</h2></div>
       </div>
@@ -221,4 +215,5 @@ const schema = {
     </section>
   </div>
   <script slot="scripts" is:inline defer src="/assets/home-desk.js"></script>
+  <script>import "../scripts/design-motion.js";</script>
 </BaseLayout>

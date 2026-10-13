@@ -102,11 +102,11 @@ function mountDiagram(key){
  function draw(m,immediate=false){
   const targets=[];button.hidden=!['profile','turn','journey'].includes(m.kind)||!(m.minutes>0||m.seconds>0);
   if(m.kind==='journey'){
-   const maximum=Math.max(1,...m.lanes.map(l=>l.distance)),scale=390/maximum;
+   const step=m.lanes.length===1?5:50,maximum=Math.max(step,Math.ceil(Math.max(...m.lanes.map(l=>l.distance))/step)*step),scale=390/maximum;
    const newDomain=String(maximum);immediate||=domain!==newDomain;domain=newDomain;
    m.path={start:[36,nodes.lanes[0].y],end:[36+m.lanes[0].distance*scale,nodes.lanes[0].y]};
    m.lanes.forEach((lane,i)=>{const n=nodes.lanes[i];n.name.textContent=lane.label+(i===0?` → ${fmt(lane.answer,2)} ${lane.unit}`:'');n.answer.toggleAttribute('hidden',i===0);n.answer.textContent=`${fmt(lane.answer,2)} ${lane.unit}`;targets.push([n.path,{x1:36,y1:n.y,x2:36+lane.distance*scale,y2:n.y}]);});
-   nodes.ticks.forEach((tick,i)=>{const x=36+m.lanes[0].distance*scale*i/4,y=nodes.lanes[0].y;tick.mark.setAttribute('x1',x);tick.mark.setAttribute('x2',x);tick.mark.setAttribute('y1',y-3);tick.mark.setAttribute('y2',y+5);tick.text.setAttribute('x',x);tick.text.setAttribute('text-anchor',i===0?'start':i===4?'end':'middle');tick.text.textContent=fmt((m.minutes??m.seconds)*i/4,1);tick.mark.toggleAttribute('hidden',i>0&&m.lanes[0].distance===0);tick.text.toggleAttribute('hidden',i>0&&m.lanes[0].distance===0);});targets.push([nodes.aircraft,{tx:36,ty:nodes.lanes[0].y-7,angle:0}]);nodes.scale.textContent=`Full ruler: ${fmt(maximum,2)} NM`;
+   nodes.ticks.forEach((tick,i)=>{const x=36+m.lanes[0].distance*scale*i/4,y=nodes.lanes[0].y;targets.push([tick.mark,{x1:x,x2:x,y1:y-3,y2:y+5}],[tick.text,{x}]);tick.text.setAttribute('text-anchor',i===0?'start':i===4?'end':'middle');tick.text.textContent=fmt((m.minutes??m.seconds)*i/4,1);tick.mark.toggleAttribute('hidden',i>0&&m.lanes[0].distance===0);tick.text.toggleAttribute('hidden',i>0&&m.lanes[0].distance===0);});targets.push([nodes.aircraft,{tx:36,ty:nodes.lanes[0].y-7,angle:0}]);nodes.scale.textContent=`Full ruler: ${fmt(maximum,2)} NM`;
   }else if(m.kind==='airspeed'){
    const maximum=Math.max(50,Math.ceil(Math.max(m.cas,m.tas)/50)*50),scale=390/maximum;
    const newDomain=String(maximum);immediate||=domain!==newDomain;domain=newDomain;

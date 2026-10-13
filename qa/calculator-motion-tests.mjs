@@ -52,3 +52,20 @@ assert(runtime.includes("svg.toggleAttribute('hidden',!m)"),'invalid models must
 assert(runtime.includes('reduced.matches')&&runtime.includes('pagehide'));
 assert(fs.statSync('dist/assets/calculator-motion-runtime.js').size<140*1024,'optional runtime stays within its route-specific budget');
 console.log('Calculator diagrams passed: vector closure, north crossing, wind feasibility, profile rates, turns, fuel shortfalls, altitude models and offline release assets.');
+
+// Exercise the actual transition driver with OS/app preferences and hidden pages.
+// Browser-independent DOM nodes keep this focused on animation decisions.
+const runtimeCode=runtime.replace(/^import .*;\n/gm,'');
+const state={osReduced:true,appReduced:false,hidden:false,calls:0};
+const documentStub={documentElement:{classList:{contains:()=>state.appReduced}},get hidden(){return state.hidden},readyState:'complete',addEventListener(){},removeEventListener(){}};
+const node={attributes:{},setAttribute(k,v){this.attributes[k]=v}};
+const media={get matches(){return state.osReduced},addEventListener(){},removeEventListener(){}};
+const context={document:documentStub,window:{addEventListener(){}},navigator:{},location:{pathname:'/route-planner.html'},matchMedia:()=>media,
+ animate:(from,to,options)=>{state.calls++;options.onUpdate?.(to);return {finished:Promise.resolve(),complete(){},stop(){}}},
+ aircraftPlan:'',aircraftProfile:'',runway:'',compass:'',windVector:'',seat:'',baggage:'',obstacle:'',fuelSegments:'',press(){throw new Error('Chart page must not register calculator gestures')},hover(){},DIAGRAM_KEYS,shortestAngle};
+vm.runInNewContext(runtimeCode+';globalThis.driver=animateTargets;',context);
+context.driver([[node,{tx:10,ty:20,angle:359}]]);assert.equal(state.calls,0);assert(node.attributes.transform.includes('translate(10 20)'));
+state.osReduced=false;state.appReduced=true;context.driver([[node,{tx:20,ty:25,angle:1}]]);assert.equal(state.calls,0);assert(node.attributes.transform.includes('rotate(361)'));
+state.appReduced=false;state.hidden=true;context.driver([[node,{tx:30,ty:30}]]);assert.equal(state.calls,0);
+state.hidden=false;context.driver([[node,{tx:40,ty:40}]]);assert.equal(state.calls,1);
+console.log('Motion driver passed: OS preference, saved PilotDesk preference, hidden-page settling, shortest angles and chart isolation.');

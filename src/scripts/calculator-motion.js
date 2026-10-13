@@ -149,10 +149,10 @@ function mountDiagram(key){
  button.addEventListener('click',()=>{
   if(!lastModel||!eligible())return;
   if(replay){if(paused){replay.play();paused=false;button.textContent='Pause replay';}else{replay.pause();paused=true;button.textContent='Resume replay';}return;}
-  transition?.complete();const m=lastModel;button.textContent='Pause replay';caption.textContent=m.caption+` Replay: 5 seconds represents ${m.minutes?fmt(m.minutes)+' minutes':fmt(m.seconds,0)+' seconds'}.`;
+  transition?.complete();const m=lastModel;button.textContent='Pause replay';caption.textContent=m.caption+` Replay: 5 seconds represents ${m.minutes?fmt(m.minutes)+(m.minutes===1?' minute':' minutes'):fmt(m.seconds,0)+' seconds'}.`;
   replay=tracked(animate(0,1,{duration:5,ease:'linear',onUpdate:t=>{
-   if(m.kind==='profile'){const [a,b]=[m.path.start,m.path.end];nodes.aircraft.setAttribute('transform',`translate(${a[0]+(b[0]-a[0])*t} ${a[1]+(b[1]-a[1])*t-7}) rotate(${Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI})`);}
-   else{const angle=m.degrees*t*Math.PI/180;nodes.aircraft.setAttribute('transform',`translate(${240+m.pixelRadius*Math.sin(angle)} ${125-m.pixelRadius*Math.cos(angle)}) rotate(${90+m.degrees*t})`);}
+   if(m.kind==='profile'){const [a,b]=[m.path.start,m.path.end];const pose={tx:a[0]+(b[0]-a[0])*t,ty:a[1]+(b[1]-a[1])*t-7,rotate:Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI};positions.set(nodes.aircraft,pose);nodes.aircraft.setAttribute('transform',`translate(${pose.tx} ${pose.ty}) rotate(${pose.rotate})`);}
+   else{const angle=m.degrees*t*Math.PI/180;const pose={tx:240+m.pixelRadius*Math.sin(angle),ty:125-m.pixelRadius*Math.cos(angle),rotate:90+m.degrees*t};positions.set(nodes.aircraft,pose);nodes.aircraft.setAttribute('transform',`translate(${pose.tx} ${pose.ty}) rotate(${pose.rotate})`);}
   },onComplete:()=>{active.delete(replay);replay=null;button.textContent='Replay';}}));
  });
  const observer=new MutationObserver(()=>requestAnimationFrame(update));observer.observe(q('.results'),{childList:true,subtree:true,characterData:true});

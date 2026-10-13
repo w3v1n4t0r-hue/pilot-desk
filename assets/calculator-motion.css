@@ -10,7 +10,7 @@
 .pd-diagram-heading>b{font-size:16px;font-weight:500;color:var(--silver2)}
 .pd-diagram-replay{min-height:44px;padding:8px 14px;border:1px solid var(--line-hi);background:transparent;color:var(--silver2);cursor:pointer;font:inherit;font-size:13px;transform-origin:center}
 .pd-diagram-replay:disabled{opacity:.5;cursor:default}
-.pd-calculator-diagram>svg{display:block;width:100%;height:auto;max-height:340px;overflow:visible}
+.pd-calculator-diagram>svg{display:block;width:100%;height:auto;max-height:230px;overflow:visible}
 .pd-calculator-diagram>svg[hidden],.pd-calculator-diagram [hidden]{display:none!important}
 .pd-calculator-diagram figcaption,.pd-diagram-invalid{font-size:12px;color:var(--muted);line-height:1.55;margin:8px 0 0;max-width:none}
 .pd-diagram-line{stroke:#a9afb8;stroke-width:1.7;fill:none}

@@ -69,6 +69,11 @@ jobs:
         run: node qa/claude-step7-learn-training-smoke.mjs
       - name: Claude Step 8 Daily refinement contract
         run: node qa/claude-step8-daily-smoke.mjs
+      - name: Verify route review model, API and interactions
+        run: |
+          node qa/route-review-model.test.mjs
+          node qa/route-review-briefing.test.mjs
+          node qa/route-review-interactions.test.mjs
       - name: Audit every built page surface
         run: node qa/page-surface-smoke.mjs
       - name: Check Sites design workflow regressions

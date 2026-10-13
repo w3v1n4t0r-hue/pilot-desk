@@ -1,0 +1,38 @@
+name: Route Review Browser QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'route-review.html'
+      - 'assets/route-review-workspace/**'
+      - 'assets/route-review-handoff.js'
+      - 'scripts/fingerprint-release.mjs'
+      - 'scripts/shared-shell.mjs'
+      - 'qa/route-review-browser.mjs'
+      - '.github/workflows/route-review-e2e.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm run build
+      - run: npm install --no-save --ignore-scripts playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Verify built route review on phone, tablet and desktop
+        run: |
+          python3 -m http.server 4173 --directory dist >/tmp/route-review-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid' EXIT
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173/route-review.html >/dev/null; then break; fi
+            sleep 0.5
+          done
+          node qa/route-review-browser.mjs

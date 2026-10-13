@@ -29,3 +29,5 @@
 @media print{.pd-diagram-replay{display:none!important}.pd-calculator-diagram{break-inside:avoid}}
 
 html.pd-reduced-motion .pd-calculator-animated .pd-cabin-object,html.pd-reduced-motion .pd-calculator-animated button{transform:none!important;opacity:1!important}
+
+.pd-calculator-animated #wbCabinSlots>*{outline:1px solid transparent;outline-offset:2px}

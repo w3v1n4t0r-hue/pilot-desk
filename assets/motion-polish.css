@@ -79,3 +79,10 @@
   .rp-grid.rp-editor-closed{grid-template-columns:minmax(0,1fr)}
   .rp-grid.rp-editor-closed .rp-map-card{grid-column:1}
 }
+
+/* Indicator follows only the selected tab; it never covers the control. */
+.pd-motion-tabs{position:relative}
+.pd-tab-indicator{position:absolute;height:2px;background:var(--silver2,#f2f3f5);pointer-events:none;z-index:1}
+.pd-tab-indicator[hidden]{display:none}
+@media print{.pd-tab-indicator{display:none}}
+.pd-reduced-motion .pd-motion-value-updated,.pd-reduced-motion details[open]>:not(summary){animation:none!important}

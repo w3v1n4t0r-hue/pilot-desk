@@ -43,7 +43,7 @@ assert.equal(diagramModel('cloudBase',{temp:10,dew:15}),null);
 assert.equal(diagramModel('turnRadius',{tas:100,bank:0}),null);
 assert.equal(diagramModel('tod',{altitude:6000,gradient:0,gs:120}),null);
 assert.equal(diagramModel('densityAltitude',{pa:NaN,oat:20}),null);
-assert.equal(diagramModel('unknown',{}),null);assert.equal(DIAGRAM_KEYS.size,24);
+assert.equal(diagramModel('unknown',{}),null);assert.equal(DIAGRAM_KEYS.size,27);
 const manifest=fs.readFileSync('dist/assets/offline-precache.js','utf8');
 assert(manifest.includes('calculator-motion-runtime')&&manifest.includes('calculator-motion.css'),'animation runtime and styles must be available offline');
 const runtime=fs.readFileSync('src/scripts/calculator-motion.js','utf8');
@@ -69,3 +69,26 @@ state.osReduced=false;state.appReduced=true;context.driver([[node,{tx:20,ty:25,a
 state.appReduced=false;state.hidden=true;context.driver([[node,{tx:30,ty:30}]]);assert.equal(state.calls,0);
 state.hidden=false;context.driver([[node,{tx:40,ty:40}]]);assert.equal(state.calls,1);
 console.log('Motion driver passed: OS preference, saved PilotDesk preference, hidden-page settling, shortest angles and chart isolation.');
+
+for(const v of [{distance:180,speed:120,time:1.5},{distance:90,speed:100,time:2}]){const m=diagramModel('tsd',v),out=formula('tsd',v);m.lanes.forEach((lane,i)=>near(lane.answer,number(out[i]),i===0?.006:.051));near(m.seconds,v.distance/v.speed*3600);}
+for(const v of [{gs:120,seconds:60},{gs:90,seconds:90},{gs:120,seconds:0}]){const m=diagramModel('holdDistance',v);near(m.lanes[0].distance,number(formula('holdDistance',v)[0]),.006);near(m.seconds,v.seconds);}
+for(const alt of [-1000,0,8000]){const v={cas:110,alt},m=diagramModel('tasApprox',v);near(m.tas,number(formula('tasApprox',v)[0]),.051);}
+assert.equal(diagramModel('tsd',{distance:180,speed:0,time:1}),null);
+assert.equal(diagramModel('tsd',{distance:180,speed:120,time:0}),null);
+assert.equal(diagramModel('holdDistance',{gs:120,seconds:-1}),null);
+assert.equal(diagramModel('tasApprox',{cas:NaN,alt:8000}),null);
+console.log('Additional diagrams passed: independent TSD results, straight-leg timing, TAS estimate and invalid inputs.');
+
+const wbSource=fs.readFileSync('assets/weight-balance.js','utf8');
+const wbContext={envelope:[[30,1000],[50,1000],[50,2500]],rows:[],n:v=>Number(v)};
+vm.createContext(wbContext);
+vm.runInContext(wbSource.match(/function fuelChangePoint[^\n]+/)[0]+'\n'+wbSource.match(/function canReplayFuel[^\n]+/)[0],wbContext);
+const dep={ok:true,W:2000,M:80000},landing={ok:true,W:1800,M:68000};
+wbContext.rows=[{name:'Pilot',dep:'180',ldg:'180'},{name:'Fuel',dep:'300',ldg:'100'}];
+assert(wbContext.canReplayFuel(dep,landing));
+near(wbContext.fuelChangePoint(dep,landing,.5).weight,1900);
+near(wbContext.fuelChangePoint(dep,landing,.5).cg,74000/1900,1e-9);
+assert(Math.abs(wbContext.fuelChangePoint(dep,landing,.5).cg-(dep.M/dep.W+landing.M/landing.W)/2)>.01,'CG follows moment/weight, not a straight screen interpolation');
+wbContext.rows[0].ldg='0';assert(!wbContext.canReplayFuel(dep,landing),'a passenger change cannot be called fuel burn');
+wbContext.rows[0].ldg='180';wbContext.envelope=[];assert(!wbContext.canReplayFuel(dep,landing),'replay requires an entered envelope');
+console.log('Weight-and-balance replay passed: moment/weight interpolation, fuel-only gating and entered-envelope requirement.');

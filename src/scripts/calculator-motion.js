@@ -60,7 +60,13 @@ function mountDiagram(key){
  function stopReplay(){replay?.stop();active.delete(replay);replay=null;paused=false;button.textContent='Replay';}
  function build(m){
   svg.replaceChildren();kind=m.kind;nodes={};domain='';
-  if(kind==='crosswind'){
+  if(kind==='journey'){
+   nodes.lanes=m.lanes.map((_,i)=>{const y=m.lanes.length===1?132:62+i*72;const track=line(svg,true);track.setAttribute('x1','36');track.setAttribute('x2','438');track.setAttribute('y1',y);track.setAttribute('y2',y);return {path:line(svg),name:label(svg,36,y-19),answer:label(svg,36,y+23),y};});
+   nodes.aircraft=icon('aircraftProfile',svg,3.2);nodes.scale=label(svg,300,254);
+  }else if(kind==='airspeed'){
+   nodes.cas=el('rect',{x:36,y:75,height:24,fill:'#77838d'},svg);nodes.tas=el('rect',{x:36,y:155,height:24,fill:'#d9dde0'},svg);
+   nodes.casLabel=label(svg,36,62);nodes.tasLabel=label(svg,36,142);nodes.note=label(svg,36,223);nodes.scale=label(svg,300,254);
+  }else if(kind==='crosswind'){
    nodes.compass=icon('compass',svg,30);nodes.runway=icon('runway',svg,15);nodes.wind=arrow(svg);nodes.gust=arrow(svg,true);nodes.head=arrow(svg,true);nodes.cross=arrow(svg,true);
    nodes.gustReadout=document.createElement('p');nodes.gustReadout.className='pd-diagram-gust';figure.insertBefore(nodes.gustReadout,q('figcaption',figure));
    nodes.warning=document.createElement('p');nodes.warning.className='pd-diagram-existing-warning';figure.insertBefore(nodes.warning,q('figcaption',figure));
@@ -94,8 +100,20 @@ function mountDiagram(key){
   }
  }
  function draw(m,immediate=false){
-  const targets=[];button.hidden=!['profile','turn'].includes(m.kind)||!(m.minutes>0||m.seconds>0);
-  if(m.kind==='crosswind'){
+  const targets=[];button.hidden=!['profile','turn','journey'].includes(m.kind)||!(m.minutes>0||m.seconds>0);
+  if(m.kind==='journey'){
+   const maximum=Math.max(1,...m.lanes.map(l=>l.distance)),scale=390/maximum;
+   const newDomain=String(maximum);immediate||=domain!==newDomain;domain=newDomain;
+   m.path={start:[36,nodes.lanes[0].y],end:[36+m.lanes[0].distance*scale,nodes.lanes[0].y]};
+   m.lanes.forEach((lane,i)=>{const n=nodes.lanes[i];n.name.textContent=lane.label;n.answer.textContent=`${fmt(lane.answer,2)} ${lane.unit}`;targets.push([n.path,{x1:36,y1:n.y,x2:36+lane.distance*scale,y2:n.y}]);});
+   targets.push([nodes.aircraft,{tx:36,ty:nodes.lanes[0].y-7,angle:0}]);nodes.scale.textContent=`Full ruler: ${fmt(maximum,2)} NM`;
+  }else if(m.kind==='airspeed'){
+   const maximum=Math.max(50,Math.ceil(Math.max(m.cas,m.tas)/50)*50),scale=390/maximum;
+   const newDomain=String(maximum);immediate||=domain!==newDomain;domain=newDomain;
+   targets.push([nodes.cas,{width:m.cas*scale}],[nodes.tas,{width:m.tas*scale}]);
+   nodes.casLabel.textContent=`CAS ${fmt(m.cas)} kt`;nodes.tasLabel.textContent=`Estimated TAS ${fmt(m.tas)} kt`;
+   nodes.note.textContent=`${fmt(m.alt,0)} ft · difference ${fmt(m.tas-m.cas)} kt`;nodes.scale.textContent=`Full scale: ${fmt(maximum,0)} kt`;
+  }else if(m.kind==='crosswind'){
    const scale=85/Math.max(40,m.speed,m.gust||0),u=vector(m.speed*scale,m.wind),h=vector(m.head*scale,m.runway);
    targets.push([nodes.runway,{tx:240,ty:124,angle:m.runway}],...arrowTarget(nodes.wind,240+u[0],124+u[1],240,124),...arrowTarget(nodes.head,240+h[0],124+h[1],240,124),...arrowTarget(nodes.cross,240+u[0],124+u[1],240+h[0],124+h[1]));
    if(Number.isFinite(m.gust)){const g=vector(m.gust*scale,m.wind);targets.push(...arrowTarget(nodes.gust,240+g[0],124+g[1],240,124));}else{nodes.gust.head.style.display='none';nodes.gust.line.style.display='none';}
@@ -151,8 +169,8 @@ function mountDiagram(key){
   if(replay){if(paused){replay.play();paused=false;button.textContent='Pause replay';}else{replay.pause();paused=true;button.textContent='Resume replay';}return;}
   transition?.complete();const m=lastModel;button.textContent='Pause replay';caption.textContent=m.caption+` Replay: 5 seconds represents ${m.minutes?fmt(m.minutes)+(m.minutes===1?' minute':' minutes'):fmt(m.seconds,0)+' seconds'}.`;
   replay=tracked(animate(0,1,{duration:5,ease:'linear',onUpdate:t=>{
-   if(m.kind==='profile'){const [a,b]=[m.path.start,m.path.end];const pose={tx:a[0]+(b[0]-a[0])*t,ty:a[1]+(b[1]-a[1])*t-7,rotate:Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI};positions.set(nodes.aircraft,pose);nodes.aircraft.setAttribute('transform',`translate(${pose.tx} ${pose.ty}) rotate(${pose.rotate})`);}
-   else{const angle=m.degrees*t*Math.PI/180;const pose={tx:240+m.pixelRadius*Math.sin(angle),ty:125-m.pixelRadius*Math.cos(angle),rotate:90+m.degrees*t};positions.set(nodes.aircraft,pose);nodes.aircraft.setAttribute('transform',`translate(${pose.tx} ${pose.ty}) rotate(${pose.rotate})`);}
+   if(m.kind==='profile'||m.kind==='journey'){const [a,b]=[m.path.start,m.path.end];const pose={tx:a[0]+(b[0]-a[0])*t,ty:a[1]+(b[1]-a[1])*t-7,angle:Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI};positions.set(nodes.aircraft,pose);nodes.aircraft.setAttribute('transform',`translate(${pose.tx} ${pose.ty}) rotate(${pose.angle})`);}
+   else{const angle=m.degrees*t*Math.PI/180;const pose={tx:240+m.pixelRadius*Math.sin(angle),ty:125-m.pixelRadius*Math.cos(angle),angle:90+m.degrees*t};positions.set(nodes.aircraft,pose);nodes.aircraft.setAttribute('transform',`translate(${pose.tx} ${pose.ty}) rotate(${pose.angle})`);}
   },onComplete:()=>{active.delete(replay);replay=null;button.textContent='Replay';}}));
  });
  const observer=new MutationObserver(()=>requestAnimationFrame(update));observer.observe(q('.results'),{childList:true,subtree:true,characterData:true});
@@ -165,7 +183,7 @@ function addCabinObjects(){
  const host=q('#wbCabinSlots');if(!host)return;
  const attach=()=>{for(const slot of host.children){if(slot.querySelector('.pd-cabin-object'))continue;const svg=el('svg',{viewBox:'-5 -5 10 10','aria-hidden':'true',class:'pd-cabin-object'});icon(/baggage/i.test(slot.textContent)?'baggage':'seat',svg);slot.prepend(svg);}};
  attach();const observer=new MutationObserver(attach);observer.observe(host,{childList:true});cleanup.push(()=>observer.disconnect());
- const respond=event=>{const slot=event.target.closest('#wbCabinSlots > *');if(!slot||!eligible())return;const svg=slot.querySelector('.pd-cabin-object');tracked(animate(svg,{opacity:[.45,1],scale:[.96,1]},{duration:.25,ease:'easeOut'}));};host.addEventListener('input',respond);cleanup.push(()=>host.removeEventListener('input',respond));
+ const respond=event=>{const slot=event.target.closest('#wbCabinSlots > *');if(!slot||!eligible())return;const flash=tracked(animate(slot,{outlineColor:['#f2f3f5','#56616e']},{duration:.45}));const svg=slot.querySelector('.pd-cabin-object');tracked(animate(svg,{opacity:[.45,1],scale:[.96,1]},{duration:.25,ease:'easeOut'}));};host.addEventListener('input',respond);cleanup.push(()=>host.removeEventListener('input',respond));
 }
 function init(){
  const calculator=location.pathname.startsWith('/calculators/')&&!location.pathname.includes('weight-balance-builder'),wb=location.pathname==='/weight-balance.html'||location.pathname.includes('weight-balance-builder');

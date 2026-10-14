@@ -125,7 +125,9 @@ def classify_reviewed_patterns(hits, visible):
     # paragraphs and labels. HTML block endings are marked with " . " upstream.
     blocks = re.split(r"\s+\.\s+", visible)
     for category, values in hits.items():
-        for rule, evidence in values:
+        for entry in values:
+            # Proof matches are plain strings in the original checker.
+            rule, evidence = entry if isinstance(entry, tuple) else (str(entry), str(entry))
             reason = None
             if category == "rhythm" and rule == "rule-of-three list":
                 # A list of aviation quantities is not itself a writing defect.

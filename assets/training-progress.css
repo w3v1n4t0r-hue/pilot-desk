@@ -14,3 +14,6 @@
 .pd-training-next span{color:var(--muted);font-size:14px}
 .pd-training-ratings a.is-current-training{border-color:var(--line-hi)!important;background:var(--panel2)!important;box-shadow:none!important}
 @media(max-width:720px){.pd-training-progress-controls{grid-template-columns:1fr}.pd-training-next{display:block}.pd-training-next .pd-actions{margin-top:16px}.pd-training-countdown{border-left:0;border-top:1px solid var(--line);margin-top:12px}}
+
+/* Keep the final rating from leaving an empty contrasting grid cell. */
+.pd-training-ratings .pd-hub-grid>a:last-child:nth-child(odd){grid-column:1/-1!important}

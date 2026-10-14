@@ -41,6 +41,10 @@ try{
     assert.equal(await page.evaluate(()=>location.hash),'#rpNavlogPanel');
    }
    if(path==='/flight-training.html'){
+    await page.locator('.pd-learn-subnav').waitFor();
+    assert(await page.locator('.pd-learn-subnav').evaluate(el=>el.getBoundingClientRect().top<document.querySelector('.pd-training-goals').getBoundingClientRect().top));
+    assert(await page.locator('.pd-learn-subnav').evaluate(el=>[...el.children].every(a=>a.scrollWidth<=a.clientWidth+1)),'Study tab text fits its own control');
+    assert(await page.locator('.pd-training-ratings .pd-hub-card').last().evaluate(el=>Math.abs(el.getBoundingClientRect().width-el.parentElement.getBoundingClientRect().width)<3),'Last rating fills the final row');
     assert(await page.locator('.pd-training-goals').evaluate(el=>el.getBoundingClientRect().top<document.querySelector('#pdTrainingProgress').getBoundingClientRect().top));
     if(width===390||width===1280)await page.screenshot({path:`qa-artifacts/competitive-copy/study-${width}.png`,fullPage:true});
    }

@@ -4,7 +4,7 @@
   border:1px solid var(--line);background:var(--line)
 }
 .pd-learn-subnav a{
-  min-height:44px;min-width:112px;flex:1 0 112px;display:flex;align-items:center;justify-content:center;padding:8px 10px;white-space:nowrap;scroll-snap-align:start;
+  min-height:44px;min-width:112px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;padding:8px 10px;white-space:nowrap;scroll-snap-align:start;
   background:#080b0e;color:var(--muted);font-size:var(--pd-type-label);font-weight:650;text-align:center;text-decoration:none
 }
 .pd-learn-subnav a:hover{background:var(--panel2);color:var(--text);text-decoration:none}

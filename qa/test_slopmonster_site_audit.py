@@ -78,6 +78,23 @@ class SiteAuditTests(unittest.TestCase):
                        "test.html")
         self.assertIn("proof", p["categories"])
 
+    def test_separate_count_badges_do_not_create_punctuation_finding(self):
+        p = audit_page(
+            '<main><div class="pd-prep-test-meta">'
+            '<span><b>60</b> FAA questions</span>'
+            '<span><b>120</b> min</span>'
+            '<span><b>70%</b> pass</span>'
+            '<span><b>—</b> selected</span>'
+            '<span><b>—</b> question bank</span></div></main>', "written-prep.html")
+        self.assertEqual(p["score"], 5)
+        self.assertNotIn("punctuation", p["categories"])
+
+    def test_two_em_dashes_in_real_prose_still_flag(self):
+        p = audit_page(
+            "<main><p>We give you speed—without compromise—and clarity.</p></main>",
+            "test.html")
+        self.assertIn("punctuation", p["categories"])
+
     def test_generic_today_marketing_is_still_flagged(self):
         p = audit_page(
             "<main><p>In today's fast-paced landscape, we streamline your journey.</p></main>",

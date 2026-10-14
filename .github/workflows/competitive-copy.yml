@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'src/pages/index.astro'
+      - 'src/components/ScrollFlightPath.astro'
+      - 'assets/scrollcraft/**'
+      - 'qa/scrollcraft-home-browser.mjs'
       - 'src/data/site.mjs'
       - 'flight-training.html'
       - 'assets/home-desk.js'
@@ -51,6 +54,7 @@ jobs:
           python3 -m http.server 4173 --bind 127.0.0.1 --directory dist > /tmp/pilotdesk-preview.log 2>&1 &
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
           node qa/competitive-copy-browser.mjs
+          node qa/scrollcraft-home-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

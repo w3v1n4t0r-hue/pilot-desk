@@ -3,13 +3,13 @@
 const routes=[
  ['/written-prep.html','Written Prep'],
  ['/skill-gap.html','Weak Subjects'],
- ['/flight-training.html','Rating Hubs'],
+ ['/flight-training.html','Study by Rating'],
  ['/learn/oral-exam/','Oral Prep'],
  ['/learn/checkride-lab/','Checkride Lab'],
  ['/learn/study-plan/','Study Plan'],
- ['/learn/coverage/','ACS Coverage'],
+ ['/learn/coverage/','Topics by FAA Standard'],
  ['/checklist-trainer.html','Checklist Practice'],
- ['/training/acs-far-reference.html','ACS / FAR']
+ ['/training/acs-far-reference.html','FAA Standards & Rules']
 ];
 const path=location.pathname;
 if(!routes.some(([p])=>p.endsWith('/')?path.startsWith(p):path===p))return;

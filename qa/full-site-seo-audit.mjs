@@ -92,7 +92,7 @@ for(const route of [
 
 const pricing=rows.find(r=>r.file==='pricing.html');
 if(pricing){
- for(const phrase of ['PilotDesk Pro','$5','Flight School','IN DEVELOPMENT'])if(!pricing.h.includes(phrase))fail(pricing,`pricing page missing current plan signal: ${phrase}`);
+ for(const phrase of ['PilotDesk Pro','$5','FREE INSTRUCTOR RESOURCES','School accounts, student dashboards, and shared-aircraft libraries are not offered.'])if(!pricing.h.includes(phrase))fail(pricing,`pricing page missing current plan signal: ${phrase}`);
  if(!pricing.jsonLd)fail(pricing,'pricing page missing JSON-LD');
 }
 

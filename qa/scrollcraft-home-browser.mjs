@@ -44,17 +44,20 @@ try {
  const phone=await mobile.newPage();
  await phone.goto(base+'/',{waitUntil:'networkidle'});
  await phone.locator('.pd-sc-chart-image').scrollIntoViewIfNeeded();
+ await phone.locator('.pd-sc-chart-image').evaluate(el=>el.decode());
+ await phone.waitForTimeout(260);
  const m=await phone.evaluate(()=>({
    engine:window.ScrollCraft?.instances?.length||0,
    overflow:document.documentElement.scrollWidth>innerWidth,
    sticky:getComputedStyle(document.querySelector('.pd-sc-stage')).position,
    imageLoaded:document.querySelector('.pd-sc-chart-image').naturalWidth>0,
+   fallback:getComputedStyle(document.querySelector('.pd-sc-chart-viewport')).backgroundImage.includes('sectional.webp'),
    usefulLinks:document.querySelectorAll('.pd-sc-workspace a[href^="/"]').length
  }));
  assert.equal(m.engine,0,'no scroll engine on phone');
  assert.equal(m.overflow,false,'no horizontal phone overflow');
  assert.notEqual(m.sticky,'sticky','no pinned stage on phone');
- assert(m.imageLoaded,'chart preview visible on mobile');
+ assert(m.imageLoaded&&m.fallback,'mobile has decoded chart and painted fallback');
  assert(m.usefulLinks>=3,'real product actions available');
  await phone.screenshot({path:'qa-artifacts/competitive-copy/scrollcraft-mobile.png'});
  await mobile.close();

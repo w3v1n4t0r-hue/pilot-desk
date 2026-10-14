@@ -3,7 +3,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const SITE='https://www.pilot-desk.com';
-const skipDirs=new Set(['.git','node_modules','.github','api','assets','qa','scripts']);
+const skipDirs=new Set(['.git','.astro','.astro-public','dist','node_modules','.github','api','assets','qa','scripts','src']);
 const files=[];
 
 function walk(dir='.'){
@@ -52,7 +52,12 @@ for(const file of files){
   if(!normalized.startsWith(SITE+'/')) continue;
   const expected=publicUrl(file);
   if(normalized.replace(/\/$/,'')!==expected.replace(/\/$/,'')) continue;
-  const sourceDate=lastModified(file);
+  // Native Astro pages are served from src/pages, not their legacy HTML files.
+  const nativeSources={
+    'index.html':['src/pages/index.astro','src/components/HomePlans.astro','assets/home-desk.js','assets/home-desk.css'],
+    'tools.html':['src/pages/tools.astro']
+  };
+  const sourceDate=(nativeSources[file]||[file]).map(lastModified).sort().at(-1);
   // Preserve a newer committed lastmod if CI's merge checkout has a shorter
   // file history than the branch that authored the existing sitemap.
   const priorDate=previousLastModified.get(normalized)||'';

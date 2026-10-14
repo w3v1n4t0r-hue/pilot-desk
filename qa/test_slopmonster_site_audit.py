@@ -14,6 +14,31 @@ class SiteAuditTests(unittest.TestCase):
         self.assertEqual(p["score"], 5)
         self.assertFalse(p["categories"])
 
+    def test_pivotal_maneuver_is_valid_aviation_vocabulary(self):
+        p = audit_page(
+            "<main><p>Pivotal maneuvers use groundspeed to find pivotal altitude.</p></main>",
+            "test.html")
+        self.assertNotIn("vocab", p["categories"])
+
+    def test_today_conditions_is_a_flight_proficiency_statement(self):
+        p = audit_page(
+            "<main><p>Being current does not establish proficiency in today's conditions.</p></main>",
+            "test.html")
+        self.assertNotIn("vocab", p["categories"])
+
+    def test_generic_today_marketing_is_still_flagged(self):
+        p = audit_page(
+            "<main><p>In today's fast-paced landscape, we streamline your journey.</p></main>",
+            "test.html")
+        self.assertIn("vocab", p["categories"])
+
+    def test_report_preserves_real_match_evidence(self):
+        p = audit_page(
+            "<main><p>Our seamless planning platform is effortless.</p></main>",
+            "test.html")
+        self.assertTrue(all("rule" in x and "match" in x
+                            for xs in p["categories"].values() for x in xs))
+
     def test_marketing_language_is_flagged(self):
         p = audit_page(
             "<main><p>Our seamless, game-changing platform unlocks your journey.</p></main>",

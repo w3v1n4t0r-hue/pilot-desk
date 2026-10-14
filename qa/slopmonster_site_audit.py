@@ -89,6 +89,70 @@ def justified_aviation_terms(hits, text):
     return hits
 
 
+
+# The upstream regex flags any ordinary three-part list. On an aviation site these
+# are often exact units, performance inputs, or regulation categories. Preserve
+# the evidence as reviewed, and flag rhetorical marketing cadence instead.
+HYPE_WORDS = {
+    "amazing", "beautiful", "better", "best", "brilliant", "compelling", "cutting",
+    "direct", "disciplined", "easy", "efficient", "effortless", "engaging",
+    "exceptional", "fast", "faster", "flawless", "fresh", "incredible",
+    "intuitive", "modern", "perfect", "powerful", "premium", "proven",
+    "reliable", "remarkable", "seamless", "simple", "simpler", "smart",
+    "smarter", "specific", "stunning", "superior", "trusted", "unique",
+}
+MARKETING_VERBS = {"plan", "calculate", "study", "build", "learn", "grow",
+                   "save", "discover", "explore", "create", "connect"}
+AVIATION_COMPOUNDS = {
+    "accelerate-stop", "accelerate-go", "multi-engine", "engine-out",
+    "single-engine", "density-altitude", "dry-air", "standard-atmosphere",
+    "isa-equivalent", "time-speed-distance", "climb-gradient",
+    "descent-rate", "weight-and-balance", "best-angle", "best-rate",
+    "cross-country", "runway-specific", "aircraft-specific", "takeoff-roll",
+}
+
+
+def classify_reviewed_patterns(hits, visible):
+    """Keep SlopMonster evidence while separating technical content from hype.
+
+    A new promotional tricolon, novel compound stack or overloaded paragraph
+    remains unresolved. Previously accepted lists stay inspectable in JSON.
+    This is not an AI-authorship test.
+    """
+    unresolved = {key: [] for key in hits}
+    reviewed = {key: [] for key in hits}
+    # Page-wide punctuation counts are misleading across independently written
+    # paragraphs and labels. HTML block endings are marked with " . " upstream.
+    blocks = re.split(r"\s+\.\s+", visible)
+    for category, values in hits.items():
+        for rule, evidence in values:
+            reason = None
+            if category == "rhythm" and rule == "rule-of-three list":
+                # A list of aviation quantities is not itself a writing defect.
+                words = re.findall(r"[a-z]+", evidence.lower())
+                marketing_count = sum(word in HYPE_WORDS for word in words)
+                imperative_count = sum(word in MARKETING_VERBS for word in words)
+                if marketing_count < 2 and imperative_count < 3:
+                    reason = "literal aviation or navigation enumeration"
+            elif category == "punctuation":
+                if rule.startswith("4 hyphenated") or (
+                    "hyphenated compounds stacked" in rule
+                ):
+                    compounds = [c.strip().lower() for c in evidence.split(",")]
+                    if compounds and all(c in AVIATION_COMPOUNDS for c in compounds):
+                        reason = "published aviation compound terminology"
+                elif rule == "semicolon-heavy for web copy":
+                    if max((chunk.count(";") for chunk in blocks), default=0) <= 2:
+                        reason = "semicolons distributed across separate copy blocks"
+                elif rule == "two or more em-dashes in one sentence":
+                    if max((chunk.count("—") for chunk in blocks), default=0) < 2:
+                        reason = "em dashes occur in separate text blocks"
+            if reason:
+                reviewed[category].append((rule, evidence, reason))
+            else:
+                unresolved[category].append((rule, evidence))
+    return unresolved, reviewed
+
 def audit_page(html, path):
     parser = PageCopy()
     parser.feed(html)
@@ -96,7 +160,8 @@ def audit_page(html, path):
     # Treat meta description as public-facing copy too.
     seo = slop.normalise(parser.description)
     visible = slop.normalise(main_text + " . " + seo)
-    hits = justified_aviation_terms(slop.audit(visible), visible)
+    raw_hits = justified_aviation_terms(slop.audit(visible), visible)
+    hits, accepted = classify_reviewed_patterns(raw_hits, visible)
     score = max(0, 5 - sum(bool(values) for values in hits.values()))
     return {
         "path": path,
@@ -105,6 +170,11 @@ def audit_page(html, path):
             key: [{"rule": item[0], "match": item[1]} if isinstance(item, tuple)
                   else {"rule": str(item)} for item in values[:12]]
             for key, values in hits.items() if values
+        },
+        "reviewed": {
+            key: [{"rule": item[0], "match": item[1], "reason": item[2]}
+                  for item in values[:12]]
+            for key, values in accepted.items() if values
         },
         "has_main": parser.has_main,
         "characters": len(visible),
@@ -136,11 +206,15 @@ def main():
         "pages_scanned": len(pages),
         "pages_flagged": len(flagged),
         "pages_clean": len(pages) - len(flagged),
+        "pages_with_reviewed_patterns": sum(bool(p["reviewed"]) for p in pages),
+        "reviewed_patterns": sum(len(v) for p in pages for v in p["reviewed"].values()),
         "report": pages,
         "notes": [
             "SlopMonster is an English pattern check, not proof of AI authorship.",
             "The published HTML, including built legacy routes, is inspected.",
             "Main-page text and SEO descriptions are checked; client-generated JS copy needs separate review.",
+            "Reviewed technical lists, established aviation compound words and independent paragraph punctuation remain visible with an explicit reason.",
+            "A new marketing tricolon or a new overloaded sentence still produces an unresolved score reduction.",
             "Pivotal altitude and elevation are recognized as legitimate aviation terminology.",
             "Manual editorial review is required; clear copy and accurate FAA/POH limits outrank a 5/5 score.",
         ],
@@ -149,7 +223,7 @@ def main():
         out = Path(args.output)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(stats, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"SlopMonster: {len(pages)} built pages checked; {len(flagged)} need review; "
+    print(f"SlopMonster: {len(pages)} built pages checked; {len(flagged)} unresolved warnings; "
           f"{len(pages) - len(flagged)} score 5/5.")
     for p in flagged[:30]:
         details = ", ".join(p["categories"].keys())

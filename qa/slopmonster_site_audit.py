@@ -39,9 +39,15 @@ class PageCopy(HTMLParser):
         self.fallback = []
         self.description = ""
         self.has_main = False
+        self.stat_depth = 0
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        # Stats displayed in separate badges are not a single prose sentence.
+        if tag == "div" and "pd-prep-test-meta" in attrs.get("class", "").split():
+            self.stat_depth = 1
+        elif self.stat_depth and tag == "div":
+            self.stat_depth += 1
         if tag == "meta" and attrs.get("name", "").lower() == "description":
             self.description = attrs.get("content", "")
         if tag == "main":
@@ -55,6 +61,10 @@ class PageCopy(HTMLParser):
             self.suppressed.pop()
         if tag in BLOCKS and not self.suppressed:
             (self.body if self.main_depth else self.fallback).append(" . ")
+        if tag == "span" and self.stat_depth and not self.suppressed:
+            (self.body if self.main_depth else self.fallback).append(" . ")
+        if tag == "div" and self.stat_depth:
+            self.stat_depth -= 1
         if tag == "main":
             self.main_depth = max(0, self.main_depth - 1)
 

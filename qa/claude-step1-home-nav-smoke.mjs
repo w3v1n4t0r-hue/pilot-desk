@@ -19,9 +19,9 @@ const legacyCss=read('assets/styles-legacy.css');
 const sw=read('sw.js');
 
 for(const phrase of [
-  'your next flight.',
+  'Plan the flight.',
   'Core tools work without an account','FAA charts · AWC weather',
-  'The tools you reach for.','Three daily questions','Prepare for your checkride.',
+  'The tools you reach for.','Three daily questions','You recognize the answer. Can you explain it?',
   'Your account','SOURCES','Common questions'
 ]) check(home.includes(phrase),'Homepage structure/copy changed or missing: '+phrase);
 for(const phrase of ['Plan a Flight','Use a Calculator','Study for a Written']) check(siteData.includes(phrase),'Homepage quick-start action missing: '+phrase);

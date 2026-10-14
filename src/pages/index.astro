@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HomePlans from '../components/HomePlans.astro';
 import { popularTools } from '../data/site.mjs';
 
 const schema = {
@@ -9,7 +10,7 @@ const schema = {
       '@type': 'WebSite',
       name: 'PilotDesk',
       url: 'https://www.pilot-desk.com/',
-      description: 'Free aviation calculators, route planning, airport weather, and FAA-based study tools, with optional Pro cloud backup.'
+      description: 'Free aviation calculators, route planning, airport weather, and FAA-based study tools, with optional Pro checkride practice and advanced route review.'
     },
     {
       '@type': 'Organization',
@@ -21,7 +22,7 @@ const schema = {
       '@type': 'FAQPage',
       mainEntity: [
         ['What is PilotDesk?', 'PilotDesk is a browser-based set of aviation calculators, route-planning, weather, and study tools.'],
-        ['Do I need an account?', 'No. Core tools work without an account. A free account saves Daily, Written Prep, and profile progress. PilotDesk Pro adds aircraft and saved-flight cloud backup plus ad-free signed-in use.'],
+        ['Do I need an account?', 'No. Core tools work without an account. A free account saves Daily, Written Prep, and profile progress. PilotDesk Pro adds full Checkride Lab, study planning, advanced route review, unlimited aircraft and saved flights, manual cloud backup, and ad-free signed-in use.'],
         ['Are PilotDesk calculator results official operational data?', 'No. PilotDesk is a planning and training aid. Verify operational decisions with current approved aircraft data, weather, procedures, regulations, and official sources.'],
         ['What is PilotDesk Daily?', 'PilotDesk Daily is a short aviation challenge with three new questions each day.']
       ].map(([question, answer]) => ({ '@type': 'Question', name: question, acceptedAnswer: { '@type': 'Answer', text: answer } }))
@@ -41,10 +42,11 @@ const schema = {
     <div class="pd-home-hero-inner">
       <div class="pd-home-hero-copy">
         <div class="eyebrow">For the flight ahead</div>
-        <h1 id="pdHomeTitle">Plan <span>your next flight.</span></h1>
-        <p>Charts, weather, flight calculations and checkride prep. All in your browser.</p>
+        <h1 id="pdHomeTitle">Plan the flight.<span>Understand the numbers.</span></h1>
+        <p>Flight planning, aviation calculators, weather, and checkride practice in your browser. Work through the numbers and the reasoning behind them.</p>
         <nav class="pd-home-hero-links" aria-label="Start a pilot task">
           <a class="pd-btn" href="/route-planner.html" data-pd-home-cta="Start Planning">Plan a flight</a>
+          <a class="pd-home-command" href="/learn/oral-exam/" data-pd-home-cta="Checkride Practice">Practice for a checkride <span aria-hidden="true">↗</span></a>
           <a class="pd-home-command" href="/weather.html" data-pd-home-cta="Weather">Check weather <span aria-hidden="true">↗</span></a>
           <a class="pd-home-command" href="/tools.html" data-pd-home-cta="Browse Tools">Open tools <span aria-hidden="true">↗</span></a>
         </nav>
@@ -116,6 +118,7 @@ const schema = {
         </div>
         <p id="pdHomeWindNote">30° angle · components only, not an aircraft limit.</p>
         <a id="pdHomeWindLink" href="/calculators/crosswind/?runway=350&amp;windDir=320&amp;windSpeed=18">Use your runway and wind</a>
+        <div class="pd-home-study-links"><a href="/guides/crosswind-component.html">See the calculation →</a><a href="/learn/oral-exam/">Practice explaining it →</a></div>
       </section>
     </section>
 
@@ -136,6 +139,11 @@ const schema = {
         ))}
       </div>
       <button class="pd-home-command" id="pdHomeSearch" type="button">Search all tools <kbd>/</kbd></button>
+    </section>
+
+    <section data-pd-reveal class="pd-home-section pd-home-route" aria-labelledby="connected-title">
+      <div><div class="eyebrow">How PilotDesk fits</div><h2 id="connected-title">Your flight math and study tools belong together.</h2><p>Work out the wind correction. See what it does to heading, time, and fuel. Then review the reasoning behind the result.</p><div class="pd-actions"><a class="pd-btn secondary" href="/flight-planning-workspace.html">Work through the flight math</a><a href="/written-prep.html">Open Written Prep →</a></div></div>
+      <ol class="pd-home-route-steps"><li><b>Calculate</b><span>Use the free tools with your own inputs.</span></li><li><b>Understand</b><span>Read the method and assumptions. Follow the source links.</span></li><li><b>Practice</b><span>Review a related study topic and explain the answer in your own words.</span></li></ol>
     </section>
 
     <section data-pd-reveal class="pd-home-section" aria-labelledby="flight-lessons-title">
@@ -169,10 +177,12 @@ const schema = {
     </section>
 
     <section data-pd-reveal class="pd-home-section pd-home-learn" aria-labelledby="learn-title">
-      <div class="pd-home-section-head"><div><div class="eyebrow">LEARN</div><h2 id="learn-title">Prepare for your checkride.</h2><p>FAA references, oral practice and tools connected to each subject.</p></div><a href="/flight-training.html">Open Learn →</a></div>
+      <div class="pd-home-section-head"><div><div class="eyebrow">LEARN</div><h2 id="learn-title">You recognize the answer. Can you explain it?</h2><p>Practice answering oral questions in your own words, work through follow-ups, and find subjects to revisit before your next ground lesson.</p></div><a href="/flight-training.html">Open Learn →</a></div>
       <div class="pd-home-ratings">
         <a href="/training/private-pilot.html">Private</a><a href="/training/instrument-rating.html">Instrument</a><a href="/training/commercial-pilot.html">Commercial</a><a href="/training/multiengine.html">Multi-engine</a><a href="/training/cfi.html">CFI</a><a href="/training/cfii.html">CFII</a>
       </div>
+      <div class="pd-actions pd-home-study-actions"><a class="pd-btn secondary" href="/learn/checkride-lab/">View Checkride Lab · Pro</a><a href="/learn/oral-exam/">Try free oral subjects →</a></div>
+      <details class="pd-home-lab-method"><summary>How Checkride Lab reviews your answer</summary><p>Typed responses are checked against listed study topics locally in your browser. Choose a focused drill or a mock oral with feedback at the end. The topic check can flag subjects to revisit; it does not judge your answer like an examiner or establish checkride readiness.</p></details>
       <div class="pd-home-study-links"><a href="/written-prep.html">Written prep →</a><a href="/learn/oral-exam/">Oral exam guide →</a><a href="/daily/">Three daily questions →</a></div>
     </section>
 
@@ -181,11 +191,13 @@ const schema = {
       <div class="pd-home-weather-links"><a href="/weather.html"><b>Check an airport</b><span>Current reports and runway-wind context →</span></a><a href="/guides/metar-taf.html"><b>Learn to read METARs</b><span>Wind, ceilings and forecast change groups →</span></a></div>
     </section>
 
+    <HomePlans />
+
     <section data-pd-reveal class="pd-home-section pd-home-account" data-pd-home-account aria-label="PilotDesk account">
       <div>
         <div class="eyebrow">Your account</div>
         <h2 data-pd-home-account-title>Keep your progress.</h2>
-        <p data-pd-home-account-copy>Free accounts save Daily, Written Prep, and profile progress. Pro adds aircraft and saved-flight cloud backup plus an ad-free signed-in experience.</p>
+        <p data-pd-home-account-copy>Keep missed questions, Daily history, and your training goal with your free account. Return to the subjects you need to revisit.</p>
       </div>
       <div class="pd-home-business-actions" data-pd-home-account-actions>
         <a class="pd-btn secondary" href="/account.html?next=%2F" data-pd-home-cta="Create Account">Create a free account</a>
@@ -196,8 +208,8 @@ const schema = {
     <section data-pd-reveal class="pd-home-section pd-home-trust">
       <div>
         <div class="eyebrow">SOURCES</div>
-        <h2>FAA, weather and aircraft references</h2>
-        <p>For a flight, use current FAA charts and regulations, official weather reports, and the aircraft’s POH/AFM.</p>
+        <h2>See the method. Check the source.</h2>
+        <p>Calculator explanations identify methods and assumptions; study material links to FAA references. For a flight, verify information with current official sources and your aircraft’s approved POH/AFM.</p>
       </div>
       <a href="/sources.html">Sources & methods →</a>
     </section>
@@ -208,7 +220,7 @@ const schema = {
       </div>
       <div class="pd-faq-list">
         <details><summary>What is PilotDesk?</summary><p>A browser-based set of aviation calculators, route-planning, weather, and study tools.</p></details>
-        <details><summary>Do I need an account?</summary><p>No. Core tools work without one. A free account saves Daily, Written Prep, and profile progress. Pro adds aircraft and saved-flight cloud backup.</p></details>
+        <details><summary>Do I need an account?</summary><p>No. Core tools work without one. A free account saves Daily, Written Prep, and profile progress. Pro adds full Checkride Lab, study planning, advanced route review, unlimited aircraft and saved flights, manual cloud backup, and ad-free signed-in use. <a href="/pricing.html">Compare plans.</a></p></details>
         <details><summary>Are calculator results official operational data?</summary><p>No. Use PilotDesk as a planning aid and verify operational decisions with current approved aircraft, airport, weather, procedural, and regulatory sources.</p></details>
         <details><summary>What is PilotDesk Daily?</summary><p>A three-question aviation challenge that changes every day.</p></details>
       </div>

@@ -15,7 +15,7 @@ body.pd-home-2026{
 .pd-home-2026 .pd-sc-opening .pd-sc-aside-note{font-size:.83rem!important;color:#adb6bd;max-width:36ch;border-left:1px solid #4c5963;padding-left:1.2rem;line-height:1.6;margin:0 0 .25rem!important}
 .pd-home-2026 .pd-sc-textlink{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;margin-top:1.1rem;font-size:.93rem;font-weight:550;color:#f1f4f5;text-underline-offset:.22em}
 .pd-home-2026 .pd-sc-flight{position:relative;--sc-p:0}
-.pd-home-2026 .pd-sc-stage{position:sticky;top:0;overflow:hidden;min-height:600px;height:100svh;max-height:980px;background:#070a0d;padding:clamp(.7rem,2.6vw,2.2rem);display:flex;align-items:center;justify-content:center;border-bottom:1px solid #39444d}
+.pd-home-2026 .pd-sc-stage{position:sticky;top:64px;overflow:hidden;min-height:560px;height:calc(100svh - 64px);max-height:900px;background:#070a0d;padding:clamp(.7rem,2.6vw,2.2rem);display:flex;align-items:center;justify-content:center;border-bottom:1px solid #39444d}
 .pd-home-2026 .pd-sc-workspace{position:relative;display:flex;flex-direction:column;width:100%;height:min(76svh,720px);min-height:510px;max-height:calc(100% - 16px);min-width:0;border:1px solid #64727f;background:#0a0f13;box-shadow:0 20px 56px #0008, inset 0 1px #83909e55;overflow:hidden}
 .pd-home-2026 .pd-sc-windowbar{height:48px;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0 1rem;background:#141b21;border-bottom:1px solid #54606b;font:500 10px/1.4 ui-monospace,monospace;letter-spacing:.09em;color:#e6e9ec}
 .pd-home-2026 .pd-sc-window-title{display:inline-flex;align-items:center;gap:.8rem;min-width:0;white-space:nowrap}
@@ -30,7 +30,7 @@ body.pd-home-2026{
 .pd-home-2026 .pd-sc-side-group span{font:400 .86rem/1.5 system-ui,sans-serif;color:#bdc6ce}
 .pd-home-2026 .pd-sc-side-group a{display:inline-flex;align-items:center;margin-top:.35rem;min-height:30px;color:#f4f5f6;text-underline-offset:3px;font-size:.85rem}
 .pd-home-2026 .pd-sc-side-group-last{border-bottom:0}
-.pd-home-2026 .pd-sc-chart-viewport{position:relative;min-width:0;min-height:0;overflow:hidden;background:#151b1e}
+.pd-home-2026 .pd-sc-chart-viewport{position:relative;min-width:0;min-height:0;overflow:hidden;background:#151b1e url("/assets/chart-overviews/sectional.webp") center / cover no-repeat}
 .pd-home-2026 .pd-sc-chart-image{display:block;position:absolute;inset:-4% 0 0 0;width:100%;height:110%;max-width:none;object-fit:cover;object-position:center center;filter:saturate(.76) contrast(1.04) brightness(.88);will-change:transform}
 .pd-home-2026 .pd-sc-chart-viewport:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,#10161c2b,transparent 24%,transparent 68%,#07101672)}
 .pd-home-2026 .pd-sc-chart-tag,.pd-home-2026 .pd-sc-chart-caption{position:absolute;z-index:2;font:600 10px/1.4 ui-monospace,monospace;letter-spacing:.06em;padding:.6rem .75rem;color:#eff1f3;background:#0a1118ef;border:1px solid #73828e;backdrop-filter:none}

@@ -182,7 +182,7 @@ jobs:
       - name: Test SlopMonster site audit rules
         run: python3 qa/test_slopmonster_site_audit.py
       - name: Audit all built HTML copy with SlopMonster
-        run: python3 qa/slopmonster_site_audit.py --root dist --output slopmonster-report.json
+        run: python3 qa/slopmonster_site_audit.py --root dist --output slopmonster-report.json --strict
       - name: Upload SlopMonster editorial report
         if: always()
         uses: actions/upload-artifact@v4

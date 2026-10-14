@@ -1,5 +1,12 @@
 // Geometry only: the established calculator remains the source of displayed answers.
 export const DIAGRAM_KEYS=new Set(['tsd','holdDistance','tasApprox','crosswind','windTriangle','threeDegree','tod','glide','climbGradient','fpmGradient','gradientAngle','obstacleGradient','turnRadius','rateTurn','stdRate','arcDistance','fuelRequired','endurance','fuelWeight','reciprocal','trueMag','loadFactor','stallBank','densityAltitude','pressureAltitude','isaTemp','cloudBase']);
+// Round only for display; geometry and replay retain the unrounded duration.
+export function formatDuration(seconds,compact=false){
+  if(!Number.isFinite(seconds)||seconds<0)return '—';
+  const total=Math.round(seconds),hours=Math.floor(total/3600),minutes=Math.floor(total%3600/60),secs=total%60;
+  const pad=value=>String(value).padStart(2,'0');
+  return compact&&hours===0?`${minutes}:${pad(secs)}`:`${compact?hours:pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+}
 export const NM_FT = 6076.11549;
 export const norm = angle => ((angle % 360) + 360) % 360;
 export const shortestAngle = (from, to) => from + ((to - from + 540) % 360) - 180;
@@ -22,7 +29,7 @@ export function diagramModel(key, v) {
     ]:[{distance,label:'Straight leg',answer:distance,unit:'NM'}];
     if(!finite([seconds,...lanes.map(l=>l.answer)]))return null;
     return {kind:'journey',title:key==='tsd'?'Time, distance and speed':'Straight-leg distance',lanes,seconds,minutes:key==='tsd'?seconds/60:null,
-      caption:key==='tsd'?'Each row is a separate calculation. First-row ticks are minutes; replay follows that row.':'Ticks show seconds on the straight leg, not a full holding circuit.'};
+      caption:key==='tsd'?'Each row is a separate calculation. First-row ticks show elapsed time; replay follows that row. Times round to the nearest second.':'Ticks show elapsed time on the straight leg. Times round to the nearest second.'};
   }
   if(key==='tasApprox'){
     if(!finite([v.cas,v.alt])||v.cas<=0)return null;

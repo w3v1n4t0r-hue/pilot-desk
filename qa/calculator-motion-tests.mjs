@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {diagramModel,vector,shortestAngle,DIAGRAM_KEYS,NM_FT} from '../src/scripts/calculator-motion-model.mjs';
+import {diagramModel,vector,shortestAngle,DIAGRAM_KEYS,NM_FT,formatDuration} from '../src/scripts/calculator-motion-model.mjs';
 const source=fs.readFileSync('assets/site.js','utf8');
 function formula(key,values){
  const fields=Object.fromEntries(Object.entries(values).map(([id,value])=>[id,{value:String(value)}]));
@@ -92,3 +92,14 @@ assert(Math.abs(wbContext.fuelChangePoint(dep,landing,.5).cg-(dep.M/dep.W+landin
 wbContext.rows[0].ldg='0';assert(!wbContext.canReplayFuel(dep,landing),'a passenger change cannot be called fuel burn');
 wbContext.rows[0].ldg='180';wbContext.envelope=[];assert(!wbContext.canReplayFuel(dep,landing),'replay requires an entered envelope');
 console.log('Weight-and-balance replay passed: moment/weight interpolation, fuel-only gating and entered-envelope requirement.');
+
+assert.equal(formatDuration(90/105*3600),'00:51:26');
+assert.equal(formatDuration(5400),'01:30:00');
+assert.equal(formatDuration(59.6),'00:01:00');
+assert.equal(formatDuration(3599.6),'01:00:00');
+assert.equal(formatDuration(86401),'24:00:01');
+assert.equal(formatDuration(22.5,true),'0:23');
+assert.equal(formatDuration(5400,true),'1:30:00');
+assert.equal(formatDuration(NaN),'—');
+assert.equal(formatDuration(-1),'—');
+console.log('Exact-time displays passed: non-integer journeys, second rounding/carry and durations beyond 24 hours.');

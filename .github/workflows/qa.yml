@@ -170,6 +170,17 @@ jobs:
         run: node qa/trust-safety-smoke.mjs
       - name: Check public copy tone
         run: node qa/copy-tone.mjs
+      - name: Test SlopMonster site audit rules
+        run: python3 qa/test_slopmonster_site_audit.py
+      - name: Audit all built HTML copy with SlopMonster
+        run: python3 qa/slopmonster_site_audit.py --root dist --output slopmonster-report.json
+      - name: Upload SlopMonster editorial report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slopmonster-copy-audit
+          path: slopmonster-report.json
+          if-no-files-found: ignore
       - name: Guard hand-written aviation copy
         run: node qa/human-copy-smoke.mjs
       - name: Check content audit corrections

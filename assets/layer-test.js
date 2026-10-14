@@ -56,6 +56,16 @@ function draw(){
   for(const def of definitions.filter(d=>chosen(d.id))){const p=document.createElement('p');const option=def.options.find(o=>o.id===selection[def.id]);p.textContent=def.label+(option?' — '+option.label:'')+' · '+connection(def);$('review').append(p)}
 }
 function toggle(doc,name,value){const control=doc.querySelector('[data-layer="'+name+'"]');if(!control)return false;if(control.disabled&&value)return false;if(control.checked!==value){control.checked=value;control.dispatchEvent(new Event('change',{bubbles:true}))}return true}
+function mountMap(win){
+  const doc=win.document,card=doc.querySelector('.rp-map-card');
+  if(!card||doc.getElementById('layer-test-map-style'))return;
+  const style=doc.createElement('style');style.id='layer-test-map-style';
+  style.textContent='html,body{margin:0!important;padding:0!important;height:100%;overflow:hidden}body>*:not(.rp-map-card){display:none!important}.rp-map-card{position:fixed!important;inset:0!important;margin:0!important;width:100%!important;height:100%!important;border:0!important;display:flex;flex-direction:column;padding:10px!important}.rp-map-toolbar{flex-wrap:wrap;flex-shrink:0}#rpMap{flex:1;min-height:180px!important;height:auto!important}.rp-map-card>h2{display:none}';
+  doc.head.append(style);doc.body.append(card);win.scrollTo(0,0);
+  const editor=doc.getElementById('rpEditorToggle');
+  if(editor){editor.textContent='Full planner ↗';editor.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();win.open('/route-planner.html','_blank','noopener')},true)}
+  win.requestAnimationFrame(()=>win.PilotDeskRoutePlanner.getMap().invalidateSize({animate:false}));
+}
 function apply(){
   if(!ready)return;
   const win=$('planner').contentWindow,doc=win.document;
@@ -72,5 +82,5 @@ function apply(){
 $('search').addEventListener('input',draw);$('selected-only').addEventListener('change',draw);
 $('reset').addEventListener('click',()=>{selection={};store();$('selected-only').checked=false;apply();draw()});
 $('export').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({version:1,selection},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='pilotdesk-layer-review.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
-$('planner').addEventListener('load',()=>{const win=$('planner').contentWindow;const connect=()=>{ready=!!win.PilotDeskRoutePlanner?.getMap()&&!!win.document.querySelector('[data-layer="radar"]');if(ready)apply();else $('map-status').textContent='Map viewer unavailable. Catalogue selections remain available for review.'};win.document.addEventListener('pilotdesk:map-ready',()=>setTimeout(connect,0),{once:true});connect()});
+$('planner').addEventListener('load',()=>{const win=$('planner').contentWindow;const connect=()=>{ready=!!win.PilotDeskRoutePlanner?.getMap()&&!!win.document.querySelector('[data-layer="radar"]');if(ready){mountMap(win);apply()}else $('map-status').textContent='Map viewer unavailable. Catalogue selections remain available for review.'};win.document.addEventListener('pilotdesk:map-ready',()=>setTimeout(connect,0),{once:true});connect()});
 try{definitions=await fetch('/assets/layer-catalog.json').then(r=>{if(!r.ok)throw Error('Catalogue unavailable');return r.json()});let saved;try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch{saved={}};for(const def of definitions){const value=saved?.[def.id];if(def.options.length&&def.options.some(o=>o.id===value))selection[def.id]=value;else if(def.id in defaults&&typeof value==='number'&&Number.isFinite(value))selection[def.id]=Math.max(0,Math.min(def.id==='wxOpacity'?100:60000,value));else if(!def.options.length&&!(def.id in defaults)&&typeof value==='boolean')selection[def.id]=value}draw();apply()}catch{$('summary').textContent='Layer catalogue could not be loaded. Reload to retry.'}

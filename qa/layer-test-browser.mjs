@@ -28,6 +28,9 @@ try{
   for(const def of catalog){if(def.options.length)assert.deepEqual(await control(def.id).locator('option').evaluateAll(els=>els.slice(1).map(el=>el.value)),def.options.map(o=>o.id))}
   await control('chart').selectOption('us/ifrlow');
   const frame=page.frameLocator('#planner');
+  assert.ok(await frame.locator('#rpMap').evaluate(el=>el.clientHeight>=180));
+  assert.equal(await frame.locator('.topbar').isVisible(),false);
+  assert.equal(await frame.locator('#rpEditorToggle').textContent(),'Full planner ↗');
   assert.equal(await frame.locator('#rpChartLayer').inputValue(),'low');
   await control('wxStations').selectOption('category');
   assert.equal(await frame.locator('[data-layer="metar"]').isChecked(),true);

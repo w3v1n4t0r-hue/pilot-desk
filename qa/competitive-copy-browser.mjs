@@ -52,7 +52,7 @@ try{
     assert.equal(await page.getByRole('link',{name:'Open calculators',exact:true}).getAttribute('href'),'/tools.html');
    }
    if(path==='/for-flight-schools.html'){
-    assert.match(await page.locator('main').textContent(),/Written Prep sessions need a free account/);
+    assert.match(await page.locator('main').textContent(),/Written Prep sessions (?:need|require) a free account/);
     assert.match(await page.locator('main').textContent(),/are not offered/);
    }
    if(path==='/pricing.html'){

@@ -1,20 +1,5 @@
 [
   {
-    "id": "ots",
-    "label": "Show Organized Tracks",
-    "options": []
-  },
-  {
-    "id": "otseast",
-    "label": "East",
-    "options": []
-  },
-  {
-    "id": "otswest",
-    "label": "West",
-    "options": []
-  },
-  {
     "id": "map",
     "label": "Base map",
     "options": [
@@ -34,20 +19,6 @@
     "options": []
   },
   {
-    "id": "jepp",
-    "label": "Jeppesen charts",
-    "options": [
-      {
-        "id": "jepplow",
-        "label": "Jeppesen IFR (low)"
-      },
-      {
-        "id": "jepphigh",
-        "label": "Jeppesen IFR (high)"
-      }
-    ]
-  },
-  {
     "id": "chart",
     "label": "Regional charts",
     "options": [
@@ -62,170 +33,6 @@
       {
         "id": "us/ifrhigh",
         "label": "U.S. IFR (high)"
-      },
-      {
-        "id": "ca/vnc",
-        "label": "Canada VNC"
-      },
-      {
-        "id": "ca/ifrlow",
-        "label": "Canada IFR (low)"
-      },
-      {
-        "id": "ca/ifrhigh",
-        "label": "Canada IFR (high)"
-      },
-      {
-        "id": "eurocontrol/vfr",
-        "label": "Europe VFR"
-      },
-      {
-        "id": "ans/vfr",
-        "label": "Europe VFR (ANS)"
-      },
-      {
-        "id": "avinor/vfr",
-        "label": "Europe VFR (Avinor)"
-      },
-      {
-        "id": "dfs/vfr",
-        "label": "Europe VFR (DFS)"
-      },
-      {
-        "id": "ign/vfr",
-        "label": "Europe VFR (IGN)"
-      },
-      {
-        "id": "lfv/vfr",
-        "label": "Europe VFR (LFV)"
-      },
-      {
-        "id": "nats/vfr",
-        "label": "Europe VFR (NATS)"
-      },
-      {
-        "id": "rogers/vfr",
-        "label": "Europe VFR (Rogers)"
-      },
-      {
-        "id": "avioportolano/vfr",
-        "label": "Avioportolano"
-      },
-      {
-        "id": "airmillion/vfr",
-        "label": "Air Million"
-      },
-      {
-        "id": "airmillionweekend/vfr",
-        "label": "Air Million (wknd)"
-      },
-      {
-        "id": "cartabossy/vfr",
-        "label": "CartaBossy"
-      },
-      {
-        "id": "cartabossyweekend/vfr",
-        "label": "CartaBossy (wknd)"
-      },
-      {
-        "id": "eurocontrol/ifrlow",
-        "label": "Europe IFR (low)"
-      },
-      {
-        "id": "eurocontrol/ifrhigh",
-        "label": "Europe IFR (high)"
-      },
-      {
-        "id": "au/vfr",
-        "label": "Australia VFR"
-      },
-      {
-        "id": "au/ifrlow",
-        "label": "Australia IFR (low)"
-      },
-      {
-        "id": "au/ifrhigh",
-        "label": "Australia IFR (high)"
-      },
-      {
-        "id": "au/pca",
-        "label": "Planning Chart (PCA)"
-      },
-      {
-        "id": "br/vfr",
-        "label": "Latin America VFR"
-      },
-      {
-        "id": "br/ifrlow",
-        "label": "Latin America IFR (low)"
-      },
-      {
-        "id": "br/ifrhigh",
-        "label": "Latin America IFR (high)"
-      },
-      {
-        "id": "nz/vfr",
-        "label": "NZ VFR"
-      },
-      {
-        "id": "nz/ifrlow",
-        "label": "NZ IFR (low)"
-      },
-      {
-        "id": "nz/ifrhigh",
-        "label": "NZ IFR (high)"
-      },
-      {
-        "id": "af/vfr",
-        "label": "Africa VFR"
-      },
-      {
-        "id": "jp/vfr",
-        "label": "Japan AIS VFR"
-      }
-    ]
-  },
-  {
-    "id": "chart2",
-    "label": "Additional charts",
-    "options": [
-      {
-        "id": "car/ifrlow",
-        "label": "Carib/Mexico (low)"
-      },
-      {
-        "id": "car/ifrhigh",
-        "label": "Carib/Mexico (high)"
-      },
-      {
-        "id": "us/ifrplan_ocean",
-        "label": "U.S. IFR (ocean)"
-      },
-      {
-        "id": "us/fly",
-        "label": "U.S. VFR (flyway)"
-      },
-      {
-        "id": "br/rea",
-        "label": "Brazil REA"
-      },
-      {
-        "id": "br/reh",
-        "label": "Brazil REH"
-      }
-    ]
-  },
-  {
-    "id": "chartHeli",
-    "label": "Helicopter charts",
-    "options": [
-      {
-        "id": "us/helimetro",
-        "label": "U.S. Helicopter"
-      },
-      {
-        "id": "us/heligulf",
-        "label": "Heli Gulf VFR"
       }
     ]
   },
@@ -254,39 +61,10 @@
         "label": "Color IR Satellite"
       },
       {
-        "id": "icing_conus",
-        "label": "Icing (US)"
-      },
-      {
-        "id": "icing_global",
-        "label": "Icing (Global)"
-      },
-      {
-        "id": "turb_conus",
-        "label": "Turbulence (US)"
-      },
-      {
-        "id": "turb_global",
-        "label": "Turbulence (Global)"
-      },
-      {
         "id": "observedTurbulence",
         "label": "Reported Turbulence"
-      },
-      {
-        "id": "cloud_cover",
-        "label": "Clouds"
-      },
-      {
-        "id": "surface_features",
-        "label": "Surface Analysis"
       }
     ]
-  },
-  {
-    "id": "traffic",
-    "label": "Traffic",
-    "options": []
   },
   {
     "id": "airSigmets",
@@ -324,38 +102,8 @@
     "options": []
   },
   {
-    "id": "customAirports",
-    "label": "Custom Airports",
-    "options": []
-  },
-  {
     "id": "notams",
     "label": "NOTAMs",
-    "options": []
-  },
-  {
-    "id": "notams/exercises",
-    "label": "Exercises",
-    "options": []
-  },
-  {
-    "id": "notams/controlled",
-    "label": "Controlled Airspaces",
-    "options": []
-  },
-  {
-    "id": "notams/obstacles",
-    "label": "Obstacles",
-    "options": []
-  },
-  {
-    "id": "notams/other",
-    "label": "Other",
-    "options": []
-  },
-  {
-    "id": "gafor",
-    "label": "GAFOR",
     "options": []
   },
   {
@@ -407,41 +155,8 @@
     "options": []
   },
   {
-    "id": "fuelPrices",
-    "label": "Fuel prices",
-    "options": [
-      {
-        "id": "lowLead",
-        "label": "Fuel: 100LL"
-      },
-      {
-        "id": "jet",
-        "label": "Fuel: Jet A"
-      }
-    ]
-  },
-  {
     "id": "lightning",
     "label": "Lightning",
-    "options": []
-  },
-  {
-    "id": "aero/theme",
-    "label": "Map Theme",
-    "options": [
-      {
-        "id": "light",
-        "label": "Light"
-      },
-      {
-        "id": "dark",
-        "label": "Dark"
-      }
-    ]
-  },
-  {
-    "id": "aero/quick-toggles",
-    "label": "Quick Filters",
     "options": []
   },
   {
@@ -487,16 +202,6 @@
   {
     "id": "aero/classE",
     "label": "Class E",
-    "options": []
-  },
-  {
-    "id": "aero/pja",
-    "label": "Parachute Area",
-    "options": []
-  },
-  {
-    "id": "aero/trsa",
-    "label": "TRSA",
     "options": []
   },
   {
@@ -554,11 +259,6 @@
     "options": []
   },
   {
-    "id": "aero/artcc_fisas",
-    "label": "FISAs",
-    "options": []
-  },
-  {
     "id": "aero/atc_sectors",
     "label": "ATC Sectors",
     "options": []
@@ -576,16 +276,6 @@
         "label": "High"
       }
     ]
-  },
-  {
-    "id": "aero/vfr",
-    "label": "VFR Elements",
-    "options": []
-  },
-  {
-    "id": "aero/gridmora",
-    "label": "Grid MORA/LSALT (ft)",
-    "options": []
   },
   {
     "id": "place_labels",
@@ -648,18 +338,8 @@
     "options": []
   },
   {
-    "id": "coverage",
-    "label": "Radar Coverage",
-    "options": []
-  },
-  {
     "id": "mfb/mtr_instrument",
     "label": "Instrument Routes",
-    "options": []
-  },
-  {
-    "id": "mfb/mtr_slow",
-    "label": "Slow Routes",
     "options": []
   },
   {
@@ -670,11 +350,6 @@
   {
     "id": "mfb/mtr_wplabels",
     "label": "MTR Waypoint Labels",
-    "options": []
-  },
-  {
-    "id": "mfb/ars",
-    "label": "Aerial Refueling",
     "options": []
   }
 ]

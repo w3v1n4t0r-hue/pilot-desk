@@ -1,6 +1,6 @@
 # Public map layer approval test
 
-Open `/layer-test.html` on the preview deployment. The noindex page exposes all 75 controls and their selector options, search, local saved selections, reset, and JSON export. Production is unchanged until this draft is approved and merged.
+Open `/layer-test.html` on the preview deployment. The noindex page exposes 51 supported controls and their connected selector options, search, local saved selections, reset, and JSON export. Unconnected controls and options have been removed, including traffic and commercial/international charts. Stored selections for removed items are ignored. Production is unchanged until this draft is approved and merged.
 
 ## Connected public adapters
 
@@ -17,7 +17,7 @@ Public adapters cover 45 catalogue controls, including local filters and selecto
 
 ## Product differences and remaining sources
 
-MTR labels show route identifiers because the FAA segment feed does not supply waypoint names. Boundary sector attributes do not constitute complete ATC sector coverage. Slow routes, aerial refueling, organized tracks, GAFOR, FISA/TRSA/parachute areas, MORA/LSALT, fuel prices, aircraft traffic, commercial/international charts, gridded icing/turbulence/cloud products and surface analysis remain unconnected. They show the specific missing source/provider instead of pretending to have data. No credentials or paid feeds were provisioned.
+MTR labels show route identifiers because the FAA segment feed does not supply waypoint names. Boundary sector attributes do not constitute complete ATC sector coverage. Slow routes, aerial refueling, organized tracks, GAFOR, FISA/TRSA/parachute areas, MORA/LSALT, fuel prices, aircraft traffic, commercial/international charts, gridded icing/turbulence/cloud products and surface analysis are excluded from the preview until a suitable connection exists. No credentials or paid feeds were provisioned.
 
 ## Reliability
 

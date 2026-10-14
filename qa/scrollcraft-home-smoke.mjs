@@ -24,7 +24,7 @@ assert(!home.includes('pd-home-route-steps'),'do not repeat a numbered workflow'
 for(const id of ['pdHomeWind','pdHomeCross','pdHomeHead','pdHomeDesk','pdHomeDeskItems']){
   assert(home.includes('id="'+id+'"'),'homepage retained '+id);
 }
-assert.match(feature, /data-sc-act="pin" data-sc-span="1\.12"/);
+assert.match(feature, /data-sc-act="pin" data-sc-span="1\.85"/);
 assert.match(feature, /data-sc-parallax="-0\.07"/);
 assert.match(feature, /src="\/assets\/chart-overviews\/sectional\.webp"/);
 assert(fs.statSync('assets/chart-overviews/sectional.webp').size>30000);

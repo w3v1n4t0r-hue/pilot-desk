@@ -77,7 +77,7 @@ def justified_aviation_terms(hits, text):
 
     # Upstream stems 'elevate' to 'elevat' and flags the aviation noun 'elevation'.
     # Preserve real uses of 'elevate' / 'elevated' as reviewable findings.
-    actual_elevate = re.search(r"\belevat(?:e|es|ed|ing|ive|ions?)\b", text, re.I)
+    actual_elevate = re.search(r"\belevat(?:e|es|ed|ing|ive)\b", text, re.I)
     if not actual_elevate:
         hits["vocab"] = [item for item in hits["vocab"] if item[0] != "elevate"]
     return hits

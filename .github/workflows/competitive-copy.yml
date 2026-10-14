@@ -4,6 +4,16 @@ on:
     branches: [main]
     paths:
       - 'src/pages/index.astro'
+      - 'about.html'
+      - 'aircraft.html'
+      - 'flights.html'
+      - 'assets/aircraft-v2.js'
+      - 'assets/flights.js'
+      - 'assets/global-nav.js'
+      - 'for-flight-schools.html'
+      - 'for-cfis.html'
+      - 'embed.html'
+      - 'weather.html'
       - 'src/components/HomePlans.astro'
       - 'assets/home-desk.css'
       - 'assets/route-planner.*'

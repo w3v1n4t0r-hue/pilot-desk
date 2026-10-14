@@ -40,7 +40,7 @@ check(step6.includes('.pd-toggle-switch'),'EFB-style switch treatment missing');
 // Pricing = factual comparison.
 check(pricing.includes('Use the free tools. Add Pro when you need more.')&&pricing.includes('Pro is $5/month'),'Pricing still uses a sales-heavy hero');
 check((pricing.match(/class="pd-plan-card/g)||[]).length===2,'Pricing should compare only Free and Pro as active plans');
-check(pricing.includes('pd-pricing-school-note')&&pricing.includes('School features are still being tested before pricing is finalized.'),'Flight School status must explain availability without implying a purchasable school plan');
+check(pricing.includes('pd-pricing-school-note')&&pricing.includes('School accounts, student dashboards, and shared-aircraft libraries are not offered.'),'Flight School status must explain availability without implying a purchasable school plan');
 check(step6.includes('.pd-plan-grid{grid-template-columns:1fr 1fr!important'),'Pricing comparison is not reduced to two factual columns');
 
 // Footer = minimal utility links + clear supplemental disclaimer.

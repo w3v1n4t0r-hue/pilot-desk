@@ -10,7 +10,7 @@ try{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  for(const width of [320,390,768,1280,1920]){
   await page.setViewportSize({width,height:900});
-  for(const path of ['/','/pricing.html','/written-prep.html','/learn/checkride-lab/','/route-planner.html']){
+  for(const path of ['/','/pricing.html','/written-prep.html','/learn/checkride-lab/','/route-planner.html','/about.html','/for-flight-schools.html','/for-cfis.html','/embed.html','/aircraft.html','/flights.html']){
    const response=await page.goto(base+path,{waitUntil:'networkidle'});
    assert.equal(response.status(),200,path);
    assert.equal(await page.locator('h1').count(),1,path+' has one heading');
@@ -39,6 +39,13 @@ try{
     assert.equal(await page.locator('#rpPlanningValues').evaluate(el=>el.closest('details').open),true);
     await page.locator('a[href="#rpNavlogPanel"]').click();
     assert.equal(await page.evaluate(()=>location.hash),'#rpNavlogPanel');
+   }
+   if(path==='/about.html'){
+    assert.equal(await page.getByRole('link',{name:'Open calculators',exact:true}).getAttribute('href'),'/tools.html');
+   }
+   if(path==='/for-flight-schools.html'){
+    assert.match(await page.locator('main').textContent(),/Written Prep sessions need a free account/);
+    assert.match(await page.locator('main').textContent(),/are not offered/);
    }
    if(path==='/pricing.html'){
     assert.equal(await page.locator('#pdStartPro').count(),1);

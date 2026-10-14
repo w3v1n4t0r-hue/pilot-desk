@@ -20,6 +20,15 @@ function renderRouteSequence(){
  if(routeSequenceHtml!==html){host.innerHTML=html;routeSequenceHtml=html;}
 }
 function initWorkspace(){
+ // Step links also reveal their destination when a saved workspace is collapsed.
+ document.querySelectorAll('.rp-start-steps a').forEach(link=>link.addEventListener('click',()=>{
+  const target=document.getElementById(link.hash.slice(1));
+  if(!target)return;
+  const editor=$('#rpRouteEditor');
+  if(editor?.hidden&&editor.contains(target))$('#rpEditorToggle')?.click();
+  const options=target.closest('details');
+  if(options)options.open=true;
+ }));
  const toggle=$('#rpEditorToggle'),editor=$('#rpRouteEditor'),workspace=$('#rpWorkspace');
  if(toggle&&editor&&workspace){
   const open=!$('#rpRoute').value.trim()||localStorage.getItem('pd-route-editor-open')==='true';

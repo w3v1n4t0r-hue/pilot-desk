@@ -28,6 +28,15 @@ jobs:
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: Build Astro migration output
         run: npm run build
+      - name: Package built copy for source-level editorial review
+        run: |
+          find dist -type f -name '*.html' -print0 | tar --null -czf slopmonster-built-html.tar.gz -T -
+      - name: Upload built HTML review snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: slopmonster-built-html
+          path: slopmonster-built-html.tar.gz
+          if-no-files-found: error
       - name: Check Astro migration
         run: node qa/astro-migration.mjs
       - name: Check JavaScript syntax

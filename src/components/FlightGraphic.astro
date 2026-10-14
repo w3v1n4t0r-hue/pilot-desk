@@ -1,0 +1,14 @@
+---
+const { mode = 'home' } = Astro.props;
+---
+<figure class:list={['pd-flight-graphic', `pd-flight-${mode}`]} data-pd-flight={mode} hidden={mode === 'route'} aria-label="Departure to arrival">
+  <div class="pd-flight-readout" hidden={mode === 'home'}>
+    <span>FLIGHT TIME</span><strong data-flight-time>—</strong><small data-flight-distance></small>
+  </div>
+  <div class="pd-flight-track" aria-hidden="true">
+    <span class="pd-flight-end pd-flight-departure"><i></i><b data-flight-from>DEP</b></span>
+    <span class="pd-flight-end pd-flight-arrival"><i></i><b data-flight-to>ARR</b></span>
+    <img class="pd-flight-aircraft" src="/assets/flight-aircraft.webp" width="380" height="360" alt="" decoding="async" />
+  </div>
+  <button class="pd-flight-replay" type="button" aria-label="Pause flight illustration" title="Pause flight illustration">Ⅱ</button>
+</figure>

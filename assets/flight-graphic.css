@@ -1,0 +1,23 @@
+/* One route illustration; aircraft position is never live tracking. */
+.pd-flight-graphic{position:relative;display:grid;grid-template-columns:180px minmax(0,1fr);gap:20px;align-items:center;margin:0;padding:16px 20px;background:var(--panel,#0b0e11);color:var(--silver2,#f2f3f5);border:1px solid var(--line,#33383e);min-width:0}
+.pd-flight-graphic[hidden],.pd-flight-graphic [hidden]{display:none!important}
+.pd-flight-readout>span{display:block;font-size:11px;letter-spacing:.08em;color:var(--muted,#a9afb8)}
+.pd-flight-readout>strong{display:block;font-size:30px;line-height:1.35;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pd-flight-readout>small{display:block;font-size:12px;color:var(--muted,#a9afb8)}
+.pd-flight-track{position:relative;height:100px;margin:0 42px;min-width:0}
+.pd-flight-track::before{content:"";position:absolute;left:0;right:0;top:44px;height:2px;background:#9fa4ab}
+.pd-flight-end{position:absolute;top:35px;display:flex;flex-direction:column;align-items:center;gap:34px;transform:translateX(-50%)}
+.pd-flight-departure{left:0}.pd-flight-arrival{left:100%}
+.pd-flight-end i{display:block;width:20px;height:20px;border:2px solid #c8cdd3;border-radius:50%!important;background:var(--panel,#0b0e11);box-shadow:inset 0 0 0 4px var(--panel,#0b0e11)}
+.pd-flight-end b{font-size:13px;font-weight:500;line-height:1.2;white-space:nowrap}
+.pd-flight-aircraft{position:absolute;left:50%;top:45px;width:88px;height:auto;max-width:none;transform:translate(-50%,-50%);pointer-events:none}
+.pd-flight-replay{position:absolute;right:4px;top:4px;min-width:44px;min-height:44px;border:0;background:transparent;color:var(--silver,#c8cdd3);cursor:pointer;font-size:12px}
+.pd-flight-replay:focus-visible{outline:2px solid var(--silver,#c8cdd3);outline-offset:-4px}
+.pd-flight-replay:disabled{opacity:.4;cursor:default}
+.pd-flight-home{grid-template-columns:minmax(0,1fr);margin:20px 0 8px;padding:0;border:0;background:transparent}
+.pd-flight-home .pd-flight-track{margin:0 30px}.pd-flight-home .pd-flight-end i{background:var(--panel,#0b0e11)}
+.pd-flight-route{grid-column:1/-1}
+@media(max-width:600px){.pd-flight-graphic{grid-template-columns:minmax(0,1fr);gap:0;padding:14px}.pd-flight-readout>strong{font-size:28px}.pd-flight-track{height:110px;margin:0 32px}.pd-flight-home{padding:0}.pd-flight-home .pd-flight-track{height:100px}}
+@media print{.pd-flight-replay{display:none}.pd-flight-aircraft{left:50%!important}}
+
+.rp-shell .pd-flight-readout>strong{color:var(--silver2,#f2f3f5)!important}

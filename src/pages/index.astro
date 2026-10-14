@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HomePlans from '../components/HomePlans.astro';
 import { popularTools } from '../data/site.mjs';
 
 const schema = {
@@ -190,13 +191,7 @@ const schema = {
       <div class="pd-home-weather-links"><a href="/weather.html"><b>Check an airport</b><span>Current reports and runway-wind context →</span></a><a href="/guides/metar-taf.html"><b>Learn to read METARs</b><span>Wind, ceilings and forecast change groups →</span></a></div>
     </section>
 
-    <section data-pd-reveal class="pd-home-section" id="plans" aria-labelledby="home-plans-title">
-      <div class="pd-home-section-head"><div><div class="eyebrow">Free and Pro</div><h2 id="home-plans-title">Use the free tools. Add Pro when you need more.</h2><p>Start with the task in front of you. Upgrade for fuller checkride practice and route review.</p></div><a href="/pricing.html" data-pd-home-cta="Compare Plans">Compare Free and Pro →</a></div>
-      <div class="pd-home-plans">
-        <article><h3>Free <span>$0</span></h3><ul><li>Core calculators, E6B, charts, route planning, and weather lookup</li><li>Written Prep, Daily, public guides, and oral sample subjects</li><li>One aircraft profile and up to three saved flights on this device</li></ul><a class="pd-btn secondary" href="/tools.html">Keep using free tools</a><p>Core calculators need no account. A free account saves supported study and profile progress.</p></article>
-        <article><h3>PilotDesk Pro <span>$5/month</span></h3><ul><li>Full Checkride Lab, mock orals, debriefs, and study planning</li><li>Advanced route-weather overlays and Pro Preflight</li><li>Unlimited aircraft profiles and saved flights</li><li>Manual cloud backup for eligible planning data and ad-free signed-in access</li></ul><a class="pd-btn" href="/pricing.html" data-pd-home-cta="Explore Pro">See what Pro includes</a><p>Aircraft and flights stay in this browser unless you export them or use manual backup and restore. They do not sync automatically.</p></article>
-      </div>
-    </section>
+    <HomePlans />
 
     <section data-pd-reveal class="pd-home-section pd-home-account" data-pd-home-account aria-label="PilotDesk account">
       <div>

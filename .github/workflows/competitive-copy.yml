@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'src/pages/index.astro'
+      - 'src/components/HomePlans.astro'
       - 'assets/home-desk.css'
       - 'assets/route-planner.*'
       - 'route-planner.html'

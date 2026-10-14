@@ -38,3 +38,32 @@ After an `npm run build`, the PilotDesk QA workflow runs:
 The JSON audit now keeps the matched rule and its exact captured value, rather than only repeating “rule-of-three list.” This gives the next editor enough evidence to review a warning. A 5/5 score **does not** establish that copy is safe, clear, factual or human-authored. The checker stays advisory to protect legitimate aviation details from automatic rewrites.
 
 **Scope limits:** SlopMonster does not test browser interactions, source data freshness, subscription entitlements, FAA compliance or live operational behavior. Those need the separately maintained QA and real-world verification. A second-model family editorial cleanse has not been run.
+
+
+## Final triage contract (October 14, 2026)
+
+Each page's JSON report separates **`categories` (unresolved style findings)** from
+**`reviewed` (accepted literal aviation lists, technical compound words, or
+separate UI counters)**. Accepted evidence retains the original rule, exact
+matched excerpt, and a reason. This avoids pretending ordinary lists like
+"Celsius, Fahrenheit, and Kelvin" or published "accelerate-stop" terminology
+are AI-written filler. It does **not** edit or mask the original vendored
+SlopMonster source.
+
+The wrapper now flags rhetorical strings ("Faster, smarter, and better"),
+three-action slogans ("Plan, calculate, and study"), stacked fabricated
+compounds, unsupported social proof and semicolon-heavy individual
+paragraphs. It explicitly tests each class as well as the separation of
+independent Written Prep count badges. A third-party checker cannot prove
+human authorship or aviation correctness.
+
+CI uses `--strict` after this review, so any **unresolved** new writing
+warning fails the site QA workflow. Accepted patterns remain in the full
+uploaded JSON report for editorial scrutiny. The output also counts
+`pages_with_reviewed_patterns` and `reviewed_patterns`; these numbers
+must not be advertised as "newly written pages."
+
+Additional live-source edits split dense METAR, IFR alternate, performance
+formula and ceiling descriptions, simplified Vx/Vy wording, removed the
+homepage three-action slogan and replaced a promotional writing-style
+tricolon. All approved aircraft and legal-reference caveats are retained.

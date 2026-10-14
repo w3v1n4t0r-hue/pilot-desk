@@ -71,9 +71,15 @@ class PageCopy(HTMLParser):
 def justified_aviation_terms(hits, text):
     """Reject two known false positives without hiding other SlopMonster findings."""
     matches = re.findall(r"\bpivotal\b", text, flags=re.I)
-    aviation_matches = re.findall(r"\bpivotal\s+altitude\b", text, flags=re.I)
+    aviation_matches = re.findall(r"\bpivotal\s+(?:altitude|maneuvers?)\b", text, flags=re.I)
     if matches and len(matches) == len(aviation_matches):
         hits["vocab"] = [item for item in hits["vocab"] if item[0] != "pivotal"]
+
+    # Legitimate navigation/flight-training uses are not generic marketing copy.
+    today_hits = re.findall(r"\bin today's\b", text, flags=re.I)
+    today_conditions = re.findall(r"\bproficiency in today's conditions\b", text, flags=re.I)
+    if today_hits and len(today_hits) == len(today_conditions):
+        hits["vocab"] = [item for item in hits["vocab"] if item[0] != "in today's"]
 
     # Upstream stems 'elevate' to 'elevat' and flags the aviation noun 'elevation'.
     # Preserve real uses of 'elevate' / 'elevated' as reviewable findings.
@@ -96,7 +102,8 @@ def audit_page(html, path):
         "path": path,
         "score": score,
         "categories": {
-            key: [item[0] if isinstance(item, tuple) else item for item in values[:8]]
+            key: [{"rule": item[0], "match": item[1]} if isinstance(item, tuple)
+                  else {"rule": str(item)} for item in values[:12]]
             for key, values in hits.items() if values
         },
         "has_main": parser.has_main,

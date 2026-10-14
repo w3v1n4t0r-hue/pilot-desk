@@ -7,7 +7,7 @@
  function mount(figure){
   const plane=figure.querySelector('.pd-flight-aircraft'),button=figure.querySelector('button'),from=figure.querySelector('[data-flight-from]'),to=figure.querySelector('[data-flight-to]');let animation=null;
   const stop=()=>{animation?.cancel();animation=null;};
-  const play=()=>{stop();if(!motion()||figure.hidden)return;plane.style.left='0%';const control=plane.animate([{left:'0%'},{left:'100%'}],{duration:6000,easing:'linear',fill:'forwards'});animation=control;control.finished.then(()=>{if(animation!==control)return;plane.style.left='100%';control.cancel();animation=null;},()=>{});};
+  const play=()=>{stop();if(!motion()||figure.hidden)return;plane.style.left='0%';const control=plane.animate([{left:'0%'},{left:'100%'}],{duration:4800,easing:'linear',fill:'forwards'});animation=control;control.finished.then(()=>{if(animation!==control)return;plane.style.left='100%';control.cancel();animation=null;},()=>{});};
   const settle=()=>{stop();plane.style.left='50%';button.disabled=!motion();};button.addEventListener('click',play);instances.push({settle});
   if(figure.dataset.pdFlight==='home'){
    const dep=document.getElementById('pdHomeDeparture'),arr=document.getElementById('pdHomeDestination');

@@ -81,7 +81,7 @@ console.log('Weather coordinates and marker identity retained through report ref
 
 // Legacy preferences cannot restore duplicate airport boxes, while METARs stay enabled.
 const settingsCode=source.slice(source.indexOf('  const DEFAULTS='),source.indexOf('  const briefData='));
-const settingsContext={PRO_LAYERS:new Set(['pirep','gairmet','airsigmet','cwa']),hasFeature:()=>false,localStorage:{getItem:()=>JSON.stringify({enabled:{airports:true,metar:true,radar:true}})}};
+const settingsContext={window:{PilotDeskMapView:createRequire(import.meta.url)('../assets/map-view.js')},location:{hash:''},PRO_LAYERS:new Set(['pirep','gairmet','airsigmet','cwa']),hasFeature:()=>false,localStorage:{getItem:()=>JSON.stringify({enabled:{airports:true,metar:true,radar:true}})}};
 vm.createContext(settingsContext);
 assert.equal(vm.runInContext(settingsCode+';state.enabled.airports',settingsContext),false);
 assert.equal(vm.runInContext('state.enabled.metar',settingsContext),true);

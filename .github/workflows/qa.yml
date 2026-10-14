@@ -146,6 +146,8 @@ jobs:
         run: node qa/map-tools-tests.mjs
       - name: Verify map density and route review geometry
         run: node qa/map-density-tests.mjs
+      - name: Verify map view links and preference validation
+        run: node qa/map-view-tests.mjs
       - name: Verify cloud backup conflict and failure handling
         run: node qa/cloud-backup-tests.mjs
       - name: Verify signup and reset requests

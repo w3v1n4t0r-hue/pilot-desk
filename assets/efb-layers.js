@@ -28,14 +28,14 @@ function start(RP,L){
   const WEATHER=new Set(['metar','pirep','gairmet','airsigmet','cwa']);
   const NAV=new Set(['airports','navaids','fixes','airways','obstacles']);
   const AIRSPACE=new Set(['tfr','sua','airspace']);
-  const loadSaved=()=>{try{return JSON.parse(localStorage.getItem('pd-efb-layers')||'{}')}catch{return{}}};
+  const loadSaved=()=>{try{return JSON.parse(localStorage.getItem('pd-efb-layers')||'{}')||{}}catch{return{}}};
   const saved=loadSaved();
   const state={
-    enabled:Object.assign({},DEFAULTS,saved.enabled||{}),
-    baseMode:saved.baseMode||'auto',
-    chartOpacity:Number(saved.chartOpacity||localStorage.getItem('pd-route-chart-opacity')||.92),
-    radarOpacity:Number(saved.radarOpacity||.68),
-    vectorOpacity:Number(saved.vectorOpacity||.88),
+    enabled:window.PilotDeskMapView.enabled(DEFAULTS,saved.enabled),
+    baseMode:window.PilotDeskMapView.parse(location.hash)?.chart||(['auto','sectional','terminal','low','high'].includes(saved.baseMode)?saved.baseMode:'auto'),
+    chartOpacity:window.PilotDeskMapView.opacity(saved.chartOpacity??Number(localStorage.getItem('pd-route-chart-opacity')||.92),.92,.25),
+    radarOpacity:window.PilotDeskMapView.opacity(saved.radarOpacity,.68,.2),
+    vectorOpacity:window.PilotDeskMapView.opacity(saved.vectorOpacity,.88,.35),
     pirepFilter:['all','icing','turbulence','skyweather'].includes(saved.pirepFilter)?saved.pirepFilter:'all'
   };
   // Printed chart airport symbols and METAR dots replace the duplicate airport overlay.
@@ -48,14 +48,15 @@ function start(RP,L){
   let routeContextSeq=0,notamSeq=0,radarSeq=0,radarPending=null,briefRefreshTimer=0,briefContextKey='';
 
   function save(){
-    localStorage.setItem('pd-efb-layers',JSON.stringify({
+    syncLayerSummary();
+    try{localStorage.setItem('pd-efb-layers',JSON.stringify({
       enabled:state.enabled,
       baseMode:state.baseMode,
       chartOpacity:state.chartOpacity,
       radarOpacity:state.radarOpacity,
       vectorOpacity:state.vectorOpacity,
       pirepFilter:state.pirepFilter
-    }));
+    }));}catch{setupStatus.textContent='Layers changed. Browser storage is unavailable; this setup will not persist.';}
   }
   function makePane(name,z,interactive=true){
     if(map.getPane(name))return;
@@ -77,6 +78,7 @@ function start(RP,L){
   layersButton.id='rpLayersToggle';
   layersButton.className='utility-btn rp-layers-toggle';
   layersButton.setAttribute('aria-expanded','false');
+  layersButton.setAttribute('aria-controls','rpLayersPanel');
   layersButton.textContent='LAYERS';
   toolbar.insertBefore(layersButton,document.getElementById('rpMapStatus'));
 
@@ -95,7 +97,8 @@ function start(RP,L){
   panel.hidden=true;
   panel.innerHTML=[
     '<div class="rp-efb-head"><div><span class="rp-eyebrow">MAP CONTROL</span><strong>Layers</strong></div><button type="button" data-close-layers aria-label="Close layers">×</button></div>',
-    '<section class="rp-layer-section"><h3>MAP SETUP</h3><div class="rp-map-setups"><button type="button" data-map-setup="navigation">Navigation</button><button type="button" data-map-setup="weather">Weather</button><button type="button" data-map-setup="saved">My setup</button><button type="button" data-map-save>Save setup</button><button type="button" data-map-refresh>Refresh layers</button></div><p id="rpSetupStatus" role="status">Save your current layers to reuse them. Weather dots mark individual reporting stations. Nearby navigation symbols are grouped; open a count or zoom in.</p></section>',
+    '<section class="rp-layer-section"><h3>MAP SETUP</h3><div class="rp-map-setups"><button type="button" data-map-setup="navigation">Navigation</button><button type="button" data-map-setup="weather">Weather</button><button type="button" data-map-setup="saved">My setup</button><button type="button" data-map-save>Save setup</button><button type="button" data-map-refresh>Refresh layers</button></div><p id="rpSetupStatus" role="status">Save your layers to reuse them. Open grouped navigation symbols or zoom in for detail.</p></section>',
+    '<div class="rp-layer-search"><label for="rpLayerSearch">Find a layer</label><input id="rpLayerSearch" type="search" placeholder="Radar, airspace, fixes…"><label class="rp-layer-enabled"><input id="rpEnabledOnly" type="checkbox"> Enabled overlays only</label><p id="rpLayerCount" role="status"></p><p id="rpLayerEmpty" hidden>No matching layers. Clear the search or show all overlays.</p></div>',
     '<section class="rp-layer-section"><h3>BASE MAP</h3>',
       baseRow('auto','TAC fallback by zoom'),
       baseRow('sectional','Sectional'),
@@ -168,6 +171,29 @@ function start(RP,L){
     return '<label class="rp-layer-row"><span><input type="checkbox" data-layer="'+key+'" '+(state.enabled[key]?'checked':'')+(PRO_LAYERS.has(key)&&!hasFeature('advancedWeather')?' disabled':'')+'> '+esc(label)+'</span><small><span data-layer-status="'+key+'"></span><em>'+(PRO_LAYERS.has(key)?'PRO · ':'')+esc(source)+'</em></small></label>';
   }
 
+  const layerSearch=panel.querySelector('#rpLayerSearch'),enabledOnly=panel.querySelector('#rpEnabledOnly');
+  function filterLayers(){
+    const query=layerSearch.value.trim().toLowerCase();let matches=0;
+    panel.querySelectorAll('.rp-layer-section').forEach(section=>{
+      const rows=[...section.querySelectorAll('.rp-layer-row')];if(!rows.length)return;
+      let visible=0;
+      rows.forEach(row=>{
+        const input=row.querySelector('[data-layer]');
+        row.hidden=(!row.textContent.toLowerCase().includes(query))||(enabledOnly.checked&&(!input||!state.enabled[input.dataset.layer]));
+        if(!row.hidden)visible++;
+      });
+      section.hidden=visible===0;matches+=visible;
+      [...section.children].filter(el=>!el.matches('h3,.rp-layer-row')).forEach(el=>el.hidden=!!query||enabledOnly.checked);
+    });
+    panel.querySelector('#rpLayerEmpty').hidden=matches>0;
+  }
+  function syncLayerSummary(){
+    const count=Object.keys(DEFAULTS).filter(key=>state.enabled[key]).length;
+    layersButton.textContent='Layers · '+count;
+    panel.querySelector('#rpLayerCount').textContent=count+' overlays enabled. Check layer status for data availability.';
+    filterLayers();
+  }
+  layerSearch.addEventListener('input',filterLayers);enabledOnly.addEventListener('change',filterLayers);
   layersButton.addEventListener('click',()=>togglePanel(panel,layersButton));
   briefButton.addEventListener('click',()=>{togglePanel(brief,briefButton);if(!brief.hidden){renderBrief();if(!briefLoading&&RP.getPoints().length>1&&(Date.now()-Math.min(...Object.values(briefTime))>60000||!Object.keys(briefTime).length))void loadRouteContext();}});
   panel.querySelector('[data-close-layers]').addEventListener('click',()=>closePanel(panel,layersButton));
@@ -190,8 +216,8 @@ function start(RP,L){
   panel.querySelectorAll('[data-layer]').forEach(input=>input.addEventListener('change',()=>{
     const key=input.dataset.layer;
     state.enabled[key]=input.checked;
-    save();
     toggleLayer(key,input.checked);
+    save();
   }));
 
   const setupStatus=panel.querySelector('#rpSetupStatus');
@@ -201,7 +227,7 @@ function start(RP,L){
   });
   panel.addEventListener('click',async e=>{
     if(e.target.closest('[data-map-save]')){
-      localStorage.setItem('pd-map-setup',JSON.stringify({enabled:state.enabled,baseMode:state.baseMode,pirepFilter:state.pirepFilter}));
+      try{localStorage.setItem('pd-map-setup',JSON.stringify({enabled:state.enabled,baseMode:state.baseMode,pirepFilter:state.pirepFilter}))}catch{setupStatus.textContent='Setup could not be saved. Browser storage is unavailable.';return;}
       setupStatus.textContent='Current layers saved as My setup.';return;
     }
     const refresh=e.target.closest('[data-map-refresh]');
@@ -263,6 +289,9 @@ function start(RP,L){
     syncBaseRadios();
   });
 
+  document.addEventListener('pilotdesk:map-view-restored',event=>{
+    if(event.detail.chart){state.baseMode=event.detail.chart;syncBaseRadios();save();}
+  });
   function syncBaseRadios(){
     panel.querySelectorAll('input[name="rpEfbBase"]').forEach(x=>x.checked=x.value===state.baseMode);
   }
@@ -844,7 +873,7 @@ function start(RP,L){
     if(e.key!=='Escape')return;
     if(!panel.hidden)closePanel(panel,layersButton);
     if(!brief.hidden)closePanel(brief,briefButton);
-  });
+  },{capture:true});
 
   let paidWeather=false,paidBrief=false;
   function syncProAccess(){
@@ -860,7 +889,7 @@ function start(RP,L){
     if(accessNote)accessNote.hidden=weather;
     if(!route){routeContextSeq++;clearTimeout(briefRefreshTimer);briefLoading=false;briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;for(const key of Object.keys(briefData))delete briefData[key];}
     else if(!paidBrief&&RP.getPoints().length>1)void loadRouteContext();
-    paidWeather=weather;paidBrief=route;renderBrief();
+    paidWeather=weather;paidBrief=route;renderBrief();syncLayerSummary();
   }
   document.addEventListener('pilotdesk:billing',syncProAccess);
   window.PilotDeskBilling?.ready?.then(syncProAccess);

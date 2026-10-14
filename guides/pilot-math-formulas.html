@@ -23,7 +23,7 @@
 <div class="formula">Distance = Groundspeed × Time</div>
 <p>With groundspeed in knots and time in hours, distance is in nautical miles. Since one knot is one nautical mile per hour:</p>
 <div class="formula">NM per minute = Knots ÷ 60</div>
-<p>Example: 120 kt = 2 NM/min. The identity is exact; the assumption that groundspeed remains constant over the interval may not be.</p>
+<p>Example: 120 kt = 2 NM/min. The conversion is exact, but groundspeed may not stay constant for the whole leg.</p>
 <p><a href="/calculators/time-speed-distance/">Time / Speed / Distance Calculator</a> · <a href="/calculators/nm-per-minute/">NM per Minute Calculator</a></p>
 
 <h2>Fuel used and endurance</h2>
@@ -56,7 +56,7 @@
 <p><a href="/calculators/isa-temperature/">ISA Temperature Calculator</a> · <a href="/guides/isa-temperature.html">ISA Temperature Chart</a></p>
 
 <h2>Density altitude</h2>
-<p><strong>Type: atmosphere model; shortcut shown below is an approximation.</strong> Density altitude is the ISA altitude corresponding to the existing air density. A widely taught estimate is:</p>
+<p><strong>Type: atmosphere model. The shortcut below is an approximation.</strong> Density altitude is the ISA altitude corresponding to the existing air density. A widely taught estimate is:</p>
 <div class="formula">DA ≈ PA + 120 × (OAT − T<sub>ISA</sub>)</div>
 <p>The 120 ft/°C factor is useful for mental math but is not the definition of density altitude. A full calculation derives density from pressure and temperature and then finds the equivalent ISA altitude. Humidity may or may not be included depending on the model.</p>
 <p><a href="/calculators/density-altitude/">Density Altitude Calculator</a> · <a href="/guides/density-altitude.html">Density Altitude Technical Guide</a></p>
@@ -83,7 +83,7 @@
 <h2>Accelerated stall speed</h2>
 <p><strong>Type: aerodynamic model.</strong> For the same weight, configuration, and maximum lift coefficient:</p>
 <div class="formula">V<sub>S,n</sub> = V<sub>S,1G</sub> × √n</div>
-<p>At 2 G the theoretical stall-speed multiplier is √2 ≈ 1.414. The formula describes the load-factor relationship; it does not replace published aircraft stall information.</p>
+<p>At 2 G the theoretical stall-speed multiplier is √2 ≈ 1.414. The formula shows the effect of load factor. It does not replace published stall data for your airplane.</p>
 <p><a href="/calculators/accelerated-stall/">Accelerated Stall Calculator</a></p>
 
 <h2>Turn radius and rate</h2>
@@ -98,7 +98,7 @@
 <div class="formula">h = V² ÷ g</div>
 <p>Converting groundspeed in knots to feet per second gives the familiar training form:</p>
 <div class="formula">Pivotal altitude (ft AGL) ≈ GS² ÷ 11.3</div>
-<p>Groundspeed—not indicated airspeed—is the relevant speed because the maneuver is referenced to a fixed point on the ground.</p>
+<p>Use groundspeed rather than indicated airspeed. The maneuver is flown relative to a point on the ground.</p>
 <p><a href="/calculators/pivotal-altitude/">Pivotal Altitude Calculator</a> · <a href="/guides/pivotal-altitude.html">Derivation</a></p>
 
 <h2>Moment, center of gravity, and percent MAC</h2>
@@ -106,7 +106,7 @@
 <div class="formula">Moment = Weight × Arm</div>
 <div class="formula">CG = Total Moment ÷ Total Weight</div>
 <div class="formula">%MAC = (CG − LEMAC) ÷ MAC × 100</div>
-<p>The equations are generic; the station arms, empty-weight data, MAC geometry, loading limits, and allowable envelope are aircraft-specific.</p>
+<p>These are general equations. The approved aircraft data determines the station arms, empty weight, MAC geometry and loading envelope.</p>
 <p><a href="/calculators/moment-cg/">Moment & CG Calculator</a> · <a href="/calculators/percent-mac/">Percent MAC Calculator</a> · <a href="/guides/weight-balance-envelope.html">Weight-and-Balance Envelope Guide</a></p>
 
 <h2>Dynamic hydroplaning speed</h2>
@@ -115,14 +115,14 @@
 <p>The FAA Airplane Flying Handbook uses 8.6 for this dynamic hydroplaning estimate: at 36 PSI the result is 51.6 kt. The often-rounded 9 × √PSI shortcut gives 54 kt instead. It is not a runway-performance limit and does not predict braking action for a specific airplane, tire, runway surface, water depth, or anti-skid system.</p>
 <p><a href="/calculators/hydroplaning/">Hydroplaning Estimate</a></p>
 
-<section data-pd-study-scenario><h2>How groundspeed changes time, fuel and climb rate</h2><p>For a hypothetical 180 NM leg at a constant 120 kt groundspeed, time is 180 ÷ 120 = 1.5 hours. At an assumed 10 gal/hr, the leg uses 15 gal. Adding an entered 45-minute reserve at that same flow adds 7.5 gal, for 22.5 gal total under those assumptions.</p><p>If a headwind reduces groundspeed to 100 kt while fuel flow stays unchanged, time rises to 1.8 hours and trip fuel to 18 gal. With the same reserve assumption, total fuel becomes 25.5 gal. The 20 kt groundspeed change therefore adds 18 minutes and 3 gal to this simplified leg.</p><p>For a separate 200 ft/NM climb requirement, 120 kt groundspeed requires 400 fpm, while 100 kt requires about 333 fpm. Lower groundspeed increases trip time but reduces the vertical speed needed for a fixed gradient. That is why a single speed number cannot be used interchangeably in every calculation.</p><p>Use <a href="/calculators/time-speed-distance/">time-speed-distance</a>, <a href="/calculators/fuel-required/">fuel required</a> and <a href="/calculators/climb-gradient/">climb gradient</a> to change one input at a time. These examples omit taxi, climb fuel, alternate routing and other allowances; the entered reserve is not a legal-compliance check.</p></section><h2>What should not be reduced to a generic formula</h2>
+<section data-pd-study-scenario><h2>How groundspeed changes time, fuel and climb rate</h2><p>For a hypothetical 180 NM leg at a constant 120 kt groundspeed, time is 180 ÷ 120 = 1.5 hours. At an assumed 10 gal/hr, the leg uses 15 gal. Adding an entered 45-minute reserve at that same flow adds 7.5 gal, for 22.5 gal total under those assumptions.</p><p>If a headwind reduces groundspeed to 100 kt while fuel flow stays unchanged, time rises to 1.8 hours and trip fuel to 18 gal. With the same reserve assumption, total fuel becomes 25.5 gal. The 20 kt groundspeed change therefore adds 18 minutes and 3 gal to this simplified leg.</p><p>For a separate 200 ft/NM climb requirement, 120 kt groundspeed requires 400 fpm, while 100 kt requires about 333 fpm. Lower groundspeed increases trip time but reduces the vertical speed needed for a fixed gradient. That is why a single speed number cannot be used interchangeably in every calculation.</p><p>Use <a href="/calculators/time-speed-distance/">time-speed-distance</a>, <a href="/calculators/fuel-required/">fuel required</a> and <a href="/calculators/climb-gradient/">climb gradient</a> to change one input at a time. These examples leave out taxi fuel, climb fuel and allowances for alternate routing. Entering a reserve does not establish legal compliance.</p></section><h2>What should not be reduced to a generic formula</h2>
 <p>Generic equations cannot tell you your airplane's takeoff or landing distance, single-engine climb capability, VMC, VYSE performance, best glide or approved loading limits. Accelerate-stop and accelerate-go performance also require the correct aircraft data. Use the current POH/AFM, applicable approved charts, regulations and operator procedures.</p>
 
 <h2>Pilot math questions</h2>
 <details><summary><strong>What math formulas do pilots use most often?</strong></summary><p>Time-speed-distance, fuel flow × time, crosswind and headwind components, pressure and density altitude, climb-gradient conversions, descent-rate math, turn geometry, and weight-and-balance moment calculations are among the most common.</p></details>
 <details><summary><strong>What is the basic aviation distance formula?</strong></summary><p>For constant groundspeed, distance = groundspeed × time. With knots and hours, the result is nautical miles.</p></details>
 <details><summary><strong>How do pilots calculate fuel used?</strong></summary><p>For a constant-flow segment, fuel used = fuel flow × time. Real planning often breaks the flight into several segments because fuel flow changes.</p></details>
-<details><summary><strong>Can pilot math formulas replace aircraft performance charts?</strong></summary><p>No. Use generic formulas for relationships and cross-checks; use current approved aircraft data for actual performance, limitations, and loading decisions.</p></details>
+<details><summary><strong>Can pilot math formulas replace aircraft performance charts?</strong></summary><p>No. Generic formulas help you understand the relationships and check the math. Use current approved aircraft data to make performance and loading decisions.</p></details>
 
 <h2>Technical sources</h2>
 <p>The aerodynamic and performance relationships on this page are cross-checked against the current FAA <a href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/phak" target="_blank" rel="noopener">Pilot's Handbook of Aeronautical Knowledge</a>, <a href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/airplane_handbook" target="_blank" rel="noopener">Airplane Flying Handbook</a>, and <a href="/sources.html">PilotDesk Sources &amp; Methods</a>. Aircraft-specific data remain controlling.</p>

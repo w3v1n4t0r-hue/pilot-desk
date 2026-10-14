@@ -15,10 +15,13 @@ try{
     const url=new URL(route.request().url());
     if(url.hostname==='unpkg.com')return route.fulfill({path:url.pathname.endsWith('.js')?process.env.PILOTDESK_LEAFLET_JS:process.env.PILOTDESK_LEAFLET_CSS});
     if(url.hostname!=='pd.test')return route.abort();
+    if(url.pathname==='/api/aviation-layers'&&url.searchParams.get('product')==='metar')return route.fulfill({contentType:'application/json',body:JSON.stringify({source:'AWC test fixture',fetchedAt:new Date().toISOString(),geojson:{type:'FeatureCollection',features:[{type:'Feature',geometry:{type:'Point',coordinates:[-97.19218,47.95269]},properties:{site:'Station fixture',temp:8,dewp:4,wdir:180,wspd:12,ceil:26,visib:'6+',cover:'OVC',fltcat:'MVFR',obsTime:new Date().toISOString()}}]}})});
+    if(url.pathname==='/api/aviation-layers'&&url.searchParams.get('adapter')==='faa')return route.fulfill({contentType:'application/json',body:JSON.stringify({source:'FAA test fixture',fetchedAt:new Date().toISOString(),geojson:{type:'FeatureCollection',features:[{type:'Feature',geometry:{type:'Point',coordinates:[-97.19218,47.95269]},properties:{NAME:'Heliport fixture',IDENT:'TESTHP',TYPE_CODE:'HP',PRIVATEUSE:0}}]}})});
+    if(url.pathname==='/api/aviation-layers'&&url.searchParams.get('adapter')==='imagery')return route.fulfill({contentType:'application/json',body:JSON.stringify({frameTime:new Date().toISOString()})});
     if(url.pathname.startsWith('/api/'))return route.fulfill({status:503,contentType:'application/json',body:'{"error":"Test feed unavailable"}'});
     const file=path.resolve(root,'.'+url.pathname);
     if(!file.startsWith(root+path.sep)||!fs.existsSync(file))return route.fulfill({status:404,body:''});
-    return route.fulfill({path:file,contentType:file.endsWith('.js')?'application/javascript':file.endsWith('.json')?'application/json':file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html':undefined});
+    return route.fulfill({path:file,contentType:file.endsWith('.js')||file.endsWith('.mjs')?'application/javascript':file.endsWith('.json')?'application/json':file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html':undefined});
   });
   await page.goto('https://pd.test/layer-test.html');
   await page.locator('.control').first().waitFor();
@@ -33,7 +36,13 @@ try{
   assert.equal(await frame.locator('#rpEditorToggle').textContent(),'Full planner ↗');
   assert.equal(await frame.locator('#rpChartLayer').inputValue(),'low');
   await control('wxStations').selectOption('category');
-  assert.equal(await frame.locator('[data-layer="metar"]').isChecked(),true);
+  await frame.locator('.pd-public-marker span').first().waitFor();
+  assert.equal(await frame.locator('[data-layer="metar"]').isChecked(),false);
+  const labels={category:'MVFR',surfacewind:'180° 12kt',dewpointspread:'4°C',temperature:'8°C',visibility:'6+SM',ceiling:'2600ft AGL',coverage:'OVC'};
+  for(const [mode,label] of Object.entries(labels)){await control('wxStations').selectOption(mode);await page.waitForFunction(value=>document.getElementById('planner').contentDocument.querySelector('.pd-public-marker span')?.textContent===value,label)}
+  await control('aero/heli').check();await page.waitForFunction(()=>[...document.getElementById('planner').contentDocument.querySelectorAll('.pd-public-marker span')].some(el=>el.textContent==='TESTHP'));
+  await control('aero/heli').uncheck();
+  await control('wxImagery').selectOption('radar_lowest_tilt');await page.waitForFunction(()=>document.querySelector('[data-source-status="wxImagery"]').textContent.startsWith('Unavailable or partial'));assert.ok(requests.some(url=>url.includes('conus_bref_qcd')&&new URL(url).searchParams.has('time')));await control('wxImagery').selectOption('');
   await control('traffic').check();
   assert.match(await page.locator('#map-status').textContent(),/1 selected controls awaiting data/);
   await page.locator('#search').fill('radar');assert.equal(await page.locator('.control').count(),2);

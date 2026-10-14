@@ -210,3 +210,5 @@ jobs:
         run: node qa/global-search-smoke.mjs
       - name: Check weather source timestamps
         run: node qa/weather-source-time-tests.mjs
+      - name: Verify public map data adapters
+        run: node qa/public-layer-tests.mjs

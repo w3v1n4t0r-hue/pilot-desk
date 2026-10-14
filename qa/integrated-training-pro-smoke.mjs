@@ -56,7 +56,7 @@ check(preflightJs.includes('does not mean the flight is safe, legal, or recommen
 check(preflight.includes('Personal planning limits')&&preflightJs.includes('Print / save PDF')&&preflightJs.includes("addEventListener('click',()=>print())"),'Pro Preflight limit/PDF controls missing');
 check(!/linear-gradient|radial-gradient|backdrop-filter/.test(preflightCss),'Pro Preflight violates Claude visual rules');
 
-for(const phrase of ['source-based study plan','pro preflight workspace','faa acs / pts coverage matrix'])check(pricing.toLowerCase().includes(phrase),`pricing missing ${phrase}`);
+for(const phrase of ['source-based study plan','pro preflight workspace','study topics mapped to faa practical-test standards (acs / pts)'])check(pricing.toLowerCase().includes(phrase),`pricing missing ${phrase}`);
 check(training.includes('/learn/study-plan/')&&training.includes('/learn/coverage/')&&training.includes('/preflight-brief.html'),'training hub missing integrated workflow links');
 check(Number(sw.match(/CACHE='pilotdesk-v(\d+)'/)?.[1]||0)>=58,'service worker cache not advanced for integrated training release');
 for(const asset of ['/assets/training-standards-data.js','/assets/training-coverage.js','/assets/study-plan.js','/assets/pro-preflight.js'])check(sw.includes("'"+asset+"'"),`network-first cache missing ${asset}`);

@@ -19,7 +19,7 @@ const styles=read('assets/styles.css');
 const sw=read('sw.js');
 
 // Connected Learn surface.
-for(const label of ['Written Prep','Weak Subjects','Rating Hubs','Oral Prep','Checklist Practice','ACS / FAR'])
+for(const label of ['Written Prep','Weak Subjects','Study by Rating','Oral Prep','Checklist Practice','FAA Standards & Rules'])
   check(learn.includes(label),'Learn strip missing '+label);
 for(const path of ['/written-prep.html','/skill-gap.html','/flight-training.html','/checklist-trainer.html','/training/acs-far-reference.html'])
   check(boot.includes("'"+path+"'"),'Learn strip is not loaded on '+path);

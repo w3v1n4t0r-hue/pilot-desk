@@ -7,15 +7,15 @@
 .pd-home-2026 .pd-home-hero-copy{max-width:720px!important;min-width:0!important;padding:0!important}
 .pd-home-2026 .eyebrow{font-size:13px!important;letter-spacing:.03em!important;text-transform:none!important;color:var(--muted)!important}
 .pd-home-2026 .pd-home-hero h1{font-size:clamp(40px,4.8vw,64px)!important;font-weight:500!important;line-height:1!important;letter-spacing:-.055em!important;margin:24px 0!important;max-width:760px!important;text-wrap:balance!important;color:var(--text)!important}
-.pd-home-2026 .pd-home-hero h1 span{display:block;background:linear-gradient(112deg,#f5f6f6 8%,#899198 45%,#e5e7e9 82%);background-clip:text;-webkit-background-clip:text;color:transparent}
+.pd-home-2026 .pd-home-hero h1 span{display:block;color:var(--silver)}
 .pd-home-2026 .pd-home-hero-copy>p{font-size:18px!important;line-height:1.65!important;max-width:460px!important;margin:0!important;color:var(--muted)!important}
 .pd-home-2026 .pd-home-hero-links{display:flex!important;flex-wrap:wrap!important;gap:12px!important;align-items:center!important;margin-top:32px!important}
 .pd-home-2026 .pd-home-hero-links>.pd-btn{min-height:48px!important;padding:0 24px!important;background:var(--silver)!important;color:#090a0c!important;border-color:var(--silver)!important;clip-path:none!important;font-weight:500!important}
 .pd-home-2026 .pd-home-command{display:inline-flex!important;align-items:center!important;gap:12px!important;min-height:44px!important;padding:0 12px!important;border:0!important;background:transparent!important;color:var(--text)!important;font-size:14px!important;text-decoration:none!important;cursor:pointer}
 .pd-home-2026 .pd-home-command:hover{color:var(--silver2)!important}
 .pd-home-2026 .pd-home-command kbd{font:12px ui-monospace,monospace;color:var(--muted);border:1px solid var(--line);padding:3px 6px}
-.pd-home-2026 .pd-home-product{position:relative;min-width:0;background:var(--panel)!important;border:1px solid var(--line-hi);border-top-color:var(--silver);clip-path:none;box-shadow:0 24px 64px rgba(0,0,0,.22);will-change:auto}
-.pd-home-2026 .pd-home-product:before{content:'';position:absolute;inset:0 auto 0 0;width:2px;background:linear-gradient(180deg,#f5f6f6,#727a83 48%,#d9dde0);pointer-events:none}
+.pd-home-2026 .pd-home-product{position:relative;min-width:0;background:var(--panel)!important;border:1px solid var(--line-hi);border-top-color:var(--silver);clip-path:none;box-shadow:none;will-change:auto}
+.pd-home-2026 .pd-home-product:before{content:'';position:absolute;inset:0 auto 0 0;width:2px;background:var(--silver);pointer-events:none}
 .pd-home-2026 .pd-home-product-body{padding:32px}
 .pd-home-2026 .pd-home-product h2{font-size:28px!important;font-weight:500!important;line-height:1.2!important;letter-spacing:-.035em!important;margin:0 0 12px!important}
 .pd-home-2026 .pd-home-product-body>p{font-size:14px!important;color:var(--muted)!important;line-height:1.5;margin:0 0 24px!important}
@@ -80,7 +80,7 @@
 .pd-home-2026 .pd-home-account h2,.pd-home-2026 .pd-home-trust h2,.pd-home-2026 .pd-home-faq h2{font-size:26px!important}
 .pd-home-2026 .pd-home-business-actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center;flex-shrink:0}
 .pd-home-2026 .pd-faq-list{display:block!important}.pd-home-2026 .pd-faq-list details{padding:0!important;border:0!important;border-bottom:1px solid var(--line)!important;background:transparent!important;margin:0!important}.pd-home-2026 .pd-faq-list summary{padding:20px 0!important;min-height:52px}.pd-home-2026 .pd-faq-list details p{padding-bottom:20px!important}
-.pd-home-2026 .pd-home-desk{margin:32px 0 0!important;background:transparent!important;border:0!important}.pd-home-2026 .pd-home-desk[hidden]{display:none!important}.pd-home-2026 .pd-home-desk-head{display:flex;justify-content:space-between;align-items:center;gap:16px}.pd-home-2026 .pd-home-desk-head>span{font-size:13px;color:var(--muted)}
+.pd-home-2026 .pd-home-desk{margin:24px 0 0!important;background:transparent!important;border:0!important}.pd-home-2026 .pd-home-desk[hidden]{display:none!important}.pd-home-2026 .pd-home-desk-head{display:flex;justify-content:space-between;align-items:center;gap:16px}.pd-home-2026 .pd-home-desk-head>span{font-size:13px;color:var(--muted)}
 .pd-home-2026 .pd-home-desk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px;margin-top:20px}.pd-home-2026 .pd-home-desk-item{display:grid;gap:8px;padding:20px;border:1px solid var(--line);background:var(--panel);text-decoration:none}.pd-home-2026 .pd-home-desk-item small,.pd-home-2026 .pd-home-desk-item span{font-size:13px;color:var(--muted)}.pd-home-2026 .pd-home-desk-item strong{font-size:16px;color:var(--text)}.pd-home-2026 .pd-home-desk-item em{font-size:13px;font-style:normal;color:var(--silver)}
 .pd-tools-page .pd-page-hero{padding:48px 0 32px!important;background:transparent!important;border:0!important}.pd-tools-page .pd-page-hero h1{font-size:clamp(32px,4vw,48px)!important;letter-spacing:-.045em!important;font-weight:500!important}.pd-tools-page .pd-page-hero p{max-width:560px;font-size:16px;color:var(--muted)}
 .pd-tools-page .eyebrow{font-size:13px;letter-spacing:.03em;color:var(--muted);text-transform:none}

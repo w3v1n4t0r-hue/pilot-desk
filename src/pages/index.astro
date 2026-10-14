@@ -38,10 +38,21 @@ const schema = {
   bodyClass="pd-home-2026"
 >
   <link slot="head" rel="stylesheet" href="/assets/home-desk.css" />
+    <section class="pd-home-desk" id="pdHomeDesk" hidden aria-labelledby="pdHomeDeskTitle">
+      <div class="pd-home-desk-head">
+        <div>
+          <div class="eyebrow">YOUR DESK</div>
+          <h2 id="pdHomeDeskTitle">Pick up where you left off</h2>
+        </div>
+        <span id="pdHomeDeskStatus">Saved on this device</span>
+      </div>
+      <div class="pd-home-desk-grid" id="pdHomeDeskItems"></div>
+    </section>
+
   <section class="pd-home-hero" aria-labelledby="pdHomeTitle">
     <div class="pd-home-hero-inner">
       <div class="pd-home-hero-copy">
-        <div class="eyebrow">For the flight ahead</div>
+        <div class="eyebrow">Plan, calculate, and study</div>
         <h1 id="pdHomeTitle">Plan the flight.<span>Understand the numbers.</span></h1>
         <p>Flight planning, aviation calculators, weather, and checkride practice in your browser. Work through the numbers and the reasoning behind them.</p>
         <nav class="pd-home-hero-links" aria-label="Start a pilot task">
@@ -81,15 +92,23 @@ const schema = {
   </section>
 
   <div class="pd-home-wrap">
-    <section class="pd-home-desk" id="pdHomeDesk" hidden aria-labelledby="pdHomeDeskTitle">
-      <div class="pd-home-desk-head">
+    <section data-pd-reveal class="pd-home-section" id="popular-tools">
+      <div class="pd-home-section-head">
         <div>
-          <div class="eyebrow">YOUR DESK</div>
-          <h2 id="pdHomeDeskTitle">Pick up where you left off</h2>
+          <div class="eyebrow">Calculators</div>
+          <h2>The tools you reach for.</h2>
+          <p>Wind, altitude, fuel and weight & balance.</p>
         </div>
-        <span id="pdHomeDeskStatus">Saved on this device</span>
+        <a href="/tools.html" data-pd-home-cta="All Calculators">Free aviation calculators →</a>
       </div>
-      <div class="pd-home-desk-grid" id="pdHomeDeskItems"></div>
+      <div class="pd-popular-grid">
+        {popularTools.map(([href, title, path]) => (
+          <a data-pd-hover class="pd-popular-tool" href={href} data-pd-home-cta={title}>
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg><span>{title}</span>
+          </a>
+        ))}
+      </div>
+      <button class="pd-home-command" id="pdHomeSearch" type="button">Search all tools <kbd>/</kbd></button>
     </section>
 
     <section data-pd-reveal class="pd-home-section pd-home-crosswind" aria-labelledby="pdHomeTryToolTitle">
@@ -122,36 +141,12 @@ const schema = {
       </section>
     </section>
 
-    <section data-pd-reveal class="pd-home-section" id="popular-tools">
-      <div class="pd-home-section-head">
-        <div>
-          <div class="eyebrow">Calculators</div>
-          <h2>The tools you reach for.</h2>
-          <p>Wind, altitude, fuel and weight & balance.</p>
-        </div>
-        <a href="/tools.html" data-pd-home-cta="All Calculators">Free aviation calculators →</a>
-      </div>
-      <div class="pd-popular-grid">
-        {popularTools.map(([href, title, path]) => (
-          <a data-pd-hover class="pd-popular-tool" href={href} data-pd-home-cta={title}>
-            <svg viewBox="0 0 32 32" aria-hidden="true"><path d={path} /></svg><span>{title}</span>
-          </a>
-        ))}
-      </div>
-      <button class="pd-home-command" id="pdHomeSearch" type="button">Search all tools <kbd>/</kbd></button>
-    </section>
-
-    <section data-pd-reveal class="pd-home-section pd-home-route" aria-labelledby="connected-title">
-      <div><div class="eyebrow">How PilotDesk fits</div><h2 id="connected-title">Your flight math and study tools belong together.</h2><p>Work out the wind correction. See what it does to heading, time, and fuel. Then review the reasoning behind the result.</p><div class="pd-actions"><a class="pd-btn secondary" href="/flight-planning-workspace.html">Work through the flight math</a><a href="/written-prep.html">Open Written Prep →</a></div></div>
-      <ol class="pd-home-route-steps"><li><b>Calculate</b><span>Use the free tools with your own inputs.</span></li><li><b>Understand</b><span>Read the method and assumptions. Follow the source links.</span></li><li><b>Practice</b><span>Review a related study topic and explain the answer in your own words.</span></li></ol>
-    </section>
-
     <section data-pd-reveal class="pd-home-section" aria-labelledby="flight-lessons-title">
       <div class="pd-home-section-head">
         <div>
           <div class="eyebrow">Pilot guides</div>
           <h2 id="flight-lessons-title">Know what the numbers mean.</h2>
-          <p>Short guides to wind, performance and navigation.</p>
+          <p>Check the calculation, read the explanation, and practice a related subject.</p>
         </div>
         <a href="/guides.html">Browse aviation guides →</a>
       </div>
@@ -166,7 +161,7 @@ const schema = {
       <div>
         <div class="eyebrow">Flight planning</div>
         <h2 id="route-title">Your route, on FAA charts.</h2>
-        <p>Find airports and fixes, plot on FAA charts, and calculate a navlog using your aircraft and wind inputs.</p>
+        <p>Find airports and fixes, plot on FAA charts, and build a flight log with heading, time, and fuel for each leg.</p>
         <div class="pd-actions"><a class="pd-btn" href="/route-planner.html">Open Route Planner</a><a href="/aircraft.html">Your aircraft →</a></div>
       </div>
       <ol class="pd-home-route-steps">

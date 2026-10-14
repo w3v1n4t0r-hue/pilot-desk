@@ -14,7 +14,7 @@ const sectionDefinitions = [
     label: 'Plan',
     paths: ['/planner.html', '/route-planner.html', '/airport.html', '/procedures.html', '/flights.html', '/flight-brief.html', '/preflight-brief.html', '/aircraft.html', '/poh-chart-studio.html'],
     items: [
-      ['/route-planner.html', 'Route planner', 'Build a route and navlog'],
+      ['/route-planner.html', 'Route planner', 'Route, heading, time, and fuel by leg'],
       ['/airport.html', 'Airport search', 'Runways, weather, and FAA procedures'],
       ['/procedures.html', 'Procedures', 'Find instrument procedures'],
       ['/aircraft.html', 'Aircraft', 'Your aircraft profiles and planning numbers'],
@@ -30,24 +30,25 @@ const sectionDefinitions = [
     items: [
       ['/weather.html', 'METAR & TAF', 'Current airport weather'],
       ['/metar-decoder.html', 'METAR decoder', 'Break down an aviation weather report'],
-      ['/guides/metar-taf.html', 'Read METARs & TAFs', 'Worked report examples and forecast changes']
+      ['/guides/metar-taf.html', 'Read METARs & TAFs', 'Report examples and forecast changes']
     ]
   },
   {
     label: 'Learn',
-    paths: ['/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/', '/learn/', '/daily/', '/checklist-trainer.html'],
+    paths: ['/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/', '/learn/', '/daily/', '/checklist-trainer.html', '/for-cfis.html'],
     items: [
-      ['/written-prep.html', 'Written Prep', 'PPL through ATP written-test study'],
+      ['/flight-training.html', 'Flight training', 'Choose written, oral, or rating study'],
+      ['/written-prep.html', 'Written Prep', 'Practice by certificate or rating'],
       ['/skill-gap.html', 'Weak subjects', 'Find subjects that need more work'],
-      ['/flight-training.html', 'Flight training', 'Study material organized by certificate'],
       ['/guides.html', 'Pilot guides', 'Checkride, systems, weather, and flight-planning guides'],
       ['/daily/', 'Daily challenge', 'Three questions to keep learning'],
       ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons'],
-      ['/training/acs-far-reference.html', 'ACS & FAR reference', 'Official FAA study sources by rating'],
+      ['/training/acs-far-reference.html', 'ACS & FAR reference', 'FAA test standards and regulations'],
       ['/training/certificates-ratings.html', 'Certificates & ratings', 'See the FAA certificate path and ratings'],
       ['/learn/oral-exam/', 'Oral exam guide', 'Practice checkride subjects by rating'],
-      ['/learn/checkride-lab/', 'Checkride Lab', 'Practice answers and examiner follow-ups'],
-      ['/learn/study-plan/', 'Study plan', 'Choose your next study task']
+      ['/learn/checkride-lab/', 'Checkride Lab', 'Answer questions and practice follow-ups'],
+      ['/learn/study-plan/', 'Study plan', 'Choose your next study task'],
+      ['/for-cfis.html', 'Instructor resources', 'Share lesson scenarios, tools, and guides']
     ]
   }
 ];

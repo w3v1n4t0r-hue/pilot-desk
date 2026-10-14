@@ -36,7 +36,7 @@
 }
 .pd-nav-menu a:hover,.pd-nav-menu a:focus-visible{background:var(--panel2)!important;border-color:var(--line)!important}
 .pd-nav-menu a b{font-size:var(--pd-type-label)!important;font-weight:660!important;letter-spacing:-.01em!important}
-.pd-nav-menu a span{color:var(--muted2)!important;font-size:var(--pd-type-label)!important;line-height:1.42!important}
+.pd-nav-menu a span{color:var(--muted2)!important;font-size:var(--pd-type-label)!important;font-weight:400!important;line-height:1.42!important}
 
 .pd-header-actions{display:flex!important;align-items:center!important;gap:8px!important;margin-left:auto!important}
 .pd-plans-link,.pd-account-link{min-height:38px!important;display:inline-flex!important;align-items:center!important;padding:0 9px!important;color:var(--muted)!important;font-size:var(--pd-type-label)!important;text-decoration:none!important;border:1px solid transparent!important}

@@ -4,6 +4,14 @@ on:
     branches: [main]
     paths:
       - 'src/pages/index.astro'
+      - 'src/data/site.mjs'
+      - 'flight-training.html'
+      - 'assets/home-desk.js'
+      - 'assets/training-progress.css'
+      - 'assets/features.js'
+      - 'assets/learn-shell.js'
+      - 'assets/learn-2026.css'
+      - 'assets/pilotdesk-navigation-2026.css'
       - 'about.html'
       - 'aircraft.html'
       - 'flights.html'

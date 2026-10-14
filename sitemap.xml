@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://www.pilot-desk.com/</loc><lastmod>2026-10-05</lastmod></url>
-<url><loc>https://www.pilot-desk.com/about.html</loc><lastmod>2026-09-25</lastmod></url>
-<url><loc>https://www.pilot-desk.com/aircraft.html</loc><lastmod>2026-10-01</lastmod></url>
+<url><loc>https://www.pilot-desk.com/</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://www.pilot-desk.com/about.html</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://www.pilot-desk.com/aircraft.html</loc><lastmod>2026-10-14</lastmod></url>
 <url><loc>https://www.pilot-desk.com/airport.html</loc><lastmod>2026-09-25</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/accelerated-stall/</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/calculators/arc-distance/</loc><lastmod>2026-10-05</lastmod></url>
@@ -55,11 +55,11 @@
 <url><loc>https://www.pilot-desk.com/daily/</loc><lastmod>2026-10-01</lastmod></url>
 <url><loc>https://www.pilot-desk.com/e6b-flight-computer.html</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/editorial-policy.html</loc><lastmod>2026-09-25</lastmod></url>
-<url><loc>https://www.pilot-desk.com/embed.html</loc><lastmod>2026-09-25</lastmod></url>
+<url><loc>https://www.pilot-desk.com/embed.html</loc><lastmod>2026-10-14</lastmod></url>
 <url><loc>https://www.pilot-desk.com/flight-planning-workspace.html</loc><lastmod>2026-09-25</lastmod></url>
-<url><loc>https://www.pilot-desk.com/flight-training.html</loc><lastmod>2026-10-05</lastmod></url>
-<url><loc>https://www.pilot-desk.com/for-cfis.html</loc><lastmod>2026-09-25</lastmod></url>
-<url><loc>https://www.pilot-desk.com/for-flight-schools.html</loc><lastmod>2026-10-05</lastmod></url>
+<url><loc>https://www.pilot-desk.com/flight-training.html</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://www.pilot-desk.com/for-cfis.html</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://www.pilot-desk.com/for-flight-schools.html</loc><lastmod>2026-10-14</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides.html</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/accelerate-stop-accelerate-go.html</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/guides/accelerated-stall-load-factor.html</loc><lastmod>2026-10-05</lastmod></url>
@@ -142,11 +142,11 @@
 <url><loc>https://www.pilot-desk.com/metar-decoder.html</loc><lastmod>2026-09-25</lastmod></url>
 <url><loc>https://www.pilot-desk.com/planner.html</loc><lastmod>2026-10-01</lastmod></url>
 <url><loc>https://www.pilot-desk.com/poh-chart-studio.html</loc><lastmod>2026-10-05</lastmod></url>
-<url><loc>https://www.pilot-desk.com/pricing.html</loc><lastmod>2026-10-04</lastmod></url>
+<url><loc>https://www.pilot-desk.com/pricing.html</loc><lastmod>2026-10-14</lastmod></url>
 <url><loc>https://www.pilot-desk.com/procedures.html</loc><lastmod>2026-09-25</lastmod></url>
-<url><loc>https://www.pilot-desk.com/route-planner.html</loc><lastmod>2026-10-13</lastmod></url>
+<url><loc>https://www.pilot-desk.com/route-planner.html</loc><lastmod>2026-10-14</lastmod></url>
 <url><loc>https://www.pilot-desk.com/sources.html</loc><lastmod>2026-10-05</lastmod></url>
-<url><loc>https://www.pilot-desk.com/tools.html</loc><lastmod>2026-10-05</lastmod></url>
+<url><loc>https://www.pilot-desk.com/tools.html</loc><lastmod>2026-10-13</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/acs-far-reference.html</loc><lastmod>2026-09-25</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/certificates-ratings.html</loc><lastmod>2026-09-25</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/cfi.html</loc><lastmod>2026-10-05</lastmod></url>
@@ -155,6 +155,6 @@
 <url><loc>https://www.pilot-desk.com/training/instrument-rating.html</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/multiengine.html</loc><lastmod>2026-10-05</lastmod></url>
 <url><loc>https://www.pilot-desk.com/training/private-pilot.html</loc><lastmod>2026-10-06</lastmod></url>
-<url><loc>https://www.pilot-desk.com/weather.html</loc><lastmod>2026-10-01</lastmod></url>
-<url><loc>https://www.pilot-desk.com/written-prep.html</loc><lastmod>2026-10-06</lastmod></url>
+<url><loc>https://www.pilot-desk.com/weather.html</loc><lastmod>2026-10-14</lastmod></url>
+<url><loc>https://www.pilot-desk.com/written-prep.html</loc><lastmod>2026-10-14</lastmod></url>
 </urlset>

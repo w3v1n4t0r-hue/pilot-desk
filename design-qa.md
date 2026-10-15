@@ -1,13 +1,15 @@
-# Route planner dropdown and chart detail verification
+# Planner workspace layout verification
 
 final result: passed
 
-The route planner opens as a centered dropdown below its top button. The chart moves below the dropdown rather than being covered by a side panel. Closing it restores the full chart height. The dropdown is at most 320px tall, scrolls internally and leaves usable chart space on short landscape screens. Route entry and Build navlog are grouped at the top; all nine planning views remain available. Escape, Arrow Down and outside-click dismissal are verified.
+A passive screenshot of the selected planning reference was compared with desktop and phone implementation captures in a single contact sheet. No route was entered in the reference application. The adaptation retains PilotDesk's established black styling, navigation and no-page-scroll chart canvas; the visual target is the arrangement of controls, not copied branding, assets or application code.
 
-Compared desktop and phone open/closed captures. No outer page scroll, chart clipping or panel/chart overlap remained at widths 320–1920, including 390x640 and 844x390. Existing colors, navigation, logo and type remain in use. No new illustration assets are needed.
+The Flight plan view now groups saved aircraft selection, TAS, fuel burn, cruise altitude and UTC departure above route entry on desktop. Undo, redo, reverse and clear are together under the route field. Additional controls remain in More route tools. Distance, fuel, ETE, UTC ETA and wind basis occupy a pinned bottom strip. On phones, route entry is first and settings scroll horizontally within the dropdown. The chart stays below the dropdown and returns to full height when it closes.
 
-Chart requests now use 2x density independently of screen width and 4x on displays above 2x pixel density. Requests remain bounded by the FAA cache: sectional 8–12, terminal 10–12, low 7–12 and high 5–9. Service metadata was verified directly. Fresh chart opacity defaults to 100%; existing user settings remain respected. The dated CONUS overview was regenerated at 5632x3456 using 128 pixels per source tile instead of 48, with higher WebP quality. This increases its download from about 0.38MB to 6.29MB; detailed tiles still have the published source resolution ceiling.
+Existing controls are moved rather than cloned, preserving listeners and saved values. The late-loaded aircraft selector is integrated after initialization; its reload controls, notes, draft notice and flight storage tools remain available in More route tools. UTC ETA uses the same departure interpretation and route duration as the existing planner.
 
-Source and built-output checks pass for route building, navlog, all planning views, chart density/source limits, 3x display initialization, public layers, native layers, map links/restoration, print output, keyboard focus and outside dismissal. External tile failures are intentional browser fixtures; fixture captures demonstrate geometry and fallback detail, not live coverage. A deployed preview is checked separately before delivery.
+Browser checks cover aircraft selection applying TAS/burn, grouping without duplicate controls, two-point route calculation, UTC ETA consistency, all planning views, public/native layers, link restoration, print, Escape/focus/outside dismissal, no outer page scrolling, chart/dropdown separation, widths 320–1920 and short portrait/landscape screens. The selected design comparison has no unresolved P0/P1/P2 layout findings.
 
-No unresolved P0/P1/P2 layout findings. Production remains unchanged pending approval of these changes.
+Intentional differences: PilotDesk retains its centered top dropdown instead of covering the chart, existing branding and fonts, manual TAS/fuel inputs and the existing Build navlog action. No route recommendation service or new map data provider is introduced by this layout change.
+
+Fixtures deliberately return unavailable live feeds. Their screenshots verify layout and existing fallback imagery, not current aviation data coverage. Production remains unchanged pending approval of the preview.

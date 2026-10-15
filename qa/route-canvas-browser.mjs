@@ -7,6 +7,7 @@ const root=path.resolve(process.env.PILOTDESK_TEST_ROOT||'.');
 const browser=await chromium.launch({headless:true,...(process.env.PILOTDESK_BROWSER_PATH?{executablePath:process.env.PILOTDESK_BROWSER_PATH}:{})});
 try{
   const page=await browser.newPage({viewport:{width:1365,height:900}}),errors=[];
+  await page.addInitScript(()=>localStorage.setItem('pd-aircraft',JSON.stringify([{id:'qa-aircraft',name:'Test aircraft',cruiseTas:105,fuelBurn:8}])));
   page.on('pageerror',error=>errors.push(error.message));
   await page.route('**/*',route=>{
     const url=new URL(route.request().url());
@@ -22,11 +23,22 @@ try{
   async function geometry(){return page.evaluate(()=>{const b=document.getElementById('rpMap').getBoundingClientRect();return {x:b.x,y:b.y,width:b.width,height:b.height,bottom:b.bottom,outerWidth:innerWidth,outerHeight:innerHeight,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight}})}
   let g=await geometry();assert.equal(g.x,0);assert.equal(g.width,g.outerWidth);assert.ok(Math.abs(g.bottom-g.outerHeight)<2);assert.ok(g.height>=g.outerHeight-110);assert.ok(g.scrollHeight<=g.outerHeight+1);
   await page.locator('#rpEditorToggle').click();assert.equal(await page.locator('#rpCanvasDrawer').isVisible(),true);
-  async function dropdownGeometry(){const box=await page.locator('#rpCanvasDrawer').boundingBox(),chart=await geometry();assert.ok(box.y+box.height<=chart.y+1,'Dropdown must push the chart below it');assert.ok(box.height<=320,'Dropdown is bounded');assert.ok(chart.height>100,'Chart remains usable');assert.ok(Math.abs(chart.bottom-chart.outerHeight)<2,'Opened dropdown leaves the full chart visible');assert.ok(Math.abs(box.x+box.width/2-chart.outerWidth/2)<2,'Dropdown is centered')}
+  await page.locator('#rpAircraft').waitFor();assert.equal(await page.locator('.rp-plan-settings #rpAircraft').count(),1);
+  await page.locator('#rpAircraft').selectOption('qa-aircraft');assert.equal(await page.locator('#rpTas').inputValue(),'105');assert.equal(await page.locator('#rpBurn').inputValue(),'8');
+  for(const id of ['rpTas','rpBurn','rpPhase_cruiseAltitude','rpDepartureUtc'])assert.equal(await page.locator('.rp-plan-settings #'+id).count(),1);
+  await page.locator('#rpDepartureUtc').fill('2026-10-15T15:00');
+  async function dropdownGeometry(){const box=await page.locator('#rpCanvasDrawer').boundingBox(),chart=await geometry();assert.ok(box.y+box.height<=chart.y+1,'Dropdown must push the chart below it');assert.ok(box.height<=340,'Dropdown is bounded');assert.ok(chart.height>100,'Chart remains usable');assert.ok(Math.abs(chart.bottom-chart.outerHeight)<2,'Opened dropdown leaves the full chart visible');assert.ok(Math.abs(box.x+box.width/2-chart.outerWidth/2)<2,'Dropdown is centered')}
   await dropdownGeometry();
   await page.locator('#rpRoute').fill('A,47.95,-97.18 B,46.88,-96.79');await page.locator('#rpBuild').click();
   await page.waitForFunction(()=>window.PilotDeskRoutePlanner.getPoints().length===2);
   assert.notEqual(await page.locator('#rpSummaryDistance').textContent(),'— NM');
+  await page.waitForFunction(()=>document.getElementById('rpSummaryEta').textContent!=='—');
+  const expectedEta=await page.evaluate(()=>new Date(Date.parse('2026-10-15T15:00Z')+window.pdNavlogResult.totalHours*3600000).toISOString().slice(11,16)+'Z');assert.equal(await page.locator('#rpSummaryEta').textContent(),expectedEta);
+  const totalsBox=await page.locator('.rp-plan-totals').boundingBox(),routeBox=await page.locator('#rpRoute').boundingBox();assert.ok(totalsBox.y>routeBox.y,'Totals form a separate bottom strip');
+  await page.locator('#rpReverse').click();await page.waitForFunction(()=>window.PilotDeskRoutePlanner.getPoints()[0]?.id==='B');
+  await page.locator('#rpUndo').click();await page.waitForFunction(()=>window.PilotDeskRoutePlanner.getPoints()[0]?.id==='A');
+  await page.locator('#rpRedo').click();await page.waitForFunction(()=>window.PilotDeskRoutePlanner.getPoints()[0]?.id==='B');
+  await page.locator('#rpUndo').click();await page.waitForFunction(()=>window.PilotDeskRoutePlanner.getPoints()[0]?.id==='A');
   for(const view of ['navlog','performance','weather','navigation','procedures','offline','sources','route']){await page.locator('#rpCanvasView').selectOption(view);assert.equal(await page.locator('[data-view="'+view+'"]').isVisible(),true);assert.ok((await geometry()).scrollHeight<=900);await dropdownGeometry()}
   await page.locator('#rpCanvasView').selectOption('navlog');assert.match(await page.locator('#rpNavlog').textContent(),/A|B/);
   await page.keyboard.press('Escape');assert.equal(await page.locator('#rpCanvasDrawer').isVisible(),false);assert.equal(await page.locator('#rpEditorToggle').evaluate(el=>el===document.activeElement),true);

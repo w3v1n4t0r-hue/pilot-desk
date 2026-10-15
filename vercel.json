@@ -10,6 +10,7 @@
       "*": false,
       "codex/layer-catalog-test": true,
       "codex/chart-detail-dropdown": true,
+      "codex/planner-workspace-layout": true,
       "main": true
     }
   },

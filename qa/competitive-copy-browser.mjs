@@ -35,6 +35,7 @@ try{
     await page.locator('#rpRouteEditor').waitFor({state:'hidden'});
     await page.locator('#rpEditorToggle').click();
     await page.locator('#rpRouteEditor').waitFor({state:'visible'});
+    await page.locator('.rp-plan-more > summary').click();
     await page.locator('#rpPlanningValues').click();
     assert.equal(await page.locator('#rpPlanningValues').evaluate(el=>el.closest('details').open),true);
     await page.locator('#rpCanvasView').selectOption('navlog');

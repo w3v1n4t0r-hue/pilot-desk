@@ -22,10 +22,24 @@ function boot(){
   const quick=document.createElement('div');quick.className='rp-route-quick';
   const routeInput=document.getElementById('rpRoute');routeInput.rows=2;
   quick.append(routeInput.closest('label'),document.getElementById('rpBuild'));editor.prepend(quick);
+  const settings=document.createElement('div');settings.className='rp-plan-settings';settings.setAttribute('aria-label','Aircraft and departure settings');
+  for(const [id,text] of [['rpTas','TAS (kt)'],['rpBurn','Burn (gal/hr)'],['rpPhase_cruiseAltitude','Altitude (ft MSL)'],['rpDepartureUtc','Departure (UTC)']]){
+    const control=document.getElementById(id),field=control?.closest('label');if(!field)continue;
+    if(field.firstChild?.nodeType===Node.TEXT_NODE)field.firstChild.textContent=text;
+    settings.append(field);
+  }
+  editor.prepend(settings);
+  const actions=document.createElement('div');actions.className='rp-plan-actions';actions.setAttribute('aria-label','Route actions');
+  for(const id of ['rpUndo','rpRedo','rpReverse','rpClearRoute'])actions.append(document.getElementById(id));quick.after(actions);
+  const more=document.createElement('details');more.className='rp-plan-more';const moreTitle=document.createElement('summary');moreTitle.textContent='More route tools';more.append(moreTitle);
+  for(const node of [...editor.children])if(![settings,quick,actions].includes(node))more.append(node);editor.append(more);
+  const summary=document.getElementById('rpLiveSummary');
+  for(const [id,label] of [['rpSummaryEta','ETA UTC'],['rpSummaryWind','Winds']]){const cell=document.createElement('div'),name=document.createElement('small'),value=document.createElement('strong');name.textContent=label;value.id=id;value.textContent='—';cell.append(name,value);summary.append(cell)}
+  const fuel=document.getElementById('rpSummaryFuel').parentElement;summary.insertBefore(fuel,document.getElementById('rpSummaryEte').parentElement);
   stage.append(card);toolbar.classList.add('rp-canvas-controls');
   main.prepend(toolbar);
   toggle.textContent='Route planner';toggle.classList.add('rp-canvas-toggle');toggle.setAttribute('aria-controls',drawer.id);toggle.setAttribute('aria-expanded','false');stage.append(toggle);
-  pane('route','Flight plan',[document.getElementById('rpLiveSummary'),workspace]);
+  pane('route','Flight plan',[workspace]);
   pane('navlog','Navlog',[document.getElementById('rpNavlogPanel')]);
   pane('performance','Fuel and performance',[document.getElementById('rpPerformance'),document.getElementById('rpPhaseResults')?.closest('section')]);
   pane('weather','Departure weather',[document.getElementById('rpDepartureReview')]);
@@ -36,7 +50,11 @@ function boot(){
   pane('sources','Sources and chart information',[card.querySelector('.rp-chart-note'),main.querySelector('.safety-strip')]);
   for(const node of [...main.children])if(node!==toolbar&&node!==title)node.hidden=true;
   main.append(stage);stage.append(drawer);
-  const additions=new MutationObserver(()=>{const pin=main.querySelector(':scope > .pd-star');if(pin)panes.get('sources').prepend(pin)});additions.observe(main,{childList:true});
+  drawer.append(summary);summary.classList.add('rp-plan-totals');
+  function adoptAircraft(){const aircraft=document.getElementById('rpAircraft')?.closest('label');if(aircraft&&aircraft.parentElement!==settings){const wrap=aircraft.closest('.rp-aircraft-tools');settings.prepend(aircraft);if(wrap)more.append(wrap)}const save=document.getElementById('rpSaveFlight');if(save&&save.parentElement!==head)head.insertBefore(save,close);for(const node of [document.getElementById('rpDraftNotice'),editor.querySelector(':scope > .pd-flight-context')])if(node&&!more.contains(node))more.append(node)}
+  const additions=new MutationObserver(()=>{const pin=main.querySelector(':scope > .pd-star');if(pin)panes.get('sources').prepend(pin);adoptAircraft()});additions.observe(main,{childList:true,subtree:true});adoptAircraft();
+  function updateTotals(){const nav=window.pdNavlogResult,plan=window.PilotDeskRoutePerformance?.getSettings();const departure=Date.parse((plan?.departureUtc||'')+'Z');const eta=document.getElementById('rpSummaryEta');if(nav&&Number.isFinite(departure)&&Number.isFinite(nav.totalHours)){const date=new Date(departure+nav.totalHours*3600000);eta.textContent=date.toISOString().slice(11,16)+'Z';eta.title=date.toISOString()}else{eta.textContent='—';eta.removeAttribute('title')}const wind=document.getElementById('rpSummaryWind');wind.textContent=plan?.forecast?'Forecast':'Entered';wind.title=plan?.forecast?'Forecast winds; manual leg overrides take precedence.':'Entered planning winds; manual leg overrides take precedence.'}
+  for(const event of ['pilotdesk:route-built','pilotdesk:route-invalidated','pilotdesk:planning-changed','pilotdesk:performance-updated'])document.addEventListener(event,updateTotals);updateTotals();
   document.body.classList.add('rp-canvas-ready');
   editor.hidden=true;workspace.classList.add('rp-editor-closed');
   let active='route';
@@ -44,6 +62,7 @@ function boot(){
     active=panes.has(id)?id:'route';view.value=active;
     for(const [key,node] of panes)node.hidden=key!==active;
     editor.hidden=active!=='route';workspace.classList.toggle('rp-editor-closed',active!=='route');
+    summary.hidden=!['route','navlog','performance'].includes(active);
     drawer.hidden=false;stage.classList.add('rp-planning-open');toggle.setAttribute('aria-expanded','true');
     for(const id of ['rpLayersPanel','rpRouteBrief']){const panel=document.getElementById(id);if(panel)panel.hidden=true}
     for(const id of ['rpLayersToggle','rpBriefToggle'])document.getElementById(id)?.setAttribute('aria-expanded','false');
@@ -59,7 +78,7 @@ function boot(){
   for(const id of ['rpLayersToggle','rpBriefToggle'])document.getElementById(id)?.addEventListener('click',()=>{if(!drawer.hidden)hide(false)});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!drawer.hidden){event.preventDefault();event.stopImmediatePropagation();hide()}},true);
   const targets={rpRouteEditor:'route',rpPlanningValues:'route',rpNavlogPanel:'navlog',rpPerformance:'performance',rpDepartureReview:'weather',rpOfflinePacks:'offline',rpNavigation:'navigation'};
-  function followAnchor(){const id=location.hash.slice(1);if(targets[id]){show(targets[id]);const node=document.getElementById(id);const details=node?.closest('details');if(details)details.open=true;requestAnimationFrame(()=>node?.scrollIntoView({block:'start'}))}}
+  function followAnchor(){const id=location.hash.slice(1);if(targets[id]){show(targets[id]);const node=document.getElementById(id);for(let details=node?.closest('details');details;details=details.parentElement?.closest('details'))details.open=true;requestAnimationFrame(()=>node?.scrollIntoView({block:'start'}))}}
   window.addEventListener('hashchange',followAnchor);followAnchor();
   import('./route-public-layers.mjs').then(async m=>{publicHost.replaceChildren();await m.mountPublicLayers(publicHost);if(active==='public'&&!drawer.hidden)document.dispatchEvent(new CustomEvent('pilotdesk:public-layers-open'))}).catch(()=>{publicHost.textContent='Public layer controls could not load. Reload to retry.'});
   if(window.ResizeObserver){const observer=new ResizeObserver(()=>map.invalidateSize({pan:true,animate:false}));observer.observe(stage)}

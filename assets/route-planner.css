@@ -292,7 +292,7 @@ body.rp-canvas-ready #main-content{display:flex;flex-direction:column;flex:1 1 0
 .rp-canvas-ready .rp-route-quick label{margin:0;min-width:0}
 .rp-canvas-ready .rp-route-quick textarea{height:56px;min-height:56px;resize:vertical;margin:4px 0 0}
 .rp-canvas-ready .rp-route-quick button{margin:0;min-height:56px}
-.rp-canvas-ready .rp-editor-title{display:none}.rp-canvas-ready .rp-canvas-pane #rpRouteEditor{border:0;padding:0}
+.rp-canvas-ready .rp-editor-title{display:none}.rp-canvas-ready .rp-canvas-pane #rpRouteEditor{border:0!important;padding:0!important}
 .rp-canvas-ready .rp-public-control{padding:12px 0;border-top:1px solid var(--line)}
 .rp-canvas-ready .rp-public-control label{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:14px}
 .rp-canvas-ready .rp-public-control small{display:block;margin-top:6px;color:var(--muted2);font-size:12px;line-height:1.5}

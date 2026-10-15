@@ -32,13 +32,12 @@ try{
    }
    if(path==='/route-planner.html'){
     await page.waitForFunction(()=>document.querySelector('#rpEditorToggle').getAttribute('aria-expanded')!==null);
-    if(await page.locator('#rpRouteEditor').isVisible())await page.locator('#rpEditorToggle').click();
-    await page.locator('#rpRouteEditor').waitFor({state:'hidden'});
+    if(await page.locator('#rpCanvasDrawer').isVisible())await page.locator('#rpEditorToggle').click();
+    await page.locator('#rpCanvasDrawer').waitFor({state:'hidden'});
     await page.locator('#rpEditorToggle').click();
-    await page.locator('#rpRouteEditor').waitFor({state:'visible'});
-    await page.locator('.rp-plan-more > summary').click();
-    await page.locator('#rpPlanningValues').click();
-    assert.equal(await page.locator('#rpPlanningValues').evaluate(el=>el.closest('details').open),true);
+    await page.locator('#rpCanvasDrawer').waitFor({state:'visible'});
+    await page.locator('#rpPowerSetting').fill('Cruise');
+    assert.equal(await page.locator('#rpPowerSetting').inputValue(),'Cruise');
     await page.locator('#rpCanvasView').selectOption('navlog');
     await page.locator('#rpNavlogPanel').waitFor({state:'visible'});
     await page.evaluate(()=>location.hash='rpNavlogPanel');

@@ -16,7 +16,9 @@ const draw=wb.slice(wb.indexOf('function draw('),wb.indexOf('function calculate(
 let arcs=[],scheduled=[],cancelled=0;
 const ctx=new Proxy({arc:(x,y)=>arcs.push([x,y]),getImageData:()=>({})},{get:(t,k)=>t[k]||(()=>{})});
 const env={chart:{width:900,height:480,getContext:()=>ctx},envelope:[[30,1000],[50,1000],[50,3000],[30,3000]],cgFrame:0,cgDomain:'',cgPositions:{},cgReducedMotion:{matches:false},cancelAnimationFrame:()=>cancelled++,requestAnimationFrame:fn=>{scheduled.push(fn);return scheduled.length;},performance:{now:()=>0}};
-vm.createContext(env);vm.runInContext(draw,env);
+Object.assign(env,{cgReplay:false,cgLast:null,cgReplayButton:{},cgReplayNote:{},rows:[],n:Number,document:{hidden:false,documentElement:{classList:{contains:()=>false}}},navigator:{}});
+const helpers=[wb.match(/const cgMotionAllowed[^\n]+/)[0],wb.match(/function canReplayFuel[^\n]+/)[0],wb.match(/function stopCgReplay[^\n]+/)[0]].join('\n');
+vm.createContext(env);vm.runInContext(helpers+'\n'+draw,env);
 const point=(cg,W=2000)=>({ok:true,cg,W});
 env.draw(point(38),point(39));const before=env.cgPositions.dep[0];
 env.draw(point(42),point(39));assert.equal(env.cgPositions.dep[0],before);assert.equal(scheduled.length,1);

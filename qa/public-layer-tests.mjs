@@ -39,3 +39,9 @@ try{
   assert.equal((await call(map,{},'POST')).status,405);
 }finally{globalThis.fetch=original}
 console.log('Public layer checks passed: missing values, units, airport types, altitude references, hazard bands, level filters, dateline bounds, provider allowlists, metadata times, partial results, caching and outages.');
+
+// Actual FAA ATS routes use LEVEL_, while NAVAIDs/fixes use chart membership flags.
+for(const level of ['low','high'])assert.equal(navLevel({LEVEL_:'B'},level),true);
+assert.equal(navLevel({LEVEL_:'U'},'high'),true);assert.equal(navLevel({LEVEL_:'U'},'low'),false);
+assert.equal(navLevel({LEVEL_:'L'},'low'),true);assert.equal(navLevel({LEVEL_:'L'},'high'),false);
+assert.ok(!/verify current charts/i.test(sourceDescription('aero/suaMoa',true)));

@@ -23,7 +23,7 @@ export function sourceDescription(id,value){
   if(id==='wxImagery')return WEATHER[value]?.label||(value==='observedTurbulence'?'AWC turbulence PIREPs · report locations only':value?.includes('global')?'Global gridded forecast integration requires a provider':'Public gridded forecast integration is not connected');
   if(id==='mfb/mtr_wplabels')return 'FAA MTR route identifiers · waypoint names unavailable';
   if(id==='aero/atc_sectors')return 'FAA boundary sector attributes · incomplete sector coverage';
-  if(id in FAA_IDS)return 'FAA GIS reference geometry · verify current charts';
+  if(id in FAA_IDS)return 'FAA airspace and navigation data';
   if(id.startsWith('cultural/')||id==='place_labels'||id==='terrain/peaks_passes')return 'OpenStreetMap / Overpass · close-up detail';
   if(id==='airSigmets'||id.startsWith('airSigmets/'))return 'AWC SIGMET / G-AIRMET / CWA advisories';
   if(CONTROLS.has(id))return 'Local filter for connected public layers';
@@ -42,7 +42,7 @@ export function createPublicLayers(win,onStatus){
   }
   function active(id){return selection[id]===true}
   function stamp(data){const t=data.sourceUpdatedAt||data.validAt||data.fetchedAt,label=data.sourceUpdatedAt?'source updated':data.validAt?'forecast valid':'retrieved';return t?' · '+label+' '+new Date(t).toISOString().slice(0,16).replace('T',' ')+'Z':''}
-  async function dataset(key,ids,url,options,token,signal){ids.forEach(id=>set(id,'Loading · '+sourceDescription(id,selection[id])));try{const data=await load(url,signal);if(token!==generation)return;const group=render(key,data,options);const count=group.getLayers().length;ids.forEach(id=>set(id,(data.possiblyTruncated||data.partial?'Partial':'Available')+' · '+count+' features'+stamp(data)+(data.validTo?' · valid to '+data.validTo:'')))}catch(error){if(token!==generation||error.name==='AbortError')return;ids.forEach(id=>set(id,'Unavailable · '+error.message))}}
+  async function dataset(key,ids,url,options,token,signal){ids.forEach(id=>set(id,'Loading · '+sourceDescription(id,selection[id])));try{const data=await load(url,signal);if(token!==generation)return;const group=render(key,data,options);const count=group.getLayers().length;ids.forEach(id=>set(id,(data.possiblyTruncated||data.partial?'Partial · '+count+' features':count?'Available · '+count+' features':data.geojson.features.length?'No features match the selected filters':'No features in this map area')+stamp(data)+(data.validTo?' · valid to '+data.validTo:'')))}catch(error){if(token!==generation||error.name==='AbortError')return;ids.forEach(id=>set(id,'Unavailable · '+error.message))}}
   async function tiles(key,source,ids,token,product,signal){
     ids.forEach(id=>set(id,'Loading · '+source.label));
     try{const response=await fetch('/api/aviation-layers?adapter=imagery&product='+product,{signal}),meta=await response.json();if(!response.ok||!Number.isFinite(Date.parse(meta.frameTime)))throw Error(meta.error||'Public imagery metadata unavailable.');if(token!==generation)return;

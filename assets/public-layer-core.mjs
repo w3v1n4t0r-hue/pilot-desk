@@ -3,7 +3,7 @@ export function number(value){if(value===null||value===undefined||value===''||ty
 export function stationLabel(p,mode){
   const temp=number(p.temp),dewp=number(p.dewp),wind=number(p.wspd),dir=number(p.wdir),vis=number(p.visib),ceil=number(p.ceil);
   switch(mode){
-    case 'category':return typeof p.fltcat==='string'?p.fltcat:null;
+    case 'category':return typeof (p.fltcat??p.fltCat)==='string'?(p.fltcat??p.fltCat):null;
     case 'surfacewind':return wind===null?null:(dir===null?'VRB':String(Math.round(dir)).padStart(3,'0'))+'° '+wind+'kt';
     case 'dewpointspread':return temp===null||dewp===null?null:Math.round((temp-dewp)*10)/10+'°C';
     case 'temperature':return temp===null?null:temp+'°C';

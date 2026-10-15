@@ -22,56 +22,32 @@ try{
     return route.fulfill({path:file,contentType:file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html':undefined});
   });
   await page.goto('https://pd.test/route-planner.html#map=-97.19218/47.95269/13/low');
-  await page.waitForSelector('#rpCopyMapView');
+  await page.waitForSelector('#rpLayersToggle');assert.equal(await page.locator('#rpCopyMapView').count(),0);
   await page.waitForSelector('#rpLayersToggle');
   const getView=()=>page.evaluate(()=>{const RP=window.PilotDeskRoutePlanner,m=RP.getMap();return {lat:m.getCenter().lat,lon:m.getCenter().lng,zoom:m.getZoom(),chart:RP.getChart()};});
   let view=await getView();assert.ok(Math.abs(view.lat-47.95269)<.0001);assert.equal(view.zoom,13);assert.equal(view.chart,'low');
   await page.locator('#rpLayersToggle').click();
-  await page.locator('#rpLayerSearch').fill('navaids');
-  assert.equal(await page.locator('#rpLayersPanel .rp-layer-row:visible').count(),1);
-  await page.locator('[data-layer="navaids"]').check();
-  await page.locator('#rpLayerSearch').fill('does not exist');
-  assert.equal(await page.locator('#rpLayerEmpty').isVisible(),true);
-  await page.locator('#rpLayerSearch').fill('');
-  await page.locator('#rpEnabledOnly').check();
-  assert.equal(await page.locator('#rpLayersPanel .rp-layer-row:visible input:not(:checked)').count(),0);
-  assert.equal(await page.locator('#rpLayersPanel .rp-layer-row:visible input:checked').count(),4);
-  assert.match(await page.locator('#rpLayersToggle').textContent(),/4$/);
-  await page.locator('[data-layer="navaids"]').uncheck();
-  assert.equal(await page.locator('#rpLayersPanel .rp-layer-row:visible input:checked').count(),3);
-  await page.locator('#rpEnabledOnly').uncheck();
-  assert.equal(await page.locator('[data-layer="pirep"]').isDisabled(),true);
-  await page.locator('input[name="rpEfbBase"][value="high"]').check();
+  await page.locator('#rpPublicSearch').fill('navaids');
+  assert.equal(await page.locator('.rp-public-control:visible').count(),1);
+  await page.locator('#rpPublicSearch').fill('does not exist');
+  assert.equal(await page.locator('.rp-public-control:visible').count(),0);
+  await page.locator('#rpPublicSearch').fill('');
+  assert.equal(await page.locator('[data-layer="pirep"]').isDisabled(),false);
+  await page.keyboard.press('Escape');
+  await page.locator('#rpLayersPanel').waitFor({state:'hidden'});
+  await page.locator('#rpChartLayer').selectOption('high');
   assert.equal((await getView()).chart,'high');
-  assert.match(page.url(),/\/high$/);
-  await page.locator('input[name="rpEfbBase"][value="terminal"]').check();
-  await page.locator('input[name="rpEfbBase"][value="auto"]').check();
-  await page.evaluate(()=>window.PilotDeskRoutePlanner.getMap().setZoom(7,{animate:false}));
-  assert.equal((await getView()).chart,'sectional');
-  assert.equal(await page.locator('input[name="rpEfbBase"][value="auto"]').isChecked(),true);
-  await page.locator('input[name="rpEfbBase"][value="high"]').check();
+  assert.match(page.url(),/high$/);
+  await page.locator('#rpLayersToggle').click();
   assert.deepEqual(errors,[]);
   await page.keyboard.press('Escape');
   await page.locator('#rpLayersPanel').waitFor({state:'hidden'});
   assert.equal(await page.locator('#rpLayersPanel').isVisible(),false);
   assert.equal(await page.locator('#rpLayersToggle').evaluate(el=>el===document.activeElement),true);
-  // Clipboard rejection must leave a selectable map-only link, without flight IDs.
-  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:()=>Promise.reject(Error('Denied'))}}));
-  await page.locator('#rpCopyMapView').click();
-  assert.equal(await page.locator('.rp-map-link-fallback').isVisible(),true);
-  assert.match(await page.locator('.rp-map-link-fallback input').inputValue(),/^https:\/\/pd.test\/route-planner.html#map=/);
-  await page.evaluate(()=>{
-    history.replaceState(history.state,'',location.pathname+'?flight=private-flight-id'+location.hash);
-    Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>window.copiedMapURL=text}});
-  });
-  await page.locator('#rpCopyMapView').click();
-  assert.equal(await page.locator('.rp-map-link-fallback').isVisible(),false);
-  assert.equal(await page.evaluate(()=>window.copiedMapURL.includes('private-flight-id')),false);
-  assert.match(await page.locator('#rpMapLinkStatus').textContent(),/copied/);
   await page.evaluate(()=>window.PilotDeskRoutePlanner.getMap().setView([40,-100],7,{animate:false}));
-  await page.reload();await page.waitForSelector('#rpCopyMapView');
+  await page.reload();await page.waitForSelector('#rpLayersToggle');assert.equal(await page.locator('#rpCopyMapView').count(),0);
   view=await getView();assert.ok(Math.abs(view.lat-40)<.01);assert.equal(view.zoom,7);assert.equal(view.chart,'high');
-  await page.goto('https://pd.test/route-planner.html');await page.waitForSelector('#rpCopyMapView');
+  await page.goto('https://pd.test/route-planner.html');await page.waitForSelector('#rpLayersToggle');assert.equal(await page.locator('#rpCopyMapView').count(),0);
   assert.equal((await getView()).zoom,7);
   await page.evaluate(()=>location.hash='map=-110/45/8/sectional');
   await page.waitForFunction(()=>window.PilotDeskRoutePlanner.getMap().getZoom()===8);
@@ -79,6 +55,7 @@ try{
   await page.evaluate(()=>location.hash='rpPerformance');
   await page.evaluate(()=>window.PilotDeskRoutePlanner.getMap().setView([41,-101],6,{animate:false}));
   assert.equal(new URL(page.url()).hash,'#rpPerformance');
+  await page.keyboard.press('Escape');
   for(const width of [320,360,375,390,414,430,768,1365,1920]){
     await page.setViewportSize({width,height:900});
     await page.locator('#rpLayersToggle').click();
@@ -96,5 +73,5 @@ try{
     await page.locator('#rpLayersPanel').waitFor({state:'hidden'});
   }
   assert.deepEqual(errors,[]);
-  console.log('Browser checks passed: linked/restored views, chart changes, hash navigation, section anchors, layer search/filter/count, free entitlement, copy fallback, unavailable API handling and nine viewport widths.');
+  console.log('Browser checks passed: linked/restored views, chart changes, hash navigation, section anchors, unified layer search, free PIREPs, removed copy control, unavailable API handling and nine viewport widths.');
 }finally{await browser.close();}

@@ -19,7 +19,7 @@ function start(RP,L){
   const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmt=(n,d)=>Number.isFinite(Number(n))?Number(n).toFixed(d==null?0:d):'—';
   const B=window.PilotDeskRouteBrief;
-  const PRO_LAYERS=new Set(['pirep','gairmet','airsigmet','cwa']);
+  const PRO_LAYERS=new Set(['gairmet','airsigmet','cwa']);
   const hasFeature=feature=>window.PilotDeskProAccess?.isEnabled(feature)===true;
   const DEFAULTS={radar:false,metar:true,pirep:false,gairmet:false,airsigmet:false,cwa:false,tfr:true,sua:false,airspace:false,notams:true,airports:false,navaids:false,fixes:false,airways:false,obstacles:false,rings:false};
   const MIN_ZOOM={metar:3,pirep:5,gairmet:3,airsigmet:3,cwa:3,tfr:3,sua:5,airspace:6,airports:6,navaids:7,fixes:8,airways:6,obstacles:8};
@@ -42,7 +42,6 @@ function start(RP,L){
   state.enabled.airports=false;
   for(const key of PRO_LAYERS)if(!hasFeature('advancedWeather'))state.enabled[key]=false;
   const briefData={},briefStatus={},briefTime={};
-  const weatherMarkers=new Map();
   const data={},groups={},lastFetch={},fetchSeq={},dataTime={},dataPending={},dataStatus={},dataBounds={},notams={},briefWx={dep:null,dst:null,alt:null};
   let radarOverlay=null,notamGroup=L.layerGroup(),ringsGroup=L.layerGroup(),radarTimer=null,briefLoading=false;
   let routeContextSeq=0,notamSeq=0,radarSeq=0,radarPending=null,briefRefreshTimer=0,briefContextKey='';
@@ -79,7 +78,7 @@ function start(RP,L){
   layersButton.className='utility-btn rp-layers-toggle';
   layersButton.setAttribute('aria-expanded','false');
   layersButton.setAttribute('aria-controls','rpLayersPanel');
-  layersButton.textContent='LAYERS';
+  layersButton.textContent='Chart layers';
   toolbar.insertBefore(layersButton,document.getElementById('rpMapStatus'));
 
   const briefButton=document.createElement('button');
@@ -93,7 +92,7 @@ function start(RP,L){
   const panel=document.createElement('aside');
   panel.id='rpLayersPanel';
   panel.className='rp-efb-panel rp-layers-panel';
-  panel.setAttribute('aria-label','Map layers');
+  panel.setAttribute('aria-label','Chart layers');
   panel.hidden=true;
   panel.innerHTML=[
     '<div class="rp-efb-head"><div><span class="rp-eyebrow">MAP CONTROL</span><strong>Layers</strong></div><button type="button" data-close-layers aria-label="Close layers">×</button></div>',
@@ -132,8 +131,8 @@ function start(RP,L){
       toggleRow('obstacles','Obstacles','AWC'),
       toggleRow('rings','Distance rings','Route'),
     '</section>',
-    '<p class="rp-layer-foot" id="rpProWeatherAccess">Pro adds PIREPs, SIGMETs, G-AIRMETs and CWAs on the chart. <a href="/pricing.html?from=chart-weather">View Pro · $5/month</a>. METARs, radar and charts stay free.</p>',
-    '<p class="rp-layer-foot">Planning display only. Confirm current weather, NOTAMs, TFRs and chart data with an official briefing source.</p>'
+    '<p class="rp-layer-foot" id="rpProWeatherAccess">Pro adds SIGMETs, G-AIRMETs and CWAs on the chart. <a href="/pricing.html?from=chart-weather">View Pro · $5/month</a>. METARs, PIREPs, radar and charts stay free.</p>',
+    ''
   ].join('');
   const mapEl=document.getElementById('rpMap');
   mapEl.appendChild(panel);
@@ -189,7 +188,7 @@ function start(RP,L){
   }
   function syncLayerSummary(){
     const count=Object.keys(DEFAULTS).filter(key=>state.enabled[key]).length;
-    layersButton.textContent='Layers · '+count;
+    layersButton.textContent='Chart layers';
     panel.querySelector('#rpLayerCount').textContent=count+' overlays enabled. Check layer status for data availability.';
     filterLayers();
   }
@@ -440,7 +439,7 @@ function start(RP,L){
       fetchSeq[key]=(fetchSeq[key]||0)+1;
       dataPending[key]?.controller?.abort();
       delete dataPending[key];
-      g.clearLayers();
+    g.clearLayers();
       if(map.hasLayer(g))map.removeLayer(g);
     }
   }
@@ -477,6 +476,7 @@ function start(RP,L){
       return L.marker(ll,{pane,keyboard:false,icon:L.divIcon({className:'rp-map-cluster',html:symbol+'<b>'+count+'</b>',iconSize:key==='metar'?[72,34]:[42,34],iconAnchor:key==='metar'?[36,17]:[21,17]}),title:label}).setOpacity(state.vectorOpacity);
     }
     if(key==='metar'){
+      if(window.PilotDeskMetar&&map.getZoom()>=8){const m=window.PilotDeskMetar.model(p);return L.marker(ll,{pane,icon:L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[132,112],iconAnchor:[60,52]}),title:m.label}).setOpacity(state.vectorOpacity)}
       const cat=window.PilotDeskChartSymbols.metarCategory(p);
       return L.circleMarker(ll,{pane,radius:map.getZoom()<7?4:6,weight:2,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
     }
@@ -502,7 +502,7 @@ function start(RP,L){
     if(key==='metar'){
       const id=field(p,['icaoId','id','stationId']),cat=window.PilotDeskChartSymbols.metarCategory(p),raw=field(p,['rawOb','raw_text','raw']);
       const details=window.PilotDeskChartSymbols.metarDetails(p);
-      return '<div class="rp-route-popup rp-metar-popup"><div class="rp-metar-heading"><b>'+esc(id||'METAR')+'</b><strong style="color:'+window.PilotDeskChartSymbols.metarColor(p)+'">'+esc(cat)+'</strong></div><p class="rp-metar-time">'+esc(window.PilotDeskChartSymbols.reportTime(p))+'</p><dl>'+[['Wind',details.wind],['Visibility',details.visibility],['Ceiling',details.ceiling]].map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+esc(value)+'</dd></div>').join('')+'</dl><p class="rp-metar-raw">'+esc(raw||'Raw report unavailable')+'</p><small>Source: Aviation Weather Center · Surface observation</small></div>';
+      return '<div class="rp-route-popup rp-metar-popup"><div class="rp-metar-heading"><b>'+esc(id||'METAR')+'</b><strong style="color:'+window.PilotDeskChartSymbols.metarColor(p)+'">'+esc(cat)+'</strong></div><p class="rp-metar-time">'+esc(window.PilotDeskChartSymbols.reportTime(p))+'</p>'+(window.PilotDeskMetar?.card(p)||'')+'<dl>'+[['Wind',details.wind],['Visibility',details.visibility],['Ceiling',details.ceiling]].map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+esc(value)+'</dd></div>').join('')+'</dl><p class="rp-metar-raw">'+esc(raw||'Raw report unavailable')+'</p><small>Source: Aviation Weather Center · Surface observation</small></div>';
     }
     if(key==='pirep'){
       const raw=field(p,['rawOb','raw_text','raw']),level=p.fltlvl??p.fltLvl,alt=level!=null?'FL'+String(level).padStart(3,'0'):field(p,['altitude','alt']);const symbol=window.PilotDeskChartSymbols.pirep(p);
@@ -520,6 +520,7 @@ function start(RP,L){
     const add=canAdd?'<br><button type="button" class="utility-btn" data-map-add="'+esc(String(name).toUpperCase()+','+coordinates[1].toFixed(5)+','+coordinates[0].toFixed(5))+'">Add to route</button>':'';
     return '<div class="rp-route-popup"><b>'+esc(name||key.toUpperCase())+'</b>'+(key==='airports'?'<br>'+esc(window.PilotDeskChartSymbols.airportStatus(p).label)+'<br><span class="rp-mini">Tower operating hours are not checked.</span>':'')+(type?'<br>'+esc(type):'')+(alt?'<br>'+esc(alt):'')+'<br><span class="rp-mini">FAA / AWC live planning data</span>'+add+'</div>';
   }
+  const weatherMarkers=new Map();
   function renderGeoLayer(key,geojson){
     if(PRO_LAYERS.has(key)&&!hasFeature('advancedWeather'))return;
     const g=ensureGroup(key);
@@ -530,12 +531,15 @@ function start(RP,L){
         if(feature.geometry?.type!=='Point'||!Array.isArray(coordinates)||!Number.isFinite(coordinates[0])||!Number.isFinite(coordinates[1])||Math.abs(coordinates[0])>180||Math.abs(coordinates[1])>90)continue;
         const id=field(p,['icaoId','id','stationId']),stamp=id+':'+coordinates.slice(0,2).join(',');
         retained.add(stamp);let marker=weatherMarkers.get(stamp);
+        const stationModel=!!window.PilotDeskMetar&&map.getZoom()>=8;
+        if(marker&&marker._pdStationModel!==stationModel){g.removeLayer(marker);weatherMarkers.delete(stamp);marker=null;}
         if(!marker){
           marker=pointFor('metar',feature,L.latLng(coordinates[1],coordinates[0]));
+          marker._pdStationModel=stationModel;
           marker.bindPopup(()=>popupFor('metar',marker.feature),{className:'rp-weather-popup',maxWidth:320});
           marker.bindTooltip('',{direction:'top',className:'rp-point-label'});weatherMarkers.set(stamp,marker);
         }
-        marker.feature=feature;marker.setStyle(styleFor('metar',feature));marker.setRadius(map.getZoom()<7?4:6);
+        marker.feature=feature;if(stationModel){const m=window.PilotDeskMetar.model(p);marker.setIcon(L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[132,112],iconAnchor:[60,52]}));}else{marker.setStyle(styleFor('metar',feature));marker.setRadius(map.getZoom()<7?4:6);}
         marker.setTooltipContent(esc(id)+' · '+esc(window.PilotDeskChartSymbols.metarCategory(p)));
         if(!g.hasLayer(marker))g.addLayer(marker);
         if(marker.isPopupOpen())marker.setPopupContent(()=>popupFor('metar',marker.feature));
@@ -545,7 +549,7 @@ function start(RP,L){
     }
     g.clearLayers();
     const visible=(geojson.features||[]).filter(f=>key!=='airports'||window.PilotDeskMapDensity.publicAirport(f)).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
-    const size=map.getZoom()<10?({pirep:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
+    const size=map.getZoom()<10?({metar:140,pirep:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
     const priority=f=>{const p=f.properties||{};if(key==='pirep'){const v=window.PilotDeskChartSymbols.pirep(p);return (v.urgent?100:0)+Math.max(...v.items.map(x=>x.level||0));}if(key==='metar')return ({LIFR:4,IFR:3,MVFR:2,VFR:1}[window.PilotDeskChartSymbols.metarCategory(p)]||0);return 0;};
     const grouped=size?window.PilotDeskMapDensity.group(visible,c=>map.project([c[1],c[0]],map.getZoom()),size,priority):visible.map(feature=>({feature,members:[feature]}));
     const display={type:'FeatureCollection',features:grouped.map(x=>({...x.feature,properties:{...x.feature.properties,_pdMembers:x.members.length>1?x.members:null}}))};
@@ -856,6 +860,10 @@ function start(RP,L){
     },320);
   });
   document.addEventListener('pilotdesk:route-invalidated',()=>{routeContextSeq++;notamSeq++;clearTimeout(briefRefreshTimer);briefContextKey='';briefLoading=false;briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;for(const key of Object.keys(briefData))delete briefData[key];for(const key of Object.keys(briefStatus))delete briefStatus[key];for(const key of Object.keys(notams))delete notams[key];notamGroup.clearLayers();legStrip.hidden=true;renderBrief()});
+  function refreshMetarModels(){if(state.enabled.metar&&data.metar)renderGeoLayer('metar',data.metar)}
+  map.on('zoomend',refreshMetarModels);
+  document.addEventListener('pilotdesk:metar-units-changed',refreshMetarModels);
+  document.addEventListener('pilotdesk:metar-ready',refreshMetarModels);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){if(radarTimer)toggleRadarPlayback()}else if(state.enabled.radar)refreshRadar()});
   document.addEventListener('pilotdesk:route-built',()=>{clearTimeout(briefRefreshTimer);briefRefreshTimer=setTimeout(loadRouteContext,120);});
   document.addEventListener('pilotdesk:leg-selected',e=>showLeg(e.detail&&e.detail.leg));
@@ -884,7 +892,7 @@ function start(RP,L){
       if(!weather){state.enabled[key]=false;if(input)input.checked=false;toggleLayer(key,false);}
       else if(!paidWeather&&saved.enabled?.[key]===true){state.enabled[key]=true;if(input)input.checked=true;toggleLayer(key,true);}
     }
-    panel.querySelector('#rpPirepFilter').disabled=!weather;
+    panel.querySelector('#rpPirepFilter').disabled=false;
     const accessNote=panel.querySelector('#rpProWeatherAccess');
     if(accessNote)accessNote.hidden=weather;
     if(!route){routeContextSeq++;clearTimeout(briefRefreshTimer);briefLoading=false;briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;for(const key of Object.keys(briefData))delete briefData[key];}

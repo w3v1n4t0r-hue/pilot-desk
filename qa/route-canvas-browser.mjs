@@ -7,7 +7,7 @@ const root=path.resolve(process.env.PILOTDESK_TEST_ROOT||'.');
 const browser=await chromium.launch({headless:true,...(process.env.PILOTDESK_BROWSER_PATH?{executablePath:process.env.PILOTDESK_BROWSER_PATH}:{})});
 try{
   const page=await browser.newPage({viewport:{width:1365,height:900}}),errors=[];let directFAA=0,faaProxy=0;
-  await page.addInitScript(()=>localStorage.setItem('pd-aircraft',JSON.stringify([{id:'qa-aircraft',name:'Test aircraft',cruiseTas:105,fuelBurn:8}])));
+  await page.addInitScript(()=>{localStorage.setItem('pd-aircraft',JSON.stringify([{id:'qa-aircraft',name:'Test aircraft',cruiseTas:105,fuelBurn:8}]));localStorage.setItem('pd-route-draft-v1',JSON.stringify({savedAt:Date.now(),values:{rpRoute:'A,47.9,-97.2 B,47.2,-96.8'}}))});
   page.on('pageerror',error=>errors.push(error.stack||error.message));
   await page.route('**/*',route=>{
     const url=new URL(route.request().url());
@@ -30,7 +30,7 @@ try{
   await page.waitForFunction(()=>document.querySelector('#rpLayersPanel')?.dataset.unified==='1');
   assert.deepEqual(await page.locator('.rp-canvas-controls').evaluate(el=>[...el.children].map(n=>n.querySelector('select')?.id||n.id)),['rpChartLayer','rpLayersToggle','rpBriefToggle','rpFullscreen']);
   assert.equal(await page.locator('#rpPublicLayersToggle').count(),0);assert.equal(await page.locator('#rpCopyMapView').count(),0);
-  await page.locator('#rpEditorToggle').click();
+  await page.locator('#rpEditorToggle').click();assert.equal(await page.locator('.rp-route-quick #rpDraftNotice').count(),0);
   const bar=()=>page.locator('#rpCanvasDrawer').evaluate(el=>({height:el.clientHeight,width:el.clientWidth,scroll:el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1}));
   assert.ok((await bar()).height<=96);assert.equal((await bar()).scroll,false);
   assert.equal(await page.locator('.rp-plan-settings #rpAircraft').count(),1);assert.equal(await page.locator('.rp-plan-settings #rpPowerSetting').count(),1);assert.equal(await page.locator('.rp-plan-settings #rpPhase_cruiseAltitude').count(),1);assert.equal(await page.locator('.rp-plan-settings #rpDepartureUtc').count(),1);

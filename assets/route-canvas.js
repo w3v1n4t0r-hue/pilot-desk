@@ -27,6 +27,7 @@ function boot(){
  toggle.textContent='Route planner';toggle.classList.add('rp-canvas-toggle');toggle.setAttribute('aria-controls',drawer.id);toggle.setAttribute('aria-expanded','false');stage.append(toggle);
  const publicHost=document.createElement('section');publicHost.id='rpUnifiedLayers';publicHost.className='rp-unified-layers';publicHost.textContent='Loading chart layers…';
  let publicMounted=false;function adopt(){
+   const draft=$('rpDraftNotice');if(draft&&draft.parentElement!==more)more.prepend(draft);
    const aircraft=$('rpAircraft')?.closest('label');if(aircraft&&aircraft.parentElement!==settings){const wrap=aircraft.closest('.rp-aircraft-tools');settings.prepend(aircraft);if(wrap)more.append(wrap)}
    const save=$('rpSaveFlight');if(save&&save.parentElement!==head){save.textContent='Save';save.setAttribute('aria-label','Save flight');head.insertBefore(save,close);}
    const measure=$('rpMeasure');if(measure&&measure.parentElement!==head)head.insertBefore(measure,close);

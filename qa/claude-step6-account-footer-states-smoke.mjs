@@ -50,8 +50,8 @@ for(const file of [experience,site]){
 check(footerAstro.includes('footerLinks.map'),'Astro footer no longer renders the shared footer link model');
 check(!experience.includes("['/sources.html','Sources']")&&!experience.includes("['/legal/safety.html','Safety']"),'Legacy footer still builds the old link wall');
 check(site.includes("['/feedback.html', 'Contact']"),'Astro footer does not expose Contact');
-check(footerAstro.includes('supplements, but does not replace'),'Astro footer disclaimer is not explicit');
-check(experience.includes('supplements, but does not replace'),'Legacy footer disclaimer is not explicit');
+check(!footerAstro.includes('supplements, but does not replace'),'Astro footer repeats removed advisory copy');
+check(!experience.includes('supplements, but does not replace'),'Legacy footer repeats removed advisory copy');
 check(step6.includes('footer.pd-footer-2026'),'Minimal footer visual contract missing');
 
 // Shared loading / empty / error states.

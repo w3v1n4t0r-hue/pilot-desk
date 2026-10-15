@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {chromium} from 'playwright';
+import {createRequire} from 'node:module';
+const {chromium}=createRequire(import.meta.url)('playwright');
 const base=process.env.PILOTDESK_BASE_URL||'http://127.0.0.1:4173';
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch({headless:true,...(process.env.PILOTDESK_BROWSER_PATH?{executablePath:process.env.PILOTDESK_BROWSER_PATH}:{})});
 await fs.mkdir('qa-artifacts/competitive-copy',{recursive:true});
 try{
  const context=await browser.newContext({serviceWorkers:'block'});
  const page=await context.newPage();
- const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const errors=[];page.on('pageerror',e=>errors.push(e.stack||e.message));
  for(const width of [320,390,768,1280,1920]){
   await page.setViewportSize({width,height:900});
   for(const path of ['/','/pricing.html','/written-prep.html','/learn/checkride-lab/','/route-planner.html','/about.html','/for-flight-schools.html','/for-cfis.html','/embed.html','/aircraft.html','/flights.html','/flight-training.html']){

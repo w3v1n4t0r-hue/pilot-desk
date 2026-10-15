@@ -13,7 +13,7 @@ assert(html.includes('<title>Flight Planning Workspace | PilotDesk</title>'),'Wo
 assert(html.includes('/assets/flight-workspace.js'),'Workspace logic not loaded');
 assert(html.includes('/assets/app-bootstrap.js'),'Workspace must use the current app bootstrap');
 assert(!html.includes('/assets/boot.js'),'Workspace must not depend on the obsolete boot.js');
-assert(html.includes('Planning aid only.')&&html.includes('POH/AFM'),'Workspace safety boundaries missing');
+assert(!html.includes('Planning aid only.'),'Workspace repeats removed advisory copy');
 assert(html.includes('aria-live="polite"'),'Workspace results should announce updates accessibly');
 assert(js.includes('const ranges=')&&js.includes('outside the supported range'),'Workspace input range validation missing');
 assert(js.includes('function clear()')&&js.includes("textContent='—'"),'Workspace must fail closed by clearing stale outputs');

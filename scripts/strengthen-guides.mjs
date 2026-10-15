@@ -74,13 +74,6 @@ const corePages={
     training:'For a training scenario, save the final answer until after making a rough estimate. Predict which leg will have the strongest headwind, where fuel burn will be highest, and which airport condition is most limiting. Then use the tools to test those predictions. The goal is to understand why the numbers move, not simply to produce a navlog.',
     links:'<a href="/route-planner.html">Route planner</a> · <a href="/e6b-flight-computer.html">Online E6B</a> · <a href="/guides/flight-planning.html">Flight-planning guide</a>'
   },
-  'route-planner.html':{
-    heading:'Turn a route line into a usable navlog',subject:'a route and navlog',
-    intro:'Route planning connects geography with time, wind, fuel and navigation. A line between airports is only the beginning: each leg needs a distance, course or track, expected groundspeed, estimated time and enough context to make the route practical. Use the PilotDesk route tools to build and study that structure, then verify the route against current aeronautical information.',
-    checks:['Verify every airport or waypoint before accepting the route.','Keep true and magnetic references consistent when applying wind and variation.','Use expected groundspeed—not airspeed—for time and distance over the ground.','Review airspace, terrain, procedures, NOTAMs and current chart information before flight.'],
-    training:'A good navlog exercise is to calculate one leg manually before using the automated tools. Estimate the no-wind time first, apply the wind triangle, compare the new groundspeed and ETA, then calculate fuel for that leg. Repeating the process makes course, heading, wind correction, groundspeed, time and fuel feel like one connected problem.',
-    links:'<a href="/calculators/wind-triangle/">Wind triangle</a> · <a href="/calculators/time-speed-distance/">Time/speed/distance</a> · <a href="/guides/navigation-reference.html#vfr-navlog">VFR navlog guide</a>'
-  },
   'procedures.html':{
     heading:'Treat procedure lookup as document control',subject:'a procedure lookup',
     intro:'Instrument procedures are time-sensitive operating documents. A convenient search page can help you locate the chart, but the important habits are confirming the airport, procedure name, revision or effective information, and that the document comes from a current approved source. Never rely on a remembered plate or a screenshot whose currency is unknown.',

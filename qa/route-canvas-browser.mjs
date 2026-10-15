@@ -8,7 +8,7 @@ const browser=await chromium.launch({headless:true,...(process.env.PILOTDESK_BRO
 try{
   const page=await browser.newPage({viewport:{width:1365,height:900}}),errors=[];
   await page.addInitScript(()=>localStorage.setItem('pd-aircraft',JSON.stringify([{id:'qa-aircraft',name:'Test aircraft',cruiseTas:105,fuelBurn:8}])));
-  page.on('pageerror',error=>errors.push(error.message));
+  page.on('pageerror',error=>errors.push(error.stack||error.message));
   await page.route('**/*',route=>{
     const url=new URL(route.request().url());
     if(url.hostname==='unpkg.com')return route.fulfill({path:url.pathname.endsWith('.js')?process.env.PILOTDESK_LEAFLET_JS:process.env.PILOTDESK_LEAFLET_CSS});
@@ -56,3 +56,4 @@ try{
   assert.deepEqual(errors,[]);
   console.log('Canvas checks passed: full-width/full-height chart, no page scroll, route build/navlog, nine planning views, 51 public controls, native layers, Escape/focus and seven viewport widths.');
 }finally{await browser.close()}
+

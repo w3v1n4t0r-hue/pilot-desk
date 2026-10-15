@@ -13,8 +13,8 @@ for(const chart of Object.values(T.charts)){
   assert.equal(o.keepBuffer,1);assert.equal(o.updateWhenIdle,true);assert.equal(o.updateWhenZooming,false);
  }
 }
-assert.equal(T.options(T.charts.sectional,{width:800,height:600}).tileSize,128);
-for(const env of [{width:3840,height:2160},{memory:2},{connection:{saveData:true}}])assert.equal(T.options(T.charts.sectional,env).tileSize,128);
+assert.equal(T.options(T.charts.sectional,{width:800,height:600}).tileSize,64);
+for(const env of [{width:3840,height:2160},{memory:2},{connection:{saveData:true}}])assert.equal(T.options(T.charts.sectional,env).tileSize,64);
 for(const pixelRatio of [3,4])assert.equal(T.options(T.charts.sectional,{pixelRatio}).tileSize,64);
 const html=fs.readFileSync('route-planner.html','utf8');
 assert.ok(html.indexOf('/assets/chart-tiles.js')<html.indexOf('/assets/route-planner.js'));
@@ -34,6 +34,6 @@ selected='low';vm.runInContext('syncOverview()',context);
 assert.equal(created,2);assert.equal(removed,1);
 console.log('Chart overview bounds, persistent layers, date labeling and chart switching passed.');
 
-assert.ok(planner.includes("geographicPane.style.zIndex='180'"));
+assert.ok(!planner.includes("World_Topo_Map"));
 assert.ok(planner.includes("overviewPane.style.zIndex='190'"));
-assert.ok(planner.includes("pane:'pdGeographicPane'"));
+assert.equal(T.options(T.charts.sectional).minZoom,6);

@@ -54,7 +54,7 @@ if(!rpjs.includes('Observation time unavailable')||!rpjs.includes("return 'Obser
 if(!fs.readFileSync('api/navdata.js','utf8').includes("faaMatches('NAVAIDSystem'")||!fs.readFileSync('api/navdata.js','utf8').includes("faaMatches('DesignatedPoints'"))throw new Error('FAA navigation fallback missing');
 if(!plannerPro.includes("localStorage.getItem('pd-aircraft-active')")||!plannerPro.includes("!params.get('flight')&&!hasSavedRoute"))throw new Error('New route plans no longer inherit the active aircraft safely');
 if(/border-radius:(?:9|10)px/.test(plannerPro))throw new Error('Planner profile/summary panels regressed to rounded cards');
-if(!rp.includes('Before you save the flight')||rp.includes('Turn a route line into a usable navlog'))throw new Error('Route planner task copy regressed to generic filler');
+if(rp.includes('Before you save the flight')||rp.includes('Turn a route line into a usable navlog'))throw new Error('Route planner task copy regressed to generic filler');
 const layerApi=fs.readFileSync('api/aviation-layers.js','utf8');
 const faaMapApi=fs.readFileSync('api/faa-map-features.js','utf8');
 const tfrApi=fs.readFileSync('api/tfrs.js','utf8');

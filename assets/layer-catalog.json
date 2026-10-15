@@ -1,0 +1,355 @@
+[
+  {
+    "id": "map",
+    "label": "Base map",
+    "options": [
+      {
+        "id": "street",
+        "label": "Street Map"
+      },
+      {
+        "id": "aerial",
+        "label": "Aerial Map"
+      }
+    ]
+  },
+  {
+    "id": "aero",
+    "label": "Aeronautical",
+    "options": []
+  },
+  {
+    "id": "chart",
+    "label": "Regional charts",
+    "options": [
+      {
+        "id": "us/vfr",
+        "label": "U.S. VFR"
+      },
+      {
+        "id": "us/ifrlow",
+        "label": "U.S. IFR (low)"
+      },
+      {
+        "id": "us/ifrhigh",
+        "label": "U.S. IFR (high)"
+      }
+    ]
+  },
+  {
+    "id": "wxImagery",
+    "label": "Weather imagery",
+    "options": [
+      {
+        "id": "radar",
+        "label": "Radar"
+      },
+      {
+        "id": "radarcomp",
+        "label": "Radar (Classic)"
+      },
+      {
+        "id": "radar_lowest_tilt",
+        "label": "Radar (Lowest Tilt)"
+      },
+      {
+        "id": "satellite",
+        "label": "Enhanced Satellite"
+      },
+      {
+        "id": "satelliteir",
+        "label": "Color IR Satellite"
+      },
+      {
+        "id": "observedTurbulence",
+        "label": "Reported Turbulence"
+      }
+    ]
+  },
+  {
+    "id": "airSigmets",
+    "label": "AIR/SIGMETs/CWAs",
+    "options": []
+  },
+  {
+    "id": "airSigmets/icing",
+    "label": "Ice",
+    "options": []
+  },
+  {
+    "id": "airSigmets/lowturb",
+    "label": "Turb Low",
+    "options": []
+  },
+  {
+    "id": "airSigmets/highturb",
+    "label": "Turb High",
+    "options": []
+  },
+  {
+    "id": "airSigmets/ifr",
+    "label": "IFR",
+    "options": []
+  },
+  {
+    "id": "airSigmets/convective",
+    "label": "TS",
+    "options": []
+  },
+  {
+    "id": "tfrs",
+    "label": "TFRs",
+    "options": []
+  },
+  {
+    "id": "notams",
+    "label": "NOTAMs",
+    "options": []
+  },
+  {
+    "id": "pireps",
+    "label": "PIREPs",
+    "options": []
+  },
+  {
+    "id": "wxStations",
+    "label": "Station weather",
+    "options": [
+      {
+        "id": "category",
+        "label": "Flight Category"
+      },
+      {
+        "id": "surfacewind",
+        "label": "Surface Winds"
+      },
+      {
+        "id": "windsaloft",
+        "label": "Winds Aloft"
+      },
+      {
+        "id": "dewpointspread",
+        "label": "Dewpoint Spread"
+      },
+      {
+        "id": "temperature",
+        "label": "Temperature"
+      },
+      {
+        "id": "visibility",
+        "label": "Visibility"
+      },
+      {
+        "id": "ceiling",
+        "label": "Ceiling"
+      },
+      {
+        "id": "coverage",
+        "label": "Sky Coverage"
+      }
+    ]
+  },
+  {
+    "id": "obstacles",
+    "label": "Obstacles",
+    "options": []
+  },
+  {
+    "id": "lightning",
+    "label": "Lightning",
+    "options": []
+  },
+  {
+    "id": "aero/airports",
+    "label": "Airports",
+    "options": []
+  },
+  {
+    "id": "aero/heli",
+    "label": "Heliports",
+    "options": []
+  },
+  {
+    "id": "aero/privateAP",
+    "label": "Private Airports",
+    "options": []
+  },
+  {
+    "id": "aero/seaplane",
+    "label": "Seaplane Bases",
+    "options": []
+  },
+  {
+    "id": "aero/other",
+    "label": "Other Fields",
+    "options": []
+  },
+  {
+    "id": "aero/airspace",
+    "label": "Airspace",
+    "options": []
+  },
+  {
+    "id": "aero/hideAirspaceAbove",
+    "label": "Hide Airspace Above (FT)",
+    "options": []
+  },
+  {
+    "id": "aero/controlled",
+    "label": "Controlled",
+    "options": []
+  },
+  {
+    "id": "aero/classE",
+    "label": "Class E",
+    "options": []
+  },
+  {
+    "id": "aero/suaMoa",
+    "label": "SUA/MOA",
+    "options": []
+  },
+  {
+    "id": "aero/modeC",
+    "label": "Mode C",
+    "options": []
+  },
+  {
+    "id": "aero/adiz",
+    "label": "ADIZ",
+    "options": []
+  },
+  {
+    "id": "aero/navlevel",
+    "label": "Navigation level",
+    "options": [
+      {
+        "id": "low",
+        "label": "Low"
+      },
+      {
+        "id": "high",
+        "label": "High"
+      }
+    ]
+  },
+  {
+    "id": "aero/airways",
+    "label": "Airways",
+    "options": []
+  },
+  {
+    "id": "aero/navaids",
+    "label": "Navaids",
+    "options": []
+  },
+  {
+    "id": "aero/waypoints",
+    "label": "Waypoints",
+    "options": []
+  },
+  {
+    "id": "aero/artcc",
+    "label": "ATC boundaries",
+    "options": []
+  },
+  {
+    "id": "aero/artcc_firs",
+    "label": "ARTCC/FIRs",
+    "options": []
+  },
+  {
+    "id": "aero/atc_sectors",
+    "label": "ATC Sectors",
+    "options": []
+  },
+  {
+    "id": "aero/artcclevel",
+    "label": "Boundary level",
+    "options": [
+      {
+        "id": "low",
+        "label": "Low"
+      },
+      {
+        "id": "high",
+        "label": "High"
+      }
+    ]
+  },
+  {
+    "id": "place_labels",
+    "label": "Place Labels",
+    "options": []
+  },
+  {
+    "id": "cultural/all_roads",
+    "label": "All roads",
+    "options": []
+  },
+  {
+    "id": "cultural/major_roads",
+    "label": "Major Roads",
+    "options": []
+  },
+  {
+    "id": "cultural/minor_roads",
+    "label": "Minor Roads",
+    "options": []
+  },
+  {
+    "id": "cultural/railroads",
+    "label": "Railroads",
+    "options": []
+  },
+  {
+    "id": "cultural/urban_areas",
+    "label": "Urban Areas",
+    "options": []
+  },
+  {
+    "id": "cultural/forests_parks",
+    "label": "Forest/National Parks",
+    "options": []
+  },
+  {
+    "id": "cultural/points_of_interest",
+    "label": "Points of Interest",
+    "options": []
+  },
+  {
+    "id": "cultural/power_lines",
+    "label": "Power Lines",
+    "options": []
+  },
+  {
+    "id": "terrain/peaks_passes",
+    "label": "Peaks, Passes, and Cables",
+    "options": []
+  },
+  {
+    "id": "wxOpacity",
+    "label": "Opacity",
+    "options": []
+  },
+  {
+    "id": "altitude",
+    "label": "Altitude",
+    "options": []
+  },
+  {
+    "id": "mfb/mtr_instrument",
+    "label": "Instrument Routes",
+    "options": []
+  },
+  {
+    "id": "mfb/mtr_visual",
+    "label": "Visual Routes",
+    "options": []
+  },
+  {
+    "id": "mfb/mtr_wplabels",
+    "label": "MTR Waypoint Labels",
+    "options": []
+  }
+]

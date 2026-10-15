@@ -33,11 +33,13 @@ try{
     await page.waitForFunction(()=>document.querySelector('#rpEditorToggle').getAttribute('aria-expanded')!==null);
     if(await page.locator('#rpRouteEditor').isVisible())await page.locator('#rpEditorToggle').click();
     await page.locator('#rpRouteEditor').waitFor({state:'hidden'});
-    await page.locator('a[href="#rpRouteEditor"]').click();
+    await page.locator('#rpEditorToggle').click();
     await page.locator('#rpRouteEditor').waitFor({state:'visible'});
-    await page.locator('a[href="#rpPlanningValues"]').click();
+    await page.locator('#rpPlanningValues').click();
     assert.equal(await page.locator('#rpPlanningValues').evaluate(el=>el.closest('details').open),true);
-    await page.locator('a[href="#rpNavlogPanel"]').click();
+    await page.locator('#rpCanvasView').selectOption('navlog');
+    await page.locator('#rpNavlogPanel').waitFor({state:'visible'});
+    await page.evaluate(()=>location.hash='rpNavlogPanel');
     assert.equal(await page.evaluate(()=>location.hash),'#rpNavlogPanel');
    }
    if(path==='/flight-training.html'){

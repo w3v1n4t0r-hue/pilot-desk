@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Layer test · PilotDesk</title>
+  <link rel="stylesheet" href="/assets/layer-test.css">
+  <script type="module" src="/assets/layer-test.js"></script>
+</head>
+<body>
+  <header><a href="/">PilotDesk</a><strong>Map layer test</strong><span>Approval preview</span></header>
+  <main>
+    <aside aria-label="Layer catalogue">
+      <h1>Layers</h1>
+      <p class="intro">Public FAA, AWC, NOAA, USGS and OpenStreetMap layers. Check coverage, source time and feed status beside each control.</p>
+      <label for="search">Find a layer</label><input id="search" type="search" placeholder="Radar, charts, airspace…">
+      <label class="inline"><input id="selected-only" type="checkbox"> Selected only</label>
+      <p id="summary" role="status">Loading catalogue…</p>
+      <div class="actions"><button id="reset" type="button">Reset</button><button id="export" type="button">Export selections</button></div>
+      <div id="catalog"></div><p id="empty" hidden>No matching controls.</p>
+    </aside>
+    <section class="workspace" aria-label="Map preview">
+      <div class="workspace-head"><strong>Live map workspace</strong><a href="/route-planner.html" target="_blank" rel="noopener">Open planner ↗</a></div>
+      <p id="map-status" role="status">Loading PilotDesk map…</p>
+      <iframe id="planner" title="PilotDesk route planner map" src="/route-planner.html?embed=layer-test#map=-97.19218/47.95269/8/sectional"></iframe>
+      <details class="review"><summary>Review selected controls and data connections</summary><div id="review"></div></details>
+    </section>
+  </main>
+</body></html>

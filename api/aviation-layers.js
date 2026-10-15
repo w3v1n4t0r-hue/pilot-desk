@@ -6,6 +6,7 @@ const PRODUCTS=new Set(['metar','pirep','sigmet','airsigmet','gairmet','cwa','ob
 const BBOX_REQUIRED=new Set(['metar','pirep','obstacle']);
 const GLOBAL=new Set(['sigmet','airsigmet','gairmet','cwa']);
 const cache=new Map();
+const PUBLIC_ADAPTERS={faa:require('../server/public-map.cjs'),cultural:require('../server/public-cultural.cjs'),imagery:require('../server/public-imagery.cjs'),winds:require('../server/public-winds.cjs')};
 // Share current warning packages across map and route requests. Never cache failures.
 async function currentPackage(product,fore){
   const key=product+':'+(fore??''),old=cache.get(key);
@@ -49,6 +50,7 @@ async function fetchGeoJson(url,timeout){
 }
 
 module.exports=async function handler(req,res){
+  if(req.query?.adapter!==undefined){const adapter=String(req.query.adapter);if(!Object.hasOwn(PUBLIC_ADAPTERS,adapter)){res.setHeader('Cache-Control','no-store');return res.status(400).json({error:'Unsupported public map adapter.'})}return PUBLIC_ADAPTERS[adapter](req,res)}
   res.setHeader('Content-Type','application/json; charset=utf-8');
   res.setHeader('X-Robots-Tag','noindex');
   if(req.method!=='GET'){

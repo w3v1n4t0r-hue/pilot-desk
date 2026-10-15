@@ -28,6 +28,15 @@ jobs:
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: Build Astro migration output
         run: npm run build
+      - name: Package built copy for source-level editorial review
+        run: |
+          find dist -type f -name '*.html' -print0 | tar --null -czf slopmonster-built-html.tar.gz -T -
+      - name: Upload built HTML review snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: slopmonster-built-html
+          path: slopmonster-built-html.tar.gz
+          if-no-files-found: error
       - name: Check Astro migration
         run: node qa/astro-migration.mjs
       - name: Check JavaScript syntax
@@ -170,6 +179,17 @@ jobs:
         run: node qa/trust-safety-smoke.mjs
       - name: Check public copy tone
         run: node qa/copy-tone.mjs
+      - name: Test SlopMonster site audit rules
+        run: python3 qa/test_slopmonster_site_audit.py
+      - name: Audit all built HTML copy with SlopMonster
+        run: python3 qa/slopmonster_site_audit.py --root dist --output slopmonster-report.json --strict
+      - name: Upload SlopMonster editorial report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slopmonster-copy-audit
+          path: slopmonster-report.json
+          if-no-files-found: ignore
       - name: Guard hand-written aviation copy
         run: node qa/human-copy-smoke.mjs
       - name: Check content audit corrections

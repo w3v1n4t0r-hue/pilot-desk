@@ -12,7 +12,8 @@ if(edge.includes('correct:q.correct')||edge.includes('correct:q.correct,'))failu
 for(const n of ['create table if not exists public.skill_gap_stats','alter table public.skill_gap_stats enable row level security','(select auth.uid()) = user_id','security definer','knowledge_track'])need(migration,n,'legacy skill-gap migration');
 
 need(daily,'/skill-gap.html','daily discovery');
-for(const n of ['/skill-gap.html','Weak Subjects','Written Prep history'])need(training,n,'training hub discovery');
+for(const n of ['/skill-gap.html','Weak Subjects'])need(training,n,'training hub discovery');
+if(!/(?:Written Prep history|saved Written Prep results)/i.test(training))failures.push('training hub discovery: missing Written Prep progress source');
 need(nav,"'/skill-gap.html'",'global nav app coverage');
 if(!/<meta name="robots" content="noindex,follow">/i.test(page))failures.push('weak-subjects page: personalized study dashboard should be noindex');
 if(sitemap.includes('https://www.pilot-desk.com/skill-gap.html'))failures.push('retention sitemap: personalized study dashboard must stay excluded');

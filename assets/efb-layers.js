@@ -476,7 +476,7 @@ function start(RP,L){
       return L.marker(ll,{pane,keyboard:false,icon:L.divIcon({className:'rp-map-cluster',html:symbol+'<b>'+count+'</b>',iconSize:key==='metar'?[72,34]:[42,34],iconAnchor:key==='metar'?[36,17]:[21,17]}),title:label}).setOpacity(state.vectorOpacity);
     }
     if(key==='metar'){
-      if(window.PilotDeskMetar&&map.getZoom()>=8){const m=window.PilotDeskMetar.model(p);return L.marker(ll,{pane,icon:L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[132,112],iconAnchor:[60,52]}),title:m.label}).setOpacity(state.vectorOpacity)}
+      if(window.PilotDeskMetar&&map.getZoom()>=8){const m=window.PilotDeskMetar.model(p);return L.marker(ll,{pane,icon:L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[66,56],iconAnchor:[30,26]}),title:m.label}).setOpacity(state.vectorOpacity)}
       const cat=window.PilotDeskChartSymbols.metarCategory(p);
       return L.circleMarker(ll,{pane,radius:map.getZoom()<7?4:6,weight:2,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
     }
@@ -539,7 +539,7 @@ function start(RP,L){
           marker.bindPopup(()=>popupFor('metar',marker.feature),{className:'rp-weather-popup',maxWidth:320});
           marker.bindTooltip('',{direction:'top',className:'rp-point-label'});weatherMarkers.set(stamp,marker);
         }
-        marker.feature=feature;if(stationModel){const m=window.PilotDeskMetar.model(p);marker.setIcon(L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[132,112],iconAnchor:[60,52]}));}else{marker.setStyle(styleFor('metar',feature));marker.setRadius(map.getZoom()<7?4:6);}
+        marker.feature=feature;if(stationModel){const m=window.PilotDeskMetar.model(p);marker.setIcon(L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[66,56],iconAnchor:[30,26]}));}else{marker.setStyle(styleFor('metar',feature));marker.setRadius(map.getZoom()<7?4:6);}
         marker.setTooltipContent(esc(id)+' · '+esc(window.PilotDeskChartSymbols.metarCategory(p)));
         if(!g.hasLayer(marker))g.addLayer(marker);
         if(marker.isPopupOpen())marker.setPopupContent(()=>popupFor('metar',marker.feature));

@@ -70,3 +70,5 @@ for(const [category,color] of Object.entries({VFR:'#009933',MVFR:'#0000ee',IFR:'
 assert.equal(S.metarCategory({}),'UNKNOWN');assert.equal(S.metarColor({fltcat:'bad'}),'#c6cbd0');
 
 assert.equal(S.advisoryStyle('gairmet',{hazard:'ICE'}).color,'#0000FF');
+
+for(const cls of ['B','D'])assert.equal(S.airspaceStyle({CLASS:cls}).fillColor,'#3f8cff');assert.equal(S.airspaceStyle({CLASS:'C'}).fillColor,'#a65be8');assert.equal(S.airspaceStyle({CLASS:'D'}).dashArray,'6 4');

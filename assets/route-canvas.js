@@ -8,10 +8,10 @@ function boot(){
  const drawer=document.createElement('section');drawer.id='rpCanvasDrawer';drawer.className='rp-canvas-drawer';drawer.hidden=true;drawer.setAttribute('aria-label','Flight planning bar');
  const settings=document.createElement('section');settings.className='rp-plan-settings';settings.setAttribute('aria-label','Aircraft and departure');
  const middle=document.createElement('section');middle.className='rp-plan-route';middle.setAttribute('aria-label','Route and planning tools');
- const quick=document.createElement('div');quick.className='rp-route-quick';const routeInput=$('rpRoute');routeInput.rows=1;quick.append(routeInput.closest('label'),$('rpBuild'));
+ const quick=document.createElement('div');quick.className='rp-route-quick';const routeInput=$('rpRoute');routeInput.rows=1;const build=$('rpBuild');build.textContent='Build';build.setAttribute('aria-label','Build navlog');quick.append(routeInput.closest('label'),build);
  const head=document.createElement('div');head.className='rp-canvas-head';const view=document.createElement('select');view.id='rpCanvasView';view.setAttribute('aria-label','Planning tool');view.add(new Option('Planning tools','route'));
  const actions=document.createElement('select');actions.id='rpRouteActions';actions.setAttribute('aria-label','Route actions');actions.add(new Option('Actions',''));const actionIds=['rpUndo','rpRedo','rpReverse','rpClearRoute','rpFitRoute','rpPlotMode'];const actionNames=['Undo','Redo','Reverse','Clear','Fit route','Plot point'];actionIds.forEach((id,i)=>actions.add(new Option(actionNames[i],id)));actions.addEventListener('change',()=>{const button=$(actions.value);if(button&&!button.disabled)button.click();actions.value=''});
- const close=document.createElement('button');close.type='button';close.textContent='Close';close.setAttribute('aria-label','Close route planning');head.append(view,actions,close);middle.append(quick,head);
+ const close=document.createElement('button');close.type='button';close.textContent='×';close.setAttribute('aria-label','Close route planning');head.append(view,actions,close);middle.append(quick,head);
  const summary=$('rpLiveSummary');summary.classList.add('rp-plan-totals');summary.setAttribute('aria-label','Flight totals');summary.querySelector('.rp-live-route')?.setAttribute('hidden','');$('rpSummaryFuel').parentElement.hidden=true;
  for(const [id,name] of [['rpSummaryEta','ETA UTC'],['rpSummaryWind','Winds aloft']]){const cell=document.createElement('div'),label=document.createElement('small'),value=document.createElement('strong');label.textContent=name;value.id=id;value.textContent='—';cell.append(label,value);summary.append(cell)}
  const power=$('rpPowerSetting').closest('label');
@@ -28,7 +28,7 @@ function boot(){
  const publicHost=document.createElement('section');publicHost.id='rpUnifiedLayers';publicHost.className='rp-unified-layers';publicHost.textContent='Loading chart layers…';
  let publicMounted=false;function adopt(){
    const aircraft=$('rpAircraft')?.closest('label');if(aircraft&&aircraft.parentElement!==settings){const wrap=aircraft.closest('.rp-aircraft-tools');settings.prepend(aircraft);if(wrap)more.append(wrap)}
-   const save=$('rpSaveFlight');if(save&&save.parentElement!==head)head.insertBefore(save,close);
+   const save=$('rpSaveFlight');if(save&&save.parentElement!==head){save.textContent='Save';save.setAttribute('aria-label','Save flight');head.insertBefore(save,close);}
    const measure=$('rpMeasure');if(measure&&measure.parentElement!==head)head.insertBefore(measure,close);
    const status=$('rpMapStatus');if(status&&status.parentElement!==$('rpMap'))$('rpMap').append(status);
    const selector=$('rpChartLayer')?.closest('label'),layers=$('rpLayersToggle'),brief=$('rpBriefToggle'),focus=$('rpFullscreen');for(const node of [selector,layers,brief,focus].filter(Boolean)){if(node.parentElement!==toolbar)toolbar.append(node)}

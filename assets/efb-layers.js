@@ -457,7 +457,7 @@ function start(RP,L){
     if(key==='metar')return {color:'#08080a',fillColor:window.PilotDeskChartSymbols.metarColor(feature?.properties||{}),fillOpacity:.96*o};
     if(key==='tfr')return {pane:'pdAirspacePane',color:feature?.properties?.status==='upcoming'?'#e6bd62':'#ef6f6f',weight:2.2,opacity:o,fillColor:'#e87c7c',fillOpacity:.08*o,dashArray:feature?.properties?.status==='upcoming'?'7 5':null};
     if(key==='sua')return {pane:'pdAirspacePane',color:'#d7b76c',weight:1.4,opacity:.85*o,fillColor:'#d7b76c',fillOpacity:.035*o,dashArray:'7 5'};
-    if(key==='airspace')return {pane:'pdAirspacePane',color:'#c5c5ca',weight:1,opacity:.62*o,fillOpacity:0,dashArray:'4 5'};
+    if(key==='airspace')return {pane:'pdAirspacePane',...window.PilotDeskChartSymbols.airspaceStyle(feature?.properties||{})};
     if(['airsigmet','gairmet','cwa'].includes(key))return {pane:'pdWeatherPane',...window.PilotDeskChartSymbols.advisoryStyle(key==='airsigmet'?'sigmet':key,feature?.properties||{})};
     if(key==='airways')return {pane:'pdNavPane',color:'#c6cbd0',weight:1.2,opacity:.72*o,dashArray:'7 4'};
     return {pane:paneFor(key),color:'#d4d4d8',weight:1.2,opacity:.8*o,fillColor:'#d4d4d8',fillOpacity:.05*o};

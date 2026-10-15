@@ -6,18 +6,19 @@ const require=createRequire(import.meta.url),{chromium}=require('playwright');
 const root=path.resolve(process.env.PILOTDESK_TEST_ROOT||'.');
 const browser=await chromium.launch({headless:true,...(process.env.PILOTDESK_BROWSER_PATH?{executablePath:process.env.PILOTDESK_BROWSER_PATH}:{})});
 try{
-  const page=await browser.newPage({viewport:{width:1365,height:900}}),errors=[];
+  const page=await browser.newPage({viewport:{width:1365,height:900}}),errors=[];let directFAA=0,faaProxy=0;
   await page.addInitScript(()=>localStorage.setItem('pd-aircraft',JSON.stringify([{id:'qa-aircraft',name:'Test aircraft',cruiseTas:105,fuelBurn:8}])));
   page.on('pageerror',error=>errors.push(error.stack||error.message));
   await page.route('**/*',route=>{
     const url=new URL(route.request().url());
     if(url.hostname==='unpkg.com')return route.fulfill({path:url.pathname.endsWith('.js')?process.env.PILOTDESK_LEAFLET_JS:process.env.PILOTDESK_LEAFLET_CSS});
-    if(url.hostname!=='pd.test')return route.abort();
-    if(url.pathname==='/api/aviation-layers'&&url.searchParams.get('adapter')==='faa'){
+    if(url.hostname==='services6.arcgis.com'||url.pathname==='/api/aviation-layers'&&url.searchParams.get('adapter')==='faa'){
       const feature=(properties,geometry={type:'LineString',coordinates:[[-98,39],[-97,40]]})=>({type:'Feature',geometry,properties});
-      const product=url.searchParams.get('product'),features=product==='airways'?[feature({IDENT:'J101',LEVEL_:'U'}),feature({IDENT:'V101',LEVEL_:'L'})]:product==='boundaries'?[feature({TYPE_CODE:'TRSA'})]:product==='sua'?[feature({NAME:'Fixture MOA',TYPE_CODE:'MOA'})]:[];
-      return route.fulfill({contentType:'application/json',body:JSON.stringify({geojson:{type:'FeatureCollection',features}})});
+      const direct=url.hostname==='services6.arcgis.com';if(direct)directFAA++;else faaProxy++;const service=url.pathname.split('/')[5],product=direct?({ATS_Route:'airways',Boundary_Airspace:'boundaries',Special_Use_Airspace:'sua',Class_Airspace:'airspace',US_Airport:'airports'}[service]):url.searchParams.get('product'),features=product==='airways'?[feature({IDENT:'J101',LEVEL_:'U'}),feature({IDENT:'V101',LEVEL_:'L'})]:product==='boundaries'?[feature({TYPE_CODE:'TRSA'})]:product==='sua'?[feature({NAME:'Fixture MOA',TYPE_CODE:'MOA'})]:[];
+      if(direct&&product==='airports')return route.fulfill({headers:{'access-control-allow-origin':'*'},contentType:'application/json',body:JSON.stringify({error:{code:429}})});
+      return route.fulfill({headers:{'access-control-allow-origin':'*'},contentType:'application/json',body:JSON.stringify(direct?{type:'FeatureCollection',features}:{geojson:{type:'FeatureCollection',features}})});
     }
+    if(url.hostname!=='pd.test')return route.abort();
     if(url.pathname.startsWith('/api/'))return route.fulfill({status:503,contentType:'application/json',body:'{"error":"Test feed unavailable"}'});
     const file=path.resolve(root,'.'+url.pathname);
     if(!file.startsWith(root+path.sep)||!fs.existsSync(file))return route.fulfill({status:404,body:''});
@@ -47,16 +48,19 @@ try{
   for(const view of ['navlog','performance','weather','navigation','procedures','offline','sources','route']){await page.locator('#rpCanvasView').selectOption(view);assert.equal(await page.locator('[data-view="'+view+'"]').isVisible(),true);assert.ok((await geometry()).scrollHeight<=900);await dropdownGeometry()}
   await page.locator('#rpCanvasView').selectOption('navlog');assert.match(await page.locator('#rpNavlog').textContent(),/A|B/);
   await page.keyboard.press('Escape');assert.equal(await page.locator('#rpCanvasDrawer').isVisible(),false);assert.equal(await page.locator('#rpEditorToggle').evaluate(el=>el===document.activeElement),true);
+  for(let i=0;i<4;i++)await page.locator('.leaflet-control-zoom-in').click();
   await page.locator('#rpPublicLayersToggle').click();await page.locator('[data-public-layer]').first().waitFor();assert.equal(await page.locator('[data-public-layer]').count(),51);
   const publicControl=id=>page.locator('[data-public-layer="'+id+'"]'),status=id=>page.locator('[data-source-status="'+id+'"]');
   assert.equal(await publicControl('aero/navlevel').locator('option').first().textContent(),'All levels');
   assert.equal(await page.locator('#rpChartTruth').count(),0);
   assert.ok(!/verify current charts/i.test(await page.locator('[data-view="public"]').textContent()));
-  await publicControl('aero/airways').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/airways"]').textContent==='Available · 2 features');
-  for(const level of ['high','low']){await publicControl('aero/navlevel').selectOption(level);await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/airways"]').textContent==='Available · 1 features')}
-  await publicControl('aero/modeC').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/modeC"]').textContent==='No features in this map area');
-  await publicControl('aero/adiz').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/adiz"]').textContent==='No features match the selected filters');
-  await publicControl('aero/suaMoa').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/suaMoa"]').textContent==='Available · 1 features');
+  await publicControl('aero/airways').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/airways"]').textContent.startsWith('Available · 2 features'));
+  for(const level of ['high','low']){await publicControl('aero/navlevel').selectOption(level);await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/airways"]').textContent.startsWith('Available · 1 features'))}
+  await publicControl('aero/modeC').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/modeC"]').textContent.startsWith('No features in this map area'));
+  await publicControl('aero/adiz').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/adiz"]').textContent.startsWith('No features match the selected filters'));
+  await publicControl('aero/suaMoa').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/suaMoa"]').textContent.startsWith('Available · 1 features'));
+  await publicControl('aero/privateAP').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/privateAP"]').textContent.includes('FAA request limit reached'));await publicControl('aero/privateAP').uncheck();
+  assert.equal(faaProxy,0,'Source rate limits do not trigger another request through the proxy');
   for(const id of ['aero/airways','aero/modeC','aero/adiz','aero/suaMoa'])await publicControl(id).uncheck();
   await page.locator('#rpPublicSearch').fill('temperature');assert.equal(await page.locator('[data-public-layer]').count(),1);await page.keyboard.press('Escape');
   await page.locator('#rpEditorToggle').focus();await page.keyboard.press('ArrowDown');assert.equal(await page.locator('#rpRouteEditor').isVisible(),true);await page.locator('#rpMap').click({position:{x:150,y:80}});assert.equal(await page.locator('#rpCanvasDrawer').isVisible(),false);
@@ -68,7 +72,6 @@ try{
   await page.addInitScript(()=>Object.defineProperty(window,'devicePixelRatio',{value:3}));await page.reload();await page.locator('body.rp-canvas-ready').waitFor();
   const chartDetail=await page.evaluate(()=>{const layers=[];window.PilotDeskRoutePlanner.getMap().eachLayer(l=>{if(l._url?.includes('/VFR_Sectional/MapServer/tile/'))layers.push({size:l.getTileSize().x,offset:l.options.zoomOffset,max:l.options.maxNativeZoom,opacity:l.options.opacity})});return layers});
   assert.deepEqual(chartDetail,[{size:64,offset:2,max:10,opacity:1}]);
-  assert.deepEqual(errors,[]);
+  assert.ok(directFAA>0,'FAA overlays use public browser queries');assert.deepEqual(errors,[]);
   console.log('Canvas checks passed: full-width/full-height chart, no page scroll, route build/navlog, nine planning views, 51 public controls, native layers, Escape/focus and seven viewport widths.');
 }finally{await browser.close()}
-

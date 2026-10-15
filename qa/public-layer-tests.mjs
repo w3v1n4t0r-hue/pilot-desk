@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import {stationLabel,number,airportCategory,airspaceBelow,navLevel,hazardMatches,safeBounds} from '../assets/public-layer-core.mjs';
+import {stationLabel,number,airportCategory,airspaceBelow,navLevel,hazardMatches,safeBounds,faaQueryUrl} from '../assets/public-layer-core.mjs';
 import {supported,sourceDescription} from '../assets/public-layers.mjs';
 const require=createRequire(import.meta.url);
 assert.equal(number(null),null);assert.equal(number(''),null);assert.equal(number(false),null);assert.equal(number(0),0);
@@ -50,3 +50,5 @@ for(const level of ['low','high'])assert.equal(navLevel({LEVEL_:'B'},level),true
 assert.equal(navLevel({LEVEL_:'U'},'high'),true);assert.equal(navLevel({LEVEL_:'U'},'low'),false);
 assert.equal(navLevel({LEVEL_:'L'},'low'),true);assert.equal(navLevel({LEVEL_:'L'},'high'),false);
 assert.ok(!/verify current charts/i.test(sourceDescription('aero/suaMoa',true)));
+
+const direct=new URL(faaQueryUrl('airways',[46,-99,49,-96]));assert.equal(direct.hostname,'services6.arcgis.com');assert.ok(direct.pathname.endsWith('/ATS_Route/FeatureServer/0/query'));assert.equal(direct.searchParams.get('geometry'),'-99,46,-96,49');assert.equal(direct.searchParams.get('resultRecordCount'),'2000');assert.throws(()=>faaQueryUrl('constructor',[46,-99,49,-96]));assert.throws(()=>faaQueryUrl('airways',[20,-120,50,-60]),/Zoom in/);

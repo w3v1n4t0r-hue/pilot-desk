@@ -1,4 +1,4 @@
-import {stationModes,stationLabel,number,airportCategory,airspaceBelow,navLevel,hazardMatches,safeBounds} from './public-layer-core.mjs';
+import {stationModes,stationLabel,number,airportCategory,airspaceBelow,navLevel,hazardMatches,safeBounds,faaQueryUrl} from './public-layer-core.mjs';
 const WEATHER={
   radarcomp:{url:'https://opengeo.ncep.noaa.gov/geoserver/conus/ows',layer:'conus_cref_qcd',label:'NOAA CONUS composite reflectivity'},
   radar_lowest_tilt:{url:'https://opengeo.ncep.noaa.gov/geoserver/conus/ows',layer:'conus_bref_qcd',label:'NOAA CONUS base reflectivity mosaic'},
@@ -35,7 +35,19 @@ export function createPublicLayers(win,onStatus){
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const set=(id,text)=>{states.set(id,text);onStatus()};
   function clear(){for(const g of groups.values())map.removeLayer(g);groups.clear()}
-  async function load(url,signal){const old=cache.get(url);if(old&&Date.now()-old.at<60000)return old.data;const r=await fetch(url,{signal}),j=await r.json();if(!r.ok)throw Error(j.error||'Public feed unavailable.');if(j.geojson?.type!=='FeatureCollection'||!Array.isArray(j.geojson.features))throw Error('Public feed returned unreadable geometry.');cache.set(url,{at:Date.now(),data:j});if(cache.size>40)cache.delete(cache.keys().next().value);return j}
+  async function load(url,signal){
+    const old=cache.get(url);if(old&&Date.now()-old.at<60000)return old.data;
+    const params=new URL(url,'https://www.pilot-desk.com').searchParams;let r,j;
+    if(params.get('adapter')==='faa'){
+      const direct=faaQueryUrl(params.get('product'),params.get('bbox').split(',').map(Number));
+      try{
+        r=await fetch(direct,{signal:AbortSignal.any([signal,AbortSignal.timeout(15000)])});const geojson=await r.json();
+        if(!r.ok||geojson.error){const error=Error((r.status===429||geojson.error?.code===429)?'FAA request limit reached. Try again later.':'FAA map service unavailable.');error.sourceResponse=true;throw error}
+        j={geojson,sourceUrl:direct.split('/query?')[0],fetchedAt:new Date().toISOString(),possiblyTruncated:geojson.exceededTransferLimit===true||geojson.features?.length>=2000};
+      }catch(error){if(signal.aborted||error.name==='AbortError'||error.sourceResponse)throw error;r=await fetch(url,{signal});j=await r.json()}
+    }else{r=await fetch(url,{signal});j=await r.json()}
+    if(!r.ok)throw Error(j.error||'Public feed unavailable.');if(j.geojson?.type!=='FeatureCollection'||!Array.isArray(j.geojson.features))throw Error('Public feed returned unreadable geometry.');cache.set(url,{at:Date.now(),data:j});if(cache.size>40)cache.delete(cache.keys().next().value);return j;
+  }
   function popup(feature){const p=feature.properties||{},box=win.document.createElement('div');const head=win.document.createElement('strong');head.textContent=p.NAME||p.name||p.site||p.station||p.IDENT||'Map feature';box.append(head);for(const [key,value] of Object.entries(p).filter(([k,v])=>!k.startsWith('_')&&v!==null&&typeof v!=='object').slice(0,18)){const row=win.document.createElement('div');row.textContent=key+': '+String(value).slice(0,400);box.append(row)}return box}
   function render(key,data,options={}){
     const group=L.geoJSON(data.geojson,{attribution:options.attribution||'Public FAA / AWC data',style:()=>({color:options.color||'#79adf5',weight:2,opacity:(selection.wxOpacity??80)/100,fillOpacity:.06}),filter:f=>(!options.filter||options.filter(f))&&(!options.label||options.label(f.properties||{})!==null),pointToLayer:(f,ll)=>{const label=options.label?.(f.properties||{});return label?L.marker(ll,{icon:L.divIcon({className:'pd-public-marker',html:'<span>'+esc(label)+'</span>',iconSize:null}),title:String(label)}):L.circleMarker(ll,{radius:5,color:options.color||'#79adf5',weight:2,fillOpacity:.8})},onEachFeature:(f,l)=>{l.bindPopup(popup(f));if(options.tooltip&&f.properties?.IDENT)l.bindTooltip(esc(f.properties.IDENT),{permanent:true})}});group.addTo(map);groups.set(key,group);return group;

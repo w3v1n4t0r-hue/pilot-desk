@@ -33,9 +33,9 @@ function start(RP,L){
   const state={
     enabled:window.PilotDeskMapView.enabled(DEFAULTS,saved.enabled),
     baseMode:window.PilotDeskMapView.parse(location.hash)?.chart||(['auto','sectional','terminal','low','high'].includes(saved.baseMode)?saved.baseMode:'auto'),
-    chartOpacity:window.PilotDeskMapView.opacity(saved.chartOpacity??Number(localStorage.getItem('pd-route-chart-opacity')||1),1,.25),
-    radarOpacity:window.PilotDeskMapView.opacity(saved.radarOpacity,.68,.2),
-    vectorOpacity:window.PilotDeskMapView.opacity(saved.vectorOpacity,.88,.35),
+    chartOpacity:1,
+    radarOpacity:.68,
+    vectorOpacity:.88,
     pirepFilter:['all','icing','turbulence','skyweather'].includes(saved.pirepFilter)?saved.pirepFilter:'all'
   };
   // Printed chart airport symbols and METAR dots replace the duplicate airport overlay.
@@ -149,7 +149,7 @@ function start(RP,L){
   radarControls.id='rpRadarTimeline';
   radarControls.className='rp-radar-timeline';
   radarControls.hidden=!state.enabled.radar;
-  radarControls.innerHTML='<button type="button" id="rpRadarPlay" aria-label="Play radar loop">▶</button><span class="rp-radar-label">RADAR</span><input id="rpRadarTime" type="range" min="0" max="24" step="1" value="24" aria-label="Radar time"><output id="rpRadarTimeLabel">Latest</output><label><span>Opacity</span><input id="rpRadarOpacity" type="range" min="20" max="100" step="5" value="'+Math.round(state.radarOpacity*100)+'"></label>';
+  radarControls.innerHTML='<button type="button" id="rpRadarPlay" aria-label="Play radar loop">▶</button><span class="rp-radar-label">RADAR</span><input id="rpRadarTime" type="range" min="0" max="24" step="1" value="24" aria-label="Radar time"><output id="rpRadarTimeLabel">Latest</output>';
   mapEl.appendChild(radarControls);
 
   const legStrip=document.createElement('div');
@@ -270,14 +270,8 @@ function start(RP,L){
 
   const radarSlider=radarControls.querySelector('#rpRadarTime');
   const radarTimeLabel=radarControls.querySelector('#rpRadarTimeLabel');
-  const radarOpacity=radarControls.querySelector('#rpRadarOpacity');
   const radarPlay=radarControls.querySelector('#rpRadarPlay');
   radarSlider.addEventListener('input',()=>{updateRadarLabel();refreshRadar()});
-  radarOpacity.addEventListener('input',()=>{
-    state.radarOpacity=Number(radarOpacity.value)/100;
-    if(radarOverlay)radarOverlay.setOpacity(state.radarOpacity);
-    save();
-  });
   radarPlay.addEventListener('click',toggleRadarPlayback);
   updateRadarLabel();
 

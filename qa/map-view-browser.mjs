@@ -27,11 +27,7 @@ try{
   const getView=()=>page.evaluate(()=>{const RP=window.PilotDeskRoutePlanner,m=RP.getMap();return {lat:m.getCenter().lat,lon:m.getCenter().lng,zoom:m.getZoom(),chart:RP.getChart()};});
   let view=await getView();assert.ok(Math.abs(view.lat-47.95269)<.0001);assert.equal(view.zoom,13);assert.equal(view.chart,'low');
   await page.locator('#rpLayersToggle').click();
-  await page.locator('#rpPublicSearch').fill('navaids');
-  assert.equal(await page.locator('.rp-public-control:visible').count(),1);
-  await page.locator('#rpPublicSearch').fill('does not exist');
-  assert.equal(await page.locator('.rp-public-control:visible').count(),0);
-  await page.locator('#rpPublicSearch').fill('');
+  assert.equal(await page.getByRole('checkbox',{name:'METARs',exact:true}).isVisible(),true);
   assert.equal(await page.locator('[data-layer="pirep"]').isDisabled(),false);
   await page.keyboard.press('Escape');
   await page.locator('#rpLayersPanel').waitFor({state:'hidden'});

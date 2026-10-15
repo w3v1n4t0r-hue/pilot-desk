@@ -610,7 +610,7 @@ function start(RP,L){
       if(seq!==radarSeq||!state.enabled.radar){map.removeLayer(next);return}
       if(radarOverlay)map.removeLayer(radarOverlay);
       radarOverlay=next;radarPending=null;next.setOpacity(state.radarOpacity);
-      radarTimeLabel.value=(Number(radarSlider.value)===24?'Latest request':new Date(radarFrameTime()).toISOString().slice(11,16)+'Z');
+      radarTimeLabel.value=(Number(radarSlider.value)===24?'Latest':new Date(radarFrameTime()).toISOString().slice(11,16)+'Z');
       setLayerStatus('radar','loaded','live');
     });
     next.on('error',()=>{map.removeLayer(next);if(seq===radarSeq){radarPending=null;setLayerStatus('radar','unavailable','error');radarTimeLabel.value='Unavailable';if(radarOverlay){map.removeLayer(radarOverlay);radarOverlay=null}}});

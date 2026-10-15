@@ -1,3 +1,4 @@
+import {culturalUrl,culturalData} from '../assets/cultural-core.mjs';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {stationLabel,number,airportCategory,airspaceBelow,navLevel,hazardMatches,safeBounds,faaQueryUrl} from '../assets/public-layer-core.mjs';
@@ -59,3 +60,5 @@ const blended=G.interpolate(stations,{lat:48,lon:-97});assert.ok(blended.directi
 const exact=G.interpolate(stations,{lat:48,lon:-98});assert.equal(exact.interpolated,false);assert.equal(exact.speed,20);
 const winds=G.grid(stations,[47.99,-97.01,48.01,-96.99],6000);assert.equal(winds.length,9);assert.ok(winds.every(f=>f.properties.altitude===6000&&f.properties.interpolated));
 console.log('Wind grid checks passed: vector interpolation, north crossing, exact station, range limit and close-up coverage.');
+
+const overpass=new URL(culturalUrl('place_labels',[47.94,-97.2,47.96,-97.18]));assert.equal(overpass.hostname,'overpass-api.de');assert.match(overpass.searchParams.get('data'),/out geom 500/);assert.throws(()=>culturalUrl('constructor',[47,-98,48,-97]));assert.throws(()=>culturalUrl('place_labels',[47,-98,48,-97]),/Zoom in/);assert.equal(culturalData({elements:[{id:1,type:'node',lat:47.95,lon:-97.19,tags:{name:'Test'}}]},'place_labels').geojson.features.length,1);assert.throws(()=>culturalData({remark:'overloaded',elements:[]},'place_labels'));

@@ -1,3 +1,4 @@
+import {culturalUrl,culturalData} from './cultural-core.mjs';
 import {stationModes,stationLabel,number,airportCategory,airspaceBelow,navLevel,hazardMatches,safeBounds,faaQueryUrl} from './public-layer-core.mjs';
 const WEATHER={
   radarcomp:{url:'https://opengeo.ncep.noaa.gov/geoserver/conus/ows',layer:'conus_cref_qcd',label:'NOAA CONUS composite reflectivity'},
@@ -32,7 +33,7 @@ export function sourceDescription(id,value){
 }
 export function createPublicLayers(win,onStatus){
   const L=win.L,map=win.PilotDeskRoutePlanner.getMap(),groups=new Map(),states=new Map(),cache=new Map();
-  let selection={},generation=0,controller=null,timer=0;
+  let selection={},generation=0,controller=null,timer=0,culturalRetryAt=0;
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const set=(id,text)=>{states.set(id,text);onStatus()};
   function clear(){for(const g of groups.values())map.removeLayer(g);groups.clear()}
@@ -46,6 +47,9 @@ export function createPublicLayers(win,onStatus){
         if(!r.ok||geojson.error){const error=Error((r.status===429||geojson.error?.code===429)?'FAA request limit reached. Try again later.':'FAA map service unavailable.');error.sourceResponse=true;throw error}
         j={geojson,sourceUrl:direct.split('/query?')[0],fetchedAt:new Date().toISOString(),possiblyTruncated:geojson.exceededTransferLimit===true||geojson.features?.length>=2000};
       }catch(error){if(signal.aborted||error.name==='AbortError'||error.sourceResponse)throw error;r=await fetch(url,{signal});j=await r.json()}
+    }else if(params.get('adapter')==='cultural'){
+      const product=params.get('product'),direct=culturalUrl(product,params.get('bbox').split(',').map(Number));if(Date.now()<culturalRetryAt)throw Error('Ground detail temporarily unavailable.');
+      try{r=await fetch(direct,{signal:AbortSignal.any([signal,AbortSignal.timeout(16000)]),referrerPolicy:'strict-origin-when-cross-origin'});if(!r.ok)throw Error('Ground detail temporarily unavailable.');j=culturalData(await r.json(),product)}catch(error){if(signal.aborted)throw error;culturalRetryAt=Date.now()+60000;throw Error('Ground detail temporarily unavailable.')}
     }else{r=await fetch(url,{signal});j=await r.json()}
     if(!r.ok)throw Error(j.error||'Public feed unavailable.');if(j.geojson?.type!=='FeatureCollection'||!Array.isArray(j.geojson.features))throw Error('Public feed returned unreadable geometry.');cache.set(url,{at:Date.now(),data:j});if(cache.size>40)cache.delete(cache.keys().next().value);return j;
   }

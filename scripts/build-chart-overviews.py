@@ -12,7 +12,7 @@ def tilexy(lon,lat,z):
 def lat(y,z):return math.degrees(math.atan(math.sinh(math.pi*(1-2*y/2**z))))
 for key,service,z in [('sectional','VFR_Sectional',8)]:
  metadata=json.load(urllib.request.urlopen(ROOT+service+'/MapServer?f=json',timeout=20))
- x0,y0=map(math.floor,tilexy(-126,51,z));x1,y1=map(math.ceil,tilexy(-65,23,z));scale=48
+ x0,y0=map(math.floor,tilexy(-126,51,z));x1,y1=map(math.ceil,tilexy(-65,23,z));scale=128
  canvas=Image.new('RGBA',((x1-x0)*scale,(y1-y0)*scale));jobs=[(x,y) for y in range(y0,y1) for x in range(x0,x1)];bad=[];valid=0
  def get(c):
   x,y=c;url=ROOT+service+f'/MapServer/tile/{z}/{y}/{x}'
@@ -28,7 +28,7 @@ for key,service,z in [('sectional','VFR_Sectional',8)]:
    if error:bad.append((c,error))
    if (i+1)%100==0:print(key,i+1,'/',len(jobs),'tiles',flush=True)
  if bad or not valid:raise RuntimeError(f'{key}: {len(bad)} failed requests; refuse incomplete refresh. {bad[:3]}')
- filename=key+'.webp';canvas.save(OUT/filename,'WEBP',quality=76,method=6)
- manifest[key]={'url':'/assets/chart-overviews/'+filename,'bounds':[[lat(y1,z),x0/2**z*360-180],[lat(y0,z),x1/2**z*360-180]],'sourceUpdated':metadata.get('documentInfo',{}).get('subject',''),'generatedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'tiles':valid}
+ filename=key+'.webp';canvas.save(OUT/filename,'WEBP',quality=92,method=6)
+ manifest[key]={'url':'/assets/chart-overviews/'+filename,'bounds':[[lat(y1,z),x0/2**z*360-180],[lat(y0,z),x1/2**z*360-180]],'sourceUpdated':metadata.get('documentInfo',{}).get('subject',''),'generatedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'tiles':valid,'width':canvas.width,'height':canvas.height,'tilePixels':scale}
  print(key,'saved',canvas.size,(OUT/filename).stat().st_size,flush=True)
 (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')

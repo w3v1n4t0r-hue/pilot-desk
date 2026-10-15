@@ -12,7 +12,10 @@
       ]
     ],
     "sourceUpdated": "Updated with the latest charts on 07-09-2026.",
-    "generatedAt": "2026-10-03T01:08:31.988912+00:00",
-    "tiles": 1086
+    "generatedAt": "2026-10-15T01:43:21.907530+00:00",
+    "tiles": 1086,
+    "width": 5632,
+    "height": 3456,
+    "tilePixels": 128
   }
 }

@@ -33,7 +33,7 @@ function start(RP,L){
   const state={
     enabled:window.PilotDeskMapView.enabled(DEFAULTS,saved.enabled),
     baseMode:window.PilotDeskMapView.parse(location.hash)?.chart||(['auto','sectional','terminal','low','high'].includes(saved.baseMode)?saved.baseMode:'auto'),
-    chartOpacity:window.PilotDeskMapView.opacity(saved.chartOpacity??Number(localStorage.getItem('pd-route-chart-opacity')||.92),.92,.25),
+    chartOpacity:window.PilotDeskMapView.opacity(saved.chartOpacity??Number(localStorage.getItem('pd-route-chart-opacity')||1),1,.25),
     radarOpacity:window.PilotDeskMapView.opacity(saved.radarOpacity,.68,.2),
     vectorOpacity:window.PilotDeskMapView.opacity(saved.vectorOpacity,.88,.35),
     pirepFilter:['all','icing','turbulence','skyweather'].includes(saved.pirepFilter)?saved.pirepFilter:'all'

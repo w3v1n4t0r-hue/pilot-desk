@@ -99,8 +99,8 @@ function endpointWx(id,force=false){if(force)weatherResults.delete(id);if(!/^[A-
 const endpointProcedures=id=>/^[A-Z0-9]{3,4}$/.test(id)?jsonFetch('/api/procedures?ident='+encodeURIComponent(id),15000).catch(e=>({station:id,error:e.message})):Promise.resolve(null);
 const tileUrl=service=>`${FAA_ROOT}${service}/MapServer/tile/{z}/{y}/{x}`;
 function setMapStatus(text,state=''){const el=$('#rpMapStatus');if(el){el.textContent=text;el.dataset.state=state}}
-function opacity(){const n=Number(localStorage.getItem('pd-route-chart-opacity')||.92);return Number.isFinite(n)?Math.min(1,Math.max(.25,n)):.92}
-function chartOptions(key){const size=map.getSize();const options=window.PilotDeskChartTiles.options(CHARTS[key],{width:size.x,height:size.y,memory:navigator.deviceMemory,connection:navigator.connection});if(!navigator.onLine&&offlinePack?.chart===key)options.maxNativeZoom=Math.max(options.minNativeZoom,Math.min(options.maxNativeZoom,offlinePack.maxZoom-options.zoomOffset));return options}
+function opacity(){const n=Number(localStorage.getItem('pd-route-chart-opacity')||1);return Number.isFinite(n)?Math.min(1,Math.max(.25,n)):1}
+function chartOptions(key){const size=map.getSize();const options=window.PilotDeskChartTiles.options(CHARTS[key],{width:size.x,height:size.y,pixelRatio:window.devicePixelRatio});if(!navigator.onLine&&offlinePack?.chart===key)options.maxNativeZoom=Math.max(options.minNativeZoom,Math.min(options.maxNativeZoom,offlinePack.maxZoom-options.zoomOffset));return options}
 function chartStatus(key,errors=0){if(!map||!tile)return;const c=CHARTS[key];if(map.getZoom()<tile.options.minZoom)return syncOverview();if(errors)return setMapStatus(c.label+': some FAA tiles unavailable; move or zoom to retry');if(!navigator.onLine)return setMapStatus(c.label+' · offline downloaded tiles only','offline');setMapStatus('FAA '+c.label+' chart imagery'+(map.getZoom()>=tile.options.maxNativeZoom?' · full source detail':''),'live')}
 function chartLayer(key){
  const options=chartOptions(key),cacheKey=key+':'+options.tileSize+':'+options.maxNativeZoom;if(chartCache.has(cacheKey))return chartCache.get(cacheKey);

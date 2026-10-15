@@ -1,14 +1,15 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.PilotDeskMapDensity=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
  'use strict';
  function group(features,project,size,priority=()=>0){
-  const cells=new Map(),other=[];
-  for(const feature of features){
+  const groups=[],other=[];
+  const ordered=features.map((feature,index)=>({feature,index})).sort((a,b)=>priority(b.feature)-priority(a.feature)||a.index-b.index);
+  for(const {feature} of ordered){
    const c=feature.geometry?.type==='Point'?feature.geometry.coordinates:null;
    if(!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])){other.push({feature,members:[feature]});continue;}
-   const p=project(c),key=Math.floor(p.x/size)+','+Math.floor(p.y/size);
-   if(!cells.has(key))cells.set(key,[]);cells.get(key).push(feature);
+   const p=project(c),near=groups.find(g=>Math.abs(g.point.x-p.x)<size&&Math.abs(g.point.y-p.y)<size);
+   if(near)near.members.push(feature);else groups.push({feature,members:[feature],point:p});
   }
-  return [...other,...[...cells.values()].map(members=>({feature:members.reduce((a,b)=>priority(b)>priority(a)?b:a),members}))];
+  return [...other,...groups.map(({feature,members})=>({feature,members}))];
  }
  function routeBounds(points){
   if(points.length<2)return null;

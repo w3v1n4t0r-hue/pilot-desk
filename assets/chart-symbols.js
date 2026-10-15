@@ -54,7 +54,7 @@ function pirep(properties={}){
  return{items,urgent,label,html:html+(altitudeLabel?'<span class="rp-pirep-altitude">'+altitudeLabel+'</span>':''),width:items.length*28};
 }
 function metarCategory(p={}){const c=String(p.fltcat||p.fltCat||p.flightCategory||p.flight_category||'').toUpperCase();return ['VFR','MVFR','IFR','LIFR'].includes(c)?c:'UNKNOWN';}
-function metarColor(p={}){return {VFR:'#3bd779',MVFR:'#58a6ff',IFR:'#ff5555',LIFR:'#ff79cb'}[metarCategory(p)]||'#c6cbd0';}
+function metarColor(p={}){return {VFR:'#009933',MVFR:'#0000ee',IFR:'#ff0000',LIFR:'#cc33ff'}[metarCategory(p)]||'#c6cbd0';}
 function airportStatus(p={}){
  const states=p._pdMembers?p._pdMembers.map(f=>airportStatus(f.properties||{}).status):[p.towerStatus||'unknown'];
  const unique=[...new Set(states)];const status=unique.length===1?unique[0]:'mixed';
@@ -96,5 +96,17 @@ function metarDetails(p={}){
  return{wind,visibility:vis,ceiling};
 }
 
-return{pirep,navigation,metarCategory,metarColor,airportStatus,svg,weatherSvg,reportTime,metarDetails,escape};
+
+function advisoryStyle(product,p={}){
+ const h=String(p.hazard||p.hazardType||'').toUpperCase();
+ const air={'TURB-HI':'#FF6600','TURB-LO':'#CC3300',TURB:'#FF6600',LLWS:'#993333',SFC_WND:'#CC6600','SFC-WIND':'#CC6600',IFR:'#990099','MTN OBSCN':'#FF00FF',MT_OBSC:'#FF00FF','MT-OBSC':'#FF00FF',ICE:'#0000FF',FZLVL:'#6666FF',M_FZLVL:'#6666FF'};
+ let color,fillColor;
+ if(product==='gairmet'){color=fillColor=air[h]||'#800000'}
+ else if(product==='cwa'){color='#000000';fillColor=({ICE:'#000080',TURB:'#A06000',IFR:'#800080',PCPN:'#800080'})[h]||'#800000'}
+ else if(p.sigmetType==='OUTLOOK'){color=fillColor='#EE8800'}
+ else{color=({VA:'#EE5F15',ASH:'#EE5F15',TURB:'#802000',ICE:'#800055'})[h]||(p.airSigmetType==='OUTLOOK'?'#CC9500':'#800000');fillColor=({TS:'#800000',TC:'#800000',ICE:'#000080',TURB:'#A06000',VA:'#FF5F15',ASH:'#FF5F15',IFR:'#990099'})[h]||(p.airSigmetType==='OUTLOOK'?'#FFAA00':'#800000')}
+ return {color,fillColor,weight:3,opacity:1,fillOpacity:product==='gairmet'?.18:.2};
+}
+
+return{advisoryStyle,pirep,navigation,metarCategory,metarColor,airportStatus,svg,weatherSvg,reportTime,metarDetails,escape};
 });

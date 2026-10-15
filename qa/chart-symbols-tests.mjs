@@ -63,8 +63,10 @@ assert.equal(S.airportStatus({_pdMembers:[{properties:{towerStatus:'towered'}},{
 assert.ok(S.navigation('airports',{towerStatus:'towered'}).html.includes('stroke="#58a6ff"'));
 assert.ok(S.navigation('airports',{towerStatus:'non-towered'}).html.includes('stroke="#df76ce"'));
 
-for(const [category,color] of Object.entries({VFR:'#3bd779',MVFR:'#58a6ff',IFR:'#ff5555',LIFR:'#ff79cb'})){
+for(const [category,color] of Object.entries({VFR:'#009933',MVFR:'#0000ee',IFR:'#ff0000',LIFR:'#cc33ff'})){
  assert.equal(S.metarCategory({fltcat:category}),category);assert.equal(S.metarColor({fltcat:category}),color);
  assert.equal(S.metarCategory({fltCat:category}),category);
 }
 assert.equal(S.metarCategory({}),'UNKNOWN');assert.equal(S.metarColor({fltcat:'bad'}),'#c6cbd0');
+
+assert.equal(S.advisoryStyle('gairmet',{hazard:'ICE'}).color,'#0000FF');

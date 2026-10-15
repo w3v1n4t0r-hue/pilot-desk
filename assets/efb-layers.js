@@ -458,9 +458,7 @@ function start(RP,L){
     if(key==='tfr')return {pane:'pdAirspacePane',color:feature?.properties?.status==='upcoming'?'#e6bd62':'#ef6f6f',weight:2.2,opacity:o,fillColor:'#e87c7c',fillOpacity:.08*o,dashArray:feature?.properties?.status==='upcoming'?'7 5':null};
     if(key==='sua')return {pane:'pdAirspacePane',color:'#d7b76c',weight:1.4,opacity:.85*o,fillColor:'#d7b76c',fillOpacity:.035*o,dashArray:'7 5'};
     if(key==='airspace')return {pane:'pdAirspacePane',color:'#c5c5ca',weight:1,opacity:.62*o,fillOpacity:0,dashArray:'4 5'};
-    if(key==='airsigmet')return {pane:'pdWeatherPane',color:'#e87c7c',weight:2,opacity:o,fillColor:'#e87c7c',fillOpacity:.10*o};
-    if(key==='gairmet')return {pane:'pdWeatherPane',color:'#e6bd62',weight:1.5,opacity:.9*o,fillColor:'#e6bd62',fillOpacity:.07*o,dashArray:'6 4'};
-    if(key==='cwa')return {pane:'pdWeatherPane',color:'#d4d4d8',weight:1.5,opacity:.8*o,fillColor:'#d4d4d8',fillOpacity:.05*o,dashArray:'3 4'};
+    if(['airsigmet','gairmet','cwa'].includes(key))return {pane:'pdWeatherPane',...window.PilotDeskChartSymbols.advisoryStyle(key==='airsigmet'?'sigmet':key,feature?.properties||{})};
     if(key==='airways')return {pane:'pdNavPane',color:'#c6cbd0',weight:1.2,opacity:.72*o,dashArray:'7 4'};
     return {pane:paneFor(key),color:'#d4d4d8',weight:1.2,opacity:.8*o,fillColor:'#d4d4d8',fillOpacity:.05*o};
   }
@@ -543,7 +541,7 @@ function start(RP,L){
     }
     g.clearLayers();
     const visible=(geojson.features||[]).filter(f=>key!=='airports'||window.PilotDeskMapDensity.publicAirport(f)).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
-    const size=map.getZoom()<10?({metar:140,pirep:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
+    const size=key==='obstacles'?44:map.getZoom()<10?({metar:140,pirep:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
     const priority=f=>{const p=f.properties||{};if(key==='pirep'){const v=window.PilotDeskChartSymbols.pirep(p);return (v.urgent?100:0)+Math.max(...v.items.map(x=>x.level||0));}if(key==='metar')return ({LIFR:4,IFR:3,MVFR:2,VFR:1}[window.PilotDeskChartSymbols.metarCategory(p)]||0);return 0;};
     const grouped=size?window.PilotDeskMapDensity.group(visible,c=>map.project([c[1],c[0]],map.getZoom()),size,priority):visible.map(feature=>({feature,members:[feature]}));
     const display={type:'FeatureCollection',features:grouped.map(x=>({...x.feature,properties:{...x.feature.properties,_pdMembers:x.members.length>1?x.members:null}}))};

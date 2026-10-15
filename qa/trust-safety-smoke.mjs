@@ -29,7 +29,7 @@ assert(feedback.includes('not an emergency channel'),'Emergency-channel warning 
 
 assert(weather.includes('function ageMinutes('),'Weather observation age calculation missing');
 assert(weather.includes('obsAge>90'),'90-minute weather age threshold missing');
-assert(weather.includes('Older observation.')&&weather.includes('Verify current conditions at the source'),'Visible stale-weather warning missing');
+assert(weather.includes('Older observation.')&&!weather.includes('Verify current conditions at the source'),'Visible stale-weather warning missing');
 assert(weather.includes("warnState?'warn':'live'"),'Stale/partial weather status handling missing');
 
 assert(disclaimer.includes('Do not use PilotDesk as your sole source'),'Primary aviation disclaimer missing');

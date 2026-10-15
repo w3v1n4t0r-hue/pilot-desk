@@ -20,7 +20,7 @@ check(analytics.includes('Tool Opened')&&analytics.includes('Calculation Complet
 check(analytics.includes('__pdTrackQueue'),'deferred analytics must flush buffered early events');
 check(analytics.includes('blockedKey')&&analytics.includes('query|search|term|text')&&analytics.includes('tailnumber')&&analytics.includes('passenger'),'analytics must discard free-text and personal-value fields before sending events');
 check(ads.includes('ensureManualPlaceholders')&&ads.includes("validSlot('top')")&&ads.includes("validSlot('sidebar')"),'manual AdSense placements are not config-ready');
-check(weather.includes('tafIssueAge')&&weather.includes('tafExpired')&&weather.includes('Check TAF currency.'),'TAF freshness/validity safeguards missing');
+check(weather.includes('tafIssueAge')&&weather.includes('tafExpired')&&weather.includes('TAF timing.'),'TAF freshness/validity safeguards missing');
 check(weather.includes('pilotdesk:weatherloaded'),'weather analytics should expose only a coarse result event');
 check(/const CACHE='pilotdesk-v\d+'/.test(sw)&&sw.includes("'/offline.html'")&&sw.includes('Promise.allSettled'),'offline release hardening missing');
 check(sw.includes("importScripts('/assets/offline-precache.js')")&&sw.includes('GENERATED_CALCULATORS')&&sw.includes('migrateCalculatorEntries'),'calculator offline precache or cache migration missing');

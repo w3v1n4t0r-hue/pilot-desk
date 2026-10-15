@@ -32,7 +32,7 @@ function draw(){
     let input;
     if(def.options.length){
       label.textContent=def.label;input=document.createElement('select');
-      input.add(new Option('Off / unselected',''));
+      input.add(new Option(['aero/navlevel','aero/artcclevel'].includes(def.id)?'All levels':'Off / unselected',''));
       for(const o of def.options)input.add(new Option(o.label,o.id));
       input.value=selection[def.id]||'';
     }else if(def.id in defaults){

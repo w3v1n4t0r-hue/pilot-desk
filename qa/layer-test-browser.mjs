@@ -43,6 +43,7 @@ try{
   assert.equal(await frame.locator('[data-layer="metar"]').isChecked(),false);
   const labels={category:'MVFR',surfacewind:'180° 12kt',dewpointspread:'4°C',temperature:'8°C',visibility:'6+SM',ceiling:'2600ft AGL',coverage:'OVC'};
   for(const [mode,label] of Object.entries(labels)){await control('wxStations').selectOption(mode);await page.waitForFunction(value=>document.getElementById('planner').contentDocument.querySelector('.pd-public-marker span')?.textContent===value,label)}
+  for(let i=0;i<4;i++)await frame.locator('.leaflet-control-zoom-in').click();
   await control('aero/heli').check();await page.waitForFunction(()=>[...document.getElementById('planner').contentDocument.querySelectorAll('.pd-public-marker span')].some(el=>el.textContent==='TESTHP'));
   await control('aero/heli').uncheck();
   await control('wxImagery').selectOption('radar_lowest_tilt');await page.waitForFunction(()=>document.querySelector('[data-source-status="wxImagery"]').textContent.startsWith('Unavailable or partial'));assert.ok(requests.some(url=>url.includes('conus_bref_qcd')&&new URL(url).searchParams.has('time')));await control('wxImagery').selectOption('');

@@ -54,20 +54,6 @@
         document.dispatchEvent(new CustomEvent('pilotdesk:map-view-restored',{detail:view}));
         persist();
       });
-      const button=document.createElement('button');button.type='button';button.id='rpCopyMapView';button.className='utility-btn';button.textContent='Copy map link';
-      button.setAttribute('aria-describedby','rpMapLinkStatus');
-      bar.insertBefore(button,document.getElementById('rpMapStatus'));
-      const fallback=document.createElement('div');fallback.className='rp-map-link-fallback';fallback.hidden=true;
-      const label=document.createElement('label');label.textContent='Map link';
-      const input=document.createElement('input');input.type='url';input.readOnly=true;input.setAttribute('aria-label','Map link to copy');label.appendChild(input);fallback.appendChild(label);bar.appendChild(fallback);
-      const status=document.createElement('span');status.id='rpMapLinkStatus';status.className='rp-map-link-status';status.setAttribute('role','status');bar.appendChild(status);
-      button.addEventListener('click',async()=>{
-        const hash=format(current());if(!hash){status.textContent='Move the map within supported chart coverage to share a view.';return;}
-        const url=location.origin+location.pathname+hash;
-        clearTimeout(timer);
-        try{await navigator.clipboard.writeText(url);fallback.hidden=true;status.textContent='Map link copied. Route and live weather are not included.';timer=setTimeout(()=>status.textContent='',5000)}
-        catch{fallback.hidden=false;input.value=url;input.focus();input.select();status.textContent='Copy the selected map link.';}
-      });
     }
     document.addEventListener('pilotdesk:map-ready',boot,{once:true});
     document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();

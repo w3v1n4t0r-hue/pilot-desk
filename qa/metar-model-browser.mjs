@@ -15,6 +15,6 @@ for(const width of [320,390,1365]){await page.setViewportSize({width,height:900}
 if(process.env.PILOTDESK_SCREENSHOT_DIR)await page.locator('.pd-metar-card').first().screenshot({path:path.join(process.env.PILOTDESK_SCREENSHOT_DIR,'metar-card.png')});
 await page.goto('https://pd.test/airport.html?id=KGFK');await page.locator('.pd-metar-card').first().waitFor();assert.match(await page.locator('.pd-metar-key').first().textContent(),/°F · km · hPa/);
 await page.goto('https://pd.test/route-planner.html#map=-97.18/47.95/9/sectional');await page.locator('.pd-metar-map').first().waitFor();await page.locator('.pd-metar-map').first().click();await page.locator('.leaflet-popup .pd-metar-card').waitFor();
-assert.match(await page.locator('.leaflet-popup .pd-metar-plot').getAttribute('aria-label'),/KGFK.*IFR/);assert.deepEqual(errors,[]);
+assert.match(await page.locator('.leaflet-popup .pd-metar-plot').getAttribute('aria-label'),/KGFK.*IFR/);await page.evaluate(()=>{const m=window.PilotDeskRoutePlanner.getMap();m.closePopup();m.setView([47.95,-97.18],m.getMaxZoom(),{animate:false})});await page.waitForTimeout(900);await page.locator('.pd-metar-map').first().waitFor();assert.equal(await page.locator('.pd-metar-map').first().evaluate(n=>n.getBoundingClientRect().width),90.75);assert.deepEqual(errors,[]);
 console.log('METAR browser checks passed: weather and airport cards, map station models/popups, saved units, three widths and no browser errors.');
 }finally{await browser.close()}

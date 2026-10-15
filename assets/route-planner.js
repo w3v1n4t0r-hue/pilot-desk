@@ -41,8 +41,8 @@ function initWorkspace(){
     editor.hidden=!nextOpen;
     workspace.classList.toggle('rp-editor-closed',!nextOpen);
     try{localStorage.setItem('pd-route-editor-open',String(nextOpen))}catch{}
-    if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>map?.invalidateSize({pan:false}));
-    else map?.invalidateSize({pan:false});
+    if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>map?.invalidateSize({pan:true,animate:false}));
+    else map?.invalidateSize({pan:true,animate:false});
     if(nextOpen)$('#rpRoute').focus({preventScroll:true});
    };
    const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||window.navigator?.connection?.saveData;
@@ -77,7 +77,7 @@ function initWorkspace(){
  document.addEventListener('pilotdesk:route-built',renderRouteSequence);
  document.addEventListener('pilotdesk:route-invalidated',renderRouteSequence);
  renderRouteSequence();
- if(map&&window.ResizeObserver){let frame=0;const observer=new ResizeObserver(()=>{if(frame)return;if(window.requestAnimationFrame)frame=window.requestAnimationFrame(()=>{frame=0;map.invalidateSize({pan:false});});else map.invalidateSize({pan:false});});observer.observe($('#rpMap'));}
+ if(map&&window.ResizeObserver){let frame=0;const observer=new ResizeObserver(()=>{if(frame)return;if(window.requestAnimationFrame)frame=window.requestAnimationFrame(()=>{frame=0;map.invalidateSize({pan:true,animate:false});});else map.invalidateSize({pan:true,animate:false});});observer.observe($('#rpMap'));}
 }
 function editRoute(value){rememberRoute();$('#rpRoute').value=value;rememberRoute();saveDraft();invalidateRoute();scheduleAutoBuild(0)}
 function travelHistory(direction){const next=historyIndex+direction;if(next<0||next>=routeHistory.length)return;historyIndex=next;$('#rpRoute').value=routeHistory[next];syncHistory();saveDraft();invalidateRoute();scheduleAutoBuild(0)}

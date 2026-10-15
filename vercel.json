@@ -9,6 +9,7 @@
     "deploymentEnabled": {
       "*": false,
       "codex/layer-catalog-test": true,
+      "codex/chart-detail-dropdown": true,
       "main": true
     }
   },

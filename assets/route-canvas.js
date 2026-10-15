@@ -9,7 +9,7 @@ function boot(){
   const card=main.querySelector('.rp-map-card'),toolbar=card?.querySelector('.rp-map-toolbar'),editor=document.getElementById('rpRouteEditor'),toggle=document.getElementById('rpEditorToggle');
   if(!card||!toolbar||!editor||!toggle)return;
   const stage=document.createElement('div');stage.className='rp-canvas-stage';
-  const drawer=document.createElement('aside');drawer.id='rpCanvasDrawer';drawer.className='rp-canvas-drawer';drawer.hidden=true;drawer.setAttribute('role','dialog');drawer.setAttribute('aria-label','Route planning');
+  const drawer=document.createElement('section');drawer.id='rpCanvasDrawer';drawer.className='rp-canvas-drawer';drawer.hidden=true;drawer.setAttribute('role','region');drawer.setAttribute('aria-label','Route planning');
   const head=document.createElement('div');head.className='rp-canvas-head';
   const label=document.createElement('label');label.textContent='Planning view';label.htmlFor='rpCanvasView';
   const view=document.createElement('select');view.id='rpCanvasView';
@@ -19,6 +19,9 @@ function boot(){
   function pane(id,title,nodes){const section=document.createElement('div');section.className='rp-canvas-pane';section.dataset.view=id;section.hidden=true;for(const node of nodes.filter(Boolean))section.append(node);panes.set(id,section);drawer.append(section);view.add(new Option(title,id));return section}
   const title=main.querySelector('h1');if(title){title.className='rp-canvas-title';main.prepend(title)}
   const workspace=document.getElementById('rpWorkspace');
+  const quick=document.createElement('div');quick.className='rp-route-quick';
+  const routeInput=document.getElementById('rpRoute');routeInput.rows=2;
+  quick.append(routeInput.closest('label'),document.getElementById('rpBuild'));editor.prepend(quick);
   stage.append(card);toolbar.classList.add('rp-canvas-controls');
   main.prepend(toolbar);
   toggle.textContent='Route planner';toggle.classList.add('rp-canvas-toggle');toggle.setAttribute('aria-controls',drawer.id);toggle.setAttribute('aria-expanded','false');stage.append(toggle);
@@ -41,17 +44,19 @@ function boot(){
     active=panes.has(id)?id:'route';view.value=active;
     for(const [key,node] of panes)node.hidden=key!==active;
     editor.hidden=active!=='route';workspace.classList.toggle('rp-editor-closed',active!=='route');
-    drawer.hidden=false;toggle.setAttribute('aria-expanded','true');
+    drawer.hidden=false;stage.classList.add('rp-planning-open');toggle.setAttribute('aria-expanded','true');
     for(const id of ['rpLayersPanel','rpRouteBrief']){const panel=document.getElementById(id);if(panel)panel.hidden=true}
     for(const id of ['rpLayersToggle','rpBriefToggle'])document.getElementById(id)?.setAttribute('aria-expanded','false');
     if(active==='public')document.dispatchEvent(new CustomEvent('pilotdesk:public-layers-open'));
-    requestAnimationFrame(()=>{(active==='route'?document.getElementById('rpWaypointSearch'):view)?.focus({preventScroll:true});map.invalidateSize({pan:true,animate:false})});
+    requestAnimationFrame(()=>{(active==='route'?routeInput:view)?.focus({preventScroll:true});panes.get(active).scrollTop=0;map.invalidateSize({pan:true,animate:false})});
   }
-  function hide(){drawer.hidden=true;editor.hidden=true;toggle.setAttribute('aria-expanded','false');workspace.classList.add('rp-editor-closed');toggle.focus({preventScroll:true})}
+  function hide(returnFocus=true){drawer.hidden=true;stage.classList.remove('rp-planning-open');editor.hidden=true;toggle.setAttribute('aria-expanded','false');workspace.classList.add('rp-editor-closed');if(returnFocus)toggle.focus({preventScroll:true})}
   toggle.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();drawer.hidden?show(active):hide()},true);
-  close.addEventListener('click',hide);view.addEventListener('change',()=>show(view.value));
+  close.addEventListener('click',()=>hide());view.addEventListener('change',()=>show(view.value));
+  toggle.addEventListener('keydown',event=>{if(event.key==='ArrowDown'&&drawer.hidden){event.preventDefault();show('route')}});
+  document.addEventListener('pointerdown',event=>{if(!drawer.hidden&&!drawer.contains(event.target)&&!toggle.contains(event.target))hide(false)});
   const dataButton=document.createElement('button');dataButton.type='button';dataButton.className='utility-btn';dataButton.id='rpPublicLayersToggle';dataButton.textContent='Public layers';dataButton.setAttribute('aria-controls',drawer.id);dataButton.addEventListener('click',()=>show('public'));toolbar.insertBefore(dataButton,document.getElementById('rpMapStatus'));
-  for(const id of ['rpLayersToggle','rpBriefToggle'])document.getElementById(id)?.addEventListener('click',()=>{if(!drawer.hidden){drawer.hidden=true;editor.hidden=true;toggle.setAttribute('aria-expanded','false')}});
+  for(const id of ['rpLayersToggle','rpBriefToggle'])document.getElementById(id)?.addEventListener('click',()=>{if(!drawer.hidden)hide(false)});
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!drawer.hidden){event.preventDefault();event.stopImmediatePropagation();hide()}},true);
   const targets={rpRouteEditor:'route',rpPlanningValues:'route',rpNavlogPanel:'navlog',rpPerformance:'performance',rpDepartureReview:'weather',rpOfflinePacks:'offline',rpNavigation:'navigation'};
   function followAnchor(){const id=location.hash.slice(1);if(targets[id]){show(targets[id]);const node=document.getElementById(id);const details=node?.closest('details');if(details)details.open=true;requestAnimationFrame(()=>node?.scrollIntoView({block:'start'}))}}

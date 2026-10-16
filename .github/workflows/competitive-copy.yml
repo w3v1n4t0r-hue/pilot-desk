@@ -7,6 +7,11 @@ on:
       - 'src/data/site.mjs'
       - 'flight-training.html'
       - 'assets/home-desk.js'
+      - 'assets/home-chart.js'
+      - 'assets/home-planner-embed.js'
+      - 'assets/home-scrollcraft.css'
+      - 'assets/vendor/scrollcraft/**'
+      - 'qa/home-chart-browser.mjs'
       - 'assets/training-progress.css'
       - 'assets/features.js'
       - 'assets/learn-shell.js'
@@ -67,6 +72,7 @@ jobs:
           curl -fsS https://unpkg.com/leaflet@1.9.4/dist/leaflet.js -o /tmp/pilotdesk-leaflet.js
           curl -fsS https://unpkg.com/leaflet@1.9.4/dist/leaflet.css -o /tmp/pilotdesk-leaflet.css
           node qa/airport-panel-browser.mjs
+          node qa/home-chart-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

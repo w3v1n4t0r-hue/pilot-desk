@@ -529,6 +529,7 @@ function start(RP,L){
           marker=pointFor('metar',feature,L.latLng(coordinates[1],coordinates[0]));
           marker._pdStationModel=stationModel;
           marker.bindPopup(()=>popupFor('metar',marker.feature),{className:'rp-weather-popup',maxWidth:320});
+          marker.on('click',()=>{const p=marker.feature?.properties||{};import('./airport-panel.mjs').then(m=>m.openStationAirport(field(p,['icaoId','id','stationId','station']))).catch(()=>{})});
           marker.bindTooltip('',{direction:'top',className:'rp-point-label'});weatherMarkers.set(stamp,marker);
         }
         marker.feature=feature;if(stationModel){const m=window.PilotDeskMetar.model(p);marker.setIcon(L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[102,86.4],iconAnchor:[46.2,40.8]}));}else{marker.setStyle(styleFor('metar',feature));marker.setRadius(map.getZoom()<7?4:6);}

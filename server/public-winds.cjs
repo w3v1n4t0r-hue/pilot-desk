@@ -1,5 +1,5 @@
 'use strict';
-const W=require('../assets/winds-aloft-core.js');
+const W=require('../assets/winds-aloft-core.js'),G=require('./wind-grid.cjs');
 const AWC='https://aviationweather.gov/api/data/',cache=new Map();
 async function get(key,url,asJson,ttl){const old=cache.get(key);if(old&&Date.now()-old.at<ttl)return old.promise;const promise=(async()=>{const r=await fetch(url,{headers:{'User-Agent':'PilotDesk/4.0 (+https://www.pilot-desk.com)'},signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error();return asJson?r.json():r.text()})();cache.set(key,{at:Date.now(),promise});try{return await promise}catch(e){cache.delete(key);throw e}}
 module.exports=async(req,res)=>{
@@ -13,7 +13,8 @@ module.exports=async(req,res)=>{
     const bulletin=settled.filter(r=>r.status==='fulfilled').map(r=>r.value).filter(v=>v.baseAt<=Date.now()&&Date.now()-v.baseAt<36*3600000&&v.start<=Date.now()&&v.end>=Date.now()).sort((a,b)=>b.baseAt-a.baseAt)[0];
     if(!bulletin)return res.status(422).json({error:'No public winds bulletin covers the current time.'});
     const ids=bulletin.stations.map(s=>'K'+s.id).join(','),info=await get('stations:'+ids,AWC+'stationinfo?format=json&ids='+encodeURIComponent(ids),true,86400000);if(!Array.isArray(info))throw Error();
-    const features=bulletin.stations.flatMap(s=>{const p=info.find(p=>p.icaoId==='K'+s.id||p.id==='K'+s.id);if(!p||!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||p.lat<b[0]||p.lat>b[2]||p.lon<b[1]||p.lon>b[3])return [];try{const wind=W.sample(s.levels,altitude);return [{type:'Feature',geometry:{type:'Point',coordinates:[p.lon,p.lat]},properties:{station:s.id,...wind}}]}catch{return []}});
-    res.setHeader('Cache-Control','public, s-maxage=300');return res.status(200).json({source:'AWC / NWS station wind forecasts',sourceUrl:'https://aviationweather.gov/data/windtemp/',fetchedAt:new Date().toISOString(),baseAt:new Date(bulletin.baseAt).toISOString(),validAt:new Date(bulletin.validAt).toISOString(),validFrom:new Date(bulletin.start).toISOString(),validTo:new Date(bulletin.end).toISOString(),altitude,geojson:{type:'FeatureCollection',features}});
+    const stations=bulletin.stations.flatMap(s=>{const p=info.find(p=>p.icaoId==='K'+s.id||p.id==='K'+s.id);if(!p||!Number.isFinite(p.lat)||!Number.isFinite(p.lon))return [];try{return [{station:s.id,lat:p.lat,lon:p.lon,...W.sample(s.levels,altitude)}]}catch{return []}});
+    const features=G.grid(stations,b,altitude);
+    res.setHeader('Cache-Control','public, s-maxage=300');return res.status(200).json({source:'AWC / NWS interpolated station wind forecasts',sourceUrl:'https://aviationweather.gov/data/windtemp/',fetchedAt:new Date().toISOString(),baseAt:new Date(bulletin.baseAt).toISOString(),validAt:new Date(bulletin.validAt).toISOString(),validFrom:new Date(bulletin.start).toISOString(),validTo:new Date(bulletin.end).toISOString(),altitude,geojson:{type:'FeatureCollection',features}});
   }catch{return res.status(502).json({error:'Public winds forecast unavailable. Retry later.'})}
 };

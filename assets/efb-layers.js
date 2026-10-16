@@ -33,9 +33,9 @@ function start(RP,L){
   const state={
     enabled:window.PilotDeskMapView.enabled(DEFAULTS,saved.enabled),
     baseMode:window.PilotDeskMapView.parse(location.hash)?.chart||(['auto','sectional','terminal','low','high'].includes(saved.baseMode)?saved.baseMode:'auto'),
-    chartOpacity:window.PilotDeskMapView.opacity(saved.chartOpacity??Number(localStorage.getItem('pd-route-chart-opacity')||1),1,.25),
-    radarOpacity:window.PilotDeskMapView.opacity(saved.radarOpacity,.68,.2),
-    vectorOpacity:window.PilotDeskMapView.opacity(saved.vectorOpacity,.88,.35),
+    chartOpacity:1,
+    radarOpacity:.68,
+    vectorOpacity:.88,
     pirepFilter:['all','icing','turbulence','skyweather'].includes(saved.pirepFilter)?saved.pirepFilter:'all'
   };
   // Printed chart airport symbols and METAR dots replace the duplicate airport overlay.
@@ -149,7 +149,7 @@ function start(RP,L){
   radarControls.id='rpRadarTimeline';
   radarControls.className='rp-radar-timeline';
   radarControls.hidden=!state.enabled.radar;
-  radarControls.innerHTML='<button type="button" id="rpRadarPlay" aria-label="Play radar loop">▶</button><span class="rp-radar-label">RADAR</span><input id="rpRadarTime" type="range" min="0" max="24" step="1" value="24" aria-label="Radar time"><output id="rpRadarTimeLabel">Latest</output><label><span>Opacity</span><input id="rpRadarOpacity" type="range" min="20" max="100" step="5" value="'+Math.round(state.radarOpacity*100)+'"></label>';
+  radarControls.innerHTML='<button type="button" id="rpRadarPlay" aria-label="Play radar loop">▶</button><span class="rp-radar-label">RADAR</span><input id="rpRadarTime" type="range" min="0" max="24" step="1" value="24" aria-label="Radar time"><output id="rpRadarTimeLabel">Latest</output>';
   mapEl.appendChild(radarControls);
 
   const legStrip=document.createElement('div');
@@ -270,14 +270,8 @@ function start(RP,L){
 
   const radarSlider=radarControls.querySelector('#rpRadarTime');
   const radarTimeLabel=radarControls.querySelector('#rpRadarTimeLabel');
-  const radarOpacity=radarControls.querySelector('#rpRadarOpacity');
   const radarPlay=radarControls.querySelector('#rpRadarPlay');
   radarSlider.addEventListener('input',()=>{updateRadarLabel();refreshRadar()});
-  radarOpacity.addEventListener('input',()=>{
-    state.radarOpacity=Number(radarOpacity.value)/100;
-    if(radarOverlay)radarOverlay.setOpacity(state.radarOpacity);
-    save();
-  });
   radarPlay.addEventListener('click',toggleRadarPlayback);
   updateRadarLabel();
 
@@ -464,9 +458,7 @@ function start(RP,L){
     if(key==='tfr')return {pane:'pdAirspacePane',color:feature?.properties?.status==='upcoming'?'#e6bd62':'#ef6f6f',weight:2.2,opacity:o,fillColor:'#e87c7c',fillOpacity:.08*o,dashArray:feature?.properties?.status==='upcoming'?'7 5':null};
     if(key==='sua')return {pane:'pdAirspacePane',color:'#d7b76c',weight:1.4,opacity:.85*o,fillColor:'#d7b76c',fillOpacity:.035*o,dashArray:'7 5'};
     if(key==='airspace')return {pane:'pdAirspacePane',color:'#c5c5ca',weight:1,opacity:.62*o,fillOpacity:0,dashArray:'4 5'};
-    if(key==='airsigmet')return {pane:'pdWeatherPane',color:'#e87c7c',weight:2,opacity:o,fillColor:'#e87c7c',fillOpacity:.10*o};
-    if(key==='gairmet')return {pane:'pdWeatherPane',color:'#e6bd62',weight:1.5,opacity:.9*o,fillColor:'#e6bd62',fillOpacity:.07*o,dashArray:'6 4'};
-    if(key==='cwa')return {pane:'pdWeatherPane',color:'#d4d4d8',weight:1.5,opacity:.8*o,fillColor:'#d4d4d8',fillOpacity:.05*o,dashArray:'3 4'};
+    if(['airsigmet','gairmet','cwa'].includes(key))return {pane:'pdWeatherPane',...window.PilotDeskChartSymbols.advisoryStyle(key==='airsigmet'?'sigmet':key,feature?.properties||{})};
     if(key==='airways')return {pane:'pdNavPane',color:'#c6cbd0',weight:1.2,opacity:.72*o,dashArray:'7 4'};
     return {pane:paneFor(key),color:'#d4d4d8',weight:1.2,opacity:.8*o,fillColor:'#d4d4d8',fillOpacity:.05*o};
   }
@@ -549,7 +541,7 @@ function start(RP,L){
     }
     g.clearLayers();
     const visible=(geojson.features||[]).filter(f=>key!=='airports'||window.PilotDeskMapDensity.publicAirport(f)).filter(f=>key!=='pirep'||state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter));
-    const size=map.getZoom()<10?({metar:140,pirep:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
+    const size=key==='obstacles'?44:map.getZoom()<10?({metar:140,pirep:48,airports:44,navaids:44,fixes:44,obstacles:44}[key]||0):0;
     const priority=f=>{const p=f.properties||{};if(key==='pirep'){const v=window.PilotDeskChartSymbols.pirep(p);return (v.urgent?100:0)+Math.max(...v.items.map(x=>x.level||0));}if(key==='metar')return ({LIFR:4,IFR:3,MVFR:2,VFR:1}[window.PilotDeskChartSymbols.metarCategory(p)]||0);return 0;};
     const grouped=size?window.PilotDeskMapDensity.group(visible,c=>map.project([c[1],c[0]],map.getZoom()),size,priority):visible.map(feature=>({feature,members:[feature]}));
     const display={type:'FeatureCollection',features:grouped.map(x=>({...x.feature,properties:{...x.feature.properties,_pdMembers:x.members.length>1?x.members:null}}))};
@@ -616,7 +608,7 @@ function start(RP,L){
       if(seq!==radarSeq||!state.enabled.radar){map.removeLayer(next);return}
       if(radarOverlay)map.removeLayer(radarOverlay);
       radarOverlay=next;radarPending=null;next.setOpacity(state.radarOpacity);
-      radarTimeLabel.value=(Number(radarSlider.value)===24?'Latest request':new Date(radarFrameTime()).toISOString().slice(11,16)+'Z');
+      radarTimeLabel.value=(Number(radarSlider.value)===24?'Latest':new Date(radarFrameTime()).toISOString().slice(11,16)+'Z');
       setLayerStatus('radar','loaded','live');
     });
     next.on('error',()=>{map.removeLayer(next);if(seq===radarSeq){radarPending=null;setLayerStatus('radar','unavailable','error');radarTimeLabel.value='Unavailable';if(radarOverlay){map.removeLayer(radarOverlay);radarOverlay=null}}});

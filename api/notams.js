@@ -48,6 +48,8 @@ module.exports=async function handler(req,res){
     return res.status(405).json({error:'Method not allowed'});
   }
 
+  if(req.query?.capabilities==='1'){res.setHeader('Cache-Control','no-store');return res.status(200).json({configured:!!(process.env.FAA_NOTAM_CLIENT_ID&&process.env.FAA_NOTAM_CLIENT_SECRET)})}
+
   const station=clean(req.query&&req.query.station);
   if(!/^[A-Z0-9]{3,4}$/.test(station)){
     res.setHeader('Cache-Control','no-store');

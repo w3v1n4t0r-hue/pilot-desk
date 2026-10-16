@@ -179,3 +179,5 @@ vm.createContext(weatherBriefContext);vm.runInContext(weatherSource,weatherBrief
 const oldBrief=vm.runInContext('loadBriefWeather(1)',weatherBriefContext);assert.deepEqual(wxCalls.map(p=>p.id),['KGFK','KFAR','KMSP']);assert.ok(wxCalls.every(p=>p.force));
 weatherBriefContext.routeContextSeq=2;finishWeather(wx);await oldBrief;assert.equal(weatherBriefContext.briefWx.alt,null);
 console.log('Route briefing tests passed: METAR/TAF source times, stale and missing products, forecast validity, airport coverage priority, manual-point exclusion, safe text, and obsolete alternate responses.');
+
+const seam=D.group([point(39,1,0),point(41,1,0)],c=>({x:c[0],y:c[1]}),40);assert.equal(seam.length,1);assert.equal(seam[0].members.length,2);

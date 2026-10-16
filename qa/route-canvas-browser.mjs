@@ -41,11 +41,15 @@ try{
   assert.equal(await page.evaluate(()=>window.PilotDeskRoutePerformance.getSettings().powerSetting),'65%');assert.match(await page.locator('#rpSummaryEta').textContent(),/^\d\d:\d\dZ$/);
   await page.locator('#rpRouteActions').selectOption('rpReverse');await page.waitForFunction(()=>window.PilotDeskRoutePlanner.getPoints()[0]?.id==='B');await page.locator('#rpRouteActions').selectOption('rpUndo');await page.waitForFunction(()=>window.PilotDeskRoutePlanner.getPoints()[0]?.id==='A');
   for(const tool of ['tools','navlog','performance','weather','navigation','procedures','offline','sources']){await page.locator('#rpCanvasView').selectOption(tool);assert.equal(await page.locator('#rpPlanningTool').evaluate(el=>el.open),true);assert.equal(await page.locator('[data-view="'+tool+'"]').isVisible(),true,tool);await page.getByRole('button',{name:'Close planning tool',exact:true}).click();assert.equal((await bar()).scroll,false)}
-  await page.locator('#rpLayersToggle').click();await page.locator('#rpPublicSearch').waitFor();
-  assert.equal(await page.locator('[data-public-layer]').count(),51);assert.equal(await page.locator('[data-layer="pirep"]').isDisabled(),false);assert.equal(await page.locator('#rpPirepFilter').isDisabled(),false);
-  assert.deepEqual(await page.locator('.rp-public-group>summary').allTextContents(),['Weather','Airspace & restrictions','Navigation','Chart & background','Ground detail']);
-  await page.locator('#rpPublicSearch').fill('airways');await page.locator('[data-public-layer="aero/airways"]').check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/airways"]').textContent.startsWith('Available · 2 features'));
-  await page.locator('#rpPublicSearch').fill('navigation level');await page.locator('[data-public-layer="aero/navlevel"]').selectOption('high');await page.locator('#rpPublicSearch').fill('airways');await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/airways"]').textContent.startsWith('Available · 1 features'));
+  await page.locator('#rpLayersToggle').click();await page.getByRole('tab',{name:'Weather'}).waitFor();
+  assert.equal(await page.locator('#rpPublicSearch').count(),0);
+  assert.equal(await page.locator('#rpLayerCharts>section').count(),4);
+  assert.equal(await page.locator('#rpLayerCharts>section').first().locator('input').first().getAttribute('aria-label'),'METARs');
+  assert.equal(await page.locator('#rpRadarOpacity').count(),0);
+  assert.equal(await page.locator('#rpLayersPanel input[type=range]:visible').count(),0);
+  await page.getByRole('tab',{name:'Navigation',exact:true}).click();await page.getByRole('checkbox',{name:'Airways',exact:true}).check();await page.waitForFunction(()=>document.querySelector('[data-source-status="aero/airways"]')?.closest('[data-active]').dataset.active==='true');
+  await page.getByRole('tab',{name:'Options'}).click();await page.getByLabel('Navigation level',{exact:true}).selectOption('high');
+  await page.getByRole('tab',{name:'Weather'}).click();
   await page.locator('[data-close-layers]').click();await page.locator('#rpLayersPanel').waitFor({state:'hidden'});
   for(const width of [320,390,768,1024,1365,1920]){await page.setViewportSize({width,height:900});assert.equal((await bar()).scroll,false,'No planning bar scrolling at '+width);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1&&document.documentElement.scrollHeight<=innerHeight+1));if(width>=1024)assert.ok((await bar()).height<=96);if(process.env.PILOTDESK_SCREENSHOT_DIR&&[390,1365].includes(width)){await page.waitForTimeout(650);await page.screenshot({path:path.join(process.env.PILOTDESK_SCREENSHOT_DIR,'flight-bar-'+width+'.png')})}}
   await page.setViewportSize({width:1365,height:900});await page.keyboard.press('Escape');assert.equal(await page.locator('#rpCanvasDrawer').isVisible(),false);

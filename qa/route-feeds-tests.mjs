@@ -41,3 +41,5 @@ assert.equal(notamResponse.status,502);
 if(oldId===undefined)delete process.env.FAA_NOTAM_CLIENT_ID;else process.env.FAA_NOTAM_CLIENT_ID=oldId;
 if(oldSecret===undefined)delete process.env.FAA_NOTAM_CLIENT_SECRET;else process.env.FAA_NOTAM_CLIENT_SECRET=oldSecret;
 console.log('Route feeds checks passed: corridor geometry, product time semantics, escaped source text, modern SIGMET endpoint, shared provider cache, five G-AIRMET snapshots, partial failures, PIREP query and invalid NOTAM payload handling.');
+
+{const savedId=process.env.FAA_NOTAM_CLIENT_ID,savedSecret=process.env.FAA_NOTAM_CLIENT_SECRET;delete process.env.FAA_NOTAM_CLIENT_ID;delete process.env.FAA_NOTAM_CLIENT_SECRET;let capability;await require('../api/notams.js')({method:'GET',query:{capabilities:'1'}},{setHeader(){},status(){return this},json(j){capability=j}});assert.deepEqual(capability,{configured:false});if(savedId!==undefined)process.env.FAA_NOTAM_CLIENT_ID=savedId;if(savedSecret!==undefined)process.env.FAA_NOTAM_CLIENT_SECRET=savedSecret;}

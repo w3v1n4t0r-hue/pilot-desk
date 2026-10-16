@@ -15,3 +15,6 @@ assert.ok(!M.card({id:'<img src=x onerror=alert(1)>'}).includes('<img'));
 console.log('METAR model checks passed: missing and zero values, raw parsing, UTC, unit conversion, vertical visibility, category, wind direction/gusts and escaped station labels.');
 
 const geoModel=M.normalize({id:"KGFK",site:"Grand Forks Intl",fltcat:"VFR",ceil:31,cover:"OVC",clouds:[{base:31,cover:"BKN"},{base:55,cover:"OVC"}],rawOb:"METAR KGFK 151753Z 29017G28KT 10SM BKN031 OVC055 11/03 A3001"});assert.equal(geoModel.ceiling,3100);assert.equal(geoModel.id,"KGFK");
+
+const symbols=createRequire(import.meta.url)('../assets/chart-symbols.js');
+for(const category of ['VFR','MVFR','IFR','LIFR','UNKNOWN'])for(const key of ['fltcat','fltCat','flightCategory','flight_category']){const report={[key]:category,cover:'OVC'};assert.equal(M.normalize(report).category,category);assert.ok(M.model(report).html.includes('fill="'+symbols.metarColor(report)+'"'),'Detailed METAR and flight-category circle must match for '+key+' '+category)}

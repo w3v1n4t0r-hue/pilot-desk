@@ -108,5 +108,11 @@ function advisoryStyle(product,p={}){
  return {color,fillColor,weight:3,opacity:1,fillOpacity:product==='gairmet'?.18:.2};
 }
 
-return{advisoryStyle,pirep,navigation,metarCategory,metarColor,airportStatus,svg,weatherSvg,reportTime,metarDetails,escape};
+
+function airspaceStyle(p={}){
+ const cls=String(p.CLASS||p.class||p.CLASS_B||'').toUpperCase().replace(/^CLASS\s+/,''),color=cls==='C'?'#a65be8':['B','D'].includes(cls)?'#3f8cff':'#a6aabb';
+ return {color,fillColor:color,weight:cls==='B'?2.4:1.8,opacity:.95,fillOpacity:cls==='B'?.10:cls==='C'?.12:cls==='D'?.07:.025,dashArray:cls==='D'?'6 4':null};
+}
+
+return{airspaceStyle,advisoryStyle,pirep,navigation,metarCategory,metarColor,airportStatus,svg,weatherSvg,reportTime,metarDetails,escape};
 });

@@ -20,6 +20,9 @@ on:
       - 'assets/global-nav.js'
       - 'assets/app-bootstrap.js'
       - 'assets/metar-model.js'
+      - 'assets/airport-*.mjs'
+      - 'data/airports/**'
+      - 'qa/airport-panel-browser.mjs'
       - 'qa/tool-startup-browser.mjs'
       - 'for-flight-schools.html'
       - 'for-cfis.html'
@@ -55,6 +58,15 @@ jobs:
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
           node qa/competitive-copy-browser.mjs
           node qa/tool-startup-browser.mjs
+      - name: Check airport information panel
+        env:
+          PILOTDESK_TEST_ROOT: dist
+          PILOTDESK_LEAFLET_JS: /tmp/pilotdesk-leaflet.js
+          PILOTDESK_LEAFLET_CSS: /tmp/pilotdesk-leaflet.css
+        run: |
+          curl -fsS https://unpkg.com/leaflet@1.9.4/dist/leaflet.js -o /tmp/pilotdesk-leaflet.js
+          curl -fsS https://unpkg.com/leaflet@1.9.4/dist/leaflet.css -o /tmp/pilotdesk-leaflet.css
+          node qa/airport-panel-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

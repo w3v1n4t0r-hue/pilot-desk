@@ -24,7 +24,8 @@
     if (event.data.type === 'pilotdesk:home-escape') { sendGestures(false); return; }
     if (event.data.type !== 'pilotdesk:home-state') return;
     if (!ready) { ready = true; clearTimeout(readyTimeout); gestures.hidden = false; status.textContent = 'FAA sectional · Route planner'; }
-    const route = typeof event.data.route === 'string' ? event.data.route.trim().slice(0, 500) : '';
+    const route = typeof event.data.route === 'string' ? event.data.route.trim() : '';
+    if (route.length > 20000) return;
     const view = event.data.view;
     if (typeof view !== 'string' || !/^#map=-?\d+(?:\.\d+)?\/-?\d+(?:\.\d+)?\/\d+(?:\.\d+)?\/(sectional|terminal|low|high)$/.test(view)) return;
     context.textContent = route || 'Start on the chart';

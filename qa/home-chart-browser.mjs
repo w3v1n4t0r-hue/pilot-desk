@@ -71,7 +71,19 @@ try {
  assert(await page.locator('.pd-route-passport').evaluate(e=>e.getBoundingClientRect().top>=-1&&e.getBoundingClientRect().bottom<=innerHeight),'route remains accessible below the chart');
  await page.locator('#pdHomeDeparture').fill('KGFK');await page.locator('#pdHomeDestination').fill('KFAR');
  assert(await page.locator('.pd-home-route-form').evaluate(f=>f.checkValidity()));
- if(shots){await page.screenshot({path:path.join(shots,'home-route-entry.png')});await page.evaluate(()=>scrollTo(0,0));await embed.getByRole('button',{name:'Close route planning',exact:true}).click();await page.screenshot({path:path.join(shots,'home-desktop.png')});await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(shots,'home-mobile.png')});}
+ if(shots){
+  await page.screenshot({path:path.join(shots,'home-route-entry.png')});
+  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
+  await embed.getByRole('button',{name:'Close route planning',exact:true}).click();
+  await page.screenshot({path:path.join(shots,'home-desktop.png')});
+ }
+ await page.setViewportSize({width:390,height:844});
+ await page.locator('body>.topbar .pd-main-nav').waitFor({state:'hidden'});
+ await page.getByRole('button',{name:'Open navigation',exact:true}).click();
+ await page.locator('body>.topbar .pd-main-nav').waitFor({state:'visible'});
+ await page.getByRole('button',{name:'Close navigation',exact:true}).click();
+ await page.locator('body>.topbar .pd-main-nav').waitFor({state:'hidden'});
+ if(shots)await page.screenshot({path:path.join(shots,'home-mobile.png')});
  await page.emulateMedia({reducedMotion:'reduce'});
  await page.waitForFunction(()=>window.ScrollCraft.instances.length===0);
  assert.equal(await page.evaluate(()=>window.ScrollCraft.instances.length),0,'motion cleans up when preference changes');

@@ -202,7 +202,7 @@ const startParams=new URLSearchParams(location.search);
 const startFrom=(startParams.get('from')||'').trim().toUpperCase();
 const startTo=(startParams.get('to')||'').trim().toUpperCase();
 const handoffRoute=(startParams.get('route')||'').trim().toUpperCase();
-const validHandoff=handoffRoute.length<=500&&/^[A-Z0-9 .,/+\-]+$/.test(handoffRoute);
+const validHandoff=handoffRoute.length<=20000&&/^[A-Z0-9 .,/+\-]+$/.test(handoffRoute);
 if(!startParams.has('flight')&&(validHandoff||(/^[A-Z0-9]{2,5}$/.test(startFrom)&&/^[A-Z0-9]{2,5}$/.test(startTo)))){
   const route=validHandoff?handoffRoute:startFrom+' '+startTo;
   $('#rpRoute').value=route;

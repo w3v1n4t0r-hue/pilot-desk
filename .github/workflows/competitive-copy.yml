@@ -18,6 +18,9 @@ on:
       - 'assets/aircraft-v2.js'
       - 'assets/flights.js'
       - 'assets/global-nav.js'
+      - 'assets/app-bootstrap.js'
+      - 'assets/metar-model.js'
+      - 'qa/tool-startup-browser.mjs'
       - 'for-flight-schools.html'
       - 'for-cfis.html'
       - 'embed.html'
@@ -51,6 +54,7 @@ jobs:
           python3 -m http.server 4173 --bind 127.0.0.1 --directory dist > /tmp/pilotdesk-preview.log 2>&1 &
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
           node qa/competitive-copy-browser.mjs
+          node qa/tool-startup-browser.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

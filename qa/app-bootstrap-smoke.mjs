@@ -67,3 +67,5 @@ check(!sw.includes("fetch('/sitemap.xml'"),'service-worker install should not cr
 
 if(failures.length){console.error(`App bootstrap checks failed with ${failures.length} issue(s):`);failures.forEach(x=>console.error(' - '+x));process.exit(1)}
 console.log('App bootstrap checks passed: streamlined enhancement loading, shared Astro navigation, and deterministic offline update behavior verified.');
+
+await import('./tool-startup-tests.mjs');

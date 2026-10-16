@@ -14,10 +14,11 @@ function registerServiceWorkerEarly(){
  if(document.readyState==='complete')schedule();else addEventListener('load',schedule,{once:true});
 }
 registerServiceWorkerEarly();
-load('/assets/metar-model.js');load('/assets/user-preferences.js');load('/assets/navigation-core.js');load('/assets/global-nav.js');load('/assets/theme.js');load('/assets/billing.js');
+const weatherTools=['/','/index.html','/planner.html','/route-planner.html','/flight-planning-workspace.html','/flights.html','/flight-brief.html','/preflight-brief.html','/aircraft.html','/weight-balance.html','/weather.html','/airport.html'];
+if(weatherTools.includes(path)||path.includes('weight-balance-builder'))load('/assets/metar-model.js');load('/assets/user-preferences.js');load('/assets/navigation-core.js');load('/assets/global-nav.js');load('/assets/theme.js');load('/assets/billing.js');
 if(calc||path==='/weight-balance.html'||path.includes('weight-balance-builder'))load('/assets/calculation-account.js');
 if(calc||['/route-planner.html','/weight-balance.html','/weather.html','/e6b-flight-computer.html'].includes(path))load('/assets/features.js');
-if(calc){load('/assets/calculator-ux.js');load('/assets/crosswind-mfd.js');load('/assets/pilotdesk-plus.js')}
+if(calc){load('/assets/calculator-ux.js');if(document.body.dataset.calc==='crosswind')load('/assets/crosswind-mfd.js');load('/assets/pilotdesk-plus.js')}
 if(calc)load('/assets/share-enhance.js');
 if(/^\/(guides\/|training\/|learn\/oral-exam\/|for-cfis\.html$|flight-training\.html$|e6b-flight-computer\.html$|weather\.html$|metar-decoder\.html$)/.test(path))load('/assets/page-share.js');
 if(['/written-prep.html','/skill-gap.html','/flight-training.html','/checklist-trainer.html','/training/acs-far-reference.html'].includes(path)||path.startsWith('/learn/'))load('/assets/learn-shell.js');

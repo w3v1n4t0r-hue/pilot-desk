@@ -2,7 +2,7 @@
 'use strict';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
-const colors={VFR:'#38b880',MVFR:'#5aabff',IFR:'#ef5555',LIFR:'#d978f5',UNKNOWN:'#a7adb7'};
+const colors={VFR:'#009933',MVFR:'#0000ee',IFR:'#ff0000',LIFR:'#cc33ff',UNKNOWN:'#c6cbd0'};
 let units={temperature:'C',visibility:'SM',pressure:'inHg'};
 function setUnits(value={}){for(const [k,allowed] of Object.entries({temperature:['C','F'],visibility:['SM','km'],pressure:['inHg','hPa']}))if(allowed.includes(value[k]))units[k]=value[k];return {...units}}
 function normalize(p={}){
@@ -19,7 +19,7 @@ function normalize(p={}){
  const vm=raw.match(/\b((?:\d+ )?\d+\/\d+|[PM]?\d+(?:\.\d+)?)SM\b/),reported=p.visib??p.visibility??vm?.[1],visibility=reported===undefined?null:fraction(String(reported).replace(/[PM+<>]/g,'')),visPrefix=/P|\+|>/.test(String(reported))?'>':/^M|</.test(String(reported))?'<':'';
  let pressure=num(p.altim);if(pressure!==null&&pressure<100)pressure*=33.8638866667;if(pressure===null){const a=raw.match(/\bA(\d{4})\b/),q=raw.match(/\bQ(\d{4})\b/);pressure=a?Number(a[1])/100*33.8638866667:q?Number(q[1]):null}
  const observed=p.obsTime??p.observationTime??p.reportTime,tn=num(observed),at=tn!==null?tn*(tn<1e11?1000:1):Date.parse(observed),time=Number.isFinite(at)?new Date(at).toISOString().slice(11,16)+'Z':raw.match(/\b\d{2}(\d{2})(\d{2})Z\b/)?raw.match(/\b\d{2}(\d{2})(\d{2})Z\b/).slice(1).join(':')+'Z':'—';
- let category=String(p.fltCat||p.fltcat||p.flight_category||'').toUpperCase();if(!colors[category]){const c=noCeiling?Infinity:ceiling;if(visibility!==null&&c!==null)category=c<500||visibility<1?'LIFR':c<1000||visibility<3?'IFR':c<=3000||visibility<=5?'MVFR':'VFR';else category='UNKNOWN'}
+ let category=String(p.fltcat||p.fltCat||p.flightCategory||p.flight_category||'').toUpperCase();if(!colors[category]){const c=noCeiling?Infinity:ceiling;if(visibility!==null&&c!==null)category=c<500||visibility<1?'LIFR':c<1000||visibility<3?'IFR':c<=3000||visibility<=5?'MVFR':'VFR';else category='UNKNOWN'}
  const wx=String(p.wxString||p.wx||raw.split(' RMK ')[0].split(/\s+/).filter(t=>/^(?:[+-]|VC)?(?:MI|BC|PR|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+$/.test(t)).join(' '));
  return {raw,id:p.icaoId||p.stationId||p.station||p.id||p.site||'METAR',temperature:num(p.temp)??temp(td?.[1]),dewpoint:num(p.dewp)??temp(td?.[2]),speed,gust,direction,variable,sky,ceiling,noCeiling,visibility,visPrefix,pressure,time,at:Number.isFinite(at)?at:null,category,wx};
 }

@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {csv,assemble} from '../scripts/import-airport-data.mjs';
+import {runwayWind} from '../assets/airport-data.mjs';
+assert.deepEqual(csv('a,b\n"x,y","line 1\nline ""2"""\n'),[{a:'x,y',b:'line 1\nline "2"'}]);assert.throws(()=>csv('a\n"bad'));
+const blank={EFF_DATE:'2026/10/01',SITE_NO:'1',SITE_TYPE_CODE:'A',ARPT_ID:'AAA',ICAO_ID:'KAAA',LAT_DECIMAL:'0',LONG_DECIMAL:'0',ELEV:'0',MAG_VARN:'',MAG_HEMIS:'W'};
+const j=assemble({APT_BASE:[blank],APT_RWY:[{...blank,RWY_ID:'18/36',RWY_LEN:'2000',RWY_WIDTH:'60'}],APT_RWY_END:[{...blank,RWY_ID:'18/36',RWY_END_ID:'18',TRUE_ALIGNMENT:'185'}],FRQ:[{SERVICED_FACILITY:'AAA',SERVICED_SITE_TYPE:'AIRPORT',FREQ:'123.45',FREQ_USE:'CTAF'},{SERVICED_FACILITY:'AAA',SERVICED_SITE_TYPE:'VOR',FREQ:'111.1'}]});
+assert.equal(j.airports.KAAA.elevationFt,0);assert.equal(j.airports.KAAA.variationEast,null);assert.equal(j.aliases.AAA,'KAAA');assert.equal(j.airports.KAAA.frequencies.length,1);assert.equal(j.airports.KAAA.runways[0].ends[0].trueHeading,185);
+assert.equal(runwayWind({trueHeading:180},{wdir:'VRB',wspd:5}),null);assert.equal(runwayWind({trueHeading:null},{wdir:180,wspd:5}),null);assert.equal(runwayWind({trueHeading:180},{wdir:180,wspd:10}).head,10);assert.ok(Math.abs(runwayWind({trueHeading:180},{wdir:270,wspd:10}).cross-10)<.001);
+const index=JSON.parse(fs.readFileSync('data/airports/manifest.json')),airports=JSON.parse(fs.readFileSync('data/airports/KG.json'));assert.equal(index.aliases.GFK,'KGFK');assert.equal(index.count,index.locations.length);assert.equal(airports.KGFK.runways.filter(r=>r.id.includes('/')).length,4);assert.ok(airports.KGFK.frequencies.some(f=>f.sector.includes('17R/35L')));assert.ok(airports.KGFK.runways.some(r=>r.ends.some(e=>e.trueHeading!==null)));console.log('Airport import passed: quoted CSV, source joins, zero/missing fields, aliases, service filtering, per-end headings, true wind components, and published airport records.');

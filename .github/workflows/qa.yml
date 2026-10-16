@@ -214,6 +214,8 @@ jobs:
         run: node qa/public-layer-tests.mjs
       - name: Check retained map layers and shared imagery requests
         run: node qa/public-layer-performance-tests.mjs
+      - name: Check FAA airport import and runway calculations
+        run: node qa/airport-data-tests.mjs
 
       - name: Verify METAR station models and units
         run: node qa/metar-model-tests.mjs

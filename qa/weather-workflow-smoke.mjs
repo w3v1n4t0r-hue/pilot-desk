@@ -29,7 +29,7 @@ for(const marker of [
 check(wx.includes("nextUrl.searchParams.set('flight',flightId)"),'Weather lookup drops active-flight context');
 check(wx.includes("q.set('station',station)")||wx.includes("nextUrl.searchParams.set('station',station)"),'Weather station is not retained in the URL');
 check(wx.includes("crossQ.set('runway',screen.r.heading)"),'Runway screen does not hand off runway heading');
-check(wx.includes("daQ.set('pa',Math.round(paApprox))")&&wx.includes("daQ.set('oat',met.temp)"),'Density-altitude setup does not carry pressure altitude + OAT');
+check(wx.includes("daQ.set('pa',Math.round(paApprox))")&&wx.includes("daQ.set('oat',oat)"),'Density-altitude setup does not carry validated pressure altitude + OAT');
 check(wx.includes("(29.92-altInHg)*1000"),'Approximate pressure-altitude handoff formula missing');
 check(wx.includes("a.h<0?50:0"),'Runway orientation screen must avoid preferring a tailwind when equivalent crosswind choices exist');
 check(wx.includes('data-weather-handoff="crosswind"')&&wx.includes('data-weather-handoff="density-altitude"'),'Weather calculator handoff attribution missing');

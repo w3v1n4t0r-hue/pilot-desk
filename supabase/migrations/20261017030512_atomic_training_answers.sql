@@ -24,7 +24,6 @@ begin
     return jsonb_build_object('status',400,'error','Invalid answer request.');
   end if;
 
-  -- Serializes different tabs and retries against the same saved session.
   select * into s from public.written_prep_sessions
     where id=p_session_id and user_id=p_user_id and track=p_track for update;
   if not found then
@@ -51,8 +50,6 @@ begin
       return jsonb_build_object('status',400,'error','Invalid answer choice.');
     end if;
     correct := p_choice=(q->>'correct')::integer;
-    -- ON CONFLICT also serializes statistics for the same question answered in
-    -- different sessions. Session advancement and this increment share one transaction.
     insert into public.written_prep_stats as existing
       (user_id,track,question_id,skill_area,standard_code,standard_doc,difficulty,
        correct_count,total_count,correct_streak,last_result,last_seen_at,updated_at)
@@ -84,8 +81,6 @@ begin
       completed_at=case when next_index>=jsonb_array_length(s.question_payload) then answered_at else null end,
       updated_at=answered_at where id=s.id returning * into s;
   end if;
-  -- Reconstruct the progress at this request, even when a later tab has moved
-  -- farther ahead. The same submission can recover its final completion too.
   next_index := p_question_index+1;
   select count(*)::integer into answer_score
     from jsonb_array_elements(s.question_payload) with ordinality as item(value,ordinality)

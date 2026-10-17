@@ -72,8 +72,6 @@ async function resumeSession(){const a=state.dashboard?.activeSession;if(!a)retu
 async function submitAnswer(e){
  e.preventDefault();if(!state.session||!state.current)return;
  const session=state.session,q=state.current,selected=Number($('input[name="pdPrepChoice"]:checked')?.value);if(!Number.isInteger(selected))return;
- // Keep the exact request after a lost response. Changing the radio selection must
- // never turn its retry into an answer to the next, unseen question.
  if(!state.answerAttempt||state.answerAttempt.sessionId!==session.id||state.answerAttempt.questionIndex!==q.index)state.answerAttempt={action:'answer',track:state.track,sessionId:session.id,questionId:q.id,questionIndex:q.index,submissionId:crypto.randomUUID(),choice:selected};
  const attempt=state.answerAttempt,btn=$('#pdPrepAnswer');btn.disabled=true;btn.textContent='SAVING…';$$('input[name="pdPrepChoice"]').forEach(input=>input.disabled=true);
  try{

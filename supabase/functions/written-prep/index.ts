@@ -67,14 +67,12 @@ Deno.serve(async(req:Request)=>{
   if(action==='answer'){
    const sessionId=String(body?.sessionId||''),choice=body?.choice,questionId=String(body?.questionId||''),questionIndex=body?.questionIndex,submissionId=String(body?.submissionId||'');
    if(!sessionId||!questionId||!Number.isInteger(choice)||!Number.isInteger(questionIndex)||questionIndex<0||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(submissionId))return json(400,{error:'Reload your saved session and choose an answer.'});
-   // The database locks the session, binds this answer to the displayed question,
-   // grades it, and commits progress together. A retry returns its original snapshot.
    const rpc=await rest(base,h,'rpc/answer_written_prep',{method:'POST',body:JSON.stringify({p_user_id:user.id,p_session_id:sessionId,p_track:track,p_question_id:questionId,p_question_index:questionIndex,p_submission_id:submissionId,p_choice:choice})});
    if(!rpc.ok)throw new Error(`answer transaction ${rpc.status}`);const result=await rpc.json();
    if(result.error)return json(result.status||409,{error:result.error,code:result.code});
-   const s=result.session,payload=s.question_payload,idx=questionIndex,qq=payload[idx],correct=qq.result,m=qq.answerMastery,nextIdx=idx+1,newScore=s.score,done=nextIdx>=payload.length,updated=s;
+   const s=result.session,payload=s.question_payload,idx=questionIndex,qq=payload[idx],correct=qq.result,m=qq.answerMastery,nextIdx=idx+1,newScore=s.score,done=nextIdx>=payload.length;
    const bookmarks=await getBookmarks(base,h,user.id,track),feedback=s.mode==='exam'&&!done?null:{correct,selected:choice,correctIndex:qq.correct,correctAnswer:qq.options[qq.correct],explanation:qq.explanation,reference:qq.reference,source:qq.source,sourceUrl:qq.sourceUrl||null,figureRef:qq.figureRef||null,choiceExplanations:choiceRationales(qq,track),mastery:m,standardCode:qq.standardCode,standardDoc:qq.standardDoc,standardType:qq.standardType,difficulty:qq.difficulty};
-   if(done){const d=await dashboard(base,h,user.id,track,validDifficulty(s.difficulty));return json(200,{done:true,feedback,summary:sessionSummary(updated,payload,track),dashboard:d})}
+   if(done){const d=await dashboard(base,h,user.id,track,validDifficulty(s.difficulty));return json(200,{done:true,feedback,summary:sessionSummary(s,payload,track),dashboard:d})}
    return json(200,{done:false,feedback,nextQuestion:publicQuestion(payload[nextIdx],nextIdx,payload.length,bookmarks.includes(payload[nextIdx].id)),progress:{score:newScore,answered:nextIdx,total:payload.length}})
   }
   if(action==='bookmark'){

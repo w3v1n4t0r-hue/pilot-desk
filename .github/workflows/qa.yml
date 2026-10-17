@@ -219,3 +219,17 @@ jobs:
 
       - name: Verify METAR station models and units
         run: node qa/metar-model-tests.mjs
+      - name: Verify audited weather and aircraft regressions
+        run: node --test qa/weather-logic-regressions.mjs qa/aircraft-logic-regressions.mjs
+      - name: Verify search and shared route regressions
+        run: |
+          node qa/search-launch-regressions.mjs
+          node qa/route-review-briefing.test.mjs
+      - name: Verify account deletion and training submissions
+        run: |
+          node qa/account-deletion-regressions.mjs
+          node qa/training-submission-regressions.mjs
+      - name: Install isolated PostgreSQL test runtime
+        run: npm install --prefix "$RUNNER_TEMP/pilotdesk-sql-qa" --ignore-scripts --no-audit --no-fund @electric-sql/pglite@0.5.10
+      - name: Verify training transaction in PostgreSQL
+        run: PGLITE_MODULE_PATH="$RUNNER_TEMP/pilotdesk-sql-qa/node_modules/@electric-sql/pglite/dist/index.js" node qa/training-submission-sql.mjs

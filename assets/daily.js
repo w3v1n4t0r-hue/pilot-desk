@@ -106,7 +106,7 @@ async function refreshIdentity(){
 }
 
 function renderChallenge(data){
- state.data=data;const c=data.challenge;renderWeek();
+ state.data=data;state.submitted=false;state.started=false;$('#pdDailyResult').hidden=true;$('#pdDailyScoreChip').hidden=true;$('#pdDailySubmit').textContent='Check all three';const c=data.challenge;renderWeek();
  setText('#pdDailyDate',formatDate(data.date));setText('#pdDailyCategory',c.category);setText('#pdDailyDifficulty',c.difficulty);setText('#pdDailyTitle',c.title);setText('#pdDailyDeck',c.deck);
  setText('#pdDailyAttempts',data.attemptsToday>0?data.attemptsToday:'0');setText('#pdDailyQuestionTitle',c.category||'Today’s question');setText('#pdDailyQuestionPreview',c.questions?.[0]?.prompt||'Open today’s check below.');
  const host=$('#pdDailyQuestions');host.innerHTML='';
@@ -194,12 +194,12 @@ async function shareResult(result){
  }catch(e){if(e?.name!=='AbortError'){try{await navigator.clipboard.writeText(`${text}\n${url}`);$('#pdDailyShare').textContent='Challenge link copied'}catch{}}}
 }
 async function submit(e){
- e.preventDefault();if(state.submitted||!state.data)return;const answers=state.data.challenge.questions.map((_,i)=>Number(document.querySelector(`input[name="q${i}"]:checked`)?.value));if(answers.some(x=>!Number.isInteger(x)))return;
+ e.preventDefault();if(!state.data){await loadChallenge();return}if(state.submitted)return;const answers=state.data.challenge.questions.map((_,i)=>Number(document.querySelector(`input[name="q${i}"]:checked`)?.value));if(answers.some(x=>!Number.isInteger(x)))return;
  $('#pdDailySubmit').disabled=true;$('#pdDailySubmit').textContent='Scoring…';setText('#pdDailyFormNote','Checking today’s answers…');
- try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{method:'POST',headers:{...edgeHeaders(),'Content-Type':'application/json'},body:JSON.stringify({answers})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to score challenge.');if(!d.saved){try{localStorage.setItem(guestKey(d.date),JSON.stringify(d))}catch{}}renderResult(d,Boolean(d.saved));if(d.saved)await refreshIdentity()}catch(err){$('#pdDailySubmit').disabled=false;$('#pdDailySubmit').textContent='Check all three';setText('#pdDailyFormNote',err.message||'Unable to score right now.');state.submitted=false;updateSubmitState()}
+ try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{method:'POST',headers:{...edgeHeaders(),'Content-Type':'application/json'},body:JSON.stringify({date:state.data.date,challengeKey:state.data.challenge.key,answers})});const d=await r.json();if(r.status===409&&d.code==='challenge_expired'){if(await loadChallenge())setText('#pdDailyFormNote','A new daily set opened. Answer the new questions; your attempt was not used.');return}if(!r.ok)throw new Error(d.error||'Unable to score challenge.');if(!d.saved){try{localStorage.setItem(guestKey(d.date),JSON.stringify(d))}catch{}}renderResult(d,Boolean(d.saved));if(d.saved)await refreshIdentity()}catch(err){$('#pdDailySubmit').disabled=false;$('#pdDailySubmit').textContent='Check all three';setText('#pdDailyFormNote',err.message||'Unable to score right now.');state.submitted=false;updateSubmitState()}
 }
 async function loadChallenge(){
- try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{headers:edgeHeaders()});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load today’s challenge.');renderChallenge(d)}catch(err){$('#pdDailyQuestions').innerHTML=`<div class="pd-daily-error">${escapeHtml(err.message||'PilotDesk Daily is temporarily unavailable.')}</div>`;setText('#pdDailyFormNote','Try again shortly.')}
+ try{const r=await fetch(`${SUPABASE_URL}/functions/v1/pilot-daily`,{headers:edgeHeaders()});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to load today’s challenge.');renderChallenge(d);return true}catch(err){state.data=null;$('#pdDailyQuestions').innerHTML=`<div class="pd-daily-error">${escapeHtml(err.message||'PilotDesk Daily is temporarily unavailable.')}</div>`;$('#pdDailySubmit').disabled=false;$('#pdDailySubmit').textContent='Retry loading challenge';setText('#pdDailyFormNote','The set could not load. Retry to get the current questions.');return false}
 }
 async function init(){
  countdown();setInterval(countdown,1000);renderWeek();renderCurrencyReminders();$('#pdCurrencySave')?.addEventListener('click',saveCurrencyReminders);$('#pdDailyForm')?.addEventListener('submit',submit);

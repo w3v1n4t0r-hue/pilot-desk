@@ -1,0 +1,6 @@
+/* Keep the upstream device engine unchanged and below PilotDesk's canonical styles. */
+@import url('/assets/vendor/scrollcraft/scrollcraft.css') layer(scrollcraft);
+.pd-home-chart{--sc-canvas:var(--bg);--sc-surface:var(--panel);--sc-ink:var(--text);--sc-ink-soft:var(--muted);--sc-accent:var(--accent);--sc-accent-ink:var(--bg);--sc-font-display:inherit;--sc-font-text:inherit}
+/* Controls and text remain available even if optional motion fails to initialize. */
+html:not(.sc-ready) .pd-home-chart [data-sc-in],html:not(.sc-ready) .pd-home-chart [data-sc-stagger]>*{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.pd-home-chart [data-sc-parallax],.pd-home-chart [data-sc-reveal]{transform:none!important;clip-path:none!important}}

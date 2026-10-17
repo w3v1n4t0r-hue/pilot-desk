@@ -47,6 +47,21 @@ await test('Browser retry reuses the exact question, request ID, and choice afte
  await context.submit({preventDefault(){}});assert.equal(btn.textContent,'RETRY SAVING ANSWER');assert.equal(radio.disabled,true);
  selected=1;await context.submit({preventDefault(){}});assert.deepEqual(requests[1],requests[0]);assert.equal(requests[1].questionId,'q1');assert.equal(feedback.selected,0);assert.equal(state.pendingNext.id,'q2');
 });
+await test('Resuming an unsaved answer restores the locked choice and retries the same attempt',async()=>{
+ const source=fs.readFileSync('assets/written-prep.js','utf8');
+ const extract=(start,end)=>source.slice(source.indexOf(start),source.indexOf(end,source.indexOf(start)));
+ const q={id:'q1',index:0,total:2,options:['A','B']},state={session:{id:'s',mode:'learn'},current:q,track:'ppl',answerAttempt:null,dashboard:{activeSession:{id:'s',mode:'learn',question:q}}};
+ const elements=new Map(),radios=[];let requests=[];
+ const options={set innerHTML(_value){radios.length=0},appendChild(label){radios.push(label.input)}};
+ const get=id=>{if(id.includes(':checked'))return radios.find(r=>r.checked);if(id==='#pdPrepOptions')return options;if(!elements.has(id))elements.set(id,{style:{},setAttribute(){}});return elements.get(id)};
+ const context={state,crypto:{randomUUID:()=> '00000000-0000-4000-8000-000000000001'},$:get,$$:()=>radios,document:{createElement:()=>({set innerHTML(html){this.input={value:html.match(/value="(\d+)"/)[1],checked:false,disabled:false,addEventListener(){}}}})},show(){},text(){},renderFigureRef(){},sourceLabel:()=>'',esc:s=>s,modeNames:{},difficultyNames:{},stopTimer(){},startTimer(){},notice(){},markFeedback(){},api:async body=>{requests.push(structuredClone(body));if(requests.length===1)throw new Error('offline');return{done:false,feedback:{correct:true},nextQuestion:{id:'q2',index:1}}}};
+ vm.runInNewContext(extract('function renderQuestion(', '\nfunction markFeedback')+extract('async function resumeSession(', '\nfunction nextQuestion')+';globalThis.render=renderQuestion;globalThis.resume=resumeSession;globalThis.submit=submitAnswer;',context);
+ context.render(q);radios[0].checked=true;await context.submit({preventDefault(){}});
+ await context.resume();
+ assert.equal(radios[0].checked,true,'resume must display the choice the pending request will send');assert.ok(radios.every(r=>r.disabled),'a pending attempt cannot accept a different displayed choice');
+ assert.equal(get('#pdPrepAnswer').disabled,false);assert.equal(get('#pdPrepAnswer').textContent,'RETRY SAVING ANSWER');
+ await context.submit({preventDefault(){}});assert.deepEqual(requests[1],requests[0]);assert.equal(state.pendingNext.id,'q2');
+});
 await test('Daily expiry reload failure offers recovery without claiming the next set loaded',async()=>{
  const source=fs.readFileSync('assets/daily.js','utf8'),start=source.indexOf('async function submit('),end=source.indexOf('\nasync function init',start);
  const old={date:'2026-10-16',challenge:{key:'old',questions:[{},{},{}]}},state={data:old,submitted:false},elements=new Map(),notes=[];let calls=0,rendered=false;

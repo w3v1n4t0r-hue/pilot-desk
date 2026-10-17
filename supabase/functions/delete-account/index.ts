@@ -41,7 +41,7 @@ Deno.serve(async (req: Request) => {
     const user = await userRes.json();
     if (!user?.id) return new Response(JSON.stringify({ error: "Invalid account." }), { status: 401, headers: cors });
 
-    const adminHeaders = service.startsWith("sb_secret_") ? { apikey: service } : { apikey: service, Authorization: `Bearer ${service}` };
+    const adminHeaders: Record<string, string> = service.startsWith("sb_secret_") ? { apikey: service } : { apikey: service, Authorization: `Bearer ${service}` };
     const billing = await fetch(`${base}/rest/v1/billing_subscriptions?select=stripe_customer_id,stripe_subscription_id,status&user_id=eq.${encodeURIComponent(user.id)}&limit=1`, { headers: adminHeaders });
     if (!billing.ok) throw new Error("Unable to verify billing before account deletion.");
     const rows = await billing.json();

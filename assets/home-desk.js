@@ -97,9 +97,9 @@ window.addEventListener('storage',renderDesk);
 const search=document.getElementById('pdHomeSearch');
 if(search&&!search.dataset.pdBound){
   search.dataset.pdBound='1';
-  search.addEventListener('click',()=>{
+  search.addEventListener('click',event=>{
     const input=document.querySelector('.pd-site-search input');
-    if(input){document.dispatchEvent(new CustomEvent('pilotdesk:open-search'));input.select?.();window.pdTrack?.('Home Search Focus',{})}
+    if(input){event.stopPropagation();document.dispatchEvent(new CustomEvent('pilotdesk:open-search'));input.select?.();window.pdTrack?.('Home Search Focus',{})}
   });
 }
 section.addEventListener('click',event=>{

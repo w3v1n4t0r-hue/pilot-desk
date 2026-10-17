@@ -54,8 +54,12 @@ function signed(v){
   return Number.isFinite(n)?(String(v).startsWith('M')?-n:n):null;
 }
 function visibility(raw){
-  const m=raw.match(/\b(P6|M?\d+\/\d+|\d+(?:\s+\d+\/\d+)?)SM\b/);
-  return m?m[1]:null;
+  const body=raw.split(/\s+RMK\s+/)[0];
+  const m=body.match(/\b(P6|M?\d+\/\d+|\d+(?:\s+\d+\/\d+)?)SM\b/);
+  if(m)return m[1];
+  if(/\bCAVOK\b/.test(body))return String(10000/1609.344);
+  const metric=body.match(/(?:^|\s)(\d{4})(?=\s|$)/);
+  return metric?String((metric[1]==='9999'?10000:Number(metric[1]))/1609.344):null;
 }
 function visibilityNumber(v){
   if(!v)return null;
@@ -73,8 +77,9 @@ function visibilityNumber(v){
   return Number.isFinite(n)?n:null;
 }
 function flightCategory(raw,vis){
+  raw=raw.split(/\s+RMK\s+/)[0];
   let ceiling=null;
-  for(const m of raw.matchAll(/\b(?:BKN|OVC|VV)(\d{3})\b/g)){
+  for(const m of raw.matchAll(/\b(?:BKN|OVC|VV)(\d{3})(?:CB|TCU)?(?=\s|$)/g)){
     const ft=Number(m[1])*100;
     if(ceiling===null||ft<ceiling)ceiling=ft;
   }
@@ -82,6 +87,8 @@ function flightCategory(raw,vis){
   if((ceiling!==null&&ceiling<500)||(v!==null&&v<1))return'LIFR';
   if((ceiling!==null&&ceiling<1000)||(v!==null&&v<3))return'IFR';
   if((ceiling!==null&&ceiling<=3000)||(v!==null&&v<=5))return'MVFR';
+  const skyKnown=ceiling!==null||/\b(?:CLR|SKC|NSC|NCD|CAVOK|(?:FEW|SCT)\d{3}(?:CB|TCU)?)(?=\s|$)/.test(raw);
+  if(v===null||!skyKnown||/\b(?:BKN|OVC|VV)\/\/\//.test(raw))return'UNKNOWN';
   return'VFR';
 }
 function parseMetar(text,id){

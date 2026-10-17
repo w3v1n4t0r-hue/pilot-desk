@@ -9,6 +9,7 @@ const edge=read('supabase/functions/written-prep/index.ts');
 const standardsSource=read('assets/training-standards-data.js');
 const migration=read('supabase/migrations/008_written_prep.sql');
 const gradingMigration=read('supabase/migrations/009_written_prep_acs_grading.sql');
+const answerMigration=read('supabase/migrations/20261017030512_atomic_training_answers.sql');
 const siteData=read('src/data/site.mjs');
 const astroHome=read('src/pages/index.astro');
 const training=read('flight-training.html');
@@ -155,8 +156,8 @@ has(edge,'difficultyBreakdown','Dashboard must grade by difficulty');
 has(edge,'passingScore:trackMeta[track].passingScore','Session result must use track passing score');
 has(edge,"grade:grade(percent)",'Sessions must receive a letter grade');
 has(edge,"mode==='exam'&&!done?null",'Practice exam must suppress correctness feedback until completion');
-has(edge,'nextDue(streak,correct)','Review scheduling missing');
-has(edge,'mastery(corr,total,streak)','Mastery tracking missing');
+has(answerMigration,"interval '10 minutes'",'Incorrect answer review scheduling missing');
+has(answerMigration,"st.correct_count::numeric/st.total_count*72",'Atomic mastery tracking missing');
 has(edge,'Math.min(trackMeta[track].officialQuestions,pool.length)','Practice exam must cap cleanly at the reviewed pool size');
 
 for(const table of ['written_prep_stats','written_prep_sessions','written_prep_bookmarks']){
@@ -210,7 +211,7 @@ helperContext.Math.random=Math.random;
 helperContext.trackMeta=trackMeta;
 helperContext.grade=v=>v>=90?'A':v>=80?'B':v>=70?'C':'F';
 vm.runInNewContext(stripTypeScriptTypes(edge.slice(edge.indexOf('function selectQuestions'),edge.indexOf('Deno.serve'))),helperContext);
-vm.runInNewContext(stripTypeScriptTypes(edge.slice(edge.indexOf('function publicQuestion'),edge.indexOf('function nextDue'))),helperContext);
+vm.runInNewContext(stripTypeScriptTypes(edge.slice(edge.indexOf('function publicQuestion'),edge.indexOf('async function authUser'))),helperContext);
 for(const [track,bank] of Object.entries(banks)){
  const first=bank[0],stats=[{question_id:first.id,last_result:false,mastery:0,due_at:new Date(0).toISOString()}];
  for(const mode of ['learn','random','exam','missed','marked']){
@@ -232,13 +233,24 @@ for(const [track,bank] of Object.entries(banks)){
 }
 
 has(js,'startTimer(a.simulatedMinutes,a.createdAt)','Resuming timed practice must retain elapsed wall time');
-has(edge,'s.track!==track','Answers must reject a mismatched session track');
+has(answerMigration,'track=p_track for update','Answers must reject a mismatched session track under the session lock');
 // Execute the authenticated handler against an isolated in-memory REST transport.
 let handler;const storedSessions=new Map(),storedStats=[],testUser='qa-user';
 const response=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json'}});
 const fakeFetch=async(url,init={})=>{
  const u=new URL(url),method=init.method||'GET',name=u.pathname.split('/').at(-1);
  if(u.pathname==='/auth/v1/user')return response(init.headers?.Authorization==='Bearer qa-token'?{id:testUser}:{},init.headers?.Authorization==='Bearer qa-token'?200:401);
+ if(name==='answer_written_prep'){
+  // Transport fixture only; real SQL locking, retry and rollback behavior is
+  // exercised by training-submission-sql.mjs against PostgreSQL.
+  const p=JSON.parse(init.body),s=storedSessions.get(p.p_session_id);
+  if(!s||s.user_id!==p.p_user_id||s.track!==p.p_track)return response({status:404,error:'Study session not found.'});
+  const q=s.question_payload[s.current_index];
+  if(p.p_question_index!==s.current_index||q.id!==p.p_question_id)return response({status:409,code:'stale_question',error:'Question changed.'});
+  q.result=p.p_choice===q.correct;q.selected=p.p_choice;q.answerMastery=78;
+  s.score+=Number(q.result);s.current_index++;s.answered=s.current_index;
+  storedStats.push({user_id:p.p_user_id,track:p.p_track});return response({session:s});
+ }
  if(name==='written_prep_sessions'){
   if(method==='POST'){const row={...JSON.parse(init.body),id:`session-${storedSessions.size}`,created_at:new Date().toISOString()};storedSessions.set(row.id,row);return response([row])}
   const id=u.searchParams.get('id')?.replace(/^eq\./,'');
@@ -258,8 +270,9 @@ for(const track of Object.keys(banks)){
  ok(start.status===200&&data.session?.question.area===topic,`${track}: authenticated subject session failed`);
  const saved=storedSessions.get(data.session.id),item=saved.question_payload[0];
  const wrongTrack=track==='ppl'?'foi':'ppl';
- ok((await invoke({action:'answer',track:wrongTrack,sessionId:saved.id,choice:item.correct})).status===404,`${track}: mismatched track must fail before a stat write`);
- const answered=await invoke({action:'answer',track,sessionId:saved.id,choice:item.correct}),result=await answered.json();
+ const answer={action:'answer',track,sessionId:saved.id,choice:item.correct,questionId:item.id,questionIndex:0,submissionId:'00000000-0000-4000-8000-000000000001'};
+ ok((await invoke({...answer,track:wrongTrack})).status===404,`${track}: mismatched track must fail before a stat write`);
+ const answered=await invoke(answer),result=await answered.json();
  ok(answered.status===200&&result.feedback?.correct===true,`${track}: authenticated grading failed`);
  ok(result.feedback?.choiceExplanations?.[item.correct].startsWith('Correct.'),`${track}: feedback rationale order failed`);
  ok(storedStats.at(-1)?.user_id===testUser&&storedStats.at(-1)?.track===track,`${track}: answer persistence must use authenticated owner and track`);

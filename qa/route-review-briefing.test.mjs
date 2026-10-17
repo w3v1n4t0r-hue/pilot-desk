@@ -6,6 +6,11 @@ import {airports} from '../assets/route-review-workspace/data.mjs';
 import {handleBriefing,handleResolve} from '../src/server/route-review-service.mjs';
 let count=0;async function test(n,f){await f();count++;console.log('PASS '+n);}
 const r=['KGFK','KMOT','KXWA'].map(id=>airports.find(p=>p.id===id)),s={departure:'2026-10-09T18:00',tas:120,burn:10,windDir:0,windSpeed:0,windMode:'manual',onboard:50,taxi:1,alternate:3,extra:2,reserveMinutes:45};
+await test('Shared route airport flags survive Alaska, Hawaii and Canadian imports',()=>{
+ const points=[{id:'PANC',lat:61.17,lon:-150,nonAirport:false},{id:'PHNL',lat:21.3,lon:-157.9,nonAirport:false},{id:'CYVR',lat:49.19,lon:-123.18,nonAirport:false},{id:'KFIX',lat:48,lon:-100,nonAirport:true}];
+ const [imported]=routeImport(JSON.stringify({points}));
+ assert.deepEqual(imported.tokens.map(p=>p.nonAirport),[false,false,false,true]);
+});
 await test('PilotDesk saved-flight format transfers nested planning inputs',()=>{const [f]=routeImport(JSON.stringify({route:'KGFK DCT KMOT KXWA',tas:'135',burn:'11.5',planning:{departureUtc:'2026-10-09T18:30Z',onboard:'55',taxi:'1',reserveMinutes:'60',phases:{cruiseAltitude:'9500'}}}));assert.deepEqual(f.tokens.map(p=>p.id),['KGFK','KMOT','KXWA']);assert.equal(f.settings.tas,135);assert.equal(f.settings.burn,11.5);assert.equal(f.settings.departure,'2026-10-09T18:30');assert.equal(f.settings.altitude,9500);assert.equal(f.settings.onboard,55);});
 await test('Multi-flight JSON exposes each route and loop routes are retained',()=>{const rows=routeImport(JSON.stringify({flights:[{route:'KGFK KMOT KGFK'},{route:'KFAR KBIS'}]}));assert.equal(rows.length,2);assert.deepEqual(rows[0].tokens.map(x=>x.id),['KGFK','KMOT','KGFK']);});
 await test('Coordinate import preserves named fixes without inventing airport status',()=>{const [f]=routeImport(JSON.stringify({points:[{id:'KGFK',lat:47.9,lon:-97.1,type:'PA'},{id:'FIX01',lat:48,lon:-100,type:'EA'},{id:'KXWA',lat:48.2,lon:-103.7,type:'PA'}]}));assert.equal(f.tokens[1].nonAirport,true);assert.equal(f.tokens[1].lon,-100);assert.equal(f.tokens[0].nonAirport,false);});

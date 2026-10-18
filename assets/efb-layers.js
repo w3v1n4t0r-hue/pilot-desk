@@ -885,7 +885,6 @@ function start(RP,L){
       if(!weather){state.enabled[key]=false;if(input)input.checked=false;toggleLayer(key,false);}
       else if(!paidWeather&&saved.enabled?.[key]===true){state.enabled[key]=true;if(input)input.checked=true;toggleLayer(key,true);}
     }
-    panel.querySelector('#rpPirepFilter').disabled=false;
     const accessNote=panel.querySelector('#rpProWeatherAccess');
     if(accessNote)accessNote.hidden=weather;
     if(!route){routeContextSeq++;clearTimeout(briefRefreshTimer);briefLoading=false;briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;for(const key of Object.keys(briefData))delete briefData[key];}

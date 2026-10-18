@@ -6,13 +6,11 @@
   const slides = [...root.querySelectorAll('[data-slide]')];
   const track = root.querySelector('.hp-track');
   const status = root.querySelector('[data-slide-status]');
-  const motionChoice = root.querySelector('[data-hero-motion]');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const duration = 5000;
   const travel = 950;
-  let motionOverride = false;
-  try { motionOverride = sessionStorage.getItem('pilotdesk.hero.motion') === 'on'; } catch {}
-  const motionOff = () => reduced.matches && !motionOverride;
+  // The homepage starts its approved animation automatically for every visitor.
+  const motionOverride = true;
+  const motionOff = () => false;
   let index = 0, remaining = duration, started = 0, timer = 0, transitionTimer = 0;
   let manualPause = false, focused = false, visible = true, transitioning = false, openingReady = false, touching = false;
   let touchStart = null;
@@ -34,7 +32,6 @@
     stopClock();
     root.classList.toggle('is-reduced', motionOff());root.classList.toggle('motion-opt-in', motionOverride);
     root.classList.toggle('is-suspended', !visible || document.hidden);
-    motionChoice.hidden=!reduced.matches;motionChoice.textContent=motionOff()?'Play animations':'Reduce motion';motionChoice.setAttribute('aria-pressed',String(motionOverride));
     root.dataset.motionOverride = String(motionOverride);root.dataset.heroIndex = index;root.dataset.transitioning=String(transitioning);
     root.dataset.scenePaused = String(manualPause || motionOff() || !visible || document.hidden);
     for(const slide of slides){
@@ -85,23 +82,11 @@
   slides[0].classList.add('is-active');focused=focusWithin();
   root.addEventListener('focusin',()=>{focused=focusWithin();sync()});
   root.addEventListener('focusout',()=>queueMicrotask(()=>{focused=focusWithin();sync()}));
-  function enableMotion(){
-    motionOverride=true;manualPause=false;focused=false;remaining=duration;
-    try{sessionStorage.setItem('pilotdesk.hero.motion','on')}catch{}
-    slides[index]._heroOpening?.cancel();enter(slides[index]);sync();
-  }
-  motionChoice.addEventListener('click',()=>{
-    if(motionOff()){enableMotion();return}
-    motionOverride=false;manualPause=false;remaining=duration;
-    try{sessionStorage.removeItem('pilotdesk.hero.motion')}catch{}
-    slides[index]._heroOpening?.cancel();enter(slides[index]);sync();
-  });
   root.addEventListener('keydown',event=>{
     if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();show(index+(event.key==='ArrowRight'?1:-1),true)}
     if(event.code==='Space'&&!event.target.closest('button,a,input,textarea,select,[contenteditable]')){
       event.preventDefault();
-      if(motionOff()){enableMotion();return}
-      else manualPause=!manualPause;
+      manualPause=!manualPause;
       remaining=duration;focused=false;sync();
     }
   });
@@ -137,7 +122,6 @@
   function suspend(){sync()}
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;suspend()},{threshold:0}).observe(root);
   document.addEventListener('visibilitychange',suspend);window.addEventListener('pageshow',sync);
-  reduced.addEventListener('change',()=>{motionOverride=false;try{sessionStorage.removeItem('pilotdesk.hero.motion')}catch{}slides[index]._heroOpening?.cancel();slides[index].classList.remove('is-entering');slides[index].classList.add('is-settled');openingReady=true;remaining=duration;sync()});
   root.querySelectorAll('[data-scene-poster]').forEach(image=>{const fail=()=>{image.hidden=true;image.closest('[data-hero-scene]').querySelector('.hp-scene-unavailable').hidden=false};image.addEventListener('error',fail);if(image.complete&&!image.naturalWidth)fail()});
   const chart=new Image();
   chart.onerror=()=>root.querySelectorAll('[data-hero-scene=plan] .hp-scene-unavailable').forEach(message=>{message.hidden=false});

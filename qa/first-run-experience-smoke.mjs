@@ -7,9 +7,9 @@ const desk=fs.readFileSync('assets/home-desk.js','utf8');
 const css=fs.readFileSync('assets/home-desk.css','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 
-check(home.includes('id="pdHomeDesk"'),'Homepage return-to-work desk is missing');
-check(home.includes('id="pdHomeDeskItems"'),'Homepage desk item host is missing');
-check(home.includes('/assets/home-desk.js'),'Homepage does not load its desk runtime');
+check(home.includes('<HeroPrototype />'),'Approved task hero is missing');
+check(fs.readFileSync('src/components/HeroPrototype.astro','utf8').includes('/route-planner.html'),'Route-planning destination is missing');
+check(fs.readFileSync('src/components/Header.astro','utf8').includes('data-pd-account-link'),'Account discovery is missing');
 check(!home.includes('pd-first-run-grid'),'Duplicate first-run task grid returned');
 
 for(const key of ['pd-aircraft','pd-aircraft-active','pd-saved-flights','pd-favorites','pd-recent']){
@@ -28,4 +28,4 @@ if(failures.length){
   failures.forEach(x=>console.error(' - '+x));
   process.exit(1);
 }
-console.log('Homepage return-to-work checks passed: active aircraft, saved flight, pinned tool and recent tool paths are wired with mobile and offline support.');
+console.log('Homepage task discovery, account access, and retained saved-work runtime checks passed.');

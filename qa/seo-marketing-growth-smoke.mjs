@@ -22,7 +22,7 @@ check(toolsLegacy.includes('<link rel="canonical" href="https://www.pilot-desk.c
 check(sitemap.includes('<loc>https://www.pilot-desk.com/tools.html</loc>'),'Canonical sitemap missing tools directory');
 check(core.includes('<loc>https://www.pilot-desk.com/tools.html</loc>'),'Core sitemap missing tools directory');
 
-check(home.includes('Free aviation calculators →'),'Homepage calculator anchor is not search descriptive');
+check(read('src/components/HeroPrototype.astro').includes('Explore calculators'),'Homepage calculator anchor is not search descriptive');
 check(siteData.includes("'Free aviation calculators'"),'Canonical site navigation/search data lost calculator anchor wording');
 
 check(schools.includes('<title>PilotDesk for Flight Schools & CFIs | Free Student Resources</title>'),'Flight-school marketing title missing');

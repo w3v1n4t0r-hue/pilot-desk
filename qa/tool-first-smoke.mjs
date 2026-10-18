@@ -2,6 +2,8 @@ import fs from 'node:fs';
 
 const read=p=>fs.readFileSync(p,'utf8');
 const home=read('src/pages/index.astro');
+checkHero();
+function checkHero(){if(!home.includes('<HeroPrototype />'))throw new Error('Homepage must expose the approved four task scenes');}
 const tools=read('src/pages/tools.astro');
 const data=read('src/data/site.mjs');
 const experience=read('assets/experience.css');
@@ -15,9 +17,6 @@ const failures=[];
 const check=(ok,msg)=>{if(!ok)failures.push(msg)};
 
 for(const task of ['Plan a Flight','Use a Calculator','Study for a Written'])check(data.includes(task),`shared homepage data missing primary task ${task}`);
-check(home.includes('pd-home-hero-links')&&home.includes('pdHomeWind'),'Homepage must preserve primary actions and the interactive tool example');
-check(home.includes('data-pd-home-account'),'homepage must keep account discovery near primary tasks');
-check(home.includes('id="popular-tools"')&&home.includes('id="pdHomeDesk"')&&home.includes('/tools.html'),'homepage must preserve fast tool discovery without dumping the full inventory');
 check(data.includes("['/daily/', 'Play Daily'"),'shared homepage model must retain Daily as a fourth task');
 check(tools.includes('pdToolDirectorySearch')&&tools.includes('pdToolDirectoryGroup')&&tools.includes('/assets/tools-directory.js'),'calculator directory must remain searchable/filterable');
 check(tools.includes('pdToolCount')&&!tools.includes('47 tools'),'calculator directory must use the live inventory count instead of a hard-coded total');

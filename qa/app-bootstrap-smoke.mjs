@@ -38,7 +38,7 @@ for(const needle of ['Plan a Flight','Use a Calculator','Study for a Written','P
 for(const needle of ["label: 'Tools'","label: 'Plan'","label: 'Weather'","label: 'Learn'"])check(siteData.includes(needle),`shared global navigation is missing ${needle}`);
 check(siteData.includes("['/tools.html', 'Free aviation calculators'")||siteData.includes("['/tools.html', 'All calculators'"),'Tools navigation must expose the calculator directory');
 check(siteData.includes("['/daily/', 'Daily challenge'"),'Learn navigation must expose PilotDesk Daily');
-check(astroHome.includes('data-pd-home-account'),'homepage must preserve account discovery markup');
+check(read('src/components/Header.astro').includes('data-pd-account-link'),'homepage must preserve account discovery markup');
 check(astroHeader.includes('navSections')&&astroHeader.includes('section.items.map'),'Astro header must render the shared navigation model');
 for(const needle of ['window.PILOTDESK_NAV_CORE','navigation-search.js','data-pd-account-link','Sign in','scheduleAccountHydration'])check(nav.includes(needle),`global navigation runtime is missing ${needle}`);
 

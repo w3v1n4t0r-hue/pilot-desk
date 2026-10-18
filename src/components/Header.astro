@@ -31,5 +31,5 @@ const navGlyphs = {
       </div>
     ))}
   </nav>
-  <div class="pd-header-actions" aria-label="Search and account"><a class="pd-account-link" href="/account.html" data-pd-account-link><span class="pd-account-avatar" hidden>PD</span><span class="pd-account-text">Sign in</span></a></div>
+  <div class="pd-header-actions" aria-label="Search and account">{(path==='/'||path==='/index.html'||path.startsWith('/prototypes/home-hero')) && <><a class="pd-plans-link" href="/pricing.html">Plans</a><div class="pd-search-wrap"><label class="pd-site-search"><input type="search" aria-label="Search PilotDesk" placeholder="Crosswind, VMC, IFR alternate…" /><kbd class="pd-search-key" aria-hidden="true">/</kbd></label></div></>}<a class="pd-account-link" href="/account.html" data-pd-account-link><span class="pd-account-avatar" hidden>PD</span><span class="pd-account-text">Sign in</span></a></div>
 </header>

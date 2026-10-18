@@ -25,7 +25,7 @@ check(layout.includes('<Header />')&&layout.includes('<Footer />'),'BaseLayout m
 check(header.includes("import { navSections }"),'Astro header must use shared navigation data');
 check(data.includes("label: 'Tools'")&&data.includes("label: 'Plan'")&&data.includes("label: 'Weather'")&&data.includes("label: 'Learn'"),'shared navigation taxonomy is incomplete');
 check(['Plan a Flight','Use a Calculator','Study for a Written','Play Daily'].every(x=>data.includes(`'${x}'`)),'shared homepage data must preserve the four primary jobs');
-check(home.includes('data-pd-home-account'),'Astro homepage must keep account discovery near the top');
+check(header.includes('data-pd-account-link'),'Shared header must keep account discovery available');
 check(tools.includes('pdToolDirectorySearch')&&tools.includes('/assets/tools-directory.js'),'Astro calculator directory wiring is incomplete');
 check(bootstrap.includes('isAstroNative')&&bootstrap.includes("/assets/navigation-core.js")&&!bootstrap.includes("/assets/navigation-data.js"),'legacy bootstrap must respect native Astro structure and use the lightweight shared navigation core');
 check(nav.includes('PILOTDESK_NAV_CORE')&&nav.includes("data-pd-astro-shell")&&nav.includes("/assets/navigation-search.js"),'global navigation must preserve Astro-rendered markup and lazy-load search data');

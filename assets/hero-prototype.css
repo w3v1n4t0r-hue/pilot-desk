@@ -1,0 +1,61 @@
+/* The prototype is a full-bleed stage; the header is its navigation. */
+.pd-hero-prototype main.shell{padding:0!important;max-width:none!important;width:100%!important;margin:0!important}
+.hp{--hp-header-height:64px;--hp-height:max(560px,calc(100svh - var(--hp-header-height)));--hp-travel:950ms;position:relative;width:100%;padding:0;color:var(--text,#f5f5f5);background:#050506}
+.hp *{box-sizing:border-box}.hp [hidden]{display:none!important}
+.hp-sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.hp-slide{position:relative;min-height:var(--hp-height);height:var(--hp-height);overflow:hidden;background:#050506}
+.hp-enhance .hp-viewport{overflow:hidden;touch-action:pan-y pinch-zoom}.hp-enhance .hp-track{display:flex}.hp-enhance .hp-slide{flex:0 0 100%;min-width:0}
+.hp.is-ready .hp-track{transform:translateX(calc(var(--hp-index,1)*-100%));transition:transform var(--hp-travel) cubic-bezier(.65,0,.35,1)}.hp.is-normalizing .hp-track{transition:none!important}
+.hp-scene{position:absolute;inset:0;width:100%;height:100%;isolation:isolate}
+.hp-webgl{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:1}
+.hp-copy{position:absolute;left:clamp(24px,5vw,96px);top:clamp(32px,6vh,72px);z-index:3;max-width:500px;pointer-events:none}
+.hp-copy::before{content:'';position:absolute;inset:-32px -80px -32px -32px;z-index:-1;background:linear-gradient(90deg,#050506e8,#050506a8 60%,#05050600);pointer-events:none}
+.hp-copy h2{font-size:clamp(26px,2.6vw,38px);font-weight:550;letter-spacing:-.045em;line-height:1.08;color:#f5f5f5;margin:0 0 20px}.hp-copy h2 em{font-style:normal;color:#b3b8c0}.hp-copy p{font-size:15px;line-height:1.7;color:#c0c4cb;max-width:40ch;margin:0}
+.hp-action{position:absolute;left:50%;bottom:56px;transform:translateX(-50%);perspective:1000px;z-index:4}
+.hp-cta{position:relative;display:inline-flex;justify-content:center;align-items:center;min-height:56px;min-width:218px;padding:16px 30px;background:#f0f0ec;color:#11151a!important;border:1px solid #ffffff8a;font-size:14px;font-weight:650;letter-spacing:.01em;text-decoration:none!important;transform-style:preserve-3d;transform:rotateX(13deg);box-shadow:0 22px 30px #0007;white-space:nowrap}
+.hp-cta::after{content:'';position:absolute;left:-1px;right:-1px;top:100%;height:8px;background:#7b8489;transform-origin:top;transform:rotateX(-90deg);border:1px solid #737d83}
+.hp-cta::before{content:'';position:absolute;left:100%;top:-1px;bottom:-1px;width:8px;background:#a2adb4;transform-origin:left;transform:rotateY(90deg)}
+.hp.is-ready .hp-cta{visibility:hidden;opacity:0}.hp.is-ready .is-settled .hp-cta{visibility:visible;opacity:1;animation:hp-action-emerge 750ms cubic-bezier(.2,.8,.2,1) both}
+.hp .hp-cta:hover,.hp .hp-cta:focus-visible{transform:translate3d(0,-3px,22px) rotateX(5deg)!important;background:white}.hp a:focus-visible{outline:2px solid #8ed8f8;outline-offset:7px}.hp:focus-visible{outline:1px solid #8ed8f880;outline-offset:-2px}
+@keyframes hp-action-emerge{from{opacity:0;transform:translate3d(0,38px,-150px) rotateX(70deg)}to{opacity:1;transform:translate3d(0,0,16px) rotateX(13deg)}}
+/* Connected accordion hinges, not independently flipping image tiles. */
+.hp-paper-stage{position:absolute;inset:0;overflow:hidden;perspective:1400px}
+.hp-paper-root{position:absolute;width:max(100%,150vh);height:100%;left:50%;top:0;transform:translateX(-50%);transform-style:preserve-3d}
+.hp-paper-column{position:absolute;left:0;top:0;width:25%;height:100%;transform-origin:0 0;transform-style:preserve-3d}.hp-paper-column-nested{width:100%;left:100%}
+.hp-paper-row{position:absolute;left:0;top:0;width:100%;height:33.3334%;transform-origin:0 0;transform-style:preserve-3d}.hp-paper-row-nested{height:100%;top:100%}
+.hp-paper-face{position:absolute;inset:0;background-image:url('/assets/hero-scenes/orlando-sectional.webp');background-size:400% 300%;background-position:calc(var(--col)*100%/3) calc(var(--row)*50%);backface-visibility:hidden;border:1px solid #7b735522}
+.hp-paper-face::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0001,transparent 5%,#fff1 95%,#0002)}
+.hp.is-ready .is-entering .hp-paper-column-nested{animation:hp-column-open 600ms cubic-bezier(.2,.7,.2,1) var(--delay) both}.hp.is-ready .is-entering .hp-paper-row-nested{animation:hp-row-open 700ms cubic-bezier(.2,.7,.2,1) var(--delay) both}
+@keyframes hp-column-open{from{transform:rotateY(var(--angle))}to{transform:rotateY(0)}}@keyframes hp-row-open{from{transform:rotateX(var(--angle))}to{transform:rotateX(0)}}
+.hp.is-suspended .is-entering *,.hp[data-scene-paused=true] .is-entering *{animation-play-state:paused!important}
+.hp-scene-poster{position:absolute;inset:0;display:block}.hp-scene-poster img{display:block;width:100%;height:100%;object-fit:cover}
+.hp-scene-unavailable{position:absolute;inset:45% 20%;text-align:center;color:#a1a1aa;font-size:12px}.hp-scene.has-webgl>:not(.hp-webgl){visibility:hidden}
+.hp.is-reduced .hp-track{transition:none!important}.hp.is-reduced .hp-cta{visibility:visible!important;opacity:1!important;animation:none!important}
+@media(max-width:650px){
+ .hp{--hp-height:max(540px,calc(100svh - var(--hp-header-height)))}
+ .hp-copy{top:28px;left:24px;max-width:280px}.hp-copy h2{font-size:26px;margin-bottom:12px}.hp-copy p{font-size:13px;max-width:26ch}.hp-copy::before{inset:-28px -40px -26px -24px}
+ .hp-action{bottom:40px}.hp-cta{min-height:52px;min-width:200px;padding:14px 24px;font-size:13px}
+ .hp-paper-face{background-image:url('/assets/hero-scenes/orlando-sectional-mobile.webp')}
+}
+@media(prefers-reduced-motion:reduce){.hp:not(.motion-opt-in) .hp-track{transition:none!important}.hp:not(.motion-opt-in) .hp-paper-root *,.hp:not(.motion-opt-in) .hp-cta{animation:none!important}}
+.hp.motion-opt-in .hp-track{transition:transform 950ms cubic-bezier(.65,0,.35,1)!important}.hp.motion-opt-in .is-entering .hp-paper-column-nested{animation-duration:600ms!important}.hp.motion-opt-in .is-entering .hp-paper-row-nested{animation-duration:700ms!important}.hp.motion-opt-in .is-settled .hp-cta{animation-duration:750ms!important}
+
+/* Incoming worlds hold their initial pose until the horizontal move settles. */
+.hp-frozen{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+.hp-scene.has-webgl>.hp-frozen{visibility:visible}
+.hp[data-webgl=ready] .is-preparing .hp-scene-poster{visibility:hidden}
+.hp .is-preparing .hp-paper-column-nested{transform:rotateY(var(--angle))}
+.hp .is-preparing .hp-paper-row-nested{transform:rotateX(var(--angle))}
+.hp[data-webgl=ready] .is-entering .hp-scene-poster{visibility:hidden}
+.hp.is-normalizing .hp-track{transition:none!important}
+
+.hp-kicker{display:block;margin-bottom:18px;color:#a5acb6;font-size:11px;font-weight:600;letter-spacing:.12em;line-height:1.5}
+@media(max-width:650px){.hp-kicker{font-size:10px;margin-bottom:14px;letter-spacing:.09em}.hp-copy{max-width:calc(100% - 48px)}.hp-copy p{max-width:34ch}}
+
+.hp-controls{display:none}.hp.is-ready .hp-controls{display:block}
+.hp-arrow{position:absolute;top:52%;z-index:6;width:48px;height:64px;display:grid;place-items:center;padding:10px;border:0;border-radius:0;background:#05050655;color:#d6dbe1;font:300 28px system-ui;cursor:pointer;transform:translateY(-50%)}
+.hp-prev{left:12px}.hp-next{right:12px}.hp-arrow:hover{background:#050506b0;color:#fff}.hp-arrow:focus-visible{outline:2px solid #8ed8f8;outline-offset:3px}
+.hp.is-ready .hp-viewport{cursor:grab}.hp.is-dragging .hp-viewport{cursor:grabbing;user-select:none}.hp.is-dragging .hp-track{transition:none!important}
+@media(max-width:650px){.hp-arrow{width:40px;height:56px;top:57%;font-size:24px}.hp-prev{left:4px}.hp-next{right:4px}}
+.hp.is-ready .hp-controls{position:absolute;inset:0;z-index:20;pointer-events:none}.hp-controls .hp-arrow{pointer-events:auto}
+.hp-scene{pointer-events:none}.hp-controls .hp-arrow{transform:translateY(-50%)!important}

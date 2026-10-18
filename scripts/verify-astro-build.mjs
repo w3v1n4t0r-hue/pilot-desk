@@ -33,7 +33,7 @@ for (const rel of [
 const home = fs.existsSync(path.join(dist, 'index.html')) ? fs.readFileSync(path.join(dist, 'index.html'), 'utf8') : '';
 const tools = fs.existsSync(path.join(dist, 'tools.html')) ? fs.readFileSync(path.join(dist, 'tools.html'), 'utf8') : '';
 
-for (const marker of ['data-pd-astro-native="1"', 'Plan a flight', 'Open tools', 'Study', 'pdHomeWind', 'Three daily questions', 'pdHomeDesk']) {
+for (const marker of ['data-pd-astro-native="1"', 'data-hero-prototype', 'Open route planner', 'Explore calculators', 'Prepare for your checkride', 'Check aviation weather', 'Slideshow navigation']) {
   if (!home.includes(marker)) failures.push(`Astro homepage missing ${marker}`);
 }
 for (const marker of ['data-pd-astro-native="1"', 'pdToolDirectorySearch', 'pdToolDirectory']) {

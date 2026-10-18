@@ -18,16 +18,9 @@ const styles=read('assets/styles.css');
 const legacyCss=read('assets/styles-legacy.css');
 const sw=read('sw.js');
 
-for(const phrase of [
-  'Plan the flight.',
-  'Core tools work without an account','FAA charts · AWC weather',
-  'The tools you reach for.','Three daily questions','You recognize the answer. Can you explain it?',
-  'Your account','SOURCES','Common questions'
-]) check(home.includes(phrase),'Homepage structure/copy changed or missing: '+phrase);
-for(const phrase of ['Plan a Flight','Use a Calculator','Study for a Written']) check(siteData.includes(phrase),'Homepage quick-start action missing: '+phrase);
-check(home.includes('id="pdHomeSearch"')&&home.includes('<kbd>/</kbd>'),'Homepage slash-search shortcut missing');
+check(home.includes('<HeroPrototype />')&&home.includes('<HomePlans />'),'Approved hero and pricing must be on the homepage');
 check(!/47 Flight Tools|Search 47 browser-based tools/i.test(toolsPage),'Tools directory must not advertise a stale hardcoded inventory count');
-check(home.includes('id="pdHomeDesk"')&&home.includes('Pick up where you left off'),'Returning-user resume desk missing');
+check(header.includes('data-pd-account-link'),'Account access must remain in the header');
 check(homeCss.includes('.pd-home-desk[hidden]{display:none!important}'),'Returning-user desk does not have restrained active-state emphasis');
 check(homeCss.includes('.pd-home-command:hover')&&homeCss.includes('color:var(--silver2)'),'Slash-search control is not visually discoverable');
 check(!/purple|magenta|pink/i.test(homeCss),'Homepage CSS reintroduced purple/pink SaaS color language');

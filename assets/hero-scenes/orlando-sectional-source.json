@@ -1,0 +1,12 @@
+{
+  "source": "https://tiles.arcgis.com/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/services/VFR_Sectional/MapServer",
+  "zoom": 11,
+  "x": 558,
+  "y": 852,
+  "columns": 6,
+  "rows": 4,
+  "center": {
+    "latitude": 28.53,
+    "longitude": -81.32
+  }
+}

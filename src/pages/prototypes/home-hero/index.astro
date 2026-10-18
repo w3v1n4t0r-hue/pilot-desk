@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HeroPrototype from '../../../components/HeroPrototype.astro';
+import HomePlans from '../../../components/HomePlans.astro';
+---
+<BaseLayout
+  title="PilotDesk | Plan. Calculate. Learn."
+  description="Flight planning, aviation calculators, weather, and flight training in one workspace."
+  canonical="/prototypes/home-hero/"
+  robots="noindex,nofollow"
+  bodyClass="pd-home-2026 pd-hero-prototype"
+>
+  <link slot="head" rel="stylesheet" href="/assets/hero-prototype.css" />
+  <script slot="head" is:inline>document.documentElement.classList.add('hp-enhance');</script>
+  <HeroPrototype />
+  <div class="pd-home-wrap"><HomePlans /></div>
+</BaseLayout>

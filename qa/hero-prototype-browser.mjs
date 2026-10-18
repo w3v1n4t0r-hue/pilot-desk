@@ -11,7 +11,7 @@ try{
  console.log('PASS action appears after 1.5-second unfold');
  assert.deepEqual(await page.locator('.pd-nav-item').evaluateAll(xs=>xs.map(x=>x.dataset.section)),['Tools','Plan','Weather','Learn']);
  assert.equal(await page.locator('h1').count(),1);assert.equal((await page.locator('meta[name=robots]').getAttribute('content')).includes('noindex'),new URL(url).pathname.startsWith('/prototypes/'));
- assert.equal(await page.locator('.hp button').count(),2);
+ assert.equal(await page.locator('.hp-arrow').count(),2);
  assert(!/illustrative|demonstration|anatomy of|auto.*5 seconds|hover.*pause|local preview|pilot.s workspace/i.test(await page.locator('.hp').innerText()));
  assert.deepEqual(await page.locator('[data-slide] .hp-cta').evaluateAll(xs=>xs.map(x=>x.getAttribute('href'))),['/route-planner.html','/tools.html','/flight-training.html','/weather.html']);
  for(const route of ['/route-planner.html','/tools.html','/flight-training.html','/weather.html'])assert.equal((await page.request.get(new URL(route,url).href)).status(),200);

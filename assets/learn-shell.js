@@ -14,7 +14,7 @@ const routes=[
 const path=location.pathname;
 if(!routes.some(([p])=>p.endsWith('/')?path.startsWith(p):path===p))return;
 function init(){
- const main=document.querySelector('main');if(!main||document.querySelector('.pd-learn-subnav'))return;
+ const main=document.querySelector('main');if(!main||main.querySelector('[data-learn-hub]')||document.querySelector('.pd-learn-subnav'))return;
  const nav=document.createElement('nav');nav.className='pd-learn-subnav';nav.setAttribute('aria-label','PilotDesk learning tools');
  routes.forEach(([href,label])=>{const a=document.createElement('a');a.href=href;a.textContent=label;if(path===href||(href.endsWith('/')&&path.startsWith(href)))a.setAttribute('aria-current','page');nav.append(a)});
  const hero=main.querySelector('.pd-prep-hero,.pd-gap-hero,.pd-page-hero,.pd-flight-hero,.pd-lab-hero,.calc-hero')||main.querySelector('h1')||main.firstElementChild;

@@ -5,10 +5,10 @@ import { createHash } from 'node:crypto';
 
 const root = process.cwd();
 const target = path.join(root, '.astro-public');
-const migratedPages = new Set(['index.html', 'tools.html']);
+const migratedPages = new Set(['index.html', 'tools.html', 'flight-training.html']);
 const excludedDirs = new Set([
   '.git', '.github', '.astro', '.astro-public', 'dist', 'node_modules',
-  'api', 'server', 'supabase', 'scripts', 'qa', 'src'
+  'api', 'server', 'supabase', 'scripts', 'qa', 'src', 'scrollcraft'
 ]);
 const publicRootNames = new Set([
   'robots.txt', 'ads.txt', 'sw.js', 'site.webmanifest', 'favicon.svg',

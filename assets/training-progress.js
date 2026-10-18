@@ -7,8 +7,26 @@ const oral={ppl:'private',ira:'instrument',cpl:'commercial',multi:'multi',cfi:'c
 const get=(k)=>{try{return localStorage.getItem(k)||''}catch{return''}};
 const set=(k,v)=>{try{if(v)localStorage.setItem(k,v);else localStorage.removeItem(k)}catch{}};
 function daysUntil(v){if(!v)return null;const d=new Date(v+'T12:00:00'),n=new Date();n.setHours(12,0,0,0);return Math.ceil((d-n)/86400000)}
+function returningStudy(goal){
+ const hub=$('[data-learn-hub]');if(!hub)return;
+ hub.querySelectorAll('.learn-rating').forEach(a=>{
+  const selected=!!names[goal]&&a.getAttribute('href')===links[goal];
+  a.classList.toggle('is-current-training',selected);
+  if(selected)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current');
+  let label=a.querySelector('.learn-saved-rating');
+  if(selected&&!label){label=document.createElement('small');label.className='learn-saved-rating';label.textContent='Your rating';a.querySelector('h3').append(' ',label)}
+  if(!selected)label?.remove();
+ });
+ const entry=$('#learn-return'),link=$('#learn-continue'),context=$('#learn-continue-context');
+ const written=get('pd-written-track'),writtenNames={ppl:'Private Pilot',ira:'Instrument Rating',cpl:'Commercial Pilot',cfi:'CFI',cfii:'CFII',atp:'ATP',foi:'Fundamentals of Instruction'};
+ const hasWritten=Object.hasOwn(writtenNames,written),hasGoal=Object.hasOwn(names,goal);
+ if(!entry||!link||!context)return;entry.hidden=!hasWritten&&!hasGoal;
+ if(hasWritten){link.href='/written-prep.html?track='+encodeURIComponent(written);context.textContent=writtenNames[written]+' \u00b7 Written prep'}
+ else if(hasGoal){link.href=links[goal];context.textContent=names[goal]+' \u00b7 Rating guide'}
+}
 function render(){
  const goal=get('pd-training-goal'),date=get('pd-training-date'),name=names[goal]||'';
+ returningStudy(goal);
  const g=$('#pdTrainingGoalLocal'),d=$('#pdTrainingDateLocal');if(g)g.value=goal;if(d)d.value=date;
  const next=$('#pdTrainingNext'),count=$('#pdTrainingCountdown');
  if(!name){if(next)next.hidden=true;if(count)count.hidden=true;return}

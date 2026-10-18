@@ -2,12 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 const clamp=THREE.MathUtils.clamp;
-const studyTopics=[
- {title:'Weather',lines:['WEATHER'],subtitle:'THE BIG PICTURE',subjects:['METAR & TAF','Fronts & stability','Clouds & visibility']},
- {title:'Medical factors',lines:['MEDICAL','FACTORS'],subtitle:'THE PILOT’S CONDITION',subjects:['Fitness for flight','Fatigue & hypoxia','Medication & impairment']},
- {title:'Aerodynamics',lines:['AERODYNAMICS'],subtitle:'HOW THE AIRCRAFT FLIES',subjects:['Lift, drag & angle of attack','Stability & control','Stalls & energy']},
- {title:'Navigation',lines:['NAVIGATION'],subtitle:'THE ROUTE AHEAD',subjects:['Charts & airspace','Pilotage & navigation','Planning & alternates']}
-];
+import {studyTopics} from './learn-topics.js';
 function pageTexture(topic){
  const cover=topic==='cover',canvas=document.createElement('canvas');canvas.width=1536;canvas.height=2048;const c=canvas.getContext('2d');c.scale(2,2);
  c.fillStyle=cover?'#283b31':'#e6e3d7';c.fillRect(0,0,768,1024);
@@ -31,7 +26,7 @@ export async function createLearnScene(host){
  scene.add(new THREE.HemisphereLight(0xffffff,0x1d2926,1.3));const light=new THREE.DirectionalLight(0xfff4df,2);light.position.set(-3,5,7);scene.add(light);
  const loader=new GLTFLoader();let assets;
  try{assets=await loader.loadAsync('/assets/learn-scenes/field-notebook.glb')}catch(error){renderer.dispose();env.dispose();renderer.domElement.remove();throw error}
- const book=assets.scene;scene.add(book);
+ const book=assets.scene;book.getObjectByName('PageRibbon')?.removeFromParent();scene.add(book);
  const textures=new Set();const anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
  function apply(name,texture,object=book){textures.add(texture);texture.anisotropy=anisotropy;const surface=object.getObjectByName(name);if(!surface)return;const old=surface.material;const material=new THREE.MeshStandardMaterial({map:texture,roughness:.88,metalness:0});surface.material=material;old.dispose();return material}
  apply('CoverLabel',pageTexture('cover'));
@@ -61,13 +56,13 @@ export async function createLearnScene(host){
  function available(){return !disposed&&onScreen&&!document.hidden&&!contextLost}
  function scheduleMotion(){if(!available()||frame||timer||animating)return;
  const resume=()=>{timer=0;waiting=0;if(!available())return;
- if(!motion){const opening=idleOpen<1;motion={opening,startingOpen:idleOpen,duration:opening?1500:2100,elapsed:0,started:0};if(!opening){sheetFront.map=topicTextures[(spreadIndex+1)%studyTopics.length];sheetBack.map=topicTextures[(spreadIndex+2)%studyTopics.length];rightPage.map=topicTextures[(spreadIndex+3)%studyTopics.length]}}
+ if(!motion){const opening=idleOpen<1&&progress<.42;if(!opening)idleOpen=1;motion={opening,startingOpen:idleOpen,duration:opening?1500:2100,elapsed:0,started:0};if(!opening){sheetFront.map=topicTextures[(spreadIndex+1)%studyTopics.length];sheetBack.map=topicTextures[(spreadIndex+2)%studyTopics.length];rightPage.map=topicTextures[(spreadIndex+3)%studyTopics.length]}}
  motion.started=performance.now();animating=true;
  const step=now=>{if(!available()){stopMotion();return}const t=Math.min(1,(motion.elapsed+now-motion.started)/motion.duration),e=t*t*(3-2*t);
  if(motion.opening)idleOpen=motion.startingOpen+(1-motion.startingOpen)*e;else{turn=e;sheet.visible=true;bendPage(e)}render();
  if(t<1)frame=requestAnimationFrame(step);else{const opening=motion.opening;frame=0;animating=false;motion=null;if(!opening){sheet.visible=false;turn=0;turns++;spreadIndex=(spreadIndex+2)%studyTopics.length;currentSpread();host.dataset.pageTurns=String(turns)}render();scheduleMotion()}};
  frame=requestAnimationFrame(step)};
- if(motion){resume();return}const delay=waiting||(idleOpen<1?900:4200);deadline=performance.now()+delay;timer=setTimeout(resume,delay)}
+ if(motion){resume();return}const delay=waiting||(idleOpen<1||turns===0?900:4200);deadline=performance.now()+delay;timer=setTimeout(resume,delay)}
  const stage=host.closest('.learn-stage');let renderedWidth=0,renderedHeight=0;
  function render(p=progress){if(disposed||contextLost)return;progress=clamp(p,0,1);const width=host.clientWidth,height=host.clientHeight,compact=width<390;
  if(width!==renderedWidth||height!==renderedHeight){renderedWidth=width;renderedHeight=height;renderer.setSize(Math.max(1,width),Math.max(1,height),false);camera.aspect=width/Math.max(1,height);camera.position.z=Math.max(7.8,9.5/Math.max(camera.aspect,.4));camera.updateProjectionMatrix()}

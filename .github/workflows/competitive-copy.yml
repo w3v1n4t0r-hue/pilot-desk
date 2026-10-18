@@ -6,6 +6,11 @@ on:
       - 'src/pages/index.astro'
       - 'src/data/site.mjs'
       - 'flight-training.html'
+      - 'src/pages/flight-training.astro'
+      - 'src/scripts/learn-*.js'
+      - 'src/scripts/learn-entry.jsx'
+      - 'assets/learn-hub.css'
+      - 'qa/learn-*-browser.mjs'
       - 'assets/home-desk.js'
       - 'assets/training-progress.css'
       - 'assets/features.js'
@@ -57,6 +62,8 @@ jobs:
           python3 -m http.server 4173 --bind 127.0.0.1 --directory dist > /tmp/pilotdesk-preview.log 2>&1 &
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
           node qa/competitive-copy-browser.mjs
+          SITE_URL=http://127.0.0.1:4173 LEARN_SHOTS=qa-artifacts/competitive-copy/learn node qa/learn-hub-browser.mjs
+          SITE_URL=http://127.0.0.1:4173 LEARN_SHOTS=qa-artifacts/competitive-copy/learn node qa/learn-page-turn-browser.mjs
           node qa/tool-startup-browser.mjs
       - name: Check airport information panel
         env:

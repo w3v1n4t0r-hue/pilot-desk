@@ -101,3 +101,17 @@
 .pd-learn-page .learn-return a{color:#d6e5db;font-size:14px;text-decoration:underline;text-underline-offset:4px;min-height:32px;display:inline-flex;align-items:center;gap:18px}
 .pd-learn-page .learn-return>span{color:#aeb2b8;font-size:12px}
 .pd-learn-page .learn-saved-rating{display:inline-block;margin-left:6px;color:#bedacc;font:10px/1.4 sans-serif;letter-spacing:0;text-transform:none}
+
+/* A physical page turn remains available without a GPU-backed renderer. */
+.pd-learn-page .learn-css-book{position:absolute;inset:18% 12% 10%;container-type:inline-size;transform:perspective(900px) rotateX(13deg) rotateZ(-6deg);transform-style:preserve-3d;background:#283b31;border:6px solid #283b31;box-shadow:0 5px 0 #a5aa9d,0 9px 0 #283b31}
+.pd-learn-page .learn-css-page{position:absolute;inset:0;padding:7% 6%;background:linear-gradient(90deg,#d3d3c6,#e6e3d7 9%,#e6e3d7 94%,#d5d5c9);color:#263e32;overflow:hidden;box-sizing:border-box;backface-visibility:hidden}
+.pd-learn-page .learn-css-left{right:50%;border-right:2px solid #526254}
+.pd-learn-page .learn-css-right{left:50%;border-left:2px solid #526254}
+.pd-learn-page .learn-css-leaf{position:absolute;inset:0 0 0 50%;transform-origin:left;transform-style:preserve-3d;z-index:1}
+.pd-learn-page .learn-css-front{transform:translateZ(.5px)}
+.pd-learn-page .learn-css-back{transform:rotateY(180deg) translateZ(.5px)}
+.pd-learn-page .learn-css-page .learn-css-imprint{display:block;font:clamp(4px,1.3cqw,8px)/1.5 monospace;color:#7a8575;letter-spacing:0;border-bottom:1px solid #b4bbac;padding-bottom:5%;white-space:nowrap}
+.pd-learn-page .learn-css-page .learn-css-title{font:600 clamp(9px,3.2cqw,19px)/1.2 sans-serif;letter-spacing:0;text-transform:uppercase;margin:8% 0 12%;overflow-wrap:anywhere}
+.pd-learn-page .learn-css-page .learn-css-subtitle{font:clamp(4px,1.2cqw,7px)/1.4 monospace;margin:0 0 8%;color:#6b7665}
+.pd-learn-page .learn-css-page .learn-css-subject{display:block;font:clamp(5px,1.7cqw,10px)/1.6 sans-serif;border-bottom:1px solid #bfc4b6;padding:3% 0}
+.pd-learn-page .learn-css-page .learn-css-colophon{position:absolute;bottom:6%;font:clamp(3px,1cqw,6px)/1 monospace;color:#7a8575;white-space:nowrap;padding:0;border:0}

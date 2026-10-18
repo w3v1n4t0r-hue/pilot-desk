@@ -3,3 +3,5 @@ dist/
 .astro/
 .astro-public/
 .DS_Store
+
+qa-artifacts/

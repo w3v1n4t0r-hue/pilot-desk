@@ -8,7 +8,7 @@ const target = path.join(root, '.astro-public');
 const migratedPages = new Set(['index.html', 'tools.html']);
 const excludedDirs = new Set([
   '.git', '.github', '.astro', '.astro-public', 'dist', 'node_modules',
-  'api', 'server', 'supabase', 'scripts', 'qa', 'src'
+  'api', 'server', 'supabase', 'scripts', 'qa', 'src', 'scrollcraft', 'qa-artifacts'
 ]);
 const publicRootNames = new Set([
   'robots.txt', 'ads.txt', 'sw.js', 'site.webmanifest', 'favicon.svg',

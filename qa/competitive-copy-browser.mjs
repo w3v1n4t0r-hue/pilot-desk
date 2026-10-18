@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {createRequire} from 'node:module';
-const {chromium}=createRequire(import.meta.url)('playwright');
+const {chromium}=createRequire(import.meta.url)(process.env.PILOTDESK_PLAYWRIGHT||'playwright');
 const base=process.env.PILOTDESK_BASE_URL||'http://127.0.0.1:4173';
 const browser=await chromium.launch({headless:true,...(process.env.PILOTDESK_BROWSER_PATH?{executablePath:process.env.PILOTDESK_BROWSER_PATH}:{})});
 await fs.mkdir('qa-artifacts/competitive-copy',{recursive:true});
@@ -9,7 +9,7 @@ try{
  const context=await browser.newContext({serviceWorkers:'block'});
  const page=await context.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.stack||e.message));
- for(const width of [320,390,768,1280,1920]){
+ for(const width of (process.env.PILOTDESK_TEST_WIDTHS||'320,390,768,1280,1920').split(',').map(Number)){
   await page.setViewportSize({width,height:900});
   for(const path of ['/','/pricing.html','/written-prep.html','/learn/checkride-lab/','/route-planner.html','/about.html','/for-flight-schools.html','/for-cfis.html','/embed.html','/aircraft.html','/flights.html','/flight-training.html']){
    const response=await page.goto(base+path,{waitUntil:'networkidle'});
@@ -17,15 +17,13 @@ try{
    assert.equal(await page.locator('h1').count(),1,path+' has one heading');
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${path} overflows at ${width}px`);
    if(path==='/'){
-    await page.locator('#pdHomeWind').fill('30');
-    assert.equal(await page.locator('#pdHomeCross').textContent(),'15.0 kt');
-    assert.equal(await page.locator('#pdHomeHead').textContent(),'26.0 kt');
-    assert.match(await page.locator('#pdHomeWindLink').getAttribute('href'),/windSpeed=30/);
+    assert.equal(await page.locator('[data-slide]').count(),4);
+    const destinations=await page.locator('[data-slide] .hp-cta').evaluateAll(as=>as.map(a=>a.getAttribute('href')));
+    assert.deepEqual(destinations,['/route-planner.html','/tools.html','/flight-training.html','/weather.html']);
+    await page.locator('[data-slide].is-active').waitFor();
+    if(width===390){const first=await page.locator('[data-hero-prototype]').getAttribute('data-hero-index');await page.waitForFunction(first=>document.querySelector('[data-hero-prototype]').dataset.heroIndex!==first,first,{timeout:10000})}
     assert.match(await page.locator('#plans').textContent(),/\$5\/month/);
     assert.match(await page.locator('#plans').textContent(),/do not sync automatically/);
-    await page.locator('#pdHomeDeparture').fill('KGFK');
-    await page.locator('#pdHomeDestination').fill('KFAR');
-    assert.equal(await page.locator('.pd-home-route-form').evaluate(form=>form.checkValidity()),true);
     if(width===390||width===1280){
      await page.screenshot({path:`qa-artifacts/competitive-copy/home-${width}.png`,fullPage:true});
     }
@@ -44,11 +42,12 @@ try{
     assert.equal(await page.evaluate(()=>location.hash),'#rpNavlogPanel');
    }
    if(path==='/flight-training.html'){
-    await page.locator('.pd-learn-subnav').waitFor();
-    assert(await page.locator('.pd-learn-subnav').evaluate(el=>el.getBoundingClientRect().top<document.querySelector('.pd-training-goals').getBoundingClientRect().top));
-    assert(await page.locator('.pd-learn-subnav').evaluate(el=>[...el.children].every(a=>a.scrollWidth<=a.clientWidth+1)),'Study tab text fits its own control');
-    assert(await page.locator('.pd-training-ratings .pd-hub-card').last().evaluate(el=>Math.abs(el.getBoundingClientRect().width-el.parentElement.getBoundingClientRect().width)<3),'Last rating fills the final row');
-    assert(await page.locator('.pd-training-goals').evaluate(el=>el.getBoundingClientRect().top<document.querySelector('#pdTrainingProgress').getBoundingClientRect().top));
+    assert.equal(await page.locator('.pd-learn-subnav').count(),0);
+    assert.equal(await page.locator('.learn-rating').count(),7);
+    assert.equal(await page.locator('.learn-track').count(),2);
+    await page.locator('.learn-jump a[href="#ratings"]').click();
+    assert.equal(await page.evaluate(()=>document.activeElement.id),'ratings');
+    assert(await page.locator('.learn-rating').evaluateAll(as=>as.every(a=>a.scrollWidth<=a.clientWidth+1)),'rating text fits');
     if(width===390||width===1280)await page.screenshot({path:`qa-artifacts/competitive-copy/study-${width}.png`,fullPage:true});
    }
    if(path==='/about.html'){
@@ -66,25 +65,29 @@ try{
    console.log(`PASS ${width}px ${path}`);
   }
  }
- // Exercise a real return visit without an account or synthetic progress score.
+ // Exercise a rating-guide return without a prior written-prep preference.
  await page.goto(base+'/flight-training.html');
+ await page.evaluate(()=>localStorage.removeItem('pd-written-track'));
  await page.locator('#pdTrainingGoalLocal').selectOption('cfi');
  await page.locator('#pdTrainingSaveLocal').click();
- await page.goto(base+'/');
- await page.locator('[data-pd-home-desk="STUDY GOAL"]').waitFor({state:'visible'});
- assert.equal(await page.locator('[data-pd-home-desk="STUDY GOAL"]').getAttribute('href'),'/training/cfi.html');
- assert(await page.locator('#pdHomeDesk').evaluate(el=>el.getBoundingClientRect().top<document.querySelector('.pd-home-hero').getBoundingClientRect().top));
+ await page.goto(base+'/flight-training.html');
+ await page.locator('#learn-return:not([hidden])').waitFor();
+ assert.equal(await page.locator('#learn-continue').getAttribute('href'),'/training/cfi.html');
+ assert.equal(await page.locator('.learn-rating[aria-current="true"] h3').textContent(),'CFI Your rating');
  await page.goto(base+'/calculators/crosswind/');
  await page.getByRole('button',{name:'Pin tool',exact:false}).click();
- await page.goto(base+'/');
- await page.locator('[data-pd-home-desk="PINNED TOOL"]').filter({hasText:'Crosswind'}).waitFor({state:'visible'});
+ await page.reload();
+ await page.getByRole('button',{name:'Pinned',exact:false}).waitFor();
+ assert.equal(await page.getByRole('button',{name:'Pinned',exact:false}).getAttribute('aria-pressed'),'true');
  const other=await context.newPage();
  await other.goto(base+'/flight-training.html');
  await other.locator('#pdTrainingGoalLocal').selectOption('multi');
  await other.locator('#pdTrainingSaveLocal').click();
- await page.waitForFunction(()=>document.querySelector('[data-pd-home-desk="STUDY GOAL"]')?.getAttribute('href')==='/training/multiengine.html');
+ await page.goto(base+'/flight-training.html');
+ assert.equal(await page.locator('#learn-continue').getAttribute('href'),'/training/multiengine.html');
+ assert.equal(await page.locator('#pdTrainingGoalLocal').inputValue(),'multi');
  await other.close();
- console.log('PASS study goal, calculator pin, return visit, and cross-tab refresh');
+ console.log('PASS study goal, calculator pin, return visit, and shared storage');
  await page.setViewportSize({width:390,height:900});
  await page.goto(base+'/');
  await page.locator('[data-menu]').click();

@@ -10,9 +10,13 @@
     "preview": "astro preview"
   },
   "dependencies": {
+    "@bsmnt/scrollytelling": "0.3.3",
     "@vercel/analytics": "2.0.1",
     "astro": "7.3.2",
+    "gsap": "3.15.0",
     "motion": "14.2.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "three": "0.186.1"
   }
 }

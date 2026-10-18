@@ -12,7 +12,7 @@ try{
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'overflow at '+width);
   const initial=Number(await page.locator('.learn-canvas-host').getAttribute('data-progress'));
   await page.screenshot({path:out+'/learn-'+width+'-start.png'});
-  const pageHeight=await page.evaluate(()=>document.documentElement.scrollHeight);assert(pageHeight<(width<=700?3000:2200),'compact page height '+width+' '+pageHeight);console.log('HEIGHT',width,pageHeight);
+  const hubHeight=await page.locator('[data-learn-hub]').evaluate(el=>el.getBoundingClientRect().height);assert(hubHeight<(width<=700?3000:2200),'compact Learn content height '+width+' '+hubHeight);console.log('LEARN CONTENT HEIGHT',width,hubHeight); // Shared header/footer typography varies by operating system.
   await page.evaluate(()=>window.scrollTo(0,450));await page.waitForTimeout(700);
   const middle=Number(await page.locator('.learn-canvas-host').getAttribute('data-progress'));
   if(width>700){const boxes=await page.locator('.learn-track').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().top));assert(Math.abs(boxes[0]-boxes[1])<2,'practice choices should sit side by side')}

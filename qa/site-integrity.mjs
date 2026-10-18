@@ -20,6 +20,7 @@ function localExists(url, file=''){
     return fs.existsSync(path.join(root,outputRoot,p));
   }
   const candidates=[p,path.join(p,'index.html')];
+  if(p.endsWith('.html')) candidates.push(path.join('src','pages',p.replace(/\.html$/,'.astro')));
   return candidates.some(x=>fs.existsSync(x));
 }
 

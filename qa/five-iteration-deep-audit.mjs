@@ -126,7 +126,7 @@ for(const [file,html] of htmlByFile){
   const styles=[...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map(m=>m[1]).join('\n');
   if(/animation\s*:/i.test(styles)&&!/prefers-reduced-motion/i.test(styles))add(notes,4,file,'page-local animation lacks page-local reduced-motion guard');
   const hugeFixed=[...styles.matchAll(/(?:width|min-width)\s*:\s*(\d{3,})px/gi)].map(m=>Number(m[1])).filter(n=>n>=700);
-  if(hugeFixed.length&&!/@media\s*\([^)]*max-width/i.test(styles))add(hard,4,file,'large fixed-width local CSS without responsive media rule');
+  if(hugeFixed.length&&!/@media\s*\([^)]*(?:max-width|width\s*<=)/i.test(styles))add(hard,4,file,'large fixed-width local CSS without responsive media rule');
   if(/position\s*:\s*fixed/i.test(styles)&&!/max-width|width\s*:\s*min\(|inset/i.test(styles))add(notes,4,file,'fixed-position local UI should be reviewed at narrow widths');
 }
 const responsive=fs.existsSync('assets/responsive-polish.css')?fs.readFileSync('assets/responsive-polish.css','utf8'):'';

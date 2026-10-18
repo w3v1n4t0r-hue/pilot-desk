@@ -37,6 +37,12 @@ vm.runInNewContext(efb.slice(efb.indexOf('async function loadRouteContext'),efb.
 await layerContext.loadRouteContext();assert.ok(renders>0,'Free route brief must render its feature preview without fetching');
 assert.match(efb,/pilotdesk:billing',syncProAccess/,'Logout and plan changes must update controls');
 assert.match(efb,/renderGeoLayer\(key,geojson\)\{\s+if\(PRO_LAYERS/,'Old responses must not render paid overlays');
+const syncSource=efb.slice(efb.indexOf('function syncProAccess(){'),efb.indexOf("document.addEventListener('pilotdesk:billing',syncProAccess)"));
+let movedFilter=null;
+const syncContext={hasFeature:()=>false,PRO_LAYERS:[],panel:{querySelector:()=>null},document:{getElementById:()=>movedFilter},routeContextSeq:0,clearTimeout(){},briefRefreshTimer:0,briefLoading:false,briefWx:{},briefData:{},paidWeather:false,paidBrief:false,renderBrief(){},syncLayerSummary(){}};
+vm.runInNewContext(syncSource,syncContext);
+assert.doesNotThrow(()=>syncContext.syncProAccess(),'Billing refresh must tolerate a missing or reparented PIREP control');
+movedFilter={disabled:true};syncContext.syncProAccess();assert.equal(movedFilter.disabled,false,'Reparented free PIREP control must stay enabled');
 const pricing=read('pricing.html');
 for(const word of ['PRO · FLIGHT PLANNING','PRO · CHECKRIDE PREP','Try two subjects free','Basic charts, METARs, PIREPs, radar and the navlog stay free.'])assert.ok(pricing.includes(word),word);
 const lab=read('assets/checkride-lab.js');

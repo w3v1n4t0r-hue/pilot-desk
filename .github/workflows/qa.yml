@@ -30,6 +30,8 @@ jobs:
         run: npm run build
       - name: Check Astro migration
         run: node qa/astro-migration.mjs
+      - name: Check cinematic page composition
+        run: node qa/sitewide-scrollcraft.mjs
       - name: Check JavaScript syntax
         run: |
           find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check

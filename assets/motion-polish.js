@@ -75,7 +75,39 @@
        {duration:170,easing:'cubic-bezier(.22,.72,.18,1)'});
    }).observe(editor,{attributes:true,attributeFilter:['hidden']});
  }
- function init(){homeEntrance();homeWind();trackValues();trackLoading();panels()}
+ function siteCinema(){
+   document.body.classList.add('pd-motion-ready');
+   const hero=document.querySelector('[data-pd-cinematic]');
+   if(!hero)return;
+   if(!window.ScrollCraft){
+     [...document.scripts].find(script=>script.src.includes('/assets/scrollcraft-engine.'))?.addEventListener('load',siteCinema,{once:true});
+     return;
+   }
+   if(hero.dataset.pdCinemaMounted)return;
+   hero.dataset.pdCinemaMounted='true';
+   const main=hero.closest('main');
+   function size(){hero.style.setProperty('--pd-sc-width',document.documentElement.clientWidth+'px')}
+   size();window.addEventListener('resize',size,{passive:true});
+   const headings=[...main.querySelectorAll('h2')].filter(el=>!el.closest('form,[role=dialog],.leaflet-container,.rp-workspace,.pd-sc-hero,[hidden]'));
+   headings.forEach(el=>el.classList.add('pd-sc-heading'));
+   if('IntersectionObserver'in window){
+     const reveal=new IntersectionObserver(entries=>{
+       entries.forEach(({target,isIntersecting})=>{
+         if(!isIntersecting)return;
+         target.style.setProperty('--pd-sc-revealed',1);
+         play(target,[{opacity:.55,transform:'translateY(9px)'},{opacity:1,transform:'none'}],{duration:500,easing:'cubic-bezier(.2,.7,.2,1)'});
+         reveal.unobserve(target);
+       });
+     },{threshold:.15});headings.forEach(el=>reveal.observe(el));
+   }
+   const instance=window.ScrollCraft.mount(main);
+   window.addEventListener('pagehide',event=>{if(!event.persisted)instance.destroy()});
+   hero.querySelector('.pd-sc-enter')?.addEventListener('click',()=>{
+     const target=document.getElementById('pdWorkSurface');
+     if(target)setTimeout(()=>target.focus({preventScroll:true}),0);
+   });
+ }
+ function init(){homeEntrance();homeWind();trackValues();trackLoading();panels();siteCinema()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
  else init();
 })();

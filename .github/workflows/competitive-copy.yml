@@ -35,6 +35,10 @@ on:
       - 'pricing.html'
       - 'written-prep.html'
       - 'learn/checkride-lab/index.html'
+      - 'assets/motion-polish.*'
+      - 'assets/scrollcraft-engine.js'
+      - 'scripts/compose-cinematic-pages.mjs'
+      - 'qa/sitewide-scrollcraft*'
       - 'qa/competitive-copy-browser.mjs'
       - '.github/workflows/competitive-copy.yml'
 permissions:
@@ -58,6 +62,7 @@ jobs:
           for i in $(seq 1 20); do curl -fsS http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
           node qa/competitive-copy-browser.mjs
           node qa/tool-startup-browser.mjs
+          SITE_URL=http://127.0.0.1:4173 SITE_SHOTS=qa-artifacts/scrollcraft node qa/sitewide-scrollcraft-browser.mjs
       - name: Check airport information panel
         env:
           PILOTDESK_TEST_ROOT: dist
@@ -71,4 +76,6 @@ jobs:
         if: always()
         with:
           name: competitive-copy-browser
-          path: qa-artifacts/competitive-copy
+          path: |
+            qa-artifacts/competitive-copy
+            qa-artifacts/scrollcraft

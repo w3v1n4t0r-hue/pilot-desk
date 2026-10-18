@@ -5,7 +5,7 @@ import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),{chromium}=require(process.env.PILOTDESK_PLAYWRIGHT||'playwright-core');
 const base=process.env.SITE_URL||'http://127.0.0.1:4189';
 const out=process.env.SITE_SHOTS||'../../outputs/sitewide-scrollcraft';fs.mkdirSync(out,{recursive:true});
-const browser=await chromium.launch({executablePath:'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe'});
+const browser=await chromium.launch({executablePath:process.env.PILOTDESK_BROWSER_PATH||(process.platform==='win32'?'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe':undefined)});
 const routes=['/calculators/crosswind/','/calculators/density-altitude/','/calculators/fuel-required/','/weight-balance.html','/tools.html','/weather.html','/route-planner.html','/flight-training.html','/pricing.html','/about.html','/guides/crosswind-component.html','/account.html'];
 try{
  const results=[];

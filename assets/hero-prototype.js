@@ -6,6 +6,7 @@
   const slides = [...root.querySelectorAll('[data-slide]')];
   const track = root.querySelector('.hp-track');
   const status = root.querySelector('[data-slide-status]');
+  const motionChoice = root.querySelector('[data-hero-motion]');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const duration = 5000;
   const travel = 950;
@@ -33,6 +34,7 @@
     stopClock();
     root.classList.toggle('is-reduced', motionOff());root.classList.toggle('motion-opt-in', motionOverride);
     root.classList.toggle('is-suspended', !visible || document.hidden);
+    motionChoice.hidden=!reduced.matches;motionChoice.textContent=motionOff()?'Play animations':'Reduce motion';motionChoice.setAttribute('aria-pressed',String(motionOverride));
     root.dataset.motionOverride = String(motionOverride);root.dataset.heroIndex = index;root.dataset.transitioning=String(transitioning);
     root.dataset.scenePaused = String(manualPause || motionOff() || !visible || document.hidden);
     for(const slide of slides){
@@ -83,11 +85,22 @@
   slides[0].classList.add('is-active');focused=focusWithin();
   root.addEventListener('focusin',()=>{focused=focusWithin();sync()});
   root.addEventListener('focusout',()=>queueMicrotask(()=>{focused=focusWithin();sync()}));
+  function enableMotion(){
+    motionOverride=true;manualPause=false;focused=false;remaining=duration;
+    try{sessionStorage.setItem('pilotdesk.hero.motion','on')}catch{}
+    slides[index]._heroOpening?.cancel();enter(slides[index]);sync();
+  }
+  motionChoice.addEventListener('click',()=>{
+    if(motionOff()){enableMotion();return}
+    motionOverride=false;manualPause=false;remaining=duration;
+    try{sessionStorage.removeItem('pilotdesk.hero.motion')}catch{}
+    slides[index]._heroOpening?.cancel();enter(slides[index]);sync();
+  });
   root.addEventListener('keydown',event=>{
     if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();show(index+(event.key==='ArrowRight'?1:-1),true)}
     if(event.code==='Space'&&!event.target.closest('button,a,input,textarea,select,[contenteditable]')){
       event.preventDefault();
-      if(motionOff()){motionOverride=true;manualPause=false;try{sessionStorage.setItem('pilotdesk.hero.motion','on')}catch{}}
+      if(motionOff()){enableMotion();return}
       else manualPause=!manualPause;
       remaining=duration;focused=false;sync();
     }

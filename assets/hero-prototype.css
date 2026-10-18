@@ -59,3 +59,6 @@
 @media(max-width:650px){.hp-arrow{width:40px;height:56px;top:57%;font-size:24px}.hp-prev{left:4px}.hp-next{right:4px}}
 .hp.is-ready .hp-controls{position:absolute;inset:0;z-index:20;pointer-events:none}.hp-controls .hp-arrow{pointer-events:auto}
 .hp-scene{pointer-events:none}.hp-controls .hp-arrow{transform:translateY(-50%)!important}
+
+.hp .hp-motion-choice{position:absolute;right:24px;bottom:14px;z-index:21;min-height:40px;padding:8px 12px;background:#101215;color:#d6dbe1;border:1px solid #515660;border-radius:0;font:500 12px system-ui;cursor:pointer}
+.hp-motion-choice:focus-visible{outline:2px solid #8ed8f8;outline-offset:3px}

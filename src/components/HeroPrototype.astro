@@ -1,0 +1,73 @@
+---
+const scenes = [
+  {
+    "key": "plan",
+    "name": "Plan",
+    "label": "01 / ROUTE PLANNER",
+    "title": "The magenta line isn't the whole story.",
+    "copy": "Plot your route. See the weather, airspace, and details that matter along the way.",
+    "href": "/route-planner.html",
+    "action": "Open route planner",
+    "description": "An Orlando-area sectional physically unfolds along connected paper hinges."
+  },
+  {
+    "key": "tools",
+    "name": "Tools",
+    "label": "02 / E6B CALCULATORS",
+    "title": "Because \"the app said so\" isn't enough.",
+    "copy": "Run the numbers. See the math behind them.",
+    "href": "/tools.html",
+    "action": "Explore calculators",
+    "description": "A traditional E6B flight computer expands into its rotating slide-rule layers."
+  },
+  {
+    "key": "learn",
+    "name": "Learn",
+    "label": "03 / LEARN & CHECKRIDE PREP",
+    "title": "The checkride isn't multiple choice.",
+    "copy": "Practice explaining the why, not just memorizing the answer.",
+    "href": "/flight-training.html",
+    "action": "Prepare for your checkride",
+    "description": "A bound training notebook physically opens on its spine before the supplied Cessna 172 SP model lifts from its pages."
+  },
+  {
+    "key": "weather",
+    "name": "Weather",
+    "label": "04 / AVIATION WEATHER",
+    "title": "Green on radar isn't a green light.",
+    "copy": "Look at the forecasts, conditions, and hazards before you make the call.",
+    "href": "/weather.html",
+    "action": "Check aviation weather",
+    "description": "An upward-tilted radar reflector rotates on a separate fork mount inside a fixed radome, clear of its support post."
+  }
+];
+function rows(col, row = 0) {
+  return `<div class="hp-paper-row${row ? ' hp-paper-row-nested' : ''}" style="--col:${col};--row:${row};--delay:${700 + row * 50}ms;--angle:${row % 2 ? -180 : 180}deg"><div class="hp-paper-face"></div>${row < 2 ? rows(col, row + 1) : ''}</div>`;
+}
+function columns(col = 0) {
+  return `<div class="hp-paper-column${col ? ' hp-paper-column-nested' : ''}" style="--delay:${col * 50}ms;--angle:${col % 2 ? -180 : 180}deg">${rows(col)}${col < 3 ? columns(col + 1) : ''}</div>`;
+}
+---
+<section class="hp" data-hero-prototype tabindex="0" aria-label="Discover PilotDesk" aria-roledescription="carousel" aria-describedby="hpKeyboardHelp">
+  <h1 class="hp-sr">Plan, calculate, check weather, and learn with PilotDesk.</h1>
+  <p class="hp-sr" id="hpKeyboardHelp">Use the left and right arrow keys to change scenes. Press Space to pause or resume animation.</p>
+  <div class="hp-viewport"><div class="hp-track">
+    {scenes.map(scene => <section class={`hp-slide hp-${scene.key}`} data-slide aria-label={scene.name} aria-roledescription="slide">
+      <div class={`hp-scene hp-${scene.key}-scene`} data-hero-scene={scene.key} role="img" aria-label={scene.description}>
+        {scene.key === 'plan' ? <div class="hp-paper-stage" aria-hidden="true"><div class="hp-paper-root" set:html={columns()} /></div> :
+          <picture class="hp-scene-poster"><source media="(max-width:650px)" srcset={`/assets/hero-scenes/${scene.key}-mobile.webp`} /><img data-scene-poster src={`/assets/hero-scenes/${scene.key}.webp`} alt="" width="1200" height="700" loading="lazy" decoding="async" /></picture>}
+        <span class="hp-scene-unavailable" hidden>Scene preview unavailable.</span>
+      </div>
+      <div class="hp-copy"><span class="hp-kicker">{scene.label}</span><h2>{scene.title}</h2><p>{scene.copy}</p></div>
+      <div class="hp-action"><a class="hp-cta" href={scene.href}>{scene.action}</a></div>
+    </section>)}
+  </div></div>
+  <div class="hp-controls" aria-label="Slideshow navigation"><button class="hp-arrow hp-prev" type="button" data-hero-prev aria-label="Previous slide">&#10094;</button><button class="hp-arrow hp-next" type="button" data-hero-next aria-label="Next slide">&#10095;</button></div>
+  <span class="hp-sr" data-slide-status role="status" aria-live="polite"></span>
+</section>
+<script is:inline defer src="/assets/hero-prototype.js"></script>
+<script>
+  const startScenes = () => import('../scripts/hero-scenes.js').then(({ initHeroScenes }) => initHeroScenes()).catch(() => {});
+  if ('requestIdleCallback' in window) window.requestIdleCallback(startScenes, { timeout: 1000 });
+  else setTimeout(startScenes, 200);
+</script>

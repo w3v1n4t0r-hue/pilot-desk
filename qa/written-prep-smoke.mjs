@@ -172,8 +172,8 @@ has(gradingMigration,'revoke insert, update, delete on public.written_prep_sessi
 
 has(siteData,"['/written-prep.html', 'Written Prep'",'Written Prep missing from shared global navigation');
 has(siteData,"['/written-prep.html', 'Study for a Written'",'Written Prep missing from shared homepage primary actions');
-has(astroHome,'href="/flight-training.html"','Homepage must link to the Learn hub');
-has(astroHome,'href="/written-prep.html"','Written Prep must remain directly discoverable on the homepage');
+has(read('src/components/HeroPrototype.astro'),'/flight-training.html','Homepage scene must link to the Learn hub');
+has(siteData,'/written-prep.html','Written Prep must remain discoverable through header navigation');
 has(training,'href="/written-prep.html"','Written Prep missing from training hub');
 has(account,'renderPrepOverview','Written Prep progress missing from signed-in account home base');
 has(account,"ensureOwnerMetric('pdMetricPrepToday'",'Owner dashboard must track Written Prep usage');

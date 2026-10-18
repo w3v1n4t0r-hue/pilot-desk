@@ -12,6 +12,7 @@
   "dependencies": {
     "@vercel/analytics": "2.0.1",
     "astro": "7.3.2",
-    "motion": "14.2.0"
+    "motion": "14.2.0",
+    "three": "0.186.1"
   }
 }

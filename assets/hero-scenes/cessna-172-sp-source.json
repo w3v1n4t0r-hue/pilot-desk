@@ -1,0 +1,13 @@
+{
+  "source": "User-supplied Cessna+172_SP.fbx",
+  "sourceSha256": "ae526d86e513bd67029ee2c1369c2e8dfdb9fc9c9dae8229af2d083a57d953f2",
+  "assetSha256": "2f5dc68ab429167225a5ce9dcb144218a910421d051008dd785c5c4949f159b0",
+  "triangles": 146788,
+  "changes": [
+    "Converted FBX geometry to indexed glTF binary",
+    "Normalized wing span to hero scale and centered bounds",
+    "Assigned neutral paint, cockpit glazing, rubber and propeller materials because source contains no texture maps",
+    "Preserved original mesh shapes; pivoted original propeller mesh for animation"
+  ],
+  "externalTextures": false
+}

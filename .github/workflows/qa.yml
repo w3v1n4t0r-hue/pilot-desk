@@ -216,6 +216,8 @@ jobs:
         run: node qa/public-layer-performance-tests.mjs
       - name: Check FAA airport import and runway calculations
         run: node qa/airport-data-tests.mjs
+      - name: Check airport symbol geometry and visibility
+        run: node qa/airport-symbol-tests.mjs
 
       - name: Verify METAR station models and units
         run: node qa/metar-model-tests.mjs

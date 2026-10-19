@@ -3,6 +3,7 @@ export async function mountPublicLayers(host){
  const definitions=await fetch('/assets/layer-catalog.json').then(r=>{if(!r.ok)throw Error();return r.json()});
  const key='pd-layer-test-v1',legacy={tfrs:'tfr',notams:'notams',pireps:'pirep',obstacles:'obstacles'},charts={'us/vfr':'sectional','us/tac':'terminal','us/ifrlow':'low','us/ifrhigh':'high'};
  let state={},activated=false;try{state=JSON.parse(localStorage.getItem(key)||'{}')||{}}catch{}
+ if(state.aero===undefined)state.aero=true;
  delete state.wxOpacity;if(state.wxStations==='windsaloft'){state.windsAloft=true;state.wxStations='category'}
  state.altitude=Math.max(3000,Math.min(39000,Number(state.altitude)||6000));
  const tabs=document.createElement('div');tabs.className='rp-layer-tabs';tabs.setAttribute('role','tablist');

@@ -1297,14 +1297,8187 @@ const privatePathQuestions=[
  curatedQuestion("ppl","private-path-emergency-priority","Emergency Planning","PA.IX","After an engine-power loss, a pilot becomes absorbed in troubleshooting while airspeed decays and the landing area passes behind. What priority has been lost?",["Completing every checklist line before selecting a landing area.", "Transmitting a detailed report before restoring airspeed control.", "Maintaining aircraft control and a usable landing plan while applying the approved procedure."],2,"Troubleshooting must not consume the attention needed to control the airplane and preserve landing options. Maintain the aircraft’s appropriate flight condition, select a viable landing plan and use the approved procedure without allowing checklist fixation to create loss of control.","FAA-S-ACS-6C PA.IX: emergency procedures",{"sourceUrl": "https://www.faa.gov/training_testing/testing/acs/private_airplane_acs_6.pdf", "difficulty": "applied", "reviewedAt": "2026-10-06", "choiceExplanations": ["Incorrect. A checklist does not justify losing control or passing the viable landing area.", "Incorrect. Communication is important but cannot replace control of the airplane.", "Correct. Troubleshooting must not consume the attention needed to control the airplane and preserve landing options. Maintain the aircraft’s appropriate flight condition, select a viable landing plan and use the approved procedure without allowing checklist fixation to create loss of control."]})
 ];
 
+// Original review batches approved for publication; independent instructor sign-off remains pending.
+const reviewedReleaseQuestions={
+  "ppl": [
+    {
+      "id": "PD-DRAFT-PPL-001",
+      "area": "Weight and balance",
+      "prompt": "An airplane weighs 2,250 lb at a CG of 40.0 inches. A 150 lb passenger is added at station 73.0 inches. What is the new CG?",
+      "options": [
+        "41.9 inches.",
+        "42.1 inches.",
+        "42.2 inches."
+      ],
+      "correct": 1,
+      "explanation": "(2,250 × 40 + 150 × 73) ÷ 2,400 = 42.0625 inches, rounded to 42.1.",
+      "reference": "PHAK Chapter 10: Weight and balance computations",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf",
+      "standardCode": "PA.I.F",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. This lies forward of the calculated weighted average. Use both the new total moment and the new total weight.",
+        "Correct. (2,250 × 40 + 150 × 73) ÷ 2,400 = 42.0625 inches, rounded to 42.1.",
+        "Incorrect. This results from dividing the passenger moment by the original weight before adding the resulting shift."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-002",
+      "area": "Navigation",
+      "prompt": "A true course is 082°. The wind correction angle is 6° right, variation is 9° west, and deviation is 2° east. What magnetic-compass heading should be flown?",
+      "options": [
+        "095°.",
+        "097°.",
+        "099°."
+      ],
+      "correct": 0,
+      "explanation": "True heading is 088°. Add west variation to obtain 097° magnetic; subtract east deviation to obtain 095° compass.",
+      "reference": "PHAK Chapter 16: Magnetic variation; compass deviation",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/phak",
+      "standardCode": "PA.I.D",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. True heading is 088°. Add west variation to obtain 097° magnetic; subtract east deviation to obtain 095° compass.",
+        "Incorrect. 097° is the magnetic heading before deviation is applied.",
+        "Incorrect. 099° adds rather than subtracts east deviation."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-003",
+      "area": "Wind components",
+      "prompt": "For this exercise, runway heading and wind direction are both referenced to magnetic north. The runway heading is 180° and the wind is from 210° at 20 knots. What are the approximate wind components?",
+      "options": [
+        "10 knots headwind; 17 knots from the right.",
+        "17 knots headwind; 10 knots from the left.",
+        "17 knots headwind; 10 knots from the right."
+      ],
+      "correct": 2,
+      "explanation": "The 30° angle gives 20 cos 30° = 17.3 knots headwind and 20 sin 30° = 10 knots crosswind from the right.",
+      "reference": "PHAK Chapter 11: Crosswind and headwind component charts",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "PA.I.F",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. This interchanges the sine and cosine components.",
+        "Incorrect. The magnitudes are correct, but wind from 210° is from the right of a 180° heading.",
+        "Correct. The 30° angle gives 20 cos 30° = 17.3 knots headwind and 20 sin 30° = 10 knots crosswind from the right."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-004",
+      "area": "Wake turbulence",
+      "prompt": "A light airplane will depart behind a large airplane from the same runway. With adequate runway available, which flight path best reduces exposure to the preceding airplane’s wake?",
+      "options": [
+        "Lift off at its rotation point and remain on its flight path.",
+        "Lift off after its rotation point and remain below its flight path.",
+        "Lift off before its rotation point and remain above its flight path."
+      ],
+      "correct": 2,
+      "explanation": "Vortices form at rotation and tend to descend. An earlier liftoff and a path above the preceding climb path reduce exposure; wind and separation still require consideration.",
+      "reference": "AIM 7-4: Wake Turbulence",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_4.html",
+      "standardCode": "PA.III",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Following the same path does not provide the vertical avoidance sought.",
+        "Incorrect. This places the light airplane in the region where descending vortices may be encountered.",
+        "Correct. Vortices form at rotation and tend to descend. An earlier liftoff and a path above the preceding climb path reduce exposure; wind and separation still require consideration."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-005",
+      "area": "Hydroplaning",
+      "prompt": "An airplane encounters reduced braking on a polished, rubber-coated part of a wet runway. The water film is very thin, speed is below that normally associated with dynamic hydroplaning, and the wheels have not locked. Which form of hydroplaning best fits these conditions?",
+      "options": [
+        "Viscous hydroplaning.",
+        "Reverted rubber hydroplaning.",
+        "Dynamic hydroplaning."
+      ],
+      "correct": 0,
+      "explanation": "Viscous hydroplaning can occur with a very thin water film on a smooth or rubber-coated surface, at speeds below dynamic hydroplaning.",
+      "reference": "AFH Chapter 9: Hydroplaning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "PA.I.F",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Viscous hydroplaning can occur with a very thin water film on a smooth or rubber-coated surface, at speeds below dynamic hydroplaning.",
+        "Incorrect. Reverted rubber hydroplaning follows heating during a prolonged locked-wheel skid, which is not described.",
+        "Incorrect. Dynamic hydroplaning is associated with greater speed and enough water to build a supporting wedge; the stated thin-film, smooth-surface conditions favor viscous hydroplaning."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-006",
+      "area": "Pressure altitude",
+      "prompt": "Airport elevation is 1,500 feet MSL and the altimeter setting is 29.42 inHg. Using 1,000 feet per inHg, what is the approximate pressure altitude?",
+      "options": [
+        "1,000 feet.",
+        "1,500 feet.",
+        "2,000 feet."
+      ],
+      "correct": 2,
+      "explanation": "Pressure altitude is approximately field elevation plus the standard-pressure correction: 1,500 + (29.92 − 29.42) × 1,000 = 2,000 feet. This is pressure altitude, not temperature-corrected density altitude.",
+      "reference": "PHAK Chapter 11: Pressure altitude",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "PA.I.F",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. This applies the pressure correction in the wrong direction.",
+        "Incorrect. Field elevation equals pressure altitude only when the setting is standard under this approximation.",
+        "Correct. Pressure altitude is approximately field elevation plus the standard-pressure correction: 1,500 + (29.92 − 29.42) × 1,000 = 2,000 feet. This is pressure altitude, not temperature-corrected density altitude."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-007",
+      "area": "Winds aloft",
+      "prompt": "A winds and temperatures aloft forecast at 30,000 feet contains the group 754447. What wind and temperature does it represent?",
+      "options": [
+        "250° true at 44 knots; −47°C.",
+        "250° true at 144 knots; −47°C.",
+        "250° true at 144 knots; +47°C."
+      ],
+      "correct": 1,
+      "explanation": "For encoded winds of 100 knots or more, subtract 50 from the direction code and add 100 to the speed. Temperatures above 24,000 feet are negative.",
+      "reference": "PHAK Chapter 13: Winds and temperatures aloft forecast",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/15_phak_ch13.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. This decodes the direction but omits the added 100 knots.",
+        "Correct. For encoded winds of 100 knots or more, subtract 50 from the direction code and add 100 to the speed. Temperatures above 24,000 feet are negative.",
+        "Incorrect. The wind is decoded correctly, but temperatures above 24,000 feet are negative in this forecast encoding."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-008",
+      "area": "Atmospheric stability",
+      "prompt": "Moist air is forced upward over a broad area. The lifted air is cooler than the surrounding air at the same altitude. Which weather is most consistent with this stable condition?",
+      "options": [
+        "Towering clouds with strong vertical currents.",
+        "Isolated cumulonimbus with gust fronts.",
+        "Layered clouds with comparatively smooth air."
+      ],
+      "correct": 2,
+      "explanation": "Cooler lifted air tends to resist further vertical displacement, favoring stratiform clouds and comparatively smooth conditions.",
+      "reference": "PHAK Chapter 12: Atmospheric stability; cloud types",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Strong vertical development is associated with instability rather than the stated stable condition.",
+        "Incorrect. Cumulonimbus and gust fronts indicate convective activity, not the stable lifting described.",
+        "Correct. Cooler lifted air tends to resist further vertical displacement, favoring stratiform clouds and comparatively smooth conditions."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-009",
+      "area": "Landing performance",
+      "prompt": "A POH landing chart gives 1,250 feet over a 50-foot obstacle for the applicable conditions. Its note requires a 10 percent increase for the specified runway condition. The pilot then applies a separate 20 percent planning margin to the corrected distance. What distance is required by this plan?",
+      "options": [
+        "1,625 feet.",
+        "1,650 feet.",
+        "1,750 feet."
+      ],
+      "correct": 1,
+      "explanation": "1,250 × 1.10 × 1.20 = 1,650 feet. These are hypothetical chart instructions, not universal corrections.",
+      "reference": "PHAK Chapter 11: Performance charts: landing distance",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "PA.I.F",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 1,625 feet adds both percentages to the original distance rather than applying the margin to the corrected distance.",
+        "Correct. 1,250 × 1.10 × 1.20 = 1,650 feet. These are hypothetical chart instructions, not universal corrections.",
+        "Incorrect. 1,750 feet is not produced by either correction specified in the stem."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-PPL-010",
+      "area": "Oxygen and night vision",
+      "prompt": "At night, a pilot climbs from near sea level to 8,000 feet MSL without supplemental oxygen. Which visual function can deteriorate before the pilot recognizes other symptoms of hypoxia?",
+      "options": [
+        "Color vision in bright sunlight.",
+        "Dark adaptation and night vision.",
+        "Near focusing caused by aging."
+      ],
+      "correct": 1,
+      "explanation": "The retina is sensitive to reduced oxygen; night vision can deteriorate at comparatively modest altitudes.",
+      "reference": "PHAK Chapter 17: Hypoxia; night vision",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
+      "standardCode": "PA.I.H",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Bright-light color vision is not the early night-flight vulnerability being tested.",
+        "Correct. The retina is sensitive to reduced oxygen; night vision can deteriorate at comparatively modest altitudes.",
+        "Incorrect. Presbyopia is an age-related focusing change, not the principal immediate altitude effect."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-011",
+      "area": "Humidity",
+      "prompt": "An unsaturated air mass cools without gaining or losing water vapor. Before saturation is reached, what happens to its relative humidity?",
+      "options": [
+        "It increases.",
+        "It decreases.",
+        "It remains constant."
+      ],
+      "correct": 0,
+      "explanation": "Cooling reduces the saturation capacity, increasing relative humidity.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 12: Relative humidity",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Cooling reduces the saturation capacity, increasing relative humidity.",
+        "Incorrect. Warming, rather than cooling, would reduce relative humidity under these conditions.",
+        "Incorrect. Constant water-vapor content does not imply constant relative humidity when temperature changes."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-012",
+      "area": "Dew point",
+      "prompt": "At the same pressure, air temperature and dew point converge as the air cools. What condition is approached?",
+      "options": [
+        "Maximum atmospheric pressure.",
+        "Saturation of the air.",
+        "Minimum water-vapor content."
+      ],
+      "correct": 1,
+      "explanation": "At the dew point, the existing water vapor is sufficient for saturation.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 12: Dew point and saturation",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The temperature–dew-point spread does not identify a pressure maximum.",
+        "Correct. At the dew point, the existing water vapor is sufficient for saturation.",
+        "Incorrect. Cooling to the dew point does not require removal of the existing water vapor."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-013",
+      "area": "Frontal weather",
+      "prompt": "Warm, moist air gradually overrides a shallow wedge of colder air. Which cloud pattern is most consistent with stable air in this lifting process?",
+      "options": [
+        "A broad area of layered clouds.",
+        "A narrow line of towering cumulus.",
+        "Isolated fair-weather cumulus."
+      ],
+      "correct": 0,
+      "explanation": "Gradual lifting of stable air favors widespread stratiform cloudiness.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 12: Warm fronts; stable air",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Gradual lifting of stable air favors widespread stratiform cloudiness.",
+        "Incorrect. Towering convective development requires instability not stated here.",
+        "Incorrect. Fair-weather cumulus reflects localized convective lifting rather than this broad overrunning process."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-014",
+      "area": "Frost contamination",
+      "prompt": "Before departure, a thin, rough frost layer remains on the wing. The airplane is below maximum gross weight. Why does the weight margin fail to resolve the hazard?",
+      "options": [
+        "The weight margin offsets the loss of maximum lift.",
+        "Additional runway restores clean-wing performance.",
+        "Frost can alter maximum lift and drag."
+      ],
+      "correct": 2,
+      "explanation": "Rough contamination can change the wing’s lift and drag characteristics even when total weight is below the limit.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 12: Frost; aircraft icing",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Reduced weight can improve some performance, but it does not cancel an unknown aerodynamic degradation or authorize a contaminated-wing departure.",
+        "Incorrect. More runway does not restore the clean wing’s stall and climb characteristics.",
+        "Correct. Rough contamination can change the wing’s lift and drag characteristics even when total weight is below the limit."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-015",
+      "area": "Icing and stall indications",
+      "prompt": "Ice changes a wing’s shape while the airplane remains at the same weight. Why may the clean-wing stall-speed marking no longer provide the expected margin?",
+      "options": [
+        "The contaminated wing must reach a higher critical angle of attack.",
+        "The airplane’s certified weight limit automatically increases.",
+        "The contaminated wing may stall at a higher speed."
+      ],
+      "correct": 2,
+      "explanation": "Ice can reduce maximum lift coefficient, raising stall speed and altering stall characteristics.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 12: Aircraft icing; effects on lift",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The stall may occur at a lower angle of attack; a higher critical angle is not assured.",
+        "Incorrect. Icing does not increase an approved weight limit.",
+        "Correct. Ice can reduce maximum lift coefficient, raising stall speed and altering stall characteristics."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-016",
+      "area": "Atmospheric lapse rates",
+      "prompt": "A rising parcel of unsaturated air expands as surrounding pressure decreases. Its temperature decreases primarily because",
+      "options": [
+        "the parcel gains water vapor.",
+        "energy is used in expansion.",
+        "the parcel absorbs heat from the surface."
+      ],
+      "correct": 1,
+      "explanation": "Expansion produces adiabatic cooling without requiring heat transfer to the surroundings.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 12: Adiabatic cooling",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Gaining moisture is not required for this cooling mechanism.",
+        "Correct. Expansion produces adiabatic cooling without requiring heat transfer to the surroundings.",
+        "Incorrect. Absorbing heat would oppose, rather than explain, the cooling described."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-017",
+      "area": "Pressure patterns",
+      "prompt": "In the Northern Hemisphere, surface friction causes wind around a low-pressure center to have which general pattern?",
+      "options": [
+        "Counterclockwise and inward.",
+        "Counterclockwise and outward.",
+        "Clockwise and outward."
+      ],
+      "correct": 0,
+      "explanation": "Friction reduces the Coriolis balance, allowing flow toward lower pressure while circulation remains counterclockwise.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 12: Wind patterns; friction",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Friction reduces the Coriolis balance, allowing flow toward lower pressure while circulation remains counterclockwise.",
+        "Incorrect. Counterclockwise circulation is appropriate, but surface flow converges rather than diverges.",
+        "Incorrect. Clockwise outward circulation is associated with a surface high."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-018",
+      "area": "Mechanical turbulence",
+      "prompt": "A light airplane approaches an airport downwind of a tree line in a strong surface wind. Where is turbulence from the trees most likely?",
+      "options": [
+        "On their leeward side.",
+        "Only above the cloud base.",
+        "Only on their windward side."
+      ],
+      "correct": 0,
+      "explanation": "Obstructions disturb the airflow and create turbulent eddies downwind.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 12: Mechanical turbulence",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/14_phak_ch12.pdf",
+      "standardCode": "PA.I.C",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Obstructions disturb the airflow and create turbulent eddies downwind.",
+        "Incorrect. Mechanical turbulence does not require a cloud base.",
+        "Incorrect. Windward effects can occur, but the principal disturbed wake extends leeward."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-019",
+      "area": "Groundspeed planning",
+      "prompt": "A 120 NM outbound leg has a 90-knot groundspeed. The return leg over the same route has a 120-knot groundspeed. What is the average groundspeed for the complete trip?",
+      "options": [
+        "103 knots.",
+        "105 knots.",
+        "110 knots."
+      ],
+      "correct": 0,
+      "explanation": "Total time is 120/90 + 120/120 = 2.333 hours; 240/2.333 ≈ 102.9 knots.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 16: Time, speed, and distance",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/18_phak_ch16.pdf",
+      "standardCode": "PA.I.D",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Total time is 120/90 + 120/120 = 2.333 hours; 240/2.333 ≈ 102.9 knots.",
+        "Incorrect. The arithmetic mean of the two speeds does not account for the longer time at the slower speed.",
+        "Incorrect. 110 knots exceeds the distance-weighted result for these equal-length legs."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-020",
+      "area": "Fuel measurement",
+      "prompt": "An airplane’s loading calculation requires 180 lb of aviation gasoline. Using 6 lb per US gallon, how many gallons does that represent?",
+      "options": [
+        "24 gallons.",
+        "30 gallons.",
+        "36 gallons."
+      ],
+      "correct": 1,
+      "explanation": "At the specified planning density, divide fuel weight by pounds per gallon: 180 lb ÷ 6 lb/US gal = 30 US gallons.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Fuel weight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf",
+      "standardCode": "PA.I.F",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 24 gallons would weigh 144 lb at the specified density.",
+        "Correct. At the specified planning density, divide fuel weight by pounds per gallon: 180 lb ÷ 6 lb/US gal = 30 US gallons.",
+        "Incorrect. 36 gallons would weigh 216 lb."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-021",
+      "area": "Course interception",
+      "prompt": "An airplane is on the 240° radial of a VOR. In still air, which course leads directly toward the station?",
+      "options": [
+        "240°.",
+        "060°.",
+        "330°."
+      ],
+      "correct": 1,
+      "explanation": "A VOR radial identifies the direction from the station; its reciprocal, 060°, leads inbound.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 16: VOR navigation",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/18_phak_ch16.pdf",
+      "standardCode": "PA.VI",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 240° leads directly away from the station.",
+        "Correct. A VOR radial identifies the direction from the station; its reciprocal, 060°, leads inbound.",
+        "Incorrect. 330° is perpendicular to the required inbound course."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-022",
+      "area": "Elapsed time",
+      "prompt": "An airplane departs a checkpoint at 2350Z and reaches the next checkpoint at 0014Z the following day. The checkpoints are 36 NM apart. What groundspeed was made?",
+      "options": [
+        "60 knots.",
+        "90 knots.",
+        "150 knots."
+      ],
+      "correct": 1,
+      "explanation": "The leg crosses midnight: 10 minutes to 0000Z plus 14 minutes afterward is 24 minutes. Groundspeed is 36 NM ÷ (24/60 hour) = 90 knots.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 16: Time and distance",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/18_phak_ch16.pdf",
+      "standardCode": "PA.I.D",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 60 knots would require 36 minutes.",
+        "Correct. The leg crosses midnight: 10 minutes to 0000Z plus 14 minutes afterward is 24 minutes. Groundspeed is 36 NM ÷ (24/60 hour) = 90 knots.",
+        "Incorrect. 150 knots would cover 36 NM in 14.4 minutes."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-023",
+      "area": "Position and endurance",
+      "prompt": "Two airports are equally distant from an airplane. The groundspeed to airport A would be 80 knots and to airport B would be 120 knots. With the same fuel flow for either course, which airport requires less cruise fuel?",
+      "options": [
+        "Both require the same amount.",
+        "Airport B.",
+        "Airport A."
+      ],
+      "correct": 1,
+      "explanation": "At constant fuel flow, the shorter flight time to B uses less cruise fuel.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 16: Diversion planning; time and fuel",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/18_phak_ch16.pdf",
+      "standardCode": "PA.I.D",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Equal distance does not imply equal time when groundspeeds differ.",
+        "Correct. At constant fuel flow, the shorter flight time to B uses less cruise fuel.",
+        "Incorrect. The slower groundspeed increases flight time for the same distance."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-024",
+      "area": "Electrical indications",
+      "prompt": "An airplane uses a center-zero ammeter showing current into or out of the battery. After a normal start, it initially shows a substantial charge that later approaches zero. What does the change normally indicate?",
+      "options": [
+        "The alternator output has necessarily fallen to zero.",
+        "The battery is being disconnected from every electrical load.",
+        "The battery’s starting charge is being replenished."
+      ],
+      "correct": 2,
+      "explanation": "The initial charging current replaces energy used in starting; charging demand decreases as the battery recovers.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Electrical systems; ammeters",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. This ammeter measures battery current, not necessarily total alternator output.",
+        "Incorrect. A near-zero battery-current indication does not establish that the electrical system has been disconnected.",
+        "Correct. The initial charging current replaces energy used in starting; charging demand decreases as the battery recovers."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-025",
+      "area": "Engine detonation",
+      "prompt": "A piston engine experiences detonation. Which description identifies that combustion abnormality?",
+      "options": [
+        "Ignition from a hot spot before the timed spark.",
+        "Progressive flame travel after the timed spark.",
+        "Explosive combustion after normal ignition begins."
+      ],
+      "correct": 2,
+      "explanation": "Detonation is explosive combustion of part of the charge rather than normal progressive burning.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Detonation and preignition",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. This is preignition, a distinct abnormal condition that can coexist with detonation.",
+        "Incorrect. This describes the normal combustion process rather than detonation.",
+        "Correct. Detonation is explosive combustion of part of the charge rather than normal progressive burning."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-026",
+      "area": "Preignition",
+      "prompt": "A glowing deposit ignites the fuel-air mixture before the normal spark. Which condition is present?",
+      "options": [
+        "Progressive burning from the timed spark.",
+        "Ignition before the timed spark.",
+        "Explosive burning after normal ignition begins."
+      ],
+      "correct": 1,
+      "explanation": "A glowing deposit can start combustion before the scheduled spark.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Detonation and preignition",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Normal ignition begins with the timed spark, which the stem says has not yet occurred.",
+        "Correct. A glowing deposit can start combustion before the scheduled spark.",
+        "Incorrect. This describes detonation rather than the defining early ignition in the stem."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-027",
+      "area": "Ignition checks",
+      "prompt": "During a normal magneto check, RPM drops slightly when either magneto is selected individually. Why can this be expected?",
+      "options": [
+        "Each selection reduces the number of active spark plugs per cylinder.",
+        "Each selection closes one-half of the induction system.",
+        "Each selection disconnects the engine from the battery."
+      ],
+      "correct": 0,
+      "explanation": "Dual ignition improves combustion; operating on one magneto commonly produces a modest RPM loss within the aircraft’s limits.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Ignition systems",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Dual ignition improves combustion; operating on one magneto commonly produces a modest RPM loss within the aircraft’s limits.",
+        "Incorrect. Magneto selection does not close the induction system.",
+        "Incorrect. Magnetos generate their own ignition energy; battery disconnection is not the reason for the normal drop."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-028",
+      "area": "Oil-system indications",
+      "prompt": "During cruise, oil pressure drops while oil temperature rises. Why is this combination more concerning than a single questionable indication?",
+      "options": [
+        "The indications may corroborate a lubrication problem.",
+        "The pressure decrease establishes increased cooling flow.",
+        "The temperature rise distinguishes a faulty pressure gauge."
+      ],
+      "correct": 0,
+      "explanation": "Related abnormal pressure and temperature trends strengthen concern for an actual oil-system problem; follow the approved procedure.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Oil systems",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Related abnormal pressure and temperature trends strengthen concern for an actual oil-system problem; follow the approved procedure.",
+        "Incorrect. A lower pressure reading does not establish adequate oil flow or improved cooling.",
+        "Incorrect. A temperature rise can support a real lubrication failure; it does not establish gauge error."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-029",
+      "area": "Vacuum instruments",
+      "prompt": "A conventional airplane’s vacuum-driven attitude and heading indicators begin behaving abnormally, while its electrically powered turn coordinator remains available. Which common failure should be considered?",
+      "options": [
+        "Loss of static-source pressure changes.",
+        "Loss of pitot total pressure.",
+        "Loss of gyro-system suction."
+      ],
+      "correct": 2,
+      "explanation": "The affected vacuum gyros share a suction source; the electrically powered turn coordinator provides independent information.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 8: Vacuum systems; gyroscopic instruments",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Static blockage would affect pressure instruments rather than this pair of vacuum gyros.",
+        "Incorrect. Pitot pressure supplies airspeed information, not these gyro rotors.",
+        "Correct. The affected vacuum gyros share a suction source; the electrically powered turn coordinator provides independent information."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-030",
+      "area": "Turn indications",
+      "prompt": "In a coordinated level turn, the turn coordinator indicates a standard-rate turn. How long would a complete 360° turn take at that rate?",
+      "options": [
+        "One minute.",
+        "Two minutes.",
+        "Three minutes."
+      ],
+      "correct": 1,
+      "explanation": "Standard rate is 3 degrees per second. A full 360-degree turn therefore takes 360 ÷ 3 = 120 seconds, or two minutes.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 8: Turn coordinator",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. One minute requires 6° per second, twice standard rate.",
+        "Correct. Standard rate is 3 degrees per second. A full 360-degree turn therefore takes 360 ÷ 3 = 120 seconds, or two minutes.",
+        "Incorrect. Three minutes corresponds to 2° per second."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-031",
+      "area": "Load and lift",
+      "prompt": "An airplane is in steady, unaccelerated level flight. A passenger moves aft without changing total weight, and the airplane is retrimmed within approved limits. Which quantity remains unchanged by the relocation itself?",
+      "options": [
+        "The moment of the passenger about the datum.",
+        "The location of the airplane’s CG.",
+        "The airplane’s total weight."
+      ],
+      "correct": 2,
+      "explanation": "Relocation changes distribution and moments, not the total amount of weight aboard.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Weight shifting",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf",
+      "standardCode": "PA.I.F",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Moving aft increases the passenger’s arm and moment about the datum.",
+        "Incorrect. Moving a passenger changes the CG unless the movement has no longitudinal component.",
+        "Correct. Relocation changes distribution and moments, not the total amount of weight aboard."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-032",
+      "area": "Aerodynamic drag",
+      "prompt": "A pilot lowers the landing gear at a steady airspeed. Maintaining that airspeed and altitude normally requires additional power primarily because",
+      "options": [
+        "airplane weight increases.",
+        "the wing’s span decreases.",
+        "parasite drag increases."
+      ],
+      "correct": 2,
+      "explanation": "Exposed gear increases form and interference drag without adding airplane mass.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 5: Parasite drag",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Extending existing gear does not add its weight to the airplane a second time.",
+        "Incorrect. Gear extension does not reduce physical wingspan.",
+        "Correct. Exposed gear increases form and interference drag without adding airplane mass."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-033",
+      "area": "Density and true airspeed",
+      "prompt": "At altitude, an airplane maintains the same calibrated airspeed as at a lower altitude. Ignoring compressibility effects, lower air density means its true airspeed is",
+      "options": [
+        "higher.",
+        "unchanged.",
+        "lower."
+      ],
+      "correct": 0,
+      "explanation": "For the same dynamic pressure and calibrated speed, lower density requires greater true airspeed.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 8: Types of airspeed",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf",
+      "standardCode": "PA.I.F",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. For the same dynamic pressure and calibrated speed, lower density requires greater true airspeed.",
+        "Incorrect. Calibrated airspeed and TAS are not equal at every density.",
+        "Incorrect. Lower TAS would reduce dynamic pressure further."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-034",
+      "area": "Longitudinal control",
+      "prompt": "A conventional elevator is deflected upward. What initial aerodynamic effect produces the intended nose-up pitching moment?",
+      "options": [
+        "A tail-force change producing a nose-up moment.",
+        "A rudder-force change producing a yaw moment.",
+        "An aileron-force change producing a roll moment."
+      ],
+      "correct": 0,
+      "explanation": "Elevator deflection changes horizontal-tail force and the pitching moment about the CG.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 6: Elevator",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/08_phak_ch6.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Elevator deflection changes horizontal-tail force and the pitching moment about the CG.",
+        "Incorrect. Rudder primarily controls yaw; this does not identify the elevator’s pitch mechanism.",
+        "Incorrect. Ailerons primarily control roll; this does not identify the elevator’s pitch mechanism."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-035",
+      "area": "Wing design",
+      "prompt": "Two wings have the same area and support the same lift at the same dynamic pressure. The wing with greater aspect ratio generally has",
+      "options": [
+        "A lower required lift coefficient.",
+        "Less required lift.",
+        "Less induced drag."
+      ],
+      "correct": 2,
+      "explanation": "Greater aspect ratio generally reduces induced drag for the same lift and dynamic pressure, other factors comparable.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 5: Aspect ratio; induced drag",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Equal lift, area, and dynamic pressure require equal lift coefficient; aspect ratio changes induced-drag efficiency.",
+        "Incorrect. The stem requires the same lift from both wings.",
+        "Correct. Greater aspect ratio generally reduces induced drag for the same lift and dynamic pressure, other factors comparable."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-036",
+      "area": "Wake drift",
+      "prompt": "A large airplane’s wake descends toward a runway in a light crosswind. Why can the upwind vortex remain near the runway longer than expected?",
+      "options": [
+        "The upwind vortex is forced to rise above the generating airplane.",
+        "Crosswind eliminates the circulation of both vortices.",
+        "Crosswind can oppose its normal outward motion."
+      ],
+      "correct": 2,
+      "explanation": "A light crosswind can retard the upwind vortex’s lateral movement while carrying the downwind vortex away.",
+      "reference": "AIM Chapter 7, Section 4: Vortex behavior; crosswind effects",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_4.html",
+      "standardCode": "PA.III",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The stated drift mechanism does not require the vortex to rise above its source.",
+        "Incorrect. A light crosswind does not eliminate wake circulation.",
+        "Correct. A light crosswind can retard the upwind vortex’s lateral movement while carrying the downwind vortex away."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-037",
+      "area": "Navigation error",
+      "prompt": "After flying 30 NM from a known departure point, an airplane is 3 NM right of its intended track. Using the 1-in-60 approximation, what heading change would approximately regain the destination track in the next 30 NM, with the same wind?",
+      "options": [
+        "6° left.",
+        "12° left.",
+        "18° left."
+      ],
+      "correct": 1,
+      "explanation": "Track error is about 6°. An additional 6° intercept angle over an equal distance gives about 12° left from the old heading.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 16: Pilotage and dead reckoning; course correction",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/18_phak_ch16.pdf",
+      "standardCode": "PA.I.D",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. About 6° left corrects the accumulated drift but would approximately parallel the intended track.",
+        "Correct. Track error is about 6°. An additional 6° intercept angle over an equal distance gives about 12° left from the old heading.",
+        "Incorrect. 18° overcorrects the stated equal-distance recovery estimate."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-038",
+      "area": "Power and airspeed",
+      "prompt": "In steady level flight, thrust equals drag. The pilot increases power and allows airspeed to stabilize at a higher value while maintaining altitude. At the new steady condition,",
+      "options": [
+        "Drag remains greater than thrust.",
+        "Thrust remains greater than drag.",
+        "Thrust again equals drag."
+      ],
+      "correct": 2,
+      "explanation": "At the new steady speed there is no continuing longitudinal acceleration, so the forces balance.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 5: Four forces; equilibrium",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "PA.I.G",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. This describes deceleration, not the stated stabilized condition.",
+        "Incorrect. This describes continued acceleration, not the stated stabilized condition.",
+        "Correct. At the new steady speed there is no continuing longitudinal acceleration, so the forces balance."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-039",
+      "area": "Risk reassessment",
+      "prompt": "A pilot makes a conservative departure decision using an early forecast. Before departure, a new report shows lower visibility along the route. Which action best applies a continuing decision process?",
+      "options": [
+        "Reassess the plan using the new information.",
+        "Compare the report only after reaching the affected area.",
+        "Retain the plan because the original decision was conservative."
+      ],
+      "correct": 0,
+      "explanation": "A sound initial decision must be revisited when relevant conditions change.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 2: Continuous risk assessment; 3P process",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
+      "standardCode": "PA.I.H",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A sound initial decision must be revisited when relevant conditions change.",
+        "Incorrect. Waiting until exposure reduces options without improving the information.",
+        "Incorrect. A conservative decision based on old conditions does not establish acceptability under new conditions."
+      ]
+    },
+    {
+      "id": "PD-B02-PPL-040",
+      "area": "Visual limitations",
+      "prompt": "At night, a pilot looks directly at a faint, stationary light and loses sight of it, but sees it again when looking slightly to one side. What explains this?",
+      "options": [
+        "Off-center viewing increases the light’s actual intensity.",
+        "Off-center viewing brings the image onto rod-rich retina.",
+        "Direct viewing places the image on the optic nerve."
+      ],
+      "correct": 1,
+      "explanation": "Rods outside the central fovea are more effective for detecting dim light.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 17: Night vision; off-center viewing",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
+      "standardCode": "PA.I.H",
+      "standardDoc": "FAA-S-ACS-6C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ppl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The technique changes retinal reception, not the light emitted by the source.",
+        "Correct. Rods outside the central fovea are more effective for detecting dim light.",
+        "Incorrect. The central point of gaze is not the optic-disc blind spot."
+      ]
+    }
+  ],
+  "ira": [
+    {
+      "id": "PD-DRAFT-IRA-001",
+      "area": "Alternate planning",
+      "prompt": "For a Part 91 airplane flight, the destination has a published instrument approach. From one hour before to one hour after the ETA, the forecast ceiling is exactly 2,000 feet above airport elevation and visibility is exactly 3 statute miles. Under 14 CFR 91.169(b), is an alternate required by this forecast?",
+      "options": [
+        "Yes; an approach must permit a 600-foot ceiling.",
+        "Yes; both values must exceed the stated thresholds.",
+        "No; both values meet the stated thresholds."
+      ],
+      "correct": 2,
+      "explanation": "Both conditions are met throughout the specified period. This addresses the regulatory alternate requirement, not the prudence of extra options.",
+      "reference": "14 CFR 91.169: Paragraph (b)(2)(i)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.169",
+      "standardCode": "IR.I.C",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 600–2 concerns certain alternate minima, not this destination exemption.",
+        "Incorrect. The regulation uses at least 2,000 feet and at least 3 statute miles, not values strictly greater than those thresholds.",
+        "Correct. Both conditions are met throughout the specified period. This addresses the regulatory alternate requirement, not the prudence of extra options."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-002",
+      "area": "Holding timing",
+      "prompt": "An airplane is established in a conventional timed hold at 10,000 feet MSL. The desired inbound leg is one minute. The last inbound leg took 75 seconds after a 60-second outbound leg. With unchanged wind and technique, approximately how long should the next outbound leg be?",
+      "options": [
+        "45 seconds.",
+        "60 seconds.",
+        "75 seconds."
+      ],
+      "correct": 0,
+      "explanation": "Shorten the outbound leg by the 15-second inbound excess as an initial correction, then assess the result.",
+      "reference": "AIM 5-3-8: Holding: timing",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "IR.III",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Shorten the outbound leg by the 15-second inbound excess as an initial correction, then assess the result.",
+        "Incorrect. Repeating the same timing under unchanged conditions does not correct the long inbound leg.",
+        "Incorrect. Lengthening the outbound leg would increase the inbound timing error."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-003",
+      "area": "STAR restrictions",
+      "prompt": "ATC clears an airplane along a STAR and instructs it to maintain 11,000 feet. A fix is marked EXPECT 7,000. No descent clearance is issued. What altitude should be maintained at that fix?",
+      "options": [
+        "Any altitude between 7,000 and 11,000 feet.",
+        "7,000 feet because the STAR was assigned.",
+        "11,000 feet until a descent clearance is received."
+      ],
+      "correct": 2,
+      "explanation": "Maintain the assigned altitude; the EXPECT annotation does not authorize descent.",
+      "reference": "AIM 5-4-1: Standard Terminal Arrival procedures",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "IR.V",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The STAR does not provide a discretionary altitude band in this clearance.",
+        "Incorrect. An EXPECT altitude is planning information unless issued as a clearance.",
+        "Correct. Maintain the assigned altitude; the EXPECT annotation does not authorize descent."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-004",
+      "area": "VOR checks",
+      "prompt": "Two independent VOR systems sharing a common antenna are checked against each other while tuned to the same VOR. With the CDI centered, one indicates 084° FROM and the other 089° FROM. Considering only this comparison, does the check satisfy 14 CFR 91.171(c)?",
+      "options": [
+        "No; the indications differ by more than 4°.",
+        "No; independent receivers must have separate antennas.",
+        "Yes; each indication is within 6° of the other."
+      ],
+      "correct": 0,
+      "explanation": "The difference is 5°, which exceeds the 4° limit for this method.",
+      "reference": "14 CFR 91.171: Paragraph (c)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.171",
+      "standardCode": "IR.II",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The difference is 5°, which exceeds the 4° limit for this method.",
+        "Incorrect. The regulation permits a dual system independent except for the antenna.",
+        "Incorrect. The applicable dual-system comparison tolerance is 4°, not the 6° airborne-check tolerance."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-005",
+      "area": "Cruise clearances",
+      "prompt": "ATC issues \"CRUISE SIX THOUSAND.\" The pilot descends below 6,000 feet and reports leaving that altitude. Before climbing back to 6,000 feet, the pilot must",
+      "options": [
+        "return to the original altitude without advising ATC.",
+        "obtain a further ATC clearance.",
+        "cancel IFR before beginning the climb."
+      ],
+      "correct": 1,
+      "explanation": "Once a descent from an altitude in the cruise block is reported, return to that altitude requires clearance.",
+      "reference": "AIM 4-4-3: Clearance items: cruise",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap4_section_4.html",
+      "standardCode": "IR.III",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The reported descent relinquishes the altitude above; the original cruise clearance no longer authorizes that return.",
+        "Correct. Once a descent from an altitude in the cruise block is reported, return to that altitude requires clearance.",
+        "Incorrect. Cancellation is not required; a further IFR clearance is the appropriate authorization."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-006",
+      "area": "Minimum crossing altitudes",
+      "prompt": "On a hypothetical airway, the MEA rises from 5,000 to 8,000 feet at a fix with a published MCA of 7,000 feet eastbound. With no contrary ATC clearance, an eastbound airplane approaching at 5,000 feet should",
+      "options": [
+        "cross at or above 7,000 feet and continue to the new MEA.",
+        "cross at 8,000 feet because the MCA replaces the new MEA.",
+        "cross at 5,000 feet, then begin the climb."
+      ],
+      "correct": 0,
+      "explanation": "The MCA governs crossing height; the new MEA remains applicable beyond the fix, with the climb continued as required.",
+      "reference": "AIM 5-3-4: Airway and route system: minimum crossing altitude",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "IR.V",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The MCA governs crossing height; the new MEA remains applicable beyond the fix, with the climb continued as required.",
+        "Incorrect. Crossing at 8,000 feet may satisfy both, but the statement incorrectly treats the MCA as a replacement for the MEA.",
+        "Incorrect. The published MCA requires the airplane to reach at least 7,000 feet before crossing eastbound."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-007",
+      "area": "Lost communications",
+      "prompt": "An IFR airplane remains in IMC after two-way radio failure. Its last assigned altitude is 5,000 feet; ATC advised it to expect 7,000 feet on this segment. The minimum IFR altitude for the segment is 6,000 feet. Under 14 CFR 91.185(c)(2), which altitude applies?",
+      "options": [
+        "6,000 feet.",
+        "5,000 feet.",
+        "7,000 feet."
+      ],
+      "correct": 2,
+      "explanation": "Use the highest of the assigned, minimum IFR, and expected altitudes for the segment.",
+      "reference": "14 CFR 91.185: Paragraph (c)(2)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.185",
+      "standardCode": "IR.VII",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The minimum IFR altitude is a floor, but the expected altitude is higher.",
+        "Incorrect. The assigned altitude is one comparison, but it is lower than the expected and minimum IFR altitudes.",
+        "Correct. Use the highest of the assigned, minimum IFR, and expected altitudes for the segment."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-008",
+      "area": "Approach clearances",
+      "prompt": "An airplane is radar vectored to the final approach course and cleared for the approach. No procedure turn is specifically authorized. Under 14 CFR 91.175(j), the pilot should",
+      "options": [
+        "proceed without a procedure turn.",
+        "fly the procedure turn if one is depicted.",
+        "hold at the IAF before proceeding inbound."
+      ],
+      "correct": 0,
+      "explanation": "A procedure turn is not authorized in this circumstance unless ATC clears it.",
+      "reference": "14 CFR 91.175: Paragraph (j)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.175",
+      "standardCode": "IR.VI",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A procedure turn is not authorized in this circumstance unless ATC clears it.",
+        "Incorrect. A depicted turn does not override the restriction when radar vectors to final are provided.",
+        "Incorrect. No holding instruction is given; the approach clearance and vectors do not imply a hold."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-009",
+      "area": "Radar weather limitations",
+      "prompt": "An airborne weather-radar display shows a strong precipitation return followed by an area with little return directly behind it. Why should that dark area not be treated as a clear passage?",
+      "options": [
+        "A dark area establishes that precipitation intensity has fallen to zero.",
+        "The radar beam may have been attenuated by the nearer precipitation.",
+        "The display shows turbulence intensity independently of precipitation."
+      ],
+      "correct": 1,
+      "explanation": "Strong precipitation can attenuate the beam and conceal additional weather behind it.",
+      "reference": "AIM 7-1: Thunderstorms; weather radar",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "standardCode": "IR.V",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Weak or absent return does not prove an absence of hazardous weather when attenuation is possible.",
+        "Correct. Strong precipitation can attenuate the beam and conceal additional weather behind it.",
+        "Incorrect. Weather radar primarily detects precipitation; return intensity is not a direct independent measure of all turbulence."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-IRA-010",
+      "area": "Approach visibility",
+      "prompt": "At DA on a straight-in ILS, the runway threshold is distinctly visible and the airplane is in a position for a normal descent to landing. Flight visibility is below the published minimum. What action is required?",
+      "options": [
+        "Continue if the threshold remains visible.",
+        "Descend until the visibility can be reassessed.",
+        "Execute the appropriate missed approach."
+      ],
+      "correct": 2,
+      "explanation": "All applicable conditions of 91.175(c) must be satisfied. The visibility condition is not met.",
+      "reference": "14 CFR 91.175: Paragraphs (c)(2) and (e)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.175",
+      "standardCode": "IR.VI",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A qualifying visual reference does not eliminate the flight-visibility requirement.",
+        "Incorrect. The required conditions must exist before descent below DA; further descent to reassess is not authorized.",
+        "Correct. All applicable conditions of 91.175(c) must be satisfied. The visibility condition is not met."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-011",
+      "area": "VOR accuracy",
+      "prompt": "At a certified airborne VOR checkpoint, a receiver shows an error of 5°. Considering only the permitted error for this check method, is the indication acceptable for IFR use?",
+      "options": [
+        "No; airborne checks require zero error.",
+        "Yes; it is within the 6° airborne tolerance.",
+        "No; it exceeds the 4° airborne tolerance."
+      ],
+      "correct": 1,
+      "explanation": "An approved airborne checkpoint permits an error of no more than 6°.",
+      "reference": "14 CFR 91.171: Paragraph (b)(3)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.171",
+      "standardCode": "IR.II",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The regulation provides a tolerance; it does not require an exact zero reading.",
+        "Correct. An approved airborne checkpoint permits an error of no more than 6°.",
+        "Incorrect. 4° is associated with specified ground-check methods, not this airborne checkpoint."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-012",
+      "area": "VOR records",
+      "prompt": "A pilot completes an otherwise satisfactory VOR operational check. Which record entry meets the information requirement of 14 CFR 91.171(d)?",
+      "options": [
+        "Date, place, bearing error, and signature.",
+        "Date, receiver serial number, and route.",
+        "Place, tachometer time, and fuel quantity."
+      ],
+      "correct": 0,
+      "explanation": "The rule specifically requires date, place, bearing error, and the checking person’s signature in an appropriate record.",
+      "reference": "14 CFR 91.171: Paragraph (d)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.171",
+      "standardCode": "IR.II",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The rule specifically requires date, place, bearing error, and the checking person’s signature in an appropriate record.",
+        "Incorrect. These details omit required place, bearing error, and signature information.",
+        "Incorrect. These details do not document the required check result and person."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-013",
+      "area": "Alternate minima",
+      "prompt": "An airplane’s proposed alternate has an available ILS and no nonstandard alternate minima apply. Under the standard Part 91 precision-approach alternate minima, which forecast meets the ceiling and visibility requirement at the alternate ETA?",
+      "options": [
+        "800 feet and 1 SM.",
+        "600 feet and 2 SM.",
+        "500 feet and 3 SM."
+      ],
+      "correct": 1,
+      "explanation": "The standard precision alternate minima are 600 feet and 2 statute miles, subject to the rule’s applicability and procedure availability.",
+      "reference": "14 CFR 91.169: Paragraph (c)(1)(i)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.169",
+      "standardCode": "IR.I.C",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The ceiling is sufficient but visibility is below 2 statute miles.",
+        "Correct. The standard precision alternate minima are 600 feet and 2 statute miles, subject to the rule’s applicability and procedure availability.",
+        "Incorrect. The visibility is sufficient but the ceiling is below 600 feet."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-014",
+      "area": "Alternate without an approach",
+      "prompt": "An airplane alternate has no published instrument approach. Under Part 91, what forecast condition is required at its ETA?",
+      "options": [
+        "Weather permitting descent from the MEA, approach, and landing under basic VFR.",
+        "A ceiling of 800 feet and visibility of 2 SM.",
+        "Weather permitting a contact approach from the MEA."
+      ],
+      "correct": 0,
+      "explanation": "The forecast must permit descent from the MEA, approach, and landing under basic VFR conditions.",
+      "reference": "14 CFR 91.169: Paragraph (c)(2)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.169",
+      "standardCode": "IR.I.C",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The forecast must permit descent from the MEA, approach, and landing under basic VFR conditions.",
+        "Incorrect. 800–2 is the standard for a qualifying nonprecision approach, not a no-approach airport.",
+        "Incorrect. A contact approach is not the no-published-approach exception in this rule."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-015",
+      "area": "IFR fuel",
+      "prompt": "For a Part 91 airplane flight, an alternate is required. Planned fuel must cover flight to the destination, then to the alternate, and then how much additional flight at normal cruising speed?",
+      "options": [
+        "45 minutes.",
+        "60 minutes.",
+        "30 minutes."
+      ],
+      "correct": 0,
+      "explanation": "The airplane IFR rule requires an additional 45 minutes after the destination and alternate legs, considering weather and forecasts.",
+      "reference": "14 CFR 91.167: Paragraph (a)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.167",
+      "standardCode": "IR.I.C",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The airplane IFR rule requires an additional 45 minutes after the destination and alternate legs, considering weather and forecasts.",
+        "Incorrect. 60 minutes may be a chosen margin but is not this rule’s stated minimum.",
+        "Incorrect. 30 minutes is not the airplane IFR reserve specified here."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-016",
+      "area": "Lost communications in VMC",
+      "prompt": "An airplane on an IFR flight plan experiences radio failure in VMC, and VMC can be maintained. Under 14 CFR 91.185(b), the pilot should",
+      "options": [
+        "continue under VFR and land as soon as practicable.",
+        "continue to the destination under the lost-communications IFR route hierarchy.",
+        "immediately descend to the lowest airway altitude."
+      ],
+      "correct": 0,
+      "explanation": "The VFR continuation and practicable landing provision applies when the failure occurs in VFR conditions or those conditions are encountered.",
+      "reference": "14 CFR 91.185: Paragraph (b)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.185",
+      "standardCode": "IR.VII",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The VFR continuation and practicable landing provision applies when the failure occurs in VFR conditions or those conditions are encountered.",
+        "Incorrect. The IMC route hierarchy is not the first instruction for this stated VMC case.",
+        "Incorrect. The rule does not direct an arbitrary descent to an airway altitude."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-017",
+      "area": "Lost communications route",
+      "prompt": "An IFR airplane in IMC loses radio communications. Its last clearance assigns a route; the filed route differs, and ATC has not issued an expected alternative. Under the route priority in 14 CFR 91.185(c)(1), which route applies?",
+      "options": [
+        "The last assigned route.",
+        "The originally filed route.",
+        "The shortest route to the destination."
+      ],
+      "correct": 0,
+      "explanation": "The assigned route takes priority over the filed route under the stated conditions.",
+      "reference": "14 CFR 91.185: Paragraph (c)(1)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.185",
+      "standardCode": "IR.VII",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The assigned route takes priority over the filed route under the stated conditions.",
+        "Incorrect. The filed route is a lower-priority fallback when the relevant assigned or expected route provisions do not apply.",
+        "Incorrect. The rule does not substitute a general shortest-route choice for the clearance hierarchy."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-018",
+      "area": "Lost communications while vectored",
+      "prompt": "An airplane in IMC loses radio communications while being radar vectored. What route is specified by 14 CFR 91.185(c)(1)(ii)?",
+      "options": [
+        "Return directly to the departure airport.",
+        "Continue the last vector indefinitely.",
+        "Proceed directly to the fix, route, or airway specified in the vector clearance."
+      ],
+      "correct": 2,
+      "explanation": "The rule directs a direct route from the failure point to the fix, route, or airway specified in the vector clearance.",
+      "reference": "14 CFR 91.185: Paragraph (c)(1)(ii)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.185",
+      "standardCode": "IR.VII",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Returning to departure is not the prescribed general vector-failure route.",
+        "Incorrect. A heading vector is not an indefinite lost-communications route.",
+        "Correct. The rule directs a direct route from the failure point to the fix, route, or airway specified in the vector clearance."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-019",
+      "area": "EFC with communications",
+      "prompt": "An airplane is holding with functioning two-way communications. Its expect-further-clearance time arrives, but no onward clearance has been received. The EFC time by itself",
+      "options": [
+        "cancels the IFR clearance.",
+        "authorizes departure along the filed route.",
+        "does not authorize leaving the hold."
+      ],
+      "correct": 2,
+      "explanation": "Maintain the applicable clearance and request further clearance; the time is planning information in this circumstance.",
+      "reference": "AIM Chapter 5, Section 3: Holding; EFC instructions",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "IR.III",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The EFC time does not cancel the IFR clearance.",
+        "Incorrect. An EFC is not an onward clearance when communications remain available.",
+        "Correct. Maintain the applicable clearance and request further clearance; the time is planning information in this circumstance."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-020",
+      "area": "Holding speed",
+      "prompt": "An airplane will hold at 9,000 feet MSL. No special holding-speed restriction is published or assigned. What is the standard maximum holding airspeed?",
+      "options": [
+        "265 KIAS.",
+        "200 KIAS.",
+        "230 KIAS."
+      ],
+      "correct": 2,
+      "explanation": "The standard band from 6,001 through 14,000 feet MSL is 230 KIAS.",
+      "reference": "AIM Chapter 5, Section 3: 5-3-8: holding airspeeds",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "IR.III",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 265 KIAS applies at 14,001 feet MSL and above.",
+        "Incorrect. 200 KIAS applies from the minimum holding altitude through 6,000 feet MSL.",
+        "Correct. The standard band from 6,001 through 14,000 feet MSL is 230 KIAS."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-021",
+      "area": "Holding fix passage",
+      "prompt": "An airplane holds over a VOR rather than a DME fix. In a conventional holding pattern, which indication normally establishes when to begin the outbound turn over the facility?",
+      "options": [
+        "The first movement of the CDI off center.",
+        "The DME reaching an exact zero.",
+        "The first complete TO/FROM reversal."
+      ],
+      "correct": 2,
+      "explanation": "The FAA holding guidance uses the first complete TO/FROM reversal for VOR station passage.",
+      "reference": "AIM Chapter 5, Section 3: 5-3-8: VOR holding",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "IR.III",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. CDI movement alone can result from course error and does not reliably establish station passage.",
+        "Incorrect. DME is slant range and need not reach zero during an overhead passage.",
+        "Correct. The FAA holding guidance uses the first complete TO/FROM reversal for VOR station passage."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-022",
+      "area": "Outbound timing",
+      "prompt": "In a conventional timed hold, outbound timing should begin over or abeam the holding fix, whichever occurs later. If the abeam position cannot be determined, timing begins",
+      "options": [
+        "when the CDI first centers inbound.",
+        "when the outbound turn is completed.",
+        "when the inbound turn is started."
+      ],
+      "correct": 1,
+      "explanation": "When abeam cannot be determined, the FAA procedure starts outbound timing on completion of the outbound turn.",
+      "reference": "AIM Chapter 5, Section 3: 5-3-8: outbound timing",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "IR.III",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Inbound CDI centering is unrelated to the start of the outbound timing.",
+        "Correct. When abeam cannot be determined, the FAA procedure starts outbound timing on completion of the outbound turn.",
+        "Incorrect. The inbound turn begins after the outbound leg rather than defining its starting time."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-023",
+      "area": "Changeover points",
+      "prompt": "A straight airway segment has a charted changeover point that is not midway between its VORs. In normal use, the pilot changes navigation guidance",
+      "options": [
+        "only after the station behind becomes unusable.",
+        "at the charted changeover point.",
+        "at the midpoint regardless of the chart."
+      ],
+      "correct": 1,
+      "explanation": "The charted COP accounts for the intended change in navigation guidance.",
+      "reference": "AIM Chapter 5, Section 3: 5-3-6: Changeover Points",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "IR.V",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Waiting for signal loss defeats the purpose of the prescribed changeover.",
+        "Correct. The charted COP accounts for the intended change in navigation guidance.",
+        "Incorrect. The midpoint is a default for some routes, not a replacement for a published COP."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-024",
+      "area": "Minimum reception altitude",
+      "prompt": "A charted intersection has an MRA above the airway MEA. What additional limitation does the MRA identify?",
+      "options": [
+        "Altitude required to begin a procedure turn.",
+        "Altitude needed to receive the signals defining the fix.",
+        "Altitude guaranteeing visual contact with the airport."
+      ],
+      "correct": 1,
+      "explanation": "An MRA addresses reception of navigation signals needed to identify the fix.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: National Airspace System: minimum reception altitude",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "IR.V",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Procedure-turn altitudes are depicted separately.",
+        "Correct. An MRA addresses reception of navigation signals needed to identify the fix.",
+        "Incorrect. No radio-navigation altitude guarantees visual conditions."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-025",
+      "area": "Minimum turning altitude",
+      "prompt": "A published minimum turning altitude applies to the intended airway-to-airway turn. When must the airplane be at or above it?",
+      "options": [
+        "No later than the turn point, through establishment on the next route centerline.",
+        "Only after completing the turn.",
+        "Only if the turn exceeds 90°."
+      ],
+      "correct": 0,
+      "explanation": "The charted MTA protects the turning maneuver and remains applicable until the following route centerline is joined.",
+      "reference": "AIM Chapter 5, Section 3: 5-3-7: Minimum Turning Altitude",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "IR.V",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The charted MTA protects the turning maneuver and remains applicable until the following route centerline is joined.",
+        "Incorrect. Reaching it after the turn would not protect the maneuver for which it is specified.",
+        "Incorrect. The published restriction applies to the described route combination, not only to turns exceeding a generic angle."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-026",
+      "area": "Visual descent point",
+      "prompt": "An airplane reaches a published VDP on a nonprecision approach at MDA. No required visual reference is available. What does reaching the VDP authorize?",
+      "options": [
+        "An immediate turn onto the missed-approach course.",
+        "Descent along the charted VDA despite the cloud.",
+        "No descent below MDA on that basis alone."
+      ],
+      "correct": 2,
+      "explanation": "The VDP identifies a point for a normal visual descent when the required conditions exist; it is not independent descent authority.",
+      "reference": "AIM Chapter 5, Section 4: 5-4-5: visual descent points",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "IR.VI",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The VDP is not necessarily the MAP and does not authorize an early missed turn.",
+        "Incorrect. A VDP does not remove the requirements for descent below MDA.",
+        "Correct. The VDP identifies a point for a normal visual descent when the required conditions exist; it is not independent descent authority."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-027",
+      "area": "Approach categories",
+      "prompt": "An airplane’s normal approach category is based on its prescribed reference speed or the specified multiple of stall speed at maximum certificated landing weight. If an approach is flown faster than the category’s upper limit, the pilot should",
+      "options": [
+        "retain the lower minima because actual weight is reduced.",
+        "reduce the charted visibility to account for the faster approach.",
+        "use the higher category’s applicable minima."
+      ],
+      "correct": 2,
+      "explanation": "Higher-speed maneuvering requires the protection associated with the applicable higher category.",
+      "reference": "AIM Chapter 5, Section 4: 5-4-7: instrument approach categories",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "IR.VI",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Reduced weight does not permit ignoring the protection needed for the actual maneuvering speed.",
+        "Incorrect. Higher speed is not a basis for lowering visibility minima.",
+        "Correct. Higher-speed maneuvering requires the protection associated with the applicable higher category."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-028",
+      "area": "Approach timing",
+      "prompt": "A nonprecision approach uses timing from the FAF to identify the MAP. The applicable table must be selected using",
+      "options": [
+        "indicated airspeed on the final segment.",
+        "groundspeed on the final segment.",
+        "true airspeed before the FAF."
+      ],
+      "correct": 1,
+      "explanation": "Time to cover a charted ground distance depends on groundspeed.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: IFR flight procedures: timed approaches",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "IR.VI",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. IAS does not account for true-air speed and wind effects on progress over the ground.",
+        "Correct. Time to cover a charted ground distance depends on groundspeed.",
+        "Incorrect. Pre-FAF TAS alone does not establish final-segment groundspeed."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-029",
+      "area": "Localizer geometry",
+      "prompt": "Two airplanes have the same angular localizer deviation. One is half as far from the localizer antenna as the other. Approximately how does its lateral displacement compare?",
+      "options": [
+        "Twice as large.",
+        "The same.",
+        "One-half as large."
+      ],
+      "correct": 2,
+      "explanation": "For the same small angle, lateral displacement is approximately proportional to distance from the antenna.",
+      "reference": "AIM Chapter 1, Section 1: 1-1-9: localizer",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "IR.V",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The closer airplane has the smaller, not larger, displacement.",
+        "Incorrect. A fixed angular indication does not imply a fixed lateral distance.",
+        "Correct. For the same small angle, lateral displacement is approximately proportional to distance from the antenna."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-030",
+      "area": "ILS identification",
+      "prompt": "An airplane receives both localizer and glideslope indications, but the localizer identification cannot be verified and a current NOTAM reports the facility out of service. The apparent indications",
+      "options": [
+        "may be used if the airplane’s VOR check is current.",
+        "supersede the NOTAM if both needles center.",
+        "are insufficient to establish that the ILS is usable."
+      ],
+      "correct": 2,
+      "explanation": "An out-of-service facility can produce misleading indications; positive identification and status checks remain necessary.",
+      "reference": "AIM Chapter 1, Section 1: 1-1-1; 1-1-9: facility status and identification",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "IR.VI",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A VOR receiver check does not verify the ILS ground facility.",
+        "Incorrect. Centered needles do not cancel an out-of-service notice.",
+        "Correct. An out-of-service facility can produce misleading indications; positive identification and status checks remain necessary."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-031",
+      "area": "GPS integrity",
+      "prompt": "A conventional GPS receiver reports that required integrity monitoring is unavailable for the intended operation. Why is an apparently plausible position insufficient?",
+      "options": [
+        "A displayed position proves that the integrity warning is false.",
+        "Position presentation does not establish the required integrity assurance.",
+        "Integrity concerns apply only to the magnetic compass."
+      ],
+      "correct": 1,
+      "explanation": "Integrity monitoring assesses whether the navigation solution can be relied upon within the applicable limits.",
+      "reference": "AIM Chapter 1, Section 1: GPS; receiver integrity monitoring",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "IR.II",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A receiver can display a position while the required ability to detect or alert for errors is unavailable.",
+        "Correct. Integrity monitoring assesses whether the navigation solution can be relied upon within the applicable limits.",
+        "Incorrect. Integrity is directly relevant to satellite navigation."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-032",
+      "area": "Approach annunciation",
+      "prompt": "Before the FAF, a navigation receiver annunciates LNAV rather than the LPV service level expected in the briefing. Published LNAV minima are available. What must be resolved before continuing using those minima?",
+      "options": [
+        "The glideslope pointer automatically authorizes LPV minima.",
+        "The applicable minima, altitude limits, and procedure must be rechecked.",
+        "The expected LPV DA remains controlling."
+      ],
+      "correct": 1,
+      "explanation": "A changed service level requires a reassessment of the actual authorized guidance and minima, equipment limitations, and ability to continue safely.",
+      "reference": "AIM Chapter 5, Section 4: RNAV approach minima; pilot briefing",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "IR.VI",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A displayed vertical cue alone does not establish LPV authorization.",
+        "Correct. A changed service level requires a reassessment of the actual authorized guidance and minima, equipment limitations, and ability to continue safely.",
+        "Incorrect. An expected service level does not authorize minima the receiver has not provided."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-033",
+      "area": "Somatogravic illusion",
+      "prompt": "In IMC, rapid acceleration gives a pilot a strong sensation of pitching up although the attitude instruments show the intended attitude. Which response avoids the associated control error?",
+      "options": [
+        "Maintain instrument-referenced attitude control.",
+        "Lower the nose until the sensation disappears.",
+        "Use body sensation to reset the attitude indicator."
+      ],
+      "correct": 0,
+      "explanation": "Linear acceleration can create a false pitch sensation; a reliable instrument cross-check is the appropriate reference.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Human factors: somatogravic illusion",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "IR.IV",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Linear acceleration can create a false pitch sensation; a reliable instrument cross-check is the appropriate reference.",
+        "Incorrect. Pushing forward solely to cancel the illusion can produce an unintended descent.",
+        "Incorrect. Body sensations cannot calibrate an attitude reference in this condition."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-034",
+      "area": "Spatial orientation",
+      "prompt": "After a slowly developing bank goes unnoticed, a pilot abruptly returns the airplane to level and feels banked in the opposite direction. Which illusion is illustrated?",
+      "options": [
+        "The leans.",
+        "Autokinesis.",
+        "Runway-width illusion."
+      ],
+      "correct": 0,
+      "explanation": "An unnoticed gradual bank followed by a sensed correction can leave a false sensation of opposite bank.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Human factors: the leans",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "IR.IV",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. An unnoticed gradual bank followed by a sensed correction can leave a false sensation of opposite bank.",
+        "Incorrect. Autokinesis is apparent motion of a stationary light when stared at.",
+        "Incorrect. Runway-width illusion concerns visual approach geometry."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-035",
+      "area": "Spatial orientation",
+      "prompt": "While established in a prolonged turn in IMC, a pilot abruptly moves the head downward and experiences a strong tumbling sensation. What most directly caused it?",
+      "options": [
+        "A sudden change in runway lighting.",
+        "A change in the airplane’s magnetic variation.",
+        "Stimulation of multiple semicircular canals during head movement."
+      ],
+      "correct": 2,
+      "explanation": "Head motion during a sustained turn can stimulate canals on different axes and produce a powerful false tumbling sensation.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Human factors: Coriolis illusion",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "IR.IV",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The event is vestibular and need not involve runway lights.",
+        "Incorrect. Variation does not produce vestibular stimulation.",
+        "Correct. Head motion during a sustained turn can stimulate canals on different axes and produce a powerful false tumbling sensation."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-036",
+      "area": "Heading indicators",
+      "prompt": "A conventional unslaved heading gyro gradually differs from the magnetic compass during steady flight. With no other fault indicated, what routine action is appropriate?",
+      "options": [
+        "Periodically realign it using a reliable compass indication.",
+        "Apply the difference as a permanent wind correction.",
+        "Assume the compass variation has changed by the same amount."
+      ],
+      "correct": 0,
+      "explanation": "Conventional heading gyros precess and require periodic alignment under suitable, stable conditions.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 8: Heading indicator; precession",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf",
+      "standardCode": "IR.II",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Conventional heading gyros precess and require periodic alignment under suitable, stable conditions.",
+        "Incorrect. A heading-reference error is not a wind-triangle correction.",
+        "Incorrect. Gyro drift does not establish a change in local magnetic variation."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-037",
+      "area": "Unusual attitudes",
+      "prompt": "In a nose-low unusual attitude, airspeed is increasing rapidly. Which general control objective addresses the developing overspeed and descent?",
+      "options": [
+        "Reduce power and return to controlled flight using the appropriate recovery sequence.",
+        "Increase power and hold the bank while raising the nose abruptly.",
+        "Maintain power until the altimeter stops unwinding."
+      ],
+      "correct": 0,
+      "explanation": "A nose-low recovery generally includes power reduction, correction of excessive bank, and a smooth pitch recovery within limits; follow aircraft-specific guidance.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Airplane basic flight maneuvers: unusual attitudes",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "IR.IV",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A nose-low recovery generally includes power reduction, correction of excessive bank, and a smooth pitch recovery within limits; follow aircraft-specific guidance.",
+        "Incorrect. Extra power and an abrupt pull in bank can worsen overspeed and load factor.",
+        "Incorrect. Waiting for the altitude trend to stop does not control the developing condition."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-038",
+      "area": "Vertical-speed indications",
+      "prompt": "After a conventional airplane levels off, the VSI briefly continues to indicate a climb before returning toward zero. Why can this occur?",
+      "options": [
+        "The pitot tube must be blocked.",
+        "The instrument uses a calibrated leak that causes a response lag.",
+        "The VSI directly measures the airplane’s pitch angle."
+      ],
+      "correct": 1,
+      "explanation": "A conventional VSI senses a pressure-rate difference through a calibrated restriction and can lag a flight-path change.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 8: Vertical speed indicator",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf",
+      "standardCode": "IR.II",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A pitot blockage does not explain this normal static-instrument lag.",
+        "Correct. A conventional VSI senses a pressure-rate difference through a calibrated restriction and can lag a flight-path change.",
+        "Incorrect. Pitch attitude is not the quantity directly measured by the VSI."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-039",
+      "area": "Descent planning",
+      "prompt": "An airplane must lose 6,000 feet in 24 NM at a groundspeed of 120 knots. Ignoring level-off allowances, what average descent rate is required?",
+      "options": [
+        "250 ft/min.",
+        "500 ft/min.",
+        "750 ft/min."
+      ],
+      "correct": 1,
+      "explanation": "At 120 knots, groundspeed is 2 NM/min. The required rate is (6,000/24) × 2 = 500 ft/min.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Descent planning; time and distance",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "IR.I.C",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 250 is the gradient in feet per NM, not the rate per minute.",
+        "Correct. At 120 knots, groundspeed is 2 NM/min. The required rate is (6,000/24) × 2 = 500 ft/min.",
+        "Incorrect. 750 ft/min exceeds the rate implied by these distance and speed values."
+      ]
+    },
+    {
+      "id": "PD-B02-IRA-040",
+      "area": "Briefing changes",
+      "prompt": "After an approach briefing, ATC assigns a different runway with a different approach. What is the principal reason to review the new procedure before accepting final interception?",
+      "options": [
+        "The approach clearance removes the need to verify the chart.",
+        "The original briefing automatically applies to every approach at the airport.",
+        "Its courses, altitudes, minima, and missed approach may differ."
+      ],
+      "correct": 2,
+      "explanation": "A runway change can alter essential guidance and escape planning; create time to verify and brief the actual procedure.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: IFR flight procedures: approach briefing",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "IR.VI",
+      "standardDoc": "FAA-S-ACS-8C",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "ira",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. An ATC clearance does not verify the pilot’s chart selection and understanding.",
+        "Incorrect. Common airport location does not make distinct procedures interchangeable.",
+        "Correct. A runway change can alter essential guidance and escape planning; create time to verify and brief the actual procedure."
+      ]
+    }
+  ],
+  "cpl": [
+    {
+      "id": "PD-DRAFT-CPL-001",
+      "area": "Drag and power",
+      "prompt": "A propeller airplane is in steady level flight. Available power is unchanged. After slowing below the minimum-power-required speed, why does a further speed reduction require more power to maintain altitude?",
+      "options": [
+        "Parasite-drag growth increases power required.",
+        "The airplane’s weight decreases as speed decreases.",
+        "Induced-drag growth increases power required."
+      ],
+      "correct": 2,
+      "explanation": "On the low-speed side of the power curve, increased induced drag causes power required to rise as speed is reduced.",
+      "reference": "PHAK Chapter 5: Region of reversed command",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Parasite drag decreases with reduced speed under these conditions.",
+        "Incorrect. Weight is not reduced simply by slowing down.",
+        "Correct. On the low-speed side of the power curve, increased induced drag causes power required to rise as speed is reduced."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CPL-002",
+      "area": "Drag relationships",
+      "prompt": "For the same airplane in steady level flight at the same weight, density, and configuration, true airspeed is reduced from 120 to 90 knots. Using the usual induced-drag approximation, induced drag becomes approximately",
+      "options": [
+        "0.56 times its former value.",
+        "1.33 times its former value.",
+        "1.78 times its former value."
+      ],
+      "correct": 2,
+      "explanation": "For fixed lift, induced drag varies approximately with 1/V²: (120/90)² ≈ 1.78.",
+      "reference": "PHAK Chapter 5: Induced drag",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "CA.VII",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 0.56 is the square of the speed ratio, which describes the opposite trend.",
+        "Incorrect. 1.33 uses the inverse speed ratio without squaring it.",
+        "Correct. For fixed lift, induced drag varies approximately with 1/V²: (120/90)² ≈ 1.78."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CPL-003",
+      "area": "Chandelles",
+      "prompt": "During a properly executed chandelle in a single-engine airplane, the second 90° of turn is characterized by",
+      "options": [
+        "reducing bank while holding pitch attitude approximately constant.",
+        "increasing bank while holding pitch attitude constant.",
+        "holding bank while reducing pitch attitude to level flight."
+      ],
+      "correct": 0,
+      "explanation": "After maximum pitch attitude is established near the 90° point, bank decreases while pitch is held approximately constant as airspeed decreases.",
+      "reference": "AFH Chapter 10: Chandelles",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/11_afh_ch10.pdf",
+      "standardCode": "CA.V",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. After maximum pitch attitude is established near the 90° point, bank decreases while pitch is held approximately constant as airspeed decreases.",
+        "Incorrect. Bank is reduced toward wings-level during the second half.",
+        "Incorrect. Holding bank through the completion does not produce the required wings-level rollout."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CPL-004",
+      "area": "Lazy eights",
+      "prompt": "In a properly coordinated lazy eight, where does the maximum pitch-up attitude occur relative to the 90° point of the first turn?",
+      "options": [
+        "At the 90° point.",
+        "Before the 90° point.",
+        "After the 90° point."
+      ],
+      "correct": 1,
+      "explanation": "Maximum nose-up pitch occurs near the 45° point; pitch then decreases toward level as bank reaches its maximum near 90°.",
+      "reference": "AFH Chapter 10: Lazy eights",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/11_afh_ch10.pdf",
+      "standardCode": "CA.V",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Near 90°, pitch attitude is passing through level, not reaching maximum nose-up.",
+        "Correct. Maximum nose-up pitch occurs near the 45° point; pitch then decreases toward level as bank reaches its maximum near 90°.",
+        "Incorrect. After 90°, the nose continues below the horizon before recovering during the latter part of the turn."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CPL-005",
+      "area": "Turbocharger limits",
+      "prompt": "A turbocharged piston engine maintains its selected manifold pressure during a climb until the wastegate is fully closed. Above that point, at unchanged RPM and full available throttle, manifold pressure begins to fall. Which limit has been reached?",
+      "options": [
+        "The airplane’s absolute ceiling at that weight.",
+        "The propeller’s maximum governing altitude.",
+        "The engine’s critical altitude for that power setting."
+      ],
+      "correct": 2,
+      "explanation": "Critical altitude is the altitude above which the turbocharger can no longer maintain the selected rated pressure or power under the applicable conditions.",
+      "reference": "PHAK Chapter 7: Turbocharging systems: critical altitude",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "CA.I.G",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The airplane may still climb; falling manifold pressure does not establish zero climb capability.",
+        "Incorrect. The stated pressure change is a turbocharging limitation, not a propeller governing-altitude limit.",
+        "Correct. Critical altitude is the altitude above which the turbocharger can no longer maintain the selected rated pressure or power under the applicable conditions."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CPL-006",
+      "area": "Single-engine speeds",
+      "prompt": "In a normally aspirated conventional twin, increasing density altitude can reduce both VMC and single-engine climb capability. Why can these trends occur together?",
+      "options": [
+        "Reduced air density increases rudder force and available power.",
+        "Reduced operating-engine power lowers both asymmetric yaw and excess power.",
+        "Reduced VMC guarantees increased single-engine climb performance."
+      ],
+      "correct": 1,
+      "explanation": "Less engine power can reduce the asymmetric yaw requiring rudder while also reducing the power available for climbing. Lower VMC does not imply improved climb.",
+      "reference": "AFH Chapter 13: VMC; effect of density altitude",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/14_afh_ch13.pdf",
+      "standardCode": "CA.X",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Lower density does not increase normally aspirated engine power.",
+        "Correct. Less engine power can reduce the asymmetric yaw requiring rudder while also reducing the power available for climbing. Lower VMC does not imply improved climb.",
+        "Incorrect. Directional-control speed and climb capability describe different limitations."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CPL-007",
+      "area": "Best angle and best rate",
+      "prompt": "For a propeller airplane, the speed for maximum climb angle is associated with maximum excess thrust, while the speed for maximum climb rate is associated with",
+      "options": [
+        "maximum lift coefficient.",
+        "maximum excess power.",
+        "minimum parasite drag."
+      ],
+      "correct": 1,
+      "explanation": "Climb rate is proportional to excess power; climb angle is related to excess thrust.",
+      "reference": "PHAK Chapter 11: Climb performance: excess thrust and power",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Maximum lift coefficient corresponds to a stall boundary, not the general maximum-rate condition.",
+        "Correct. Climb rate is proportional to excess power; climb angle is related to excess thrust.",
+        "Incorrect. Minimum parasite drag alone excludes induced drag and available power."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CPL-008",
+      "area": "Figure-based loading",
+      "prompt": "Refer to PHAK Chapter 10, Figure 10-10. Starting with the total loading shown, approximately how much baggage at station 105 must be removed to move the CG to 73.5 inches? Treat 73.5 inches as a calculation target, not an asserted approved limit.",
+      "options": [
+        "8.5 lb.",
+        "28.3 lb.",
+        "54.5 lb."
+      ],
+      "correct": 1,
+      "explanation": "Solve (122,086 − 105x) ÷ (1,648.9 − x) = 73.5. This gives x = 28.31 lb.",
+      "reference": "PHAK Chapter 10: Figure 10-10; removal of weight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Using the baggage arm alone ignores the change in total weight when baggage is removed.",
+        "Correct. Solve (122,086 − 105x) ÷ (1,648.9 − x) = 73.5. This gives x = 28.31 lb.",
+        "Incorrect. This removal exceeds that needed to reach the stated target. Verify the resulting weight and CG against actual limits before flight."
+      ],
+      "figureRef": {
+        "supplement": "Pilot’s Handbook of Aeronautical Knowledge, Chapter 10",
+        "figure": "10-10",
+        "url": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10"
+      }
+    },
+    {
+      "id": "PD-DRAFT-CPL-009",
+      "area": "Accelerated stalls",
+      "prompt": "During a smooth pullout from a dive, an airplane stalls at an indicated airspeed above its wings-level, unaccelerated stall speed. Which condition caused the stall?",
+      "options": [
+        "The airplane descended through a lower density altitude.",
+        "The airplane exceeded its maximum operating speed.",
+        "The airplane exceeded its critical angle of attack."
+      ],
+      "correct": 2,
+      "explanation": "Increased load factor raises the speed at which the critical angle of attack can be reached.",
+      "reference": "PHAK Chapter 5: Accelerated stalls",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "CA.VII",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A change in density altitude does not establish the critical angle of attack.",
+        "Incorrect. An overspeed and a stall are different limits; the stem does not establish an overspeed.",
+        "Correct. Increased load factor raises the speed at which the critical angle of attack can be reached."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CPL-010",
+      "area": "Performance interpolation",
+      "prompt": "For a hypothetical performance table at the applicable weight and altitude, takeoff distance is 1,800 feet at 20°C and 2,200 feet at 40°C. The table authorizes linear interpolation. What distance applies at 35°C, before other corrections?",
+      "options": [
+        "1,900 feet.",
+        "2,000 feet.",
+        "2,100 feet."
+      ],
+      "correct": 2,
+      "explanation": "35°C is three-fourths of the interval: 1,800 + 0.75(400) = 2,100 feet.",
+      "reference": "PHAK Chapter 11: Interpolation of performance data",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 1,900 feet corresponds to 25°C under the stated interpolation.",
+        "Incorrect. 2,000 feet corresponds to 30°C.",
+        "Correct. 35°C is three-fourths of the interval: 1,800 + 0.75(400) = 2,100 feet."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-011",
+      "area": "Excess power",
+      "prompt": "At a stated flight condition, power available is 180 hp and power required for level flight is 140 hp. If weight and required power remain unchanged, raising available power to 200 hp increases excess power by",
+      "options": [
+        "14 percent.",
+        "50 percent.",
+        "100 percent."
+      ],
+      "correct": 1,
+      "explanation": "Excess power rises from 40 to 60 hp, a 50 percent increase.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Climb performance; excess power",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 14 percent compares the change with required power rather than original excess power.",
+        "Correct. Excess power rises from 40 to 60 hp, a 50 percent increase.",
+        "Incorrect. Doubling excess power would require 80 hp excess, not 60."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-012",
+      "area": "Angle versus rate",
+      "prompt": "A headwind increases while an airplane maintains the same airspeed, rate of climb, and performance through the air. What happens to its climb gradient relative to the ground?",
+      "options": [
+        "It increases.",
+        "It decreases.",
+        "It remains constant."
+      ],
+      "correct": 0,
+      "explanation": "The same height is gained while covering less ground distance.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Climb angle; wind effect",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The same height is gained while covering less ground distance.",
+        "Incorrect. A lower groundspeed increases rather than decreases feet gained per ground mile.",
+        "Incorrect. Ground-relative gradient depends on groundspeed as well as climb rate."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-013",
+      "area": "Glide optimization",
+      "prompt": "In still air, a clean propeller airplane is flown at the airspeed for maximum lift-to-drag ratio. With no thrust, this condition principally provides",
+      "options": [
+        "maximum glide distance per unit height.",
+        "maximum vertical descent rate.",
+        "minimum time to descend through a given height."
+      ],
+      "correct": 0,
+      "explanation": "Maximum L/D gives the shallowest still-air glide angle and greatest distance per height lost.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 5: Lift/drag ratio; gliding flight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Maximum L/D gives the shallowest still-air glide angle and greatest distance per height lost.",
+        "Incorrect. A maximum descent-rate condition is not the maximum-L/D objective.",
+        "Incorrect. Minimum sink and maximum-distance glide are distinct conditions."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-014",
+      "area": "Endurance versus range",
+      "prompt": "For a propeller airplane with approximately constant propeller efficiency and fuel consumed in proportion to shaft power, the still-air maximum-endurance condition is associated most directly with",
+      "options": [
+        "minimum power required.",
+        "minimum thrust required.",
+        "maximum power available."
+      ],
+      "correct": 0,
+      "explanation": "Minimum power demand produces the least fuel flow under the stated model and maximizes time aloft.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Range and endurance; power required",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Minimum power demand produces the least fuel flow under the stated model and maximizes time aloft.",
+        "Incorrect. Minimum thrust or drag is more directly associated with maximum L/D, not the minimum-power endurance condition.",
+        "Incorrect. Maximum available power does not minimize fuel consumption."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-015",
+      "area": "Energy conversion",
+      "prompt": "In an idealized zoom with no net work from thrust or drag, true airspeed decreases from 100 to 80 knots. Using 1 knot = 1.688 ft/s and g = 32.2 ft/s², approximately how much height can the lost kinetic energy provide?",
+      "options": [
+        "94 feet.",
+        "159 feet.",
+        "310 feet."
+      ],
+      "correct": 1,
+      "explanation": "Height gain is [(100 × 1.688)² − (80 × 1.688)²]/(2 × 32.2) ≈ 159 feet.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 4: Mechanical energy; exchange of altitude and airspeed",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/05_afh_ch4.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. This is below the height obtained when the squared speeds are converted consistently to ft/s.",
+        "Correct. Height gain is [(100 × 1.688)² − (80 × 1.688)²]/(2 × 32.2) ≈ 159 feet.",
+        "Incorrect. This is approximately twice the energy-equivalent height; the factor 2g is required."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-016",
+      "area": "Turn-rate comparison",
+      "prompt": "In still air, two airplanes fly coordinated level turns at the same true airspeed. One increases bank from 30° to 45°. What happens to its turn radius?",
+      "options": [
+        "It decreases.",
+        "It increases.",
+        "It remains constant."
+      ],
+      "correct": 0,
+      "explanation": "At fixed TAS, turn radius is inversely related to the tangent of bank angle.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 5: Forces in turns",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "CA.V",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. At fixed TAS, turn radius is inversely related to the tangent of bank angle.",
+        "Incorrect. A steeper bank produces greater turning acceleration and a smaller radius.",
+        "Incorrect. Holding speed constant does not hold radius constant when bank changes."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-017",
+      "area": "Load factor in a descent",
+      "prompt": "An airplane is banked 60° during a descending maneuver. Why is it incorrect to infer a 2g load factor from bank angle alone?",
+      "options": [
+        "Bank angle affects load factor only during climbs.",
+        "The level-turn relationship requires steady altitude.",
+        "All descending turns produce less than 1g."
+      ],
+      "correct": 1,
+      "explanation": "The familiar n = 1/cos(bank) relationship assumes a coordinated, steady, level turn. A descending or accelerating maneuver requires additional flight-path information.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 5: Load factors; level-flight assumptions",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "CA.VII",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Climbing and descending turns can involve significant load factors.",
+        "Correct. The familiar n = 1/cos(bank) relationship assumes a coordinated, steady, level turn. A descending or accelerating maneuver requires additional flight-path information.",
+        "Incorrect. Descending maneuvers can produce a wide range of load factors; less than 1g is not assured."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-018",
+      "area": "Spiral versus spin",
+      "prompt": "An airplane is in a steep, tightening descending turn with rapidly increasing airspeed and high aerodynamic loads. The wing is not stalled. Which condition best fits?",
+      "options": [
+        "A stabilized power-off stall.",
+        "A developed spin.",
+        "A spiral dive."
+      ],
+      "correct": 2,
+      "explanation": "A spiral dive can involve a steep bank, increasing speed, and a tightening descent without a stall.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 5: Spiral dives; spins",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/06_afh_ch5.pdf",
+      "standardCode": "CA.IX",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A stalled condition is inconsistent with the stated unstalled wing.",
+        "Incorrect. A spin requires a stalled wing and autorotation; the stem excludes the stall.",
+        "Correct. A spiral dive can involve a steep bank, increasing speed, and a tightening descent without a stall."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-019",
+      "area": "Spin recovery principle",
+      "prompt": "A developed spin involves both stall and autorotation. Why is merely reducing power insufficient as a complete general recovery action?",
+      "options": [
+        "The stall and yaw must also be addressed using the approved procedure.",
+        "An increased bank angle must first be established.",
+        "Power reduction automatically removes the wing’s critical angle of attack."
+      ],
+      "correct": 0,
+      "explanation": "Power is one consideration; stopping autorotation and reducing angle of attack are also required in the aircraft-specific sequence.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 5: Spins; recovery considerations",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/06_afh_ch5.pdf",
+      "standardCode": "CA.IX",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Power is one consideration; stopping autorotation and reducing angle of attack are also required in the aircraft-specific sequence.",
+        "Incorrect. Adding bank is not a general prerequisite for spin recovery.",
+        "Incorrect. Throttle position alone does not determine angle of attack."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-020",
+      "area": "Accelerated-stall margins",
+      "prompt": "At the same weight and configuration, a pilot unloads the wing from a 2g pull to approximately 1g. What happens to the stall-speed threshold associated with that load factor?",
+      "options": [
+        "It remains unchanged.",
+        "It decreases.",
+        "It increases."
+      ],
+      "correct": 1,
+      "explanation": "Stall speed varies with the square root of load factor; unloading lowers the speed at which the critical angle is reached.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 5: Load factors and stalling speed",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "CA.VII",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The configuration has not changed, but load factor has.",
+        "Correct. Stall speed varies with the square root of load factor; unloading lowers the speed at which the critical angle is reached.",
+        "Incorrect. Increasing rather than reducing load factor raises the accelerated stall-speed threshold."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-021",
+      "area": "Steep-spiral purpose",
+      "prompt": "A commercial pilot practices a steep spiral over a selected point. Which objective distinguishes it from a maximum-performance climbing maneuver?",
+      "options": [
+        "Holding constant altitude while maximizing turn rate.",
+        "Gaining the most altitude through a 180° heading change.",
+        "Dissipating altitude while remaining near a selected area."
+      ],
+      "correct": 2,
+      "explanation": "A steep spiral is a descending ground-reference maneuver useful for remaining near a potential landing area.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 10: Steep spiral",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/11_afh_ch10.pdf",
+      "standardCode": "CA.V",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A steep spiral is not an altitude-holding turn.",
+        "Incorrect. This describes the broad objective of a chandelle.",
+        "Correct. A steep spiral is a descending ground-reference maneuver useful for remaining near a potential landing area."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-022",
+      "area": "Steep-spiral wind",
+      "prompt": "During a steep spiral over a fixed point in steady wind, why must bank vary around the turn?",
+      "options": [
+        "The selected point’s elevation changes with heading.",
+        "Airplane weight changes with heading.",
+        "Groundspeed changes around the ground-reference circle."
+      ],
+      "correct": 2,
+      "explanation": "A constant ground radius requires bank adjustments as groundspeed varies between upwind and downwind portions.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 10: Steep spiral; wind correction",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/11_afh_ch10.pdf",
+      "standardCode": "CA.V",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The ground point’s elevation is fixed.",
+        "Incorrect. Heading does not itself change airplane weight.",
+        "Correct. A constant ground radius requires bank adjustments as groundspeed varies between upwind and downwind portions."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-023",
+      "area": "Chandelle energy",
+      "prompt": "During a correctly flown chandelle, airspeed decreases while altitude increases. Which description best explains the maneuver’s energy management?",
+      "options": [
+        "The climb requires constant kinetic energy throughout.",
+        "The bank converts airplane weight into engine power.",
+        "Available power and some kinetic energy support the climb."
+      ],
+      "correct": 2,
+      "explanation": "The maneuver combines applied power with a controlled exchange of airspeed for height.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 10: Chandelles; airspeed and altitude",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/11_afh_ch10.pdf",
+      "standardCode": "CA.V",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Airspeed decreases, so kinetic energy does not remain constant.",
+        "Incorrect. Weight is not converted into additional engine power by banking.",
+        "Correct. The maneuver combines applied power with a controlled exchange of airspeed for height."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-024",
+      "area": "Lazy-eight coordination",
+      "prompt": "During the low-speed, high-pitch part of a lazy eight in a clockwise-propeller airplane, why can rudder demand differ between left and right turns?",
+      "options": [
+        "The airplane’s CG moves laterally with each heading.",
+        "The rudder reverses its aerodynamic direction in a left turn.",
+        "Adverse yaw combines differently with left-turning tendencies."
+      ],
+      "correct": 2,
+      "explanation": "The yaw from rolling and the propeller-related tendencies may reinforce or partly oppose each other depending on turn direction.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 10: Lazy eights; coordination",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/11_afh_ch10.pdf",
+      "standardCode": "CA.V",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The yaw difference does not require a lateral movement of mass.",
+        "Incorrect. The rudder does not reverse its basic aerodynamic effect simply because turn direction changes.",
+        "Correct. The yaw from rolling and the propeller-related tendencies may reinforce or partly oppose each other depending on turn direction."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-025",
+      "area": "Landing-gear operating limits",
+      "prompt": "A retractable-gear airplane has VLO = 125 KIAS and VLE = 145 KIAS. With the gear fully extended and locked, which statement follows from these values alone?",
+      "options": [
+        "135 KIAS is within both gear limits.",
+        "135 KIAS is above both gear limits.",
+        "135 KIAS is within VLE but above VLO."
+      ],
+      "correct": 2,
+      "explanation": "135 is below the 145 KIAS extended limit but above the 125 KIAS operating limit. Other limitations remain applicable.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 12: Landing gear; VLO and VLE",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/13_afh_ch12.pdf",
+      "standardCode": "CA.I.G",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The mechanism-operating limit is only 125 KIAS.",
+        "Incorrect. The extended limit is 145 KIAS and is not exceeded at 135 KIAS.",
+        "Correct. 135 is below the 145 KIAS extended limit but above the 125 KIAS operating limit. Other limitations remain applicable."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-026",
+      "area": "Gear-position evidence",
+      "prompt": "After gear selection, the normal down-and-locked indication is absent. Why is normal-looking hydraulic pressure not sufficient proof that the gear is secure?",
+      "options": [
+        "System pressure does not directly verify each mechanical lock.",
+        "Hydraulic pressure can exist only with every gear locked.",
+        "A pressure indication replaces the landing-gear checklist."
+      ],
+      "correct": 0,
+      "explanation": "Pressure and gear-lock status are different system facts. Use the aircraft’s approved indication and abnormal procedure.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 12: Retractable landing gear; abnormal indications",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/13_afh_ch12.pdf",
+      "standardCode": "CA.I.G",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Pressure and gear-lock status are different system facts. Use the aircraft’s approved indication and abnormal procedure.",
+        "Incorrect. Pressure can be present with an incomplete extension or indication problem.",
+        "Incorrect. A single pressure reading does not replace the required checks."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-027",
+      "area": "Propeller pitch limits",
+      "prompt": "A constant-speed propeller has reached its low-pitch stop. Airspeed then changes. Why may RPM no longer remain at the selected value?",
+      "options": [
+        "The propeller has stopped absorbing engine power.",
+        "The governor has no further blade-angle travel in that direction.",
+        "The selected RPM automatically becomes a fixed manifold pressure."
+      ],
+      "correct": 1,
+      "explanation": "Governing is limited by blade-angle range; at a stop, available governing authority can be exhausted.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Constant-speed propeller; governing range",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "CA.I.G",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The propeller can still absorb power even when the governor reaches a travel limit.",
+        "Correct. Governing is limited by blade-angle range; at a stop, available governing authority can be exhausted.",
+        "Incorrect. RPM selection does not become a manifold-pressure setting."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-028",
+      "area": "Cowl flaps",
+      "prompt": "On an airplane equipped with cowl flaps, opening them during a low-speed, high-power climb generally trades",
+      "options": [
+        "More cooling airflow, with reduced airplane weight.",
+        "More cooling airflow, with additional drag.",
+        "Less cooling airflow, with additional drag."
+      ],
+      "correct": 1,
+      "explanation": "Opening cowl flaps can increase cooling flow while increasing drag.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 12: Engine cooling; cowl flaps",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/13_afh_ch12.pdf",
+      "standardCode": "CA.I.G",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The airflow can increase, but selecting cowl flaps does not reduce airplane mass.",
+        "Correct. Opening cowl flaps can increase cooling flow while increasing drag.",
+        "Incorrect. Reduced cooling flow is the opposite of the intended opening effect."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-029",
+      "area": "Density altitude and runway",
+      "prompt": "At the same weight and takeoff indicated speed, a higher density altitude generally requires a higher true airspeed. In still air, what consequence should be included in takeoff planning?",
+      "options": [
+        "An unchanged liftoff groundspeed because IAS is unchanged.",
+        "A lower liftoff groundspeed and shorter acceleration distance.",
+        "A higher liftoff groundspeed and longer acceleration distance."
+      ],
+      "correct": 2,
+      "explanation": "Higher TAS in still air means higher groundspeed; reduced engine and propeller performance may further increase distance.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Density altitude; takeoff performance",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. IAS is not groundspeed, particularly when density changes.",
+        "Incorrect. This reverses the speed effect of lower density at the same IAS.",
+        "Correct. Higher TAS in still air means higher groundspeed; reduced engine and propeller performance may further increase distance."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-030",
+      "area": "Runway slope",
+      "prompt": "For otherwise comparable takeoff conditions, an upslope runway normally increases takeoff distance principally because",
+      "options": [
+        "Acceleration is unchanged because lift balances weight.",
+        "Acceleration must overcome an uphill weight component.",
+        "Acceleration benefits from a downhill weight component."
+      ],
+      "correct": 1,
+      "explanation": "On an upslope, a component of gravity opposes motion along the runway.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Takeoff performance; runway gradient",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Before liftoff, vertical support does not eliminate the gravitational component along the slope.",
+        "Correct. On an upslope, a component of gravity opposes motion along the runway.",
+        "Incorrect. This applies to a downslope, not the upslope specified."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-031",
+      "area": "Landing-distance definitions",
+      "prompt": "A landing chart lists 700 feet of ground roll and 1,600 feet over a 50-foot obstacle. Which value includes the airborne approach portion from the stated height?",
+      "options": [
+        "900 feet.",
+        "1,600 feet.",
+        "700 feet."
+      ],
+      "correct": 1,
+      "explanation": "The 1,600-foot total includes both the airborne portion from 50 feet and the landing ground roll.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Landing distance; chart definitions",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 900 feet is the difference between the entries, not the complete over-obstacle distance.",
+        "Correct. The 1,600-foot total includes both the airborne portion from 50 feet and the landing ground roll.",
+        "Incorrect. Ground roll begins after touchdown, not at the 50-foot point."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-032",
+      "area": "Performance assumptions",
+      "prompt": "An AFM chart assumes a dry, level, paved runway. The intended runway is wet grass. What is the principal limitation of using the uncorrected chart value?",
+      "options": [
+        "The chart’s surface assumptions do not match the operation.",
+        "The chart becomes conservative whenever the runway is unpaved.",
+        "Runway surface affects landing but not takeoff."
+      ],
+      "correct": 0,
+      "explanation": "Surface changes can materially affect acceleration and braking; use applicable approved guidance rather than assuming the original number applies.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Performance-chart assumptions",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Surface changes can materially affect acceleration and braking; use applicable approved guidance rather than assuming the original number applies.",
+        "Incorrect. An unpaved or contaminated runway is not automatically a conservative improvement.",
+        "Incorrect. Runway surface can affect both takeoff and landing performance."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-033",
+      "area": "Windmilling propeller",
+      "prompt": "Following a power loss in a single-engine airplane, why can a windmilling propeller increase the descent required to maintain a given glide speed?",
+      "options": [
+        "It eliminates induced drag from the wing.",
+        "It adds weight to the airplane after failure.",
+        "It can impose substantial additional drag."
+      ],
+      "correct": 2,
+      "explanation": "A windmilling propeller can extract energy from the airflow and increase drag. Follow the aircraft’s approved engine-out procedure.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 18: Engine failure; propeller drag",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/19_afh_ch18.pdf",
+      "standardCode": "CA.IX",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The wing must still produce lift and associated induced drag.",
+        "Incorrect. The propeller’s mass was already part of the airplane’s weight.",
+        "Correct. A windmilling propeller can extract energy from the airflow and increase drag. Follow the aircraft’s approved engine-out procedure."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-034",
+      "area": "Engine-out bank",
+      "prompt": "A conventional twin is held wings level after one engine fails, with rudder maintaining heading. Why may the minimum-drag engine-out attitude require a small bank toward the operating engine instead?",
+      "options": [
+        "It increases the failed engine’s thrust.",
+        "It can reduce sideslip while balancing asymmetric thrust.",
+        "It eliminates the need for rudder at every power setting."
+      ],
+      "correct": 1,
+      "explanation": "The appropriate slight bank and rudder combination can establish a lower-drag, near-zero-sideslip condition. Use aircraft-specific guidance.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 13: Zero sideslip; one-engine-inoperative flight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/14_afh_ch13.pdf",
+      "standardCode": "CA.X",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Banking does not restore thrust from the failed engine.",
+        "Correct. The appropriate slight bank and rudder combination can establish a lower-drag, near-zero-sideslip condition. Use aircraft-specific guidance.",
+        "Incorrect. Rudder requirements remain dependent on power, speed, and airplane configuration."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-035",
+      "area": "Engine identification",
+      "prompt": "After a suspected engine failure in a twin, why must the affected engine be verified before its fuel or propeller controls are moved?",
+      "options": [
+        "The verification restores the failed engine’s rated power.",
+        "The remaining engine requires both propellers to be feathered.",
+        "Control forces and initial symptoms can be misinterpreted."
+      ],
+      "correct": 2,
+      "explanation": "A mistaken shutdown can remove the remaining thrust; identification and verification are essential parts of the approved procedure.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 13: Engine failure: identify and verify",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/14_afh_ch13.pdf",
+      "standardCode": "CA.X",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Verification establishes identity, not necessarily engine recovery.",
+        "Incorrect. Feathering the operating propeller would remove useful thrust.",
+        "Correct. A mistaken shutdown can remove the remaining thrust; identification and verification are essential parts of the approved procedure."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-036",
+      "area": "Service ceiling",
+      "prompt": "A light airplane reaches the altitude at which its maximum available climb rate has fallen to the value defining its service ceiling. This does not necessarily mean it has reached",
+      "options": [
+        "an altitude of reduced excess power.",
+        "the applicable service-ceiling condition.",
+        "its absolute ceiling."
+      ],
+      "correct": 2,
+      "explanation": "Absolute ceiling is the condition of zero maximum climb rate, distinct from the service-ceiling criterion.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Service ceiling and absolute ceiling",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A reduced climb capability is consistent with reduced excess power.",
+        "Incorrect. The stem expressly describes the service-ceiling condition.",
+        "Correct. Absolute ceiling is the condition of zero maximum climb rate, distinct from the service-ceiling criterion."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-037",
+      "area": "Load redistribution",
+      "prompt": "An airplane weighs 3,000 lb at a CG of 80 inches. A 100 lb item at station 140 is removed. What is the new CG, approximately?",
+      "options": [
+        "77.9 inches.",
+        "80.0 inches.",
+        "82.1 inches."
+      ],
+      "correct": 0,
+      "explanation": "New moment is 240,000 − 14,000 = 226,000 lb-in; divided by 2,900 lb gives 77.93 inches.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Removal of weight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. New moment is 240,000 − 14,000 = 226,000 lb-in; divided by 2,900 lb gives 77.93 inches.",
+        "Incorrect. Removing weight aft of the CG shifts the CG forward.",
+        "Incorrect. 82.1 inches reverses the direction of the shift."
+      ]
+    },
+    {
+      "id": "PD-B02-CPL-038",
+      "area": "Figure-based signed moments",
+      "prompt": "Refer to PHAK Figure 10-10. If the 11 lb of oil at station −31 were removed for a calculation exercise, what would happen to total moment?",
+      "options": [
+        "It would increase by 341 lb-in.",
+        "It would decrease by 341 lb-in.",
+        "It would remain unchanged."
+      ],
+      "correct": 0,
+      "explanation": "Removing a negative moment increases the remaining total: 122,086 − (−341) = 122,427 lb-in. This is a calculation exercise, not authorization to operate without oil.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Figure 10-10; negative arms",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Removing a negative moment increases the remaining total: 122,086 − (−341) = 122,427 lb-in. This is a calculation exercise, not authorization to operate without oil.",
+        "Incorrect. This subtracts the magnitude without retaining the negative sign.",
+        "Incorrect. Oil has a nonzero arm and moment in the figure."
+      ],
+      "figureRef": {
+        "supplement": "Pilot’s Handbook of Aeronautical Knowledge, Chapter 10",
+        "figure": "10-10",
+        "url": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10"
+      }
+    },
+    {
+      "id": "PD-B02-CPL-039",
+      "area": "Figure-based total loading",
+      "prompt": "Refer to PHAK Figure 10-10. In the loading exercise, the 70 lb baggage item is replaced by a 40 lb item at the same station. What is the resulting total weight and moment?",
+      "options": [
+        "1,618.9 lb and 118,936 lb-in.",
+        "1,618.9 lb and 125,236 lb-in.",
+        "1,648.9 lb and 118,936 lb-in."
+      ],
+      "correct": 0,
+      "explanation": "Net removal is 30 lb at 105 inches: weight becomes 1,618.9 lb and moment decreases by 3,150 to 118,936 lb-in.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Figure 10-10; replacement of weight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10",
+      "standardCode": "CA.I.F",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Net removal is 30 lb at 105 inches: weight becomes 1,618.9 lb and moment decreases by 3,150 to 118,936 lb-in.",
+        "Incorrect. The weight is correct, but the moment change has the wrong sign.",
+        "Incorrect. The moment is correct, but replacing 70 lb with 40 lb reduces total weight by 30 lb."
+      ],
+      "figureRef": {
+        "supplement": "Pilot’s Handbook of Aeronautical Knowledge, Chapter 10",
+        "figure": "10-10",
+        "url": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10"
+      }
+    },
+    {
+      "id": "PD-B02-CPL-040",
+      "area": "Decision margins",
+      "prompt": "A performance calculation shows the airplane can meet an obstacle requirement only if every planned assumption is achieved exactly. Which concern should most influence the departure decision?",
+      "options": [
+        "A favorable weight calculation makes all other assumptions immaterial.",
+        "Small errors or adverse changes could eliminate the available margin.",
+        "Exact equality provides the same practical margin as a substantial surplus."
+      ],
+      "correct": 1,
+      "explanation": "A limit met with no surplus is sensitive to wind, technique, condition, and data uncertainty; evaluate a plan with suitable margin.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 2: Risk assessment; operational margins",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/04_phak_ch2.pdf",
+      "standardCode": "CA.I.H",
+      "standardDoc": "FAA-S-ACS-7B",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cpl",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Weight is one contributor and does not remove the other performance assumptions.",
+        "Correct. A limit met with no surplus is sensitive to wind, technique, condition, and data uncertainty; evaluate a plan with suitable margin.",
+        "Incorrect. Equality is not the same as resilience to ordinary variation."
+      ]
+    }
+  ],
+  "cfi": [
+    {
+      "id": "PD-DRAFT-CFI-001",
+      "area": "Differential ailerons",
+      "prompt": "During an aileron-system demonstration, the upward-deflecting aileron moves farther than the downward-deflecting aileron. What is the principal purpose of this differential travel?",
+      "options": [
+        "Eliminate the need for rudder.",
+        "Reduce adverse yaw.",
+        "Increase the critical angle of attack."
+      ],
+      "correct": 1,
+      "explanation": "Greater upward travel adds drag on the descending wing relative to the other wing and helps reduce adverse yaw.",
+      "reference": "PHAK Chapter 6: Differential ailerons",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/08_phak_ch6.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Differential ailerons reduce an adverse-yaw tendency; they do not eliminate the need for coordinated rudder.",
+        "Correct. Greater upward travel adds drag on the descending wing relative to the other wing and helps reduce adverse yaw.",
+        "Incorrect. Aileron differential does not redefine the airfoil’s critical angle of attack."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFI-002",
+      "area": "Static and dynamic stability",
+      "prompt": "After a small pitch disturbance, an airplane initially tends toward its trimmed condition, but successive oscillations grow in amplitude. How should the instructor classify the demonstrated stability?",
+      "options": [
+        "Neutral static; neutral dynamic.",
+        "Negative static; positive dynamic.",
+        "Positive static; negative dynamic."
+      ],
+      "correct": 2,
+      "explanation": "The initial restoring tendency is positive static stability. Growing oscillations indicate negative dynamic stability.",
+      "reference": "PHAK Chapter 5: Static and dynamic stability",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Neither the initial restoring tendency nor the growing amplitude is neutral.",
+        "Incorrect. The initial tendency is restoring, not divergent; subsequent motion is divergent, not damped.",
+        "Correct. The initial restoring tendency is positive static stability. Growing oscillations indicate negative dynamic stability."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFI-003",
+      "area": "Ground-reference maneuvers",
+      "prompt": "A learner flies turns around a point at constant altitude and true airspeed in a steady wind. To maintain a constant ground radius, where should the greatest bank angle normally occur?",
+      "options": [
+        "On the crosswind side, at the greatest crab angle.",
+        "On the upwind side, at the lowest groundspeed.",
+        "On the downwind side, at the greatest groundspeed."
+      ],
+      "correct": 2,
+      "explanation": "A greater groundspeed requires a faster change in ground-track direction to maintain the same radius, requiring greater bank.",
+      "reference": "PHAK Chapter 5: Forces in turns; effect of wind",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "FI.VIII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Crab angle alone does not identify the maximum bank required.",
+        "Incorrect. Lower groundspeed requires less bank for a given ground radius.",
+        "Correct. A greater groundspeed requires a faster change in ground-track direction to maintain the same radius, requiring greater bank."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFI-004",
+      "area": "Trim instruction",
+      "prompt": "A learner repeatedly changes pitch with the trim control and then uses the elevator to correct the resulting airspeed. Which demonstration best addresses the reversed control sequence?",
+      "options": [
+        "Set trim first, then select the desired attitude.",
+        "Establish the attitude, then trim away control pressure.",
+        "Center the trim, then hold the desired speed with rudder."
+      ],
+      "correct": 1,
+      "explanation": "Use the flight controls to establish the desired condition, allow the airplane to stabilize as appropriate, and trim to relieve sustained force.",
+      "reference": "PHAK Chapter 6: Trim systems",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/08_phak_ch6.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Trim is not the primary control for establishing a new attitude.",
+        "Correct. Use the flight controls to establish the desired condition, allow the airplane to stabilize as appropriate, and trim to relieve sustained force.",
+        "Incorrect. Rudder does not substitute for elevator control of the desired pitch condition."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFI-005",
+      "area": "Visual illusions",
+      "prompt": "A learner accustomed to a wide runway approaches a much narrower runway of similar length and slope. Without compensating for the visual illusion, the learner is most likely to fly",
+      "options": [
+        "a lower-than-normal approach.",
+        "a normal approach with a later flare.",
+        "a higher-than-normal approach."
+      ],
+      "correct": 0,
+      "explanation": "A narrow runway can create the impression of being higher than actual, leading to a low approach.",
+      "reference": "PHAK Chapter 17: Runway width illusion",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/19_phak_ch17.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A narrow runway can create the impression of being higher than actual, leading to a low approach.",
+        "Incorrect. A normal glidepath is not assured when the pilot follows this uncorrected illusion.",
+        "Incorrect. A wider-than-usual runway can produce the opposite illusion."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFI-006",
+      "area": "Instructional use of simulation",
+      "prompt": "An instructor uses a simulator to practice an avionics failure whose safe replication in the airplane would be impractical. Before transferring the skill to the airplane, what should the instructor emphasize?",
+      "options": [
+        "That simulator proficiency removes the need for aircraft familiarization.",
+        "Which indications and procedures differ between the device and airplane.",
+        "That device limitations should be omitted to preserve realism."
+      ],
+      "correct": 1,
+      "explanation": "Explicit differences help prevent negative transfer while retaining the value of safe, repeatable practice.",
+      "reference": "AIH Chapter 9: Use of flight simulation training devices",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/11_aih_chapter_9.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Device proficiency does not establish familiarity with every aircraft-specific difference.",
+        "Correct. Explicit differences help prevent negative transfer while retaining the value of safe, repeatable practice.",
+        "Incorrect. Undisclosed limitations can create false expectations when the learner operates the actual airplane."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFI-007",
+      "area": "Secondary stalls",
+      "prompt": "A learner recovers from an initial stall but applies abrupt aft elevator before sufficient airspeed has returned. A second stall occurs. What is the most direct explanation?",
+      "options": [
+        "The wings stalled because the recovery used insufficient bank.",
+        "The first stall permanently increased the airplane’s stall speed.",
+        "The critical angle of attack was exceeded again."
+      ],
+      "correct": 2,
+      "explanation": "A rapid pitch increase can produce a secondary stall by returning the wing beyond its critical angle of attack.",
+      "reference": "AFH Chapter 5: Secondary stalls",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/airplane_handbook",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Insufficient bank is not the cause; added bank can increase the load factor during recovery.",
+        "Incorrect. The initial stall does not permanently change the unaccelerated stall speed.",
+        "Correct. A rapid pitch increase can produce a secondary stall by returning the wing beyond its critical angle of attack."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFI-008",
+      "area": "Figure-based moment checks",
+      "prompt": "Refer to PHAK Chapter 10, Figure 10-10. A learner changes the oil moment from −341 to +341 lb-in but leaves every other entry unchanged. What effect does this sign error have on the computed CG?",
+      "options": [
+        "It moves the computed CG about 0.41 inch aft.",
+        "It moves the computed CG about 0.21 inch forward.",
+        "It leaves the computed CG unchanged."
+      ],
+      "correct": 0,
+      "explanation": "The moment is overstated by 682 lb-in. At 1,648.9 lb, the computed CG is shifted aft by 682/1,648.9 ≈ 0.414 inch.",
+      "reference": "PHAK Chapter 10: Figure 10-10; signed moments",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The moment is overstated by 682 lb-in. At 1,648.9 lb, the computed CG is shifted aft by 682/1,648.9 ≈ 0.414 inch.",
+        "Incorrect. This uses one 341 lb-in term rather than the 682 lb-in change and reverses the direction.",
+        "Incorrect. Weight is unchanged, but total moment is not; the computed CG therefore changes."
+      ],
+      "figureRef": {
+        "supplement": "Pilot’s Handbook of Aeronautical Knowledge, Chapter 10",
+        "figure": "10-10",
+        "url": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10"
+      }
+    },
+    {
+      "id": "PD-DRAFT-CFI-009",
+      "area": "Flap aerodynamics",
+      "prompt": "A learner states that extending flaps reduces stall speed because it reduces airplane weight. Which explanation correctly identifies the aerodynamic change?",
+      "options": [
+        "Flaps reduce the wing’s required lift to zero.",
+        "Flaps increase the wing’s maximum lift coefficient.",
+        "Flaps increase the available engine power."
+      ],
+      "correct": 1,
+      "explanation": "An increased maximum lift coefficient allows the same weight to be supported at a lower speed in the applicable configuration.",
+      "reference": "PHAK Chapter 6: Secondary flight controls: flaps",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/08_phak_ch6.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Lift is still required to support the airplane.",
+        "Correct. An increased maximum lift coefficient allows the same weight to be supported at a lower speed in the applicable configuration.",
+        "Incorrect. Flaps change aerodynamic forces, not available engine power."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFI-010",
+      "area": "Load-factor instruction",
+      "prompt": "A learner asks why steepening a level turn requires increased lift even though airplane weight has not changed. Which explanation is most accurate?",
+      "options": [
+        "The vertical lift component must continue to equal airplane weight.",
+        "The total lift remains equal to airplane weight at every bank angle.",
+        "The horizontal lift component must equal airplane weight."
+      ],
+      "correct": 0,
+      "explanation": "Bank tilts the lift vector. Total lift must increase so that its vertical component still balances weight.",
+      "reference": "PHAK Chapter 5: Forces in turns",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Bank tilts the lift vector. Total lift must increase so that its vertical component still balances weight.",
+        "Incorrect. Total lift exceeds weight in a steady level banked turn.",
+        "Incorrect. The horizontal component turns the airplane; it does not support weight."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-011",
+      "area": "Integrated instruction",
+      "prompt": "A new learner can hold altitude using the altimeter but rarely looks outside during VFR training. Which lesson design best applies integrated flight instruction?",
+      "options": [
+        "Teach the outside picture and instrument indications together.",
+        "Remove every reference to instruments until the checkride.",
+        "Continue instrument-only practice until VFR habits develop."
+      ],
+      "correct": 0,
+      "explanation": "Integrated instruction connects outside visual references with instrument confirmation from the beginning while preserving an appropriate visual lookout.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 9: Integrated flight instruction",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/11_aih_chapter_9.pdf",
+      "standardCode": "FI.IV",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Integrated instruction connects outside visual references with instrument confirmation from the beginning while preserving an appropriate visual lookout.",
+        "Incorrect. Completely excluding instruments does not teach the intended relationship.",
+        "Incorrect. Instrument-only practice does not by itself establish outside-reference habits for VFR flight."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-012",
+      "area": "Demonstration planning",
+      "prompt": "During an initial maneuver demonstration, the instructor begins a long explanation only after the learner’s workload becomes high. What change best improves the next demonstration?",
+      "options": [
+        "Brief key actions first, then coordinate a concise explanation with the demonstration.",
+        "Add more simultaneous detail during the highest-workload phase.",
+        "Omit the explanation and assess recall of the maneuver name."
+      ],
+      "correct": 0,
+      "explanation": "Preparation creates a framework, and a coordinated demonstration links essential cues to actions without unnecessary overload.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 5: Demonstration-performance method",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/07_aih_chapter_5.pdf",
+      "standardCode": "FI.IV",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Preparation creates a framework, and a coordinated demonstration links essential cues to actions without unnecessary overload.",
+        "Incorrect. More detail during peak workload can further reduce useful observation.",
+        "Incorrect. Naming the maneuver does not replace understanding its execution."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-013",
+      "area": "Safe practice boundaries",
+      "prompt": "An instructor plans a distraction exercise during a simulated emergency. Which condition should be established before introducing the distraction?",
+      "options": [
+        "A detailed critique after the exercise.",
+        "Safety limits and intervention criteria.",
+        "Additional repetitions of the distraction."
+      ],
+      "correct": 1,
+      "explanation": "Safe boundaries and effective instructor supervision must precede the distraction exercise.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 9: Distractions; instructor supervision",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/11_aih_chapter_9.pdf",
+      "standardCode": "FI.XII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A debrief is valuable afterward but does not establish safe conduct beforehand.",
+        "Correct. Safe boundaries and effective instructor supervision must precede the distraction exercise.",
+        "Incorrect. Repetition may develop a skill later; it does not establish the safety prerequisites."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-014",
+      "area": "Simulated failures",
+      "prompt": "A proposed in-flight simulation would disable a safety-critical system in a way not approved by the aircraft or training guidance. What is the better training choice?",
+      "options": [
+        "Use an approved method or suitable training device.",
+        "Treat the learning objective as authorization to alter the system.",
+        "Perform the disablement if the learner is not told in advance."
+      ],
+      "correct": 0,
+      "explanation": "The objective can be trained through approved simulation without creating an unsupported real failure.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 9: Use of simulation; realistic training",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/11_aih_chapter_9.pdf",
+      "standardCode": "FI.XII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The objective can be trained through approved simulation without creating an unsupported real failure.",
+        "Incorrect. A learning goal does not override aircraft limitations and safe training practices.",
+        "Incorrect. Surprise does not make an unsafe or unapproved method appropriate."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-015",
+      "area": "Instructor intervention",
+      "prompt": "During an emergency exercise, a learner’s fixation leads to a continuing unsafe airspeed trend despite coaching. What should determine the instructor’s intervention?",
+      "options": [
+        "The desired realism of the scenario.",
+        "The remaining lesson objectives.",
+        "The developing safety risk."
+      ],
+      "correct": 2,
+      "explanation": "Intervene before the developing condition compromises safety, even if the exercise is incomplete.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 9: Instructor supervision; flight safety",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/11_aih_chapter_9.pdf",
+      "standardCode": "FI.XII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Realism is useful only within safe limits.",
+        "Incorrect. Other objectives can be rescheduled and do not justify allowing an unsafe trend to continue.",
+        "Correct. Intervene before the developing condition compromises safety, even if the exercise is incomplete."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-016",
+      "area": "Lesson prerequisites",
+      "prompt": "A learner attempts a landing flare but cannot consistently recognize or hold the required pitch attitudes in simpler flight. What training adjustment best addresses the cause?",
+      "options": [
+        "Practice attitude recognition and control first.",
+        "Repeat complete landings with more instructor prompts.",
+        "Introduce more landing variables on the next circuit."
+      ],
+      "correct": 0,
+      "explanation": "The stated weakness is a prerequisite pitch-control skill; isolate and strengthen it before integration.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 7: Building blocks of learning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf",
+      "standardCode": "FI.IV",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The stated weakness is a prerequisite pitch-control skill; isolate and strengthen it before integration.",
+        "Incorrect. Prompts may help complete a landing but can conceal rather than resolve the missing prerequisite.",
+        "Incorrect. Additional variables increase demands on a skill that is not yet reliable."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-017",
+      "area": "Ballooning",
+      "prompt": "A learner raises the nose excessively during the landing roundout and the airplane climbs away from the runway. Which error most directly initiated the balloon?",
+      "options": [
+        "Excessive rudder alignment correction.",
+        "Excessive pitch change at the existing airspeed.",
+        "Insufficient pitch change at the existing airspeed."
+      ],
+      "correct": 1,
+      "explanation": "A rapid or excessive pitch increase can produce a lift increase and balloon while sufficient speed remains.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Roundout errors; ballooning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Rudder alignment is important, but it is not the direct cause of the pitch-related lift increase described.",
+        "Correct. A rapid or excessive pitch increase can produce a lift increase and balloon while sufficient speed remains.",
+        "Incorrect. Too little roundout tends to leave excessive descent rather than create the described climb."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-018",
+      "area": "High roundout",
+      "prompt": "A learner begins the landing roundout much too high and then holds the airplane off while airspeed decays. Why should the instructor be prepared to go around?",
+      "options": [
+        "The earlier flare establishes a larger stall margin.",
+        "The remaining float will consume the excess height gradually.",
+        "A stall may occur well above touchdown height."
+      ],
+      "correct": 2,
+      "explanation": "A high roundout can use the remaining kinetic energy before the airplane is close to the runway, creating a hard-landing risk.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Roundout too high",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Flare height alone does not increase the angle-of-attack or airspeed margin.",
+        "Incorrect. A gentle, gradual settling is not assured as airspeed decays.",
+        "Correct. A high roundout can use the remaining kinetic energy before the airplane is close to the runway, creating a hard-landing risk."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-019",
+      "area": "Porpoising",
+      "prompt": "After a nosewheel-first touchdown, a learner alternately pulls and pushes, producing repeated increasingly severe bounces. Which response best addresses the developing condition?",
+      "options": [
+        "Lower the nosewheel promptly to suppress the next bounce.",
+        "Continue the landing using larger opposing pitch inputs.",
+        "Go around using the approved procedure when feasible."
+      ],
+      "correct": 2,
+      "explanation": "A timely go-around can stop the escalating cycle; use aircraft-specific guidance and available control.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Porpoising",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Forcing the nosewheel down can worsen impact loads and the pitching cycle.",
+        "Incorrect. Larger, poorly timed opposing inputs can amplify the oscillations.",
+        "Correct. A timely go-around can stop the escalating cycle; use aircraft-specific guidance and available control."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-020",
+      "area": "Crosswind control functions",
+      "prompt": "In a wing-low crosswind landing, a learner uses rudder to hold the airplane over the centerline but allows the nose to remain angled across the runway. Which control-role distinction needs correction?",
+      "options": [
+        "Elevator controls drift; aileron aligns the longitudinal axis.",
+        "Aileron controls drift; rudder aligns the longitudinal axis.",
+        "Rudder controls drift; elevator aligns the longitudinal axis."
+      ],
+      "correct": 1,
+      "explanation": "The wing-low technique uses aileron to counter lateral drift and rudder to align the airplane with the runway.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Crosswind approach and landing",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Elevator is not the primary lateral-drift control, and aileron is not the primary yaw-alignment control.",
+        "Correct. The wing-low technique uses aileron to counter lateral drift and rudder to align the airplane with the runway.",
+        "Incorrect. Elevator does not align the airplane’s longitudinal axis in yaw."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-021",
+      "area": "Crosswind rollout",
+      "prompt": "After a successful crosswind touchdown, the learner centers the ailerons immediately as the airplane slows. Why is continued wind correction normally needed?",
+      "options": [
+        "Rudder input alone provides the required roll correction.",
+        "Wind effects cease once the main wheels are loaded.",
+        "Control effectiveness decreases as airspeed falls."
+      ],
+      "correct": 2,
+      "explanation": "Appropriate wind correction generally needs to be maintained and adjusted as aerodynamic effectiveness changes during deceleration.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Crosswind landing roll",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Rudder primarily addresses yaw; it is not a substitute for aileron roll correction.",
+        "Incorrect. Wind can still lift a wing or affect directional control after touchdown.",
+        "Correct. Appropriate wind correction generally needs to be maintained and adjusted as aerodynamic effectiveness changes during deceleration."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-022",
+      "area": "Short-field approach",
+      "prompt": "A learner crosses the short-field landing threshold well above the planned height and faster than the target speed. Why is an acceptable calculated ground roll not enough to justify continuing?",
+      "options": [
+        "A lower loaded weight guarantees the charted total distance.",
+        "Actual approach conditions exceed the chart assumptions.",
+        "The charted ground roll includes any approach-height error."
+      ],
+      "correct": 1,
+      "explanation": "Excess speed and height can increase airborne distance, float, and required stopping distance.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Short-field landings; stabilized approach",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Lower weight can help but does not guarantee the result after an excessive-speed, excessive-height approach.",
+        "Correct. Excess speed and height can increase airborne distance, float, and required stopping distance.",
+        "Incorrect. Ground roll begins after touchdown and does not include arbitrary additional airborne distance."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-023",
+      "area": "Soft-field touchdown",
+      "prompt": "During a soft-field landing exercise, the learner abruptly lowers the nosewheel immediately after main-wheel contact. What objective has been missed?",
+      "options": [
+        "Apply maximum braking as the main wheels touch.",
+        "Keep nosewheel loading light as practical.",
+        "Lower the nosewheel promptly for steering."
+      ],
+      "correct": 1,
+      "explanation": "The soft-field technique seeks to protect the nosewheel and reduce its tendency to dig in, as appropriate for the airplane.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Soft-field landings",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Maximum braking is not the central soft-field objective and may be inappropriate to the surface.",
+        "Correct. The soft-field technique seeks to protect the nosewheel and reduce its tendency to dig in, as appropriate for the airplane.",
+        "Incorrect. Promptly loading the nosewheel conflicts with the stated soft-field objective; directional control still matters."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-024",
+      "area": "Go-around coordination",
+      "prompt": "In a clockwise-propeller training airplane, a learner applies full power for a go-around at low speed and allows a strong left yaw. What should the instructor connect to the power change?",
+      "options": [
+        "The need to raise the nose until yaw disappears.",
+        "The need for appropriate coordinated rudder as left-turning tendencies increase.",
+        "The need to hold the rudder fixed because power cannot affect yaw."
+      ],
+      "correct": 1,
+      "explanation": "High power, low speed, and pitch attitude can increase left-turning tendencies and rudder demand.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Go-arounds; control coordination",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Pitching up does not substitute for coordinated directional control and can reduce airspeed further.",
+        "Correct. High power, low speed, and pitch attitude can increase left-turning tendencies and rudder demand.",
+        "Incorrect. Power changes can materially change yawing moments."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-025",
+      "area": "Go-around configuration",
+      "prompt": "A learner retracts all flaps abruptly at low speed during a go-around. Why can a staged, aircraft-specific reconfiguration be important?",
+      "options": [
+        "Flap retraction always adds engine power.",
+        "The gear must remain extended at every climb speed.",
+        "An abrupt reduction in lift can cause settling."
+      ],
+      "correct": 2,
+      "explanation": "Removing lift-producing flap deflection before adequate speed and climb are established can produce a loss of lift and settling.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Go-arounds; configuration management",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Flaps change aerodynamic configuration rather than engine power.",
+        "Incorrect. Gear timing depends on the aircraft and procedure, not a universal all-speed prohibition.",
+        "Correct. Removing lift-producing flap deflection before adequate speed and climb are established can produce a loss of lift and settling."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-026",
+      "area": "Slips versus skids",
+      "prompt": "A learner proposes a forward slip to increase descent rate without increasing airspeed, using a bank and opposite rudder. Which distinction should the instructor emphasize?",
+      "options": [
+        "Opposite rudder necessarily makes every maneuver a spin.",
+        "A controlled slip is not the same as an excessive-rudder skid.",
+        "A slip removes the need to observe airspeed and aircraft limitations."
+      ],
+      "correct": 1,
+      "explanation": "A forward slip deliberately creates sideslip with coordinated monitoring; a skid from excessive inside rudder has different control and stall implications.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 9: Forward slips; slips and skids",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/10_afh_ch9.pdf",
+      "standardCode": "FI.VII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Opposing controls do not automatically establish a spin; stall and autorotation are required.",
+        "Correct. A forward slip deliberately creates sideslip with coordinated monitoring; a skid from excessive inside rudder has different control and stall implications.",
+        "Incorrect. Approved slip limitations, airspeed, fuel indications, and aircraft-specific cautions still matter."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-027",
+      "area": "Stall cues",
+      "prompt": "A learner waits for a specific indicated speed before recognizing a stall, despite buffet and deteriorating control effectiveness. What should the next demonstration establish?",
+      "options": [
+        "The marked airspeed as an invariant stall threshold.",
+        "Angle of attack and aerodynamic warning cues.",
+        "Pitch attitude alone as the stall criterion."
+      ],
+      "correct": 1,
+      "explanation": "Demonstrate the available aerodynamic and aircraft-specific cues in relation to angle of attack.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 5: Stall recognition",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/06_afh_ch5.pdf",
+      "standardCode": "FI.IX",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The threshold speed changes with load factor, weight, configuration, and contamination.",
+        "Correct. Demonstrate the available aerodynamic and aircraft-specific cues in relation to angle of attack.",
+        "Incorrect. An airplane can stall at different pitch attitudes; attitude alone does not define the critical angle."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-028",
+      "area": "Banked stall demonstrations",
+      "prompt": "An instructor compares a gentle, coordinated climbing turn with a heavily loaded pullout at the same indicated airspeed. Which point should the demonstration isolate?",
+      "options": [
+        "Angle of attack and load factor, rather than airspeed alone, determine the stall margin.",
+        "The climbing airplane cannot stall.",
+        "The pullout airplane must stall because it is descending."
+      ],
+      "correct": 0,
+      "explanation": "Different load demands can produce different angles of attack at the same airspeed; the wing stalls at its critical angle.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 5: Accelerated stalls; angle of attack",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/06_afh_ch5.pdf",
+      "standardCode": "FI.IX",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Different load demands can produce different angles of attack at the same airspeed; the wing stalls at its critical angle.",
+        "Incorrect. A climb does not prevent a stall.",
+        "Incorrect. Descent alone does not establish a stall."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-029",
+      "area": "Rudder misuse",
+      "prompt": "A learner attempts to correct every low wing in slow flight with rudder alone. What should the instructor assess before prescribing more practice?",
+      "options": [
+        "Whether the rudder can replace the elevator throughout the maneuver.",
+        "Whether the turn coordinator can be ignored at low speed.",
+        "Whether the learner understands yaw, roll coupling, and coordinated use of controls."
+      ],
+      "correct": 2,
+      "explanation": "The error suggests a control-concept problem, not merely insufficient repetition. Teach the aircraft-appropriate coordinated response.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 3: Coordination; primary flight controls",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/04_afh_ch3.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Rudder is not a substitute for pitch control.",
+        "Incorrect. Coordination remains important at low speed.",
+        "Correct. The error suggests a control-concept problem, not merely insufficient repetition. Teach the aircraft-appropriate coordinated response."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-030",
+      "area": "Steep-turn altitude loss",
+      "prompt": "In a steep turn, a learner notices a large nose-low condition and attempts to recover using only abrupt aft elevator. Which instruction most directly avoids excessive loading?",
+      "options": [
+        "Hold the bank and recover with a rapid pitch increase.",
+        "Reduce excessive bank and recover smoothly.",
+        "Increase bank before increasing back pressure."
+      ],
+      "correct": 1,
+      "explanation": "Reducing excessive bank restores a more useful vertical lift component and supports a smoother recovery within limits.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 10: Steep turns; recovery from altitude loss",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/11_afh_ch10.pdf",
+      "standardCode": "FI.VIII",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A rapid pull while steeply banked can create excessive load factor and stall risk.",
+        "Correct. Reducing excessive bank restores a more useful vertical lift component and supports a smoother recovery within limits.",
+        "Incorrect. More bank can aggravate the descending spiral and required loading."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-031",
+      "area": "Clearing procedures",
+      "prompt": "A learner performs an accurate VFR maneuver but starts it without checking the surrounding airspace. How should the instructor evaluate the flight?",
+      "options": [
+        "The maneuver’s accuracy does not satisfy the missing collision-avoidance task.",
+        "Clearing is needed only when another aircraft has been reported.",
+        "Accurate aircraft control compensates for the missing visual check."
+      ],
+      "correct": 0,
+      "explanation": "Aircraft control and traffic avoidance are concurrent responsibilities; a good maneuver does not excuse missing the safety preparation.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 9: Collision avoidance; instructor supervision",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/11_aih_chapter_9.pdf",
+      "standardCode": "FI.V",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Aircraft control and traffic avoidance are concurrent responsibilities; a good maneuver does not excuse missing the safety preparation.",
+        "Incorrect. Unreported traffic can still be present.",
+        "Incorrect. The two competencies are not interchangeable."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-032",
+      "area": "Student attention",
+      "prompt": "An instructor repeatedly points out traffic and makes all position calls while the learner completes a cross-country. What assessment best reveals the learner’s independent situational awareness?",
+      "options": [
+        "Add more instructor position calls during the same route.",
+        "Require the learner to identify and manage those tasks within safe supervision.",
+        "Grade only the accuracy of the learner’s heading changes."
+      ],
+      "correct": 1,
+      "explanation": "Appropriately transferring responsibility reveals what the learner can perceive and manage without continuous prompts.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 9: Developing learner responsibility",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/11_aih_chapter_9.pdf",
+      "standardCode": "FI.IV",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. More prompts can mask the same dependency.",
+        "Correct. Appropriately transferring responsibility reveals what the learner can perceive and manage without continuous prompts.",
+        "Incorrect. Heading accuracy alone does not assess traffic and position awareness."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-033",
+      "area": "Figure-based omitted weight",
+      "prompt": "Refer to PHAK Figure 10-10. A learner omits the 170 lb passenger and the passenger’s 13,770 lb-in moment from the calculation. Which resulting total weight and moment are consistent with that omission?",
+      "options": [
+        "1,478.9 lb and 108,316 lb-in.",
+        "1,478.9 lb and 135,856 lb-in.",
+        "1,648.9 lb and 108,316 lb-in."
+      ],
+      "correct": 0,
+      "explanation": "Subtracting the passenger from both totals gives 1,478.9 lb and 108,316 lb-in.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Figure 10-10; total moments",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Subtracting the passenger from both totals gives 1,478.9 lb and 108,316 lb-in.",
+        "Incorrect. The moment has been increased instead of decreased.",
+        "Incorrect. Omitting the passenger must reduce total weight as well as moment."
+      ],
+      "figureRef": {
+        "supplement": "Pilot’s Handbook of Aeronautical Knowledge, Chapter 10",
+        "figure": "10-10",
+        "url": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10"
+      }
+    },
+    {
+      "id": "PD-B02-CFI-034",
+      "area": "Fuel-burn direction",
+      "prompt": "A learner says burning fuel always moves the CG forward. Which comparison correctly determines the direction for a particular airplane?",
+      "options": [
+        "Fuel-tank arm relative to the current CG.",
+        "Fuel octane relative to engine compression.",
+        "Fuel quantity relative to maximum gross weight."
+      ],
+      "correct": 0,
+      "explanation": "Removing weight ahead of the CG moves it aft; removing weight aft moves it forward. The tank location relative to current CG controls the direction.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Removal of weight; fuel use",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf",
+      "standardCode": "FI.II",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Removing weight ahead of the CG moves it aft; removing weight aft moves it forward. The tank location relative to current CG controls the direction.",
+        "Incorrect. Fuel grade is not a longitudinal loading arm.",
+        "Incorrect. Fuel quantity affects the size of the change but does not by itself identify direction."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-035",
+      "area": "Training records",
+      "prompt": "A learner’s progress notes say only \"good flight\" despite recurring errors. Which record would be more useful for the next instructor?",
+      "options": [
+        "A list of unrelated flights completed by other learners.",
+        "A general statement that the learner is pleasant.",
+        "Observed performance, remaining difficulties, and the next training objective."
+      ],
+      "correct": 2,
+      "explanation": "Specific progress evidence supports continuity and planning without requiring the next instructor to rediscover the same gaps.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 7: Training syllabus; records of progress",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf",
+      "standardCode": "FI.I",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Other learners’ activity does not establish this learner’s training needs.",
+        "Incorrect. Personal impressions do not document the skills needing work.",
+        "Correct. Specific progress evidence supports continuity and planning without requiring the next instructor to rediscover the same gaps."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-036",
+      "area": "Relearning after a gap",
+      "prompt": "After a long training interruption, a learner recalls the procedure but performs it inconsistently. What is the best basis for deciding where to resume?",
+      "options": [
+        "The number of months originally spent in training alone.",
+        "The assumption that recall establishes unchanged proficiency.",
+        "An assessment of retained knowledge and actual performance."
+      ],
+      "correct": 2,
+      "explanation": "Resume from demonstrated retention and skill, using review to restore missing building blocks.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 7: Use of the syllabus; individual progress",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf",
+      "standardCode": "FI.I",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Elapsed training history does not establish current competence.",
+        "Incorrect. Procedural recall and reliable performance are distinct evidence.",
+        "Correct. Resume from demonstrated retention and skill, using review to restore missing building blocks."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-037",
+      "area": "Teaching transfer",
+      "prompt": "A learner can fly turns around a point in one familiar practice area but cannot adapt when the wind and landmarks differ. Which exercise best targets the limitation?",
+      "options": [
+        "Replace the task with memorization of the original bank angles.",
+        "Use the identical landmark and heading on every flight.",
+        "Repeat the objective with varied wind and reference-point geometry."
+      ],
+      "correct": 2,
+      "explanation": "Variation requires applying the underlying wind-correction principle rather than reproducing one visual script.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Transfer of learning; varied practice",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "FI.IV",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Fixed bank-angle recall does not adapt the maneuver to changed wind.",
+        "Incorrect. The identical setting can reinforce dependence on familiar cues.",
+        "Correct. Variation requires applying the underlying wind-correction principle rather than reproducing one visual script."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-038",
+      "area": "Demonstration perspective",
+      "prompt": "A learner cannot tell which control change caused a pitch response because the instructor changes several controls at once during an explanation. What revision best clarifies cause and effect?",
+      "options": [
+        "Make the simultaneous control changes faster.",
+        "Ask the learner to memorize the final attitude without explanation.",
+        "Isolate the relevant input when safe, then recombine the controls."
+      ],
+      "correct": 2,
+      "explanation": "Separating an input during an appropriate demonstration makes its effect observable before the complete maneuver is practiced.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 5: Demonstration-performance; instructional clarity",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/07_aih_chapter_5.pdf",
+      "standardCode": "FI.IV",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Faster combined changes can make attribution harder.",
+        "Incorrect. A final attitude alone does not explain the control relationship.",
+        "Correct. Separating an input during an appropriate demonstration makes its effect observable before the complete maneuver is practiced."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-039",
+      "area": "Objective completion",
+      "prompt": "A learner completes one accurate landing only after continuous instructor commands. The lesson standard requires consistent performance without assistance. What conclusion follows?",
+      "options": [
+        "The stated completion standard has not yet been demonstrated.",
+        "The standard is met because touchdown was within the target zone.",
+        "The standard should be changed after the flight to match the outcome."
+      ],
+      "correct": 0,
+      "explanation": "The assistance condition is part of the standard, not an optional detail.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 7: Completion standards",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf",
+      "standardCode": "FI.IV",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The assistance condition is part of the standard, not an optional detail.",
+        "Incorrect. Touchdown location is only one component; the independent-performance requirement remains.",
+        "Incorrect. Changing the standard retroactively obscures rather than evaluates the learning need."
+      ]
+    },
+    {
+      "id": "PD-B02-CFI-040",
+      "area": "Instructor modeling",
+      "prompt": "During a routine flight, an instructor dismisses a checklist item as unnecessary although the learner was taught to complete it. What instructional risk is most direct?",
+      "options": [
+        "The learner may adopt the observed shortcut as an acceptable norm.",
+        "The shortcut strengthens the learner’s understanding of the approved procedure.",
+        "The demonstration has no learning effect unless it is formally briefed."
+      ],
+      "correct": 0,
+      "explanation": "An instructor’s behavior is a powerful example; observed disregard can undercut the standard taught in the classroom.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 8: Professionalism; instructor role modeling",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/10_aih_chapter_8.pdf",
+      "standardCode": "FI.I",
+      "standardDoc": "FAA-S-ACS-25",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "cfi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. An instructor’s behavior is a powerful example; observed disregard can undercut the standard taught in the classroom.",
+        "Incorrect. An unexplained departure from the procedure can normalize the shortcut rather than clarify the standard.",
+        "Incorrect. Learners also learn from informal instructor conduct."
+      ]
+    }
+  ],
+  "cfii": [
+    {
+      "id": "PD-DRAFT-CFII-001",
+      "area": "VOR reverse sensing",
+      "prompt": "A learner is inbound on the 090° radial toward a VOR but selects 090° on a conventional CDI. The instrument shows FROM. What selection gives normal inbound course sensing?",
+      "options": [
+        "180° with TO.",
+        "270° with TO.",
+        "090° with FROM."
+      ],
+      "correct": 1,
+      "explanation": "The reciprocal inbound course on the 090° radial is 270°, with a TO indication.",
+      "reference": "AIM 1-1-3: VOR course selection",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 180° is not the inbound course from a position east of the station.",
+        "Correct. The reciprocal inbound course on the 090° radial is 270°, with a TO indication.",
+        "Incorrect. 090° FROM describes the outbound course on the 090° radial; using it inbound produces reverse sensing."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-002",
+      "area": "VOT indications",
+      "prompt": "During a ground VOT check with the CDI centered, a learner obtains 180° with a TO indication. What does this combination indicate?",
+      "options": [
+        "The receiver has a 180° sensing error.",
+        "The receiver shows the expected VOT indication.",
+        "The receiver is set for an airborne checkpoint."
+      ],
+      "correct": 1,
+      "explanation": "A normal VOT shows 000° FROM or 180° TO with the CDI centered, subject to the applicable tolerance.",
+      "reference": "AIM 1-1-4: VOR Receiver Check",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 180° TO is one of the normal VOT combinations, not evidence of a 180° error.",
+        "Correct. A normal VOT shows 000° FROM or 180° TO with the CDI centered, subject to the applicable tolerance.",
+        "Incorrect. This combination does not designate an airborne checkpoint."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-003",
+      "area": "DME limitations",
+      "prompt": "A learner plans to calculate groundspeed from the rate of DME change while crossing abeam a station at constant groundspeed. Why is this method unsuitable at that point?",
+      "options": [
+        "The range-change rate is not the along-track groundspeed.",
+        "The station transmits only distance above its antenna.",
+        "DME stops measuring range outside the selected radial."
+      ],
+      "correct": 0,
+      "explanation": "Near abeam, much of the motion is across rather than along the line to the station. Range rate therefore understates along-track speed.",
+      "reference": "AIM 1-1-7: Distance Measuring Equipment",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Near abeam, much of the motion is across rather than along the line to the station. Range rate therefore understates along-track speed.",
+        "Incorrect. DME measures slant range, which includes both horizontal and vertical separation.",
+        "Incorrect. DME range is not restricted to the selected VOR radial."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-004",
+      "area": "Glideslope interception",
+      "prompt": "A learner intercepts an ILS glideslope from well above the published interception altitude and follows an unusually steep indication. Which possibility should the instructor address?",
+      "options": [
+        "Elimination of localizer sensitivity.",
+        "Automatic conversion to a back-course approach.",
+        "Reception of a false glideslope."
+      ],
+      "correct": 2,
+      "explanation": "False glideslopes can occur above the normal path. Use the published procedure and intercept the correct path as prescribed.",
+      "reference": "AIM 1-1-9: ILS glideslope",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Glideslope interception does not eliminate localizer course sensitivity.",
+        "Incorrect. A glideslope indication does not convert the procedure into a localizer back-course approach.",
+        "Correct. False glideslopes can occur above the normal path. Use the published procedure and intercept the correct path as prescribed."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-005",
+      "area": "Holding wind correction",
+      "prompt": "In a timed hold, the learner needs 8° of wind correction on the inbound leg. As an initial outbound correction under the usual FAA guidance, approximately what correction should be tried?",
+      "options": [
+        "8°.",
+        "16°.",
+        "24°."
+      ],
+      "correct": 2,
+      "explanation": "Start with approximately three times the inbound correction on the outbound heading, then refine for the actual pattern.",
+      "reference": "AIM 5-3-8: Holding: wind correction",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "PTS Area V",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "advanced",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The same angle does not provide the recommended initial compensation for both outbound drift and turn effects.",
+        "Incorrect. Twice the inbound correction is less than the usual initial triple-drift correction.",
+        "Correct. Start with approximately three times the inbound correction on the outbound heading, then refine for the actual pattern."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-006",
+      "area": "Procedure turn limits",
+      "prompt": "A learner reaches the IAF for a conventional procedure turn marked \"remain within 10 NM.\" No different restriction is issued. What does the 10 NM limit principally constrain?",
+      "options": [
+        "The distance from the specified fix during the maneuver.",
+        "The distance flown after beginning the inbound descent.",
+        "The length of each straight leg of the maneuver."
+      ],
+      "correct": 0,
+      "explanation": "The depicted distance bounds the maneuver relative to the specified fix, including the turn; it is not a separate allowance for each leg.",
+      "reference": "AIM 5-4-9: Procedure Turn and Hold-in-lieu of Procedure Turn",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "PTS Area VIII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The depicted distance bounds the maneuver relative to the specified fix, including the turn; it is not a separate allowance for each leg.",
+        "Incorrect. The restriction is not limited to distance after an inbound descent.",
+        "Incorrect. A 10 NM outbound leg plus the turn could exceed the protected maneuvering limit."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-007",
+      "area": "MSA interpretation",
+      "prompt": "A learner outside a published approach segment proposes descending to a charted minimum safe altitude solely because the airplane is inside the MSA circle. What should the instructor explain?",
+      "options": [
+        "MSA guarantees navigation-signal reception throughout the circle.",
+        "MSA replaces assigned altitudes whenever it is lower.",
+        "MSA provides emergency obstacle clearance, not descent authorization."
+      ],
+      "correct": 2,
+      "explanation": "An MSA provides specified obstacle clearance for emergency use; it does not by itself authorize descent or establish an approach segment.",
+      "reference": "AIM 5-4-5: Instrument Approach Procedure Charts: minimum safe altitude",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "PTS Area VIII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Navigation-signal coverage is not guaranteed by the MSA.",
+        "Incorrect. An assigned altitude remains controlling unless amended or an emergency justifies deviation.",
+        "Correct. An MSA provides specified obstacle clearance for emergency use; it does not by itself authorize descent or establish an approach segment."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-008",
+      "area": "VOR identification",
+      "prompt": "A learner tunes a VOR listed by NOTAM as unusable. The CDI centers and no warning flag appears. What is the correct instructional conclusion?",
+      "options": [
+        "The receiver may be used if its most recent check was within tolerance.",
+        "The centered CDI establishes that the NOTAM is no longer applicable.",
+        "The navigation indication must be disregarded despite its appearance."
+      ],
+      "correct": 2,
+      "explanation": "A facility known to be unusable can produce misleading indications; lack of a flag is not assurance of validity.",
+      "reference": "AIM 1-1-1: General: unusable navigation facilities",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A receiver accuracy check does not establish that the ground facility is usable.",
+        "Incorrect. An apparently valid indication does not supersede the published unusable status.",
+        "Correct. A facility known to be unusable can produce misleading indications; lack of a flag is not assurance of validity."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-009",
+      "area": "Holding altitude change",
+      "prompt": "A conventional timed hold uses one-minute inbound legs at 14,000 feet MSL and below. The airplane climbs from 14,000 to 15,000 feet MSL in the hold. No different timing is published or assigned. What inbound timing applies at 15,000 feet?",
+      "options": [
+        "One and one-half minutes.",
+        "One minute.",
+        "Two minutes."
+      ],
+      "correct": 0,
+      "explanation": "Above 14,000 feet MSL, the conventional inbound leg is one and one-half minutes.",
+      "reference": "AIM 5-3-8: Holding: timing",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "PTS Area VI",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "advanced",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Above 14,000 feet MSL, the conventional inbound leg is one and one-half minutes.",
+        "Incorrect. One minute applies at 14,000 feet MSL and below.",
+        "Incorrect. Two minutes is not the standard timing for this altitude."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-CFII-010",
+      "area": "Instrument task management",
+      "prompt": "During an instrument lesson, an ATC reroute exceeds the learner’s ability to enter and verify it while maintaining control. Which action best demonstrates appropriate workload management?",
+      "options": [
+        "Complete the entry before correcting the flight-path deviation.",
+        "Accept the clearance and verify the route after interception.",
+        "Maintain control and request time or delaying vectors."
+      ],
+      "correct": 2,
+      "explanation": "Use ATC and available resources to create time while maintaining aircraft control, then enter and verify the clearance.",
+      "reference": "AIH Chapter 1: Single-pilot resource management; task management",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/03_aih_chapter_1.pdf",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Navigation entry must not take priority over controlling the airplane.",
+        "Incorrect. Flying an unverified route can create a new clearance or terrain risk.",
+        "Correct. Use ATC and available resources to create time while maintaining aircraft control, then enter and verify the clearance."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-011",
+      "area": "Wind correction diagnosis",
+      "prompt": "A learner holds the correct inbound course but the heading differs from the selected course by 12°. The CDI remains centered. What should the instructor explain?",
+      "options": [
+        "The heading difference may be the required wind correction.",
+        "The OBS must be changed to the heading to remove the difference.",
+        "The centered CDI proves that no crosswind exists."
+      ],
+      "correct": 0,
+      "explanation": "Course is the intended ground path; a different heading can be needed to hold it in wind.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Navigation systems; tracking a course",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Course is the intended ground path; a different heading can be needed to hold it in wind.",
+        "Incorrect. Changing the selected course to match heading would change the navigation reference rather than correct the drift.",
+        "Incorrect. A centered CDI can result from successful wind correction."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-012",
+      "area": "Intercept versus tracking",
+      "prompt": "A learner uses a large intercept angle to regain a VOR course, then retains that heading after the CDI centers and crosses through the course. Which skill is missing?",
+      "options": [
+        "Increasing the intercept angle after course capture.",
+        "Treating the CDI as a heading selector.",
+        "Transition from interception to a wind-corrected tracking heading."
+      ],
+      "correct": 2,
+      "explanation": "An intercept heading brings the airplane to the course; it must then change to a heading that maintains the course.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: VOR course interception and tracking",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A larger continuing intercept would increase overshoot.",
+        "Incorrect. The CDI indicates course displacement rather than selecting airplane heading.",
+        "Correct. An intercept heading brings the airplane to the course; it must then change to a heading that maintains the course."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-013",
+      "area": "TO/FROM ambiguity",
+      "prompt": "Near VOR station passage, a learner makes large corrections in response to rapid CDI movement and a TO/FROM transition. What should the instructor emphasize?",
+      "options": [
+        "Treat every CDI movement as an equal lateral displacement.",
+        "Maintain control and recognize the expected station-passage sensitivity.",
+        "Assume the OBS setting has physically turned the airplane."
+      ],
+      "correct": 1,
+      "explanation": "Near the station, small position changes can cause large angular changes; do not chase transient indications at the expense of control.",
+      "reference": "AIM Chapter 1, Section 1: VOR characteristics; station passage",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap1_section_1.html",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Angular deviation does not represent a fixed distance, especially near the facility.",
+        "Correct. Near the station, small position changes can cause large angular changes; do not chase transient indications at the expense of control.",
+        "Incorrect. The OBS changes the selected course reference, not aircraft heading."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-014",
+      "area": "DME arc control",
+      "prompt": "A learner flying a DME arc notices the distance increasing steadily above the assigned arc radius. Which correction principle applies?",
+      "options": [
+        "Turn farther away from the station to increase the radius.",
+        "Adjust the flight path toward the station to reduce the excess radius.",
+        "Change the DME channel to make the reading match the clearance."
+      ],
+      "correct": 1,
+      "explanation": "The airplane is outside the desired arc; a controlled correction toward the station reduces range. Use a suitable arc technique and monitor trend.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: DME arcs",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Turning farther outward worsens the increasing radius.",
+        "Correct. The airplane is outside the desired arc; a controlled correction toward the station reduces range. Use a suitable arc technique and monitor trend.",
+        "Incorrect. Changing the tuned station does not correct the actual path relative to the assigned facility."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-015",
+      "area": "DME station selection",
+      "prompt": "A learner reads distance from a VOR/DME while using a separately tuned localizer and assumes it is distance from the runway threshold. What must be verified?",
+      "options": [
+        "Only whether the number decreases on final.",
+        "The facility providing distance and the chart’s specified distance reference.",
+        "Only whether the localizer is centered."
+      ],
+      "correct": 1,
+      "explanation": "DME is distance to the selected facility, which may not be at the threshold or the approach’s intended reference.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Navigation systems; DME pairing and approach use",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A decreasing number does not identify the correct station or reference point.",
+        "Correct. DME is distance to the selected facility, which may not be at the threshold or the approach’s intended reference.",
+        "Incorrect. Localizer alignment does not establish which DME source is selected."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-016",
+      "area": "Flight director",
+      "prompt": "A learner follows flight-director bars but assumes the airplane will move the controls automatically. Which distinction should be taught?",
+      "options": [
+        "It controls the airplane whenever the command bars appear.",
+        "It displays actual attitude; the pilot must derive every command.",
+        "It displays commands; the autopilot must be engaged to fly them automatically."
+      ],
+      "correct": 2,
+      "explanation": "Flight-director guidance and autopilot engagement are distinct; verify equipment modes and engagement.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Flight directors and autopilots",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Visible guidance does not establish automatic control engagement.",
+        "Incorrect. The bars represent commands rather than merely a second actual-attitude display.",
+        "Correct. Flight-director guidance and autopilot engagement are distinct; verify equipment modes and engagement."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-017",
+      "area": "Armed versus active modes",
+      "prompt": "A learner sees an approach mode armed and stops monitoring the active vertical mode. Why is that unsafe?",
+      "options": [
+        "Armed identifies the current controlling mode.",
+        "Armed does not necessarily mean controlling.",
+        "Armed cancels the previous altitude constraint."
+      ],
+      "correct": 1,
+      "explanation": "An armed mode is prepared for a later capture; the active mode may still be controlling the airplane.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Electronic flight displays; autopilot mode awareness",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The active mode, not an armed label by itself, identifies current control.",
+        "Correct. An armed mode is prepared for a later capture; the active mode may still be controlling the airplane.",
+        "Incorrect. Automation mode selection does not amend a clearance or procedure restriction."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-018",
+      "area": "Altitude selector",
+      "prompt": "A learner changes the altitude preselector but leaves the autopilot in altitude hold. The airplane does not climb. What is the most direct explanation?",
+      "options": [
+        "A target selection may require a separate climb-mode selection.",
+        "An altitude selection also changes the pressure setting.",
+        "Altitude hold always climbs to the newest selected value."
+      ],
+      "correct": 0,
+      "explanation": "A preselected target is not necessarily an active vertical-path command; use the installation-specific procedure.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Autopilot functions; selected and active modes",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A preselected target is not necessarily an active vertical-path command; use the installation-specific procedure.",
+        "Incorrect. Altitude preselection and altimeter pressure setting are different controls and functions.",
+        "Incorrect. This is not how every system operates, and the stem describes continued altitude hold."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-019",
+      "area": "Navigation-source selection",
+      "prompt": "On an ILS lesson, the learner’s CDI remains centered on an FMS course while the raw localizer indication disagrees. Which check addresses the primary issue?",
+      "options": [
+        "Verify the active navigation source and the intended approach guidance.",
+        "Change the altimeter setting until the indications agree.",
+        "Ignore the localizer if the magenta line is centered."
+      ],
+      "correct": 0,
+      "explanation": "A centered display can refer to a different source than the one intended for the procedure; verify source and modes.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Electronic flight displays; navigation-source management",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A centered display can refer to a different source than the one intended for the procedure; verify source and modes.",
+        "Incorrect. Barometric setting does not reconcile lateral navigation sources.",
+        "Incorrect. Course color or centering alone does not establish that the required ILS source is controlling."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-020",
+      "area": "AHRS and air data",
+      "prompt": "A glass-cockpit trainer loses reliable airspeed and altitude indications while attitude remains valid from an independent source. Which distinction is useful for diagnosis?",
+      "options": [
+        "All glass-cockpit indications must fail together.",
+        "Valid attitude proves the pitot-static system is normal.",
+        "Air-data information and attitude information can have different sensor sources."
+      ],
+      "correct": 2,
+      "explanation": "Attitude may be supplied by AHRS while pressure-derived quantities come through air-data sensors; identify the actual installation and independent evidence.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 8: Air data computers; attitude and heading reference systems",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Integrated displays can present information from separate systems with different failure modes.",
+        "Incorrect. An attitude sensor does not verify pitot and static pressures.",
+        "Correct. Attitude may be supplied by AHRS while pressure-derived quantities come through air-data sensors; identify the actual installation and independent evidence."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-021",
+      "area": "Rate-one turn planning",
+      "prompt": "A learner must make a 75° heading change using a reliable standard-rate indication. Disregarding roll-in and rollout corrections, approximately how long is the turn?",
+      "options": [
+        "15 seconds.",
+        "25 seconds.",
+        "45 seconds."
+      ],
+      "correct": 1,
+      "explanation": "75 ÷ 3 = 25 seconds; actual execution must account for establishing and removing bank.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Timed turns",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VI",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "advanced",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 15 seconds at 3° per second changes heading by 45°.",
+        "Correct. 75 ÷ 3 = 25 seconds; actual execution must account for establishing and removing bank.",
+        "Incorrect. 45 seconds at standard rate changes heading by 135°."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-022",
+      "area": "Turn rate at altitude",
+      "prompt": "A learner uses the same bank angle at a higher true airspeed and expects the same rate of turn. What should the instructor demonstrate?",
+      "options": [
+        "At the same bank, increased TAS reduces turn rate.",
+        "At the same bank, increased TAS increases turn rate.",
+        "Turn rate depends on bank alone."
+      ],
+      "correct": 0,
+      "explanation": "For a coordinated level turn, rate is proportional to tan(bank)/TAS.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Airplane basic flight maneuvers; turns",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VI",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. For a coordinated level turn, rate is proportional to tan(bank)/TAS.",
+        "Incorrect. This reverses the speed relationship.",
+        "Incorrect. Speed and bank both influence turn rate."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-023",
+      "area": "Compass interpretation",
+      "prompt": "In the Northern Hemisphere, a learner begins a turn from a northerly heading using a conventional magnetic compass. The compass initially lags or may indicate a turn opposite the actual direction. Which error is being demonstrated?",
+      "options": [
+        "Localizer reverse sensing.",
+        "Acceleration error on an east heading.",
+        "Northerly turning error."
+      ],
+      "correct": 2,
+      "explanation": "Compass dip produces characteristic turning errors that are strongest around north and south headings.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 8: Magnetic compass; turning errors",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "advanced",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Localizer sensing is unrelated to magnetic-compass dip.",
+        "Incorrect. The stem describes turning from north, not straight-line acceleration on east or west.",
+        "Correct. Compass dip produces characteristic turning errors that are strongest around north and south headings."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-024",
+      "area": "Timed-turn verification",
+      "prompt": "A learner completes a timed turn while partial panel, then checks the magnetic compass during a continuing acceleration. Why might the immediate heading check mislead?",
+      "options": [
+        "The compass requires a functioning attitude indicator to operate.",
+        "A timed turn permanently changes local variation.",
+        "Compass acceleration error can contaminate the comparison."
+      ],
+      "correct": 2,
+      "explanation": "Verify under conditions suitable for a stable compass reading rather than mixing a maneuver-induced error with the heading assessment.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 8: Magnetic compass errors; reliable comparison conditions",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/10_phak_ch8.pdf",
+      "standardCode": "PTS Area VI",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The magnetic compass is independent of the attitude indicator.",
+        "Incorrect. The maneuver does not change local magnetic variation.",
+        "Correct. Verify under conditions suitable for a stable compass reading rather than mixing a maneuver-induced error with the heading assessment."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-025",
+      "area": "Instrument failure isolation",
+      "prompt": "During a lesson, an attitude display and a second display fed by the same AHRS agree, but an independent standby attitude source disagrees. Why is agreement between the first two insufficient?",
+      "options": [
+        "They may share a common erroneous input.",
+        "The standby source must be wrong because it is outnumbered.",
+        "Agreement proves both are independent."
+      ],
+      "correct": 0,
+      "explanation": "Multiple displays of one sensor do not provide independent corroboration; compare genuinely independent sources and other flight evidence.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: IFR emergencies; instrument failure diagnosis",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area IX",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Multiple displays of one sensor do not provide independent corroboration; compare genuinely independent sources and other flight evidence.",
+        "Incorrect. Failure diagnosis depends on source independence and consistency, not a vote among screen counts.",
+        "Incorrect. Visual separation of screens does not establish sensor independence."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-026",
+      "area": "Pitch versus vertical speed",
+      "prompt": "A learner makes large alternating pitch changes to keep a conventional VSI exactly on zero. Which coaching point best addresses the resulting oscillation?",
+      "options": [
+        "Ignore airspeed and altitude while chasing the VSI.",
+        "Increase correction size whenever the VSI lags.",
+        "Use attitude to establish the condition and allow for instrument lag."
+      ],
+      "correct": 2,
+      "explanation": "A stable attitude and a disciplined cross-check avoid overcontrolling a lagging rate indication.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Attitude instrument flying; cross-check and interpretation",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VI",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Other instruments are needed to assess the actual flight condition.",
+        "Incorrect. Larger corrections based on lag tend to worsen the oscillation.",
+        "Correct. A stable attitude and a disciplined cross-check avoid overcontrolling a lagging rate indication."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-027",
+      "area": "Power changes",
+      "prompt": "During instrument flight, a learner changes power substantially but holds every control fixed and expects airspeed alone to change. What should be demonstrated?",
+      "options": [
+        "Power changes can require pitch, trim, and coordination adjustments.",
+        "Trim substitutes for monitoring the resulting flight path.",
+        "Power changes have no effect on pitch or yaw tendencies."
+      ],
+      "correct": 0,
+      "explanation": "Thrust and propeller effects can change pitching and yawing moments; establish the desired condition and retrim as appropriate.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Attitude instrument flying; power control",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VI",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Thrust and propeller effects can change pitching and yawing moments; establish the desired condition and retrim as appropriate.",
+        "Incorrect. Trim relieves force; it does not replace checking attitude, airspeed, altitude, and coordination.",
+        "Incorrect. The claim excludes real coupling that varies by airplane."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-028",
+      "area": "Holding entry assessment",
+      "prompt": "A learner chooses a recommended entry correctly but cannot identify the holding side on the chart. Why is more assessment needed?",
+      "options": [
+        "Correct entry selection establishes complete holding competence.",
+        "The entry label determines the permitted holding speed.",
+        "Pattern orientation and restrictions still need assessment."
+      ],
+      "correct": 2,
+      "explanation": "A correct label does not demonstrate that the learner can track the pattern on its protected side within restrictions.",
+      "reference": "AIM Chapter 5, Section 3: 5-3-8: holding entries and protected airspace",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "PTS Area IV",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Subsequent tracking, orientation, speed, and timing remain separate evidence.",
+        "Incorrect. Holding speeds are published or assigned independently of which entry is used.",
+        "Correct. A correct label does not demonstrate that the learner can track the pattern on its protected side within restrictions."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-029",
+      "area": "Holding-speed exceedance",
+      "prompt": "A learner cannot slow to a charted holding-speed limit before crossing the fix. What action should the CFII teach?",
+      "options": [
+        "Assume that a wider bank will guarantee obstacle protection.",
+        "Advise ATC promptly and obtain an appropriate alternative.",
+        "Enter at the higher speed because the fix is correct."
+      ],
+      "correct": 1,
+      "explanation": "Notify ATC when unable to comply; speed affects the protected pattern and may require different handling.",
+      "reference": "AIM Chapter 5, Section 3: 5-3-8: maximum holding airspeeds",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_3.html",
+      "standardCode": "PTS Area V",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A chosen bank does not guarantee protection outside the procedure’s assumptions.",
+        "Correct. Notify ATC when unable to comply; speed affects the protected pattern and may require different handling.",
+        "Incorrect. Fix identification does not compensate for exceeding a protection assumption."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-030",
+      "area": "Procedure-turn direction",
+      "prompt": "A learner plans a procedure turn on the side opposite the charted barb because it appears shorter. What should the instructor explain?",
+      "options": [
+        "Either side provides identical protection whenever the airplane is below 200 knots.",
+        "The depicted maneuvering side is part of the protected procedure.",
+        "The barb selects only the runway lighting system."
+      ],
+      "correct": 1,
+      "explanation": "The procedure-turn side and limits define intended obstacle-protected maneuvering; do not substitute the opposite side.",
+      "reference": "AIM Chapter 5, Section 4: 5-4-9: procedure turns",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "PTS Area V",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A generic speed condition does not authorize maneuvering on an unprotected side.",
+        "Correct. The procedure-turn side and limits define intended obstacle-protected maneuvering; do not substitute the opposite side.",
+        "Incorrect. The barb is procedure-turn guidance, not lighting information."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-031",
+      "area": "Stepdown fixes",
+      "prompt": "A learner follows a constant descent angle that would cross an intermediate stepdown fix below its published altitude. Why must the descent be revised?",
+      "options": [
+        "Only the altitude at the MAP matters on a nonprecision approach.",
+        "A constant-angle descent automatically supersedes every stepdown altitude.",
+        "Advisory path geometry does not remove a published altitude restriction."
+      ],
+      "correct": 2,
+      "explanation": "Comply with each applicable altitude restriction; a convenient continuous descent must be planned within them.",
+      "reference": "AIM Chapter 5, Section 4: 5-4-5: descent angles and stepdown fixes",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "PTS Area VIII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Obstacle protection and procedure compliance apply before the MAP as well.",
+        "Incorrect. A path angle is not authority to disregard restrictions.",
+        "Correct. Comply with each applicable altitude restriction; a convenient continuous descent must be planned within them."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-032",
+      "area": "DA versus MDA teaching",
+      "prompt": "A learner treats an LNAV MDA as a fly-through decision altitude because that technique is familiar from an ILS. What underlying distinction needs emphasis?",
+      "options": [
+        "MDA provides the same automatic descent allowance as an ILS DA.",
+        "MDA is a minimum altitude that may not be penetrated without the required conditions.",
+        "A visible vertical cue changes every MDA to DA."
+      ],
+      "correct": 1,
+      "explanation": "A nonprecision MDA must be respected; a familiar precision-approach habit does not change its legal or procedural meaning.",
+      "reference": "14 CFR 91.175: Paragraphs (c) and (e)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.175",
+      "standardCode": "PTS Area VIII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. An MDA is not simply interchangeable with DA.",
+        "Correct. A nonprecision MDA must be respected; a familiar precision-approach habit does not change its legal or procedural meaning.",
+        "Incorrect. Advisory vertical guidance does not change the published minima type."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-033",
+      "area": "Threshold elevation",
+      "prompt": "An approach chart gives DA 1,260 feet MSL and threshold elevation 860 feet MSL. What height above that threshold does the DA represent?",
+      "options": [
+        "260 feet.",
+        "400 feet.",
+        "860 feet."
+      ],
+      "correct": 1,
+      "explanation": "1,260 − 860 = 400 feet above the threshold for this calculation.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Approach charts; altitude and height",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area VIII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "advanced",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 260 is not the difference between the stated MSL elevations.",
+        "Correct. 1,260 − 860 = 400 feet above the threshold for this calculation.",
+        "Incorrect. 860 feet is the threshold’s MSL elevation, not the height difference."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-034",
+      "area": "Cold-temperature teaching",
+      "prompt": "A learner applies a required cold-temperature altitude correction by changing the altimeter’s pressure setting rather than following the published correction procedure. What misconception should be corrected?",
+      "options": [
+        "Every temperature correction is made by increasing the local altimeter setting.",
+        "Temperature correction and pressure-setting adjustment are different operations.",
+        "A correct pressure setting removes the need for required temperature corrections."
+      ],
+      "correct": 1,
+      "explanation": "Use the prescribed cold-temperature procedure for affected altitudes while maintaining the required altimeter setting; do not invent a pressure change.",
+      "reference": "AIM Chapter 7, Section 3: 7-3-5: Cold Temperature Airport Procedures",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_3.html",
+      "standardCode": "PTS Area II",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A temperature correction is not a general license to falsify the pressure setting.",
+        "Correct. Use the prescribed cold-temperature procedure for affected altitudes while maintaining the required altimeter setting; do not invent a pressure change.",
+        "Incorrect. A proper pressure setting does not eliminate nonstandard-temperature error."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-035",
+      "area": "Missed-approach performance",
+      "prompt": "A learner briefs the missed-approach course but has not checked a published climb gradient higher than standard. What additional planning is essential?",
+      "options": [
+        "Compare required climb with airplane capability in the expected conditions.",
+        "Use the final-approach descent rate as the available climb rate.",
+        "Assume any approach-approved airplane can meet every missed gradient."
+      ],
+      "correct": 0,
+      "explanation": "A path briefing must include performance; weight, altitude, temperature, configuration, and groundspeed affect capability.",
+      "reference": "AIM Chapter 5, Section 4: 5-4-21: missed approach climb requirements",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap5_section_4.html",
+      "standardCode": "PTS Area VIII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A path briefing must include performance; weight, altitude, temperature, configuration, and groundspeed affect capability.",
+        "Incorrect. Descent rate does not demonstrate available climb performance.",
+        "Incorrect. Navigation approval does not establish performance for every gradient."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-036",
+      "area": "Runway environment identification",
+      "prompt": "In low visibility, a learner sees a row of lights but cannot determine whether they are approach lights or runway edge lights. What should govern descent below the applicable minimum?",
+      "options": [
+        "Any lights generally aligned with the final course.",
+        "The learner’s expectation that the runway is ahead.",
+        "A distinctly visible and identifiable qualifying reference, with all other conditions met."
+      ],
+      "correct": 2,
+      "explanation": "The visual reference must be identifiable under the applicable rule, not merely a plausible light pattern.",
+      "reference": "14 CFR 91.175: Paragraph (c)(3)",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-91.175",
+      "standardCode": "PTS Area VIII",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. An unverified row of lights does not establish the required reference.",
+        "Incorrect. Expectation is not visual identification.",
+        "Correct. The visual reference must be identifiable under the applicable rule, not merely a plausible light pattern."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-037",
+      "area": "Automation surprise",
+      "prompt": "During an approach exercise, the airplane begins an unexpected climb after a mode change. What should the CFII reinforce first?",
+      "options": [
+        "Maintain control, verify modes and guidance, and use an appropriate simpler control mode if needed.",
+        "Continue the unexpected path until the mode change finishes.",
+        "Reprogram every route waypoint before correcting the flight path."
+      ],
+      "correct": 0,
+      "explanation": "Control and mode awareness take priority; disconnect or simplify automation as appropriate under the equipment procedure.",
+      "reference": "Instrument Flying Handbook, FAA-H-8083-15B: Automation management; IFR emergencies",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/pilots/FAA-H-8083-15B.pdf",
+      "standardCode": "PTS Area IX",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Control and mode awareness take priority; disconnect or simplify automation as appropriate under the equipment procedure.",
+        "Incorrect. An unexpected deviation should be assessed and corrected, not passively accepted.",
+        "Incorrect. Route editing is secondary to controlling the immediate flight path."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-038",
+      "area": "Teaching instrument currency",
+      "prompt": "A learner can document the minimum recent-experience tasks but performs poorly in a demanding approach scenario. What conclusion is appropriate?",
+      "options": [
+        "Legal recent experience does not by itself demonstrate current proficiency for the scenario.",
+        "Recorded recent experience guarantees satisfactory performance in every instrument task.",
+        "The weak scenario performance invalidates every prior logbook entry."
+      ],
+      "correct": 0,
+      "explanation": "Currency requirements and demonstrated proficiency answer different questions; address the observed skill gap.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 1: Single-pilot resource management; proficiency and risk",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/03_aih_chapter_1.pdf",
+      "standardCode": "PTS Area I",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Currency requirements and demonstrated proficiency answer different questions; address the observed skill gap.",
+        "Incorrect. Minimum logged tasks do not guarantee every operational skill.",
+        "Incorrect. A weak performance does not itself establish that prior entries were false."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-039",
+      "area": "Assessment after a prompt",
+      "prompt": "During a check, a learner begins a missed approach only after the instructor announces that the airplane has reached DA. What remains unproven?",
+      "options": [
+        "Execution after an explicit decision-point cue.",
+        "Recognition that the instructor has spoken.",
+        "Independent recognition of the decision point."
+      ],
+      "correct": 2,
+      "explanation": "The instructor supplied the recognition cue; assess independent recognition separately within safe supervision.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 6: Assessment of actual performance",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/08_aih_chapter_6.pdf",
+      "standardCode": "PTS Area IV",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The learner may have demonstrated response to the cue, but that does not establish independent timing.",
+        "Incorrect. Hearing an announcement is not the operational task that remains unproven.",
+        "Correct. The instructor supplied the recognition cue; assess independent recognition separately within safe supervision."
+      ]
+    },
+    {
+      "id": "PD-B02-CFII-040",
+      "area": "Training progression",
+      "prompt": "A learner can track a course, maintain altitude, and copy a clearance separately but loses control when all are combined. Which progression best addresses integration?",
+      "options": [
+        "Combine tasks gradually with explicit priorities and feedback.",
+        "Add every possible failure at once to force adaptation.",
+        "Continue isolated tasks indefinitely without integration."
+      ],
+      "correct": 0,
+      "explanation": "Progressively increasing combined workload develops task management while preserving control priorities and useful feedback.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 7: Building blocks; scenario progression",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf",
+      "standardCode": "PTS Area IV",
+      "standardDoc": "FAA-S-8081-9E",
+      "standardType": "PTS",
+      "difficulty": "applied",
+      "experienceLevel": "cfii",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Progressively increasing combined workload develops task management while preserving control priorities and useful feedback.",
+        "Incorrect. An indiscriminate overload can obscure the underlying deficit and create unsafe practice.",
+        "Incorrect. Isolated success does not itself develop the required integration."
+      ]
+    }
+  ],
+  "atp": [
+    {
+      "id": "PD-DRAFT-ATP-001",
+      "area": "Mass limitations",
+      "prompt": "A hypothetical transport airplane has a maximum takeoff weight of 68,000 lb, maximum landing weight of 60,000 lb, and maximum zero-fuel weight of 54,000 lb. Planned takeoff weight is 67,000 lb, including 12,000 lb of usable fuel. Predicted trip fuel burn is 8,000 lb. Which limitation is exceeded?",
+      "options": [
+        "Maximum takeoff weight by 1,000 lb.",
+        "Maximum landing weight by 1,000 lb.",
+        "Maximum zero-fuel weight by 1,000 lb."
+      ],
+      "correct": 2,
+      "explanation": "Zero-fuel weight is 67,000 − 12,000 = 55,000 lb, exceeding the stated 54,000 lb limit. All limits must be satisfied separately.",
+      "reference": "PHAK Chapter 10: Maximum zero fuel weight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Takeoff weight is 1,000 lb below its limit.",
+        "Incorrect. Landing weight is 59,000 lb, which is 1,000 lb below its limit.",
+        "Correct. Zero-fuel weight is 67,000 − 12,000 = 55,000 lb, exceeding the stated 54,000 lb limit. All limits must be satisfied separately."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-002",
+      "area": "Mach calculation",
+      "prompt": "An airplane’s true airspeed is 450 knots where the local speed of sound is 600 knots. What is its Mach number?",
+      "options": [
+        "0.60.",
+        "0.75.",
+        "1.33."
+      ],
+      "correct": 1,
+      "explanation": "Mach number is TAS divided by local speed of sound: 450/600 = 0.75.",
+      "reference": "PHAK Chapter 5: Mach number",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "AA.I.D",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 0.60 does not follow from the stated speed ratio.",
+        "Correct. Mach number is TAS divided by local speed of sound: 450/600 = 0.75.",
+        "Incorrect. 1.33 reverses the numerator and denominator."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-003",
+      "area": "Engine-out performance",
+      "prompt": "A transport airplane’s flight-planning data show that its one-engine-inoperative service ceiling is below the route’s terrain-clearance requirement. Which conclusion is justified by these data alone?",
+      "options": [
+        "An engine-out escape or drift-down analysis is required.",
+        "An immediate descent will clear all terrain along the filed route.",
+        "Maintaining the all-engines cruise Mach number will preserve altitude."
+      ],
+      "correct": 0,
+      "explanation": "The crew needs an evaluated engine-out path and performance analysis; all-engines cruise capability does not demonstrate terrain clearance after an engine failure.",
+      "reference": "PHAK Chapter 11: Climb performance; service ceiling",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The crew needs an evaluated engine-out path and performance analysis; all-engines cruise capability does not demonstrate terrain clearance after an engine failure.",
+        "Incorrect. A service ceiling below the terrain requirement does not establish a safe path during descent.",
+        "Incorrect. Cruise Mach selection does not replace lost climb capability or prove level-flight performance."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-004",
+      "area": "Takeoff decision speed",
+      "prompt": "During a transport-airplane takeoff, a malfunction is recognized close to V1. Which definition of V1 is relevant to the stopping assessment?",
+      "options": [
+        "The speed at which a rejected takeoff must be fully stopped.",
+        "The speed at which an engine failure must first become perceptible.",
+        "The maximum speed for initiating the first action to stop within the accelerate-stop distance."
+      ],
+      "correct": 2,
+      "explanation": "V1 includes the maximum speed by which the first stopping action must be taken for the accelerate-stop calculation. Follow the AFM and operator procedures.",
+      "reference": "14 CFR 1.2: V1 definition",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.ecfr.gov/current/title-14/section-1.2",
+      "standardCode": "AA.III",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. V1 is not the speed at which the airplane is already stopped.",
+        "Incorrect. The failure recognition and action sequence is accounted for in takeoff performance; V1 is not simply the first perceptible-failure speed.",
+        "Correct. V1 includes the maximum speed by which the first stopping action must be taken for the accelerate-stop calculation. Follow the AFM and operator procedures."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-005",
+      "area": "Landing performance",
+      "prompt": "For a hypothetical airplane, the approved landing data for the expected conditions require 5,100 feet. Available landing distance is 5,000 feet. Actual airplane weight is below maximum landing weight. Which conclusion follows?",
+      "options": [
+        "The weight margin compensates for the distance shortfall.",
+        "The landing-distance requirement is not met.",
+        "The landing may be planned using the available runway length."
+      ],
+      "correct": 1,
+      "explanation": "The applicable landing distance exceeds the distance available. A weight limit and a runway-performance limit are separate constraints.",
+      "reference": "PHAK Chapter 11: Landing performance limitations",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Being below maximum landing weight does not override the performance calculation for the actual conditions.",
+        "Correct. The applicable landing distance exceeds the distance available. A weight limit and a runway-performance limit are separate constraints.",
+        "Incorrect. The available runway cannot be substituted for the required distance. Replan using approved data and applicable operating requirements."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-006",
+      "area": "Energy management",
+      "prompt": "A transport airplane is high and fast near the end of an arrival. The crew’s revised plan requires a large configuration change, an excessive descent rate, and acceptance of an unstable final approach. Which decision best preserves the planned landing safety margin?",
+      "options": [
+        "Continue because the runway is longer than the landing distance.",
+        "Use the maximum descent rate until the landing flare.",
+        "Obtain additional track miles or discontinue the approach."
+      ],
+      "correct": 2,
+      "explanation": "Create time and distance to meet stabilized criteria; discontinue if those criteria cannot be achieved under the operator procedure.",
+      "reference": "PHAK Chapter 2: Risk management; hazardous attitudes",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/phak",
+      "standardCode": "AA.I.F",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Runway length does not remove an unstable-approach risk or excess energy before touchdown.",
+        "Incorrect. An excessive descent rate continued to the flare compounds rather than resolves the unstable condition.",
+        "Correct. Create time and distance to meet stabilized criteria; discontinue if those criteria cannot be achieved under the operator procedure."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-007",
+      "area": "Swept-wing stalls",
+      "prompt": "On a swept-wing airplane, an outboard wing stall can shift the remaining lift distribution inboard and forward. Which pitch tendency can result?",
+      "options": [
+        "No pitching moment.",
+        "Pitch-down.",
+        "Pitch-up."
+      ],
+      "correct": 2,
+      "explanation": "The outboard portions of a swept wing lie aft. Losing their lift can shift the resultant forward and promote pitch-up. Aircraft design features can modify this tendency.",
+      "reference": "PHAK Chapter 5: Swept wings; high-speed flight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "AA.I.D",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A shift of the lift resultant relative to the CG can change pitching moment.",
+        "Incorrect. This is opposite the stated forward movement of the lift resultant.",
+        "Correct. The outboard portions of a swept wing lie aft. Losing their lift can shift the resultant forward and promote pitch-up. Aircraft design features can modify this tendency."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-008",
+      "area": "Crew coordination",
+      "prompt": "During a complex abnormal procedure, both pilots begin working independently on the same checklist while flight-path deviations develop. Which correction most directly addresses the immediate coordination failure?",
+      "options": [
+        "Complete the checklist before restoring flight-path monitoring.",
+        "Reestablish pilot-flying and pilot-monitoring responsibilities.",
+        "Assign both pilots to verify every checklist item simultaneously."
+      ],
+      "correct": 1,
+      "explanation": "Explicitly restore control and monitoring duties so that aircraft control is maintained while the abnormal procedure is managed.",
+      "reference": "PHAK Chapter 2: Crew resource management; workload management",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/phak",
+      "standardCode": "AA.I.F",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Checklist completion cannot take priority over controlling the airplane.",
+        "Correct. Explicitly restore control and monitoring duties so that aircraft control is maintained while the abnormal procedure is managed.",
+        "Incorrect. Both pilots concentrating on the checklist can leave flight-path monitoring unassigned."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-009",
+      "area": "Thrust and climb",
+      "prompt": "At a given weight and flight condition, an airplane has adequate thrust to maintain level flight after an engine failure but no excess thrust. What steady climb capability is available at that condition?",
+      "options": [
+        "A climb at the all-engines best-rate speed.",
+        "No positive steady climb rate.",
+        "A climb at half the all-engines climb rate."
+      ],
+      "correct": 1,
+      "explanation": "With thrust equal to drag and no excess power at the stated condition, there is no positive steady climb capability.",
+      "reference": "PHAK Chapter 11: Climb performance: excess thrust and power",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A selected speed does not create excess thrust or power.",
+        "Correct. With thrust equal to drag and no excess power at the stated condition, there is no positive steady climb capability.",
+        "Incorrect. Engine count does not establish a proportional climb-rate reduction; climb depends on excess power."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-ATP-010",
+      "area": "Jet propulsion",
+      "prompt": "In steady level flight, a jet airplane’s thrust equals drag. For a simplified constant-thrust model, the condition of maximum excess thrust corresponds most directly to",
+      "options": [
+        "minimum drag.",
+        "maximum lift coefficient.",
+        "maximum true airspeed."
+      ],
+      "correct": 0,
+      "explanation": "With available thrust held constant, the difference between thrust and drag is greatest where drag is least.",
+      "reference": "PHAK Chapter 11: Thrust required and available",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. With available thrust held constant, the difference between thrust and drag is greatest where drag is least.",
+        "Incorrect. Maximum lift coefficient is a stall boundary, not the general minimum-drag condition.",
+        "Incorrect. At high speed, parasite drag increases; maximum airspeed is not generally maximum excess thrust."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-011",
+      "area": "Critical Mach",
+      "prompt": "An airplane is below Mach 1, but local airflow over part of its wing reaches Mach 1. Which condition has been reached?",
+      "options": [
+        "Mach 1 in the free stream.",
+        "Maximum operating Mach number.",
+        "Critical Mach number."
+      ],
+      "correct": 2,
+      "explanation": "Critical Mach is the aircraft Mach number at which some local airflow first reaches sonic speed.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: High-speed flight; critical Mach",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.D",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The stem expressly says the airplane’s free-stream Mach number is below 1.",
+        "Incorrect. MMO is an operating limit, not the definition of first local sonic flow.",
+        "Correct. Critical Mach is the aircraft Mach number at which some local airflow first reaches sonic speed."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-012",
+      "area": "Operating speed limits",
+      "prompt": "A transport airplane has VMO 260 KIAS and MMO 0.80. The instruments show 240 KIAS and Mach 0.82. Which conclusion follows?",
+      "options": [
+        "Neither limit is exceeded because IAS is below VMO.",
+        "The Mach operating limit is exceeded.",
+        "The IAS operating limit is exceeded."
+      ],
+      "correct": 1,
+      "explanation": "Both limits must be respected; the Mach limit can be controlling even with IAS below VMO.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Airspeed and Mach limitations",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.D",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Meeting one limit does not excuse exceeding the other.",
+        "Correct. Both limits must be respected; the Mach limit can be controlling even with IAS below VMO.",
+        "Incorrect. 240 KIAS is below the stated VMO; the exceedance is Mach."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-013",
+      "area": "Climb at constant IAS",
+      "prompt": "A jet climbs at constant IAS into lower density and lower temperature. Ignoring compressibility corrections to IAS, why can Mach number increase?",
+      "options": [
+        "Mach is fixed whenever IAS is fixed.",
+        "TAS falls while local speed of sound rises.",
+        "TAS rises while local speed of sound falls."
+      ],
+      "correct": 2,
+      "explanation": "At a given indicated dynamic pressure, lower density requires higher TAS; colder air reduces sonic speed, increasing the ratio.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 5: High-speed flight; Mach and temperature",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/07_phak_ch5_0.pdf",
+      "standardCode": "AA.I.D",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. IAS and Mach are different measures and do not remain in a fixed ratio through a climb.",
+        "Incorrect. This reverses both stated tendencies.",
+        "Correct. At a given indicated dynamic pressure, lower density requires higher TAS; colder air reduces sonic speed, increasing the ratio."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-014",
+      "area": "Shock-induced separation",
+      "prompt": "Above critical Mach, a stronger shock forms on the wing and the boundary layer separates behind it. Which consequence is most directly associated with this process?",
+      "options": [
+        "A guaranteed increase in maximum lift coefficient.",
+        "Elimination of all pressure drag.",
+        "Increased drag and possible buffet."
+      ],
+      "correct": 2,
+      "explanation": "Shock-related separation can create drag rise, buffet, and control changes.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Mach buffet; shock waves",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.D",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Shock-induced separation is not a guaranteed lift improvement.",
+        "Incorrect. A shock and separated flow add rather than eliminate drag mechanisms.",
+        "Correct. Shock-related separation can create drag rise, buffet, and control changes."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-015",
+      "area": "Swept-wing flow",
+      "prompt": "Why do swept wings commonly use design features that discourage an early tip stall?",
+      "options": [
+        "Tip lift loss can reduce aileron effectiveness and promote adverse pitch behavior.",
+        "Tip lift contributes only to drag and not to airplane support.",
+        "Tip stall guarantees a benign nose-down recovery in every design."
+      ],
+      "correct": 0,
+      "explanation": "Outboard stall can affect roll control and shift the remaining lift distribution in a way that promotes pitch-up.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Swept-wing stall characteristics",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.D",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Outboard stall can affect roll control and shift the remaining lift distribution in a way that promotes pitch-up.",
+        "Incorrect. Outboard wing lift supports weight and affects moments.",
+        "Incorrect. Swept-wing tip stall can have unfavorable pitch characteristics; a benign response is not assured."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-016",
+      "area": "Deep-stall risk",
+      "prompt": "On a susceptible T-tail design at very high angle of attack, the horizontal tail may become immersed in the wing’s separated wake. What is the principal concern?",
+      "options": [
+        "Insufficient nose-down control to reduce angle of attack.",
+        "A guaranteed reduction in stall speed.",
+        "An automatic increase in forward visibility."
+      ],
+      "correct": 0,
+      "explanation": "Blanketing can reduce tail effectiveness and make recovery difficult; prevention and aircraft-specific procedures are critical.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Swept-wing and T-tail stall characteristics",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.D",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Blanketing can reduce tail effectiveness and make recovery difficult; prevention and aircraft-specific procedures are critical.",
+        "Incorrect. Tail blanketing does not guarantee a favorable stall-speed change.",
+        "Incorrect. Visibility does not explain the aerodynamic recovery problem."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-017",
+      "area": "Jet thrust response",
+      "prompt": "A jet is allowed to become very slow with engines near idle on final approach. Why can a late thrust demand provide less immediate protection than expected?",
+      "options": [
+        "Jet engines produce maximum thrust at idle RPM.",
+        "Engine acceleration and thrust buildup take time.",
+        "Selecting a higher thrust setting instantly restores all lost energy."
+      ],
+      "correct": 1,
+      "explanation": "Spool-up delay means the crew must manage energy before a large last-moment demand becomes necessary.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Jet engine response; stabilized approaches",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Idle is a low-thrust condition, not maximum thrust.",
+        "Correct. Spool-up delay means the crew must manage energy before a large last-moment demand becomes necessary.",
+        "Incorrect. A lever movement does not instantaneously restore speed or climb capability."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-018",
+      "area": "Ground spoilers",
+      "prompt": "After touchdown, ground spoilers deploy normally. Besides aerodynamic drag, how can they improve wheel-braking effectiveness?",
+      "options": [
+        "They substitute reverse thrust for wheel braking.",
+        "They increase the runway’s friction coefficient.",
+        "They transfer more airplane weight to the wheels."
+      ],
+      "correct": 2,
+      "explanation": "Reducing lift increases the portion of weight carried by the wheels, improving potential tire braking force.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Spoilers",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Spoilers and reverse thrust are distinct systems; lift dumping does not replace the braking function.",
+        "Incorrect. The surface friction coefficient is not changed by the spoiler deployment.",
+        "Correct. Reducing lift increases the portion of weight carried by the wheels, improving potential tire braking force."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-019",
+      "area": "Reverse thrust limits",
+      "prompt": "Why must reverse-thrust use follow aircraft-specific limitations and runway-condition guidance?",
+      "options": [
+        "Reverse guarantees the same stopping performance on every surface.",
+        "Reverse can affect directional control as well as stopping.",
+        "Reverse eliminates the need to monitor asymmetric indications."
+      ],
+      "correct": 1,
+      "explanation": "Reverse effects vary with installation and conditions; asymmetry or low-friction surfaces can affect directional control.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Thrust reversers",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A contaminated surface and aircraft-specific assumptions still matter.",
+        "Correct. Reverse effects vary with installation and conditions; asymmetry or low-friction surfaces can affect directional control.",
+        "Incorrect. Asymmetric deployment or thrust remains important to recognize and manage."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-020",
+      "area": "Engine-out takeoff planning",
+      "prompt": "A crew has adequate all-engines takeoff distance but has not evaluated the required engine-out takeoff path. Which conclusion is justified?",
+      "options": [
+        "Engine-out obstacle clearance remains unproven.",
+        "All-engines runway distance establishes the engine-out climb path.",
+        "Structural weight compliance establishes every takeoff performance limit."
+      ],
+      "correct": 0,
+      "explanation": "The engine-out path and its obstacle/performance constraints must be evaluated separately.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Takeoff performance; engine failure considerations",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.III",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The engine-out path and its obstacle/performance constraints must be evaluated separately.",
+        "Incorrect. Adequate acceleration with all engines does not prove the climb capability after a failure.",
+        "Incorrect. Structural and performance-limited weights can differ."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-021",
+      "area": "Net versus gross data",
+      "prompt": "A hypothetical takeoff analysis supplies a gross climb gradient of 3.0 percent and a net gradient of 2.2 percent after the specified planning reduction. For an obstacle check requiring net performance, which value should be used?",
+      "options": [
+        "2.2 percent.",
+        "3.0 percent.",
+        "5.2 percent."
+      ],
+      "correct": 0,
+      "explanation": "Use the defined net data for a check that explicitly requires net performance.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Performance planning; use of applicable data",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Use the defined net data for a check that explicitly requires net performance.",
+        "Incorrect. Gross performance omits the specified reduction.",
+        "Incorrect. Adding the two gradients has no meaning for this check."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-022",
+      "area": "Climb-gradient geometry",
+      "prompt": "A hypothetical net flight path climbs at a constant 2.0 percent over 10,000 horizontal feet. What height gain does that gradient represent?",
+      "options": [
+        "20 feet.",
+        "200 feet.",
+        "2,000 feet."
+      ],
+      "correct": 1,
+      "explanation": "0.02 × 10,000 = 200 feet. This is geometry only; an actual obstacle analysis includes its stated reference height and requirements.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 11: Climb gradient",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/13_phak_ch11.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 2 percent is 0.02, not 0.002.",
+        "Correct. 0.02 × 10,000 = 200 feet. This is geometry only; an actual obstacle analysis includes its stated reference height and requirements.",
+        "Incorrect. 2,000 feet represents a 20 percent gradient."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-023",
+      "area": "Runway contamination",
+      "prompt": "A dry-runway stopping calculation meets the available distance. Standing water is subsequently reported. What is the appropriate planning implication?",
+      "options": [
+        "Reassess using applicable contaminated-runway data and limitations.",
+        "Assume reverse thrust makes the surface condition immaterial.",
+        "Retain the dry result if brake pressure can reach its normal maximum."
+      ],
+      "correct": 0,
+      "explanation": "Water can alter braking, hydroplaning, and directional control; the dry assumptions no longer establish compliance.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Landing; runway conditions",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Water can alter braking, hydroplaning, and directional control; the dry assumptions no longer establish compliance.",
+        "Incorrect. Reverse availability does not remove the need for applicable performance data.",
+        "Incorrect. Brake pressure does not guarantee tire friction on a contaminated surface."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-024",
+      "area": "Rejected-takeoff energy",
+      "prompt": "A hypothetical rejection occurs at the same groundspeed but at a higher mass than planned. Considering translational kinetic energy alone, what changes?",
+      "options": [
+        "Energy to be dissipated increases in proportion to mass.",
+        "Energy remains unchanged because speed is unchanged.",
+        "Energy decreases because the tires carry more weight."
+      ],
+      "correct": 0,
+      "explanation": "Translational kinetic energy is one-half mass times speed squared. With groundspeed unchanged, a higher mass raises the initial energy to be dissipated in direct proportion to that mass.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 4: Kinetic energy and mass",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/05_afh_ch4.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Translational kinetic energy is one-half mass times speed squared. With groundspeed unchanged, a higher mass raises the initial energy to be dissipated in direct proportion to that mass.",
+        "Incorrect. Both mass and speed determine kinetic energy.",
+        "Incorrect. Increased wheel loading does not reduce the airplane’s initial kinetic energy."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-025",
+      "area": "Combined energy change",
+      "prompt": "Compared with a reference landing, mass is 10 percent higher and touchdown groundspeed is 5 percent higher. Considering translational kinetic energy alone, the increase is approximately",
+      "options": [
+        "15 percent.",
+        "21 percent.",
+        "32 percent."
+      ],
+      "correct": 1,
+      "explanation": "Energy ratio is 1.10 × 1.05² = 1.21275, approximately a 21 percent increase.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 4: Kinetic energy",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/05_afh_ch4.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Adding the percentage changes ignores the squared-speed and combined effects.",
+        "Correct. Energy ratio is 1.10 × 1.05² = 1.21275, approximately a 21 percent increase.",
+        "Incorrect. 32 percent overstates the result for the stated mass and speed ratios."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-026",
+      "area": "Pressurization control",
+      "prompt": "A pressurized airplane receives a steady conditioned-air inflow. The outflow valve opens farther. Other conditions unchanged, the direct tendency is for cabin pressure to",
+      "options": [
+        "remain fixed regardless of valve position.",
+        "increase and cabin altitude to fall.",
+        "decrease and cabin altitude to rise."
+      ],
+      "correct": 2,
+      "explanation": "Greater outflow tends to reduce cabin absolute pressure, corresponding to a higher cabin altitude.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Cabin pressurization; outflow valve",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The valve regulates the relationship between inflow and outflow and therefore influences pressure.",
+        "Incorrect. This describes reduced rather than increased outflow under the simplified conditions.",
+        "Correct. Greater outflow tends to reduce cabin absolute pressure, corresponding to a higher cabin altitude."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-027",
+      "area": "Differential-pressure calculation",
+      "prompt": "Cabin absolute pressure is 10.2 psi and ambient absolute pressure is 4.4 psi. What cabin differential pressure does this represent?",
+      "options": [
+        "4.4 psi.",
+        "5.8 psi.",
+        "14.6 psi."
+      ],
+      "correct": 1,
+      "explanation": "Differential pressure is cabin minus ambient: 10.2 − 4.4 = 5.8 psi.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Cabin differential pressure",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 4.4 psi is the ambient absolute pressure.",
+        "Correct. Differential pressure is cabin minus ambient: 10.2 − 4.4 = 5.8 psi.",
+        "Incorrect. Adding the pressures does not give differential pressure."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-028",
+      "area": "Pressurization indications",
+      "prompt": "An airplane remains level, but cabin altitude climbs steadily. Why is airplane altitude alone insufficient to assess the event?",
+      "options": [
+        "Cabin pressure can change independently of the airplane’s geometric altitude.",
+        "A level airplane cannot lose cabin pressure.",
+        "Cabin altitude is a duplicate of the airplane altimeter at all times."
+      ],
+      "correct": 0,
+      "explanation": "Pressurization depends on the system’s inflow, outflow, sealing, and control; level flight does not ensure stable cabin pressure.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Cabin pressurization indicators",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Pressurization depends on the system’s inflow, outflow, sealing, and control; level flight does not ensure stable cabin pressure.",
+        "Incorrect. A leak or system malfunction can occur during level flight.",
+        "Incorrect. Cabin altitude is the pressure altitude corresponding to cabin pressure, not necessarily airplane altitude."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-029",
+      "area": "Bleed-air performance",
+      "prompt": "Selecting an engine bleed-air service increases the demand for compressor air. Why may takeoff or climb performance data depend on that selection?",
+      "options": [
+        "Every bleed selection increases net engine thrust.",
+        "Bleed configuration changes only cabin sound level.",
+        "Extracted air and associated loads can reduce available propulsive performance."
+      ],
+      "correct": 2,
+      "explanation": "Performance data can account for the air and power diverted to services; use the applicable configuration and limitations.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 15: Bleed air; turbine performance",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/16_afh_ch15.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Bleed extraction is not a universal thrust increase.",
+        "Incorrect. The effect can include engine performance and system limits, not merely sound.",
+        "Correct. Performance data can account for the air and power diverted to services; use the applicable configuration and limitations."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-030",
+      "area": "Turbine limits",
+      "prompt": "On a cold day, a turboprop reaches its torque limit while turbine temperature remains below its limit. Which response respects both constraints?",
+      "options": [
+        "Respect the torque limit despite unused temperature margin.",
+        "Average the torque and temperature margins before increasing power.",
+        "Increase power until the temperature limit becomes controlling."
+      ],
+      "correct": 0,
+      "explanation": "Every applicable limit must be observed; one remaining margin does not override a reached limit.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 15: Turbine operating limits",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/16_afh_ch15.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Every applicable limit must be observed; one remaining margin does not override a reached limit.",
+        "Incorrect. Different physical limits cannot be combined by averaging their margins.",
+        "Incorrect. Increasing power beyond the torque limit would exceed an applicable constraint."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-031",
+      "area": "Free-turbine engines",
+      "prompt": "In a free-turbine turboprop, the propeller-driving power turbine is not rigidly connected to the gas-generator shaft. What does that arrangement permit?",
+      "options": [
+        "Propeller speed can be governed separately from gas-generator speed.",
+        "Propeller thrust becomes independent of shaft power.",
+        "Propeller speed must always equal compressor speed."
+      ],
+      "correct": 0,
+      "explanation": "The separate power turbine and reduction gearbox allow propeller speed selection within the governing system and limits.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 15: Split-shaft/free-turbine engines",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/16_afh_ch15.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The separate power turbine and reduction gearbox allow propeller speed selection within the governing system and limits.",
+        "Incorrect. The propeller still receives power and produces thrust through aerodynamic work.",
+        "Incorrect. Separate shafts do not require identical rotational speed."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-032",
+      "area": "Compressor stall",
+      "prompt": "A turbine engine experiences disturbed compressor airflow, abnormal indications, and a possible bang or vibration. Why is the approved response aircraft-specific?",
+      "options": [
+        "The symptom guarantees complete mechanical seizure.",
+        "Every compressor disturbance requires identical lever movement in every engine.",
+        "The appropriate actions depend on the engine and installation limits."
+      ],
+      "correct": 2,
+      "explanation": "Use the AFM/QRH and identify the condition; compressor disturbances can have different severity and prescribed responses.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 7: Turbine engines; compressor stalls",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/09_phak_ch7.pdf",
+      "standardCode": "AA.I.A",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A compressor stall or surge does not necessarily mean the rotor has seized.",
+        "Incorrect. A universal unqualified action can conflict with installation-specific procedures.",
+        "Correct. Use the AFM/QRH and identify the condition; compressor disturbances can have different severity and prescribed responses."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-033",
+      "area": "Optimum cruise altitude",
+      "prompt": "As fuel is burned during a long jet flight, why can a higher cruise altitude become suitable later even if it was unsuitable at the initial weight?",
+      "options": [
+        "The speed of sound increases automatically as fuel quantity falls.",
+        "Fuel burn increases structural maximum weight.",
+        "Reduced weight can improve the available aerodynamic and climb margins."
+      ],
+      "correct": 2,
+      "explanation": "Lower weight changes required lift and performance; any step climb still requires current limitations, weather, clearance, and capability checks.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: High-altitude performance; weight effects",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Fuel quantity does not directly set atmospheric sonic speed.",
+        "Incorrect. The approved structural limit does not increase because fuel is used.",
+        "Correct. Lower weight changes required lift and performance; any step climb still requires current limitations, weather, clearance, and capability checks."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-034",
+      "area": "Equal-time point",
+      "prompt": "Two airports are 600 NM apart. At points along the route, groundspeed toward airport A is 400 knots and toward airport B is 300 knots. Approximately how far from A is the equal-time point?",
+      "options": [
+        "257 NM.",
+        "300 NM.",
+        "343 NM."
+      ],
+      "correct": 2,
+      "explanation": "Let x be distance from airport A. Equal return and onward times require x/400 = (600 − x)/300. Solving gives x = 342.86 NM, approximately 343 NM from A.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 16: Time, speed, and distance",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/18_phak_ch16.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 257 NM is the remaining distance to B at the correct point.",
+        "Incorrect. The midpoint gives unequal times when the directional groundspeeds differ.",
+        "Correct. Let x be distance from airport A. Equal return and onward times require x/400 = (600 − x)/300. Solving gives x = 342.86 NM, approximately 343 NM from A."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-035",
+      "area": "Return fuel planning",
+      "prompt": "A planning exercise allows 3.5 hours of flight before the required reserve. Outbound groundspeed is 180 knots and return groundspeed is 120 knots, with the same fuel flow throughout. What is the farthest outbound distance permitting a return within that time?",
+      "options": [
+        "210 NM.",
+        "252 NM.",
+        "315 NM."
+      ],
+      "correct": 1,
+      "explanation": "Solve x/180 + x/120 = 3.5; x = 252 NM. Other operational allowances are excluded by the exercise.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 16: Fuel endurance; return planning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/18_phak_ch16.pdf",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 210 NM would require only 2.917 hours for the round trip.",
+        "Correct. Solve x/180 + x/120 = 3.5; x = 252 NM. Other operational allowances are excluded by the exercise.",
+        "Incorrect. 315 NM would require 4.375 hours, exceeding the available time."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-036",
+      "area": "Figure-based landing limit",
+      "prompt": "Refer to PHAK Figure 10-11. The sample takeoff weight is 5,038 lb and maximum landing weight is 4,940 lb. What minimum weight reduction is needed before landing, considering only that weight limit?",
+      "options": [
+        "74 lb.",
+        "98 lb.",
+        "122 lb."
+      ],
+      "correct": 1,
+      "explanation": "5,038 − 4,940 = 98 lb. An actual flight must satisfy all other limits and planning requirements.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Figure 10-11; landing weight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 74 lb omits part of the difference between takeoff and landing limits.",
+        "Correct. 5,038 − 4,940 = 98 lb. An actual flight must satisfy all other limits and planning requirements.",
+        "Incorrect. 122 lb includes an additional 24 lb already removed before the shown takeoff weight."
+      ],
+      "figureRef": {
+        "supplement": "Pilot’s Handbook of Aeronautical Knowledge, Chapter 10",
+        "figure": "10-11",
+        "url": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10"
+      }
+    },
+    {
+      "id": "PD-B02-ATP-037",
+      "area": "Figure-based ramp margin",
+      "prompt": "Refer to PHAK Figure 10-11. How much below the stated maximum ramp weight is the sample ramp weight?",
+      "options": [
+        "138 lb.",
+        "162 lb.",
+        "186 lb."
+      ],
+      "correct": 1,
+      "explanation": "The figure shows maximum ramp weight of 5,224 lb and actual ramp weight of 5,062 lb. Their difference is 162 lb. The takeoff weight is a later loading condition after the listed fuel allowance.",
+      "reference": "PHAK, FAA-H-8083-25C, Chapter 10: Figure 10-11; ramp weight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10",
+      "standardCode": "AA.I.B",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "advanced",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. 138 lb results from an incorrect subtraction.",
+        "Correct. The figure shows maximum ramp weight of 5,224 lb and actual ramp weight of 5,062 lb. Their difference is 162 lb. The takeoff weight is a later loading condition after the listed fuel allowance.",
+        "Incorrect. 186 lb uses the takeoff weight rather than the ramp weight."
+      ],
+      "figureRef": {
+        "supplement": "Pilot’s Handbook of Aeronautical Knowledge, Chapter 10",
+        "figure": "10-11",
+        "url": "https://www.faa.gov/sites/faa.gov/files/12_phak_ch10.pdf#page=10"
+      }
+    },
+    {
+      "id": "PD-B02-ATP-038",
+      "area": "Clearance verification",
+      "prompt": "A revised altitude is entered in the automation, but the monitoring pilot’s independent readback record shows a different altitude. Which action best addresses the discrepancy?",
+      "options": [
+        "Use the more experienced pilot’s memory without further checking.",
+        "Use the preselector as the authoritative clearance record.",
+        "Verify the actual clearance before using the selected altitude."
+      ],
+      "correct": 2,
+      "explanation": "Resolve the conflicting records against the actual clearance, asking ATC if necessary.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 1: Crew resource management; communication",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/03_aih_chapter_1.pdf",
+      "standardCode": "AA.I.F",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Experience does not remove the need to resolve a substantive discrepancy.",
+        "Incorrect. The selected altitude is a crew entry, not an independent source of ATC authority.",
+        "Correct. Resolve the conflicting records against the actual clearance, asking ATC if necessary."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-039",
+      "area": "Common-mode navigation error",
+      "prompt": "Both pilots agree that the FMS route is correct, but both checked it against the same outdated company note rather than the current clearance. What weakness remains?",
+      "options": [
+        "Two agreeing checks necessarily eliminate route error.",
+        "Their agreement lacks an independent correct reference.",
+        "The FMS guarantees that every entered route is cleared."
+      ],
+      "correct": 1,
+      "explanation": "A common erroneous source can make separate checks reproduce the same mistake; verify against the applicable current clearance and charts.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 1: Automation and information management",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/03_aih_chapter_1.pdf",
+      "standardCode": "AA.I.F",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Agreement is not enough when both checks share the same wrong input.",
+        "Correct. A common erroneous source can make separate checks reproduce the same mistake; verify against the applicable current clearance and charts.",
+        "Incorrect. The FMS can accurately fly a route that was entered incorrectly or not cleared."
+      ]
+    },
+    {
+      "id": "PD-B02-ATP-040",
+      "area": "Descent energy",
+      "prompt": "A crew begins descent late while maintaining high speed. Why can speed brakes improve the situation without guaranteeing a stabilized landing?",
+      "options": [
+        "They increase drag but do not remove the need to meet approach energy and configuration criteria.",
+        "They eliminate the need for distance to decelerate and configure.",
+        "They convert every late descent into an approved approach."
+      ],
+      "correct": 0,
+      "explanation": "Drag devices assist energy reduction within limits; the crew must still assess the remaining path and discontinue or obtain more distance if necessary.",
+      "reference": "Airplane Flying Handbook, FAA-H-8083-3C, Chapter 16: Drag devices; descent planning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/airplane_handbook/17_afh_ch16.pdf",
+      "standardCode": "AA.VI",
+      "standardDoc": "FAA-S-ACS-11A",
+      "standardType": "ACS",
+      "difficulty": "applied",
+      "experienceLevel": "atp",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Drag devices assist energy reduction within limits; the crew must still assess the remaining path and discontinue or obtain more distance if necessary.",
+        "Incorrect. Deceleration, configuration, and descent still require time and distance.",
+        "Incorrect. A device selection is not proof that stabilized criteria can be met."
+      ]
+    }
+  ],
+  "foi": [
+    {
+      "id": "PD-DRAFT-FOI-001",
+      "area": "Interference and retention",
+      "prompt": "After learning two similar radio procedures in close succession, a learner confuses their steps. Each procedure was recalled accurately before the second was introduced. Which explanation most directly fits the new confusion?",
+      "options": [
+        "Interference between similar learning.",
+        "Retrieval failure from an unfamiliar setting.",
+        "Fading through a long period of disuse."
+      ],
+      "correct": 0,
+      "explanation": "Similar material can interfere with retrieval, especially when it is not well established. Compare distinguishing cues and reinforce correct retrieval.",
+      "reference": "AIH Chapter 3: Forgetting: interference",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Similar material can interfere with retrieval, especially when it is not well established. Compare distinguishing cues and reinforce correct retrieval.",
+        "Incorrect. No setting change is stated; the new similar material supplies the more direct explanation.",
+        "Incorrect. The stem describes an immediate change after learning similar material, not a long period without use."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-002",
+      "area": "Assessment objectivity",
+      "prompt": "An instructor awards a learner a higher maneuver grade because the learner is punctual and agreeable, although the recorded performance is below the stated standard. Which assessment quality is compromised most directly?",
+      "options": [
+        "Objectivity.",
+        "Usability.",
+        "Comprehensiveness."
+      ],
+      "correct": 0,
+      "explanation": "The grade is influenced by unrelated personal impressions rather than observed performance against the standard.",
+      "reference": "AIH Chapter 6: Characteristics of effective assessment: objectivity",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/08_aih_chapter_6.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The grade is influenced by unrelated personal impressions rather than observed performance against the standard.",
+        "Incorrect. Ease of administration does not address the biased score.",
+        "Incorrect. Coverage of the subject matter is not the immediate issue."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-003",
+      "area": "Learner-centered grading",
+      "prompt": "During a training scenario, the instructor supplies repeated prompts for a task that the learner then completes correctly. Which evidence best distinguishes independent competence from assisted completion?",
+      "options": [
+        "Whether the learner agrees with the instructor’s explanation.",
+        "Whether the task required more than one control input.",
+        "Whether the task can be completed without those prompts."
+      ],
+      "correct": 2,
+      "explanation": "Removing prompts during an appropriate assessment determines whether the learner can recognize and perform the task independently.",
+      "reference": "AIH Chapter 6: Learner-centered assessment: grading",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/08_aih_chapter_6.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Agreement does not demonstrate independent performance.",
+        "Incorrect. Task complexity alone does not establish how much assistance was required.",
+        "Correct. Removing prompts during an appropriate assessment determines whether the learner can recognize and perform the task independently."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-004",
+      "area": "Guided discussion",
+      "prompt": "An instructor wants learners to compare several defensible responses to a weather scenario using knowledge already taught. Which method most directly supports analysis by the learners?",
+      "options": [
+        "A demonstration with no opportunity for learner response.",
+        "A guided discussion using focused, open-ended questions.",
+        "A memorized lecture followed by silent note copying."
+      ],
+      "correct": 1,
+      "explanation": "Guided discussion draws on prior knowledge and directs learners to analyze and explain their reasoning.",
+      "reference": "AIH Chapter 5: Guided discussion method",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/07_aih_chapter_5.pdf",
+      "standardCode": "AIH.5",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Demonstration is useful for showing performance, but this format does not elicit the stated learner analysis.",
+        "Correct. Guided discussion draws on prior knowledge and directs learners to analyze and explain their reasoning.",
+        "Incorrect. A lecture can present information but does not itself require the proposed comparison and discussion."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-005",
+      "area": "Training sequence",
+      "prompt": "A course moves from basic attitude control to integrated maneuvers and then to operational scenarios. Which organizing principle is most directly illustrated?",
+      "options": [
+        "Progression from abstract to concrete.",
+        "Progression from simple to complex.",
+        "Progression from summative to formative."
+      ],
+      "correct": 1,
+      "explanation": "Prerequisite skills are established before they are combined into more demanding performances.",
+      "reference": "AIH Chapter 7: Building blocks of learning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf",
+      "standardCode": "AIH.7",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Abstract-to-concrete describes a different distinction; these tasks can all involve concrete flight activity.",
+        "Correct. Prerequisite skills are established before they are combined into more demanding performances.",
+        "Incorrect. Summative and formative describe assessment purposes, not the stated sequence of skill complexity."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-006",
+      "area": "Formative assessment",
+      "prompt": "Halfway through a course, an instructor identifies recurring navigation errors and adjusts the next lessons before the final evaluation. The assessment is primarily",
+      "options": [
+        "summative.",
+        "norm-referenced.",
+        "formative."
+      ],
+      "correct": 2,
+      "explanation": "The evidence is being used during learning to improve subsequent instruction.",
+      "reference": "AIH Chapter 6: Traditional assessment; formative and summative assessment",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/08_aih_chapter_6.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A summative assessment evaluates achievement at the end of a defined training period.",
+        "Incorrect. No comparison with other learners is described.",
+        "Correct. The evidence is being used during learning to improve subsequent instruction."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-007",
+      "area": "Instructional aids",
+      "prompt": "A training diagram accurately shows the components of a system but includes many unrelated labels that learners repeatedly mistake for required steps. Which revision best improves the aid for this lesson?",
+      "options": [
+        "Replace the diagram with the same labels in smaller type.",
+        "Add every remaining system label for completeness.",
+        "Remove labels unrelated to the lesson objective."
+      ],
+      "correct": 2,
+      "explanation": "An aid should clarify the objective; unrelated details can divert attention and obscure the intended relationship.",
+      "reference": "AIH Chapter 5: Instructional aids and training technologies",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/07_aih_chapter_5.pdf",
+      "standardCode": "AIH.5",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Reducing type size does not resolve the unnecessary information or its misleading role.",
+        "Incorrect. More irrelevant detail would compound the identified problem.",
+        "Correct. An aid should clarify the objective; unrelated details can divert attention and obscure the intended relationship."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-008",
+      "area": "Overlearning",
+      "prompt": "A learner recites a familiar checklist fluently but stops verifying the actual item states. Which risk of automated performance is illustrated?",
+      "options": [
+        "The verbal routine can become separated from its intended actions.",
+        "Fluent recall demonstrates that each action has been completed.",
+        "Continued practice necessarily prevents omission errors."
+      ],
+      "correct": 0,
+      "explanation": "An overlearned routine can become automatic without the intended observation and action; the instructor should reconnect words to checks.",
+      "reference": "AIH Chapter 3: Overlearning of knowledge",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. An overlearned routine can become automatic without the intended observation and action; the instructor should reconnect words to checks.",
+        "Incorrect. Recitation alone does not establish that each item was checked.",
+        "Incorrect. Practice can improve fluency but does not necessarily preserve meaningful verification."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-009",
+      "area": "Levels of skill acquisition",
+      "prompt": "A learner performs a familiar motor sequence smoothly with little conscious attention to individual movements, while retaining the ability to monitor its result. Which stage of skill acquisition is best illustrated?",
+      "options": [
+        "Cognitive.",
+        "Associative.",
+        "Automatic response."
+      ],
+      "correct": 2,
+      "explanation": "The task has become a coordinated, largely automatic sequence, allowing attention to its result and other demands.",
+      "reference": "AIH Chapter 3: Stages of skill acquisition",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The cognitive stage involves understanding what to do and conscious attention to the steps.",
+        "Incorrect. The associative stage refines and connects the steps but typically requires more conscious attention than described.",
+        "Correct. The task has become a coordinated, largely automatic sequence, allowing attention to its result and other demands."
+      ]
+    },
+    {
+      "id": "PD-DRAFT-FOI-010",
+      "area": "Preparation for learning",
+      "prompt": "An instructor begins a new lesson by asking learners to recall a related procedure they already know, then connects that procedure to the new topic. What is the principal learning purpose?",
+      "options": [
+        "Demonstrate that assessment is unnecessary.",
+        "Activate prior knowledge to support new learning.",
+        "Replace the new objective with a review objective."
+      ],
+      "correct": 1,
+      "explanation": "Bringing relevant existing knowledge into use helps learners organize and interpret new information.",
+      "reference": "AIH Chapter 3: Memory; activating existing knowledge",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Activating prior knowledge does not establish that the new learning has been achieved.",
+        "Correct. Bringing relevant existing knowledge into use helps learners organize and interpret new information.",
+        "Incorrect. The review is a bridge to the new objective, not necessarily a replacement for it."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-011",
+      "area": "Learning principles",
+      "prompt": "Before a lesson, an instructor establishes how its objective supports the learner’s planned cross-country. Which principle is most directly supported by making that need apparent?",
+      "options": [
+        "Readiness.",
+        "Intensity.",
+        "Recency."
+      ],
+      "correct": 0,
+      "explanation": "A recognized purpose and reason to learn help prepare the learner to engage with the objective.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Laws of learning: readiness",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A recognized purpose and reason to learn help prepare the learner to engage with the objective.",
+        "Incorrect. Intensity concerns vivid or realistic experiences rather than establishing the need for this lesson.",
+        "Incorrect. Recency concerns how recently learning has been used or presented."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-012",
+      "area": "Learning principles",
+      "prompt": "A learner makes measurable progress, receives accurate encouragement, and becomes more willing to practice. Which principle most directly explains the reinforcing value of this satisfying experience?",
+      "options": [
+        "Disuse.",
+        "Effect.",
+        "Primacy."
+      ],
+      "correct": 1,
+      "explanation": "Learning associated with a satisfying experience is strengthened under the law of effect.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Laws of learning: effect",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Disuse concerns loss of ready access or performance without use, not this reinforcement.",
+        "Correct. Learning associated with a satisfying experience is strengthened under the law of effect.",
+        "Incorrect. Primacy concerns the influence of initial learning, not the satisfying result described."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-013",
+      "area": "Learning principles",
+      "prompt": "A realistic but safely controlled simulation makes an emergency lesson more memorable than a vague verbal description. Which learning principle is most directly illustrated?",
+      "options": [
+        "Intensity.",
+        "Recency.",
+        "Primacy."
+      ],
+      "correct": 0,
+      "explanation": "A vivid, meaningful experience can leave a stronger impression than a less engaging description.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Laws of learning: intensity",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. A vivid, meaningful experience can leave a stronger impression than a less engaging description.",
+        "Incorrect. The comparison does not state which experience occurred more recently.",
+        "Incorrect. The comparison does not depend on which lesson was first."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-014",
+      "area": "Learning principles",
+      "prompt": "An instructor reviews key actions immediately before a learner performs a new task. Which principle most directly supports the immediate availability of that information?",
+      "options": [
+        "Negative transfer.",
+        "Recency.",
+        "Repression."
+      ],
+      "correct": 1,
+      "explanation": "Recently used or reviewed knowledge is generally more readily retrieved.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Laws of learning: recency",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Negative transfer involves prior learning interfering with a new task.",
+        "Correct. Recently used or reviewed knowledge is generally more readily retrieved.",
+        "Incorrect. Repression is not the explanation for information made recently available through review."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-015",
+      "area": "Learning domains",
+      "prompt": "A learner compares two fuel plans, calculates their margins, and explains the assumptions. Which learning domain is most directly assessed?",
+      "options": [
+        "Psychomotor.",
+        "Cognitive.",
+        "Affective."
+      ],
+      "correct": 1,
+      "explanation": "Calculation, comparison, and explanation are primarily intellectual knowledge and reasoning tasks.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Domains of learning: cognitive",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. No physical coordination task is the central assessment here.",
+        "Correct. Calculation, comparison, and explanation are primarily intellectual knowledge and reasoning tasks.",
+        "Incorrect. Attitudes and values may influence decisions, but the stated evidence directly concerns reasoning."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-016",
+      "area": "Learning domains",
+      "prompt": "Over several lessons, a learner increasingly values conservative fuel margins and voluntarily incorporates them into planning. Which domain is most directly reflected?",
+      "options": [
+        "Psychomotor.",
+        "Cognitive recall alone.",
+        "Affective."
+      ],
+      "correct": 2,
+      "explanation": "Adoption of a safety value and its integration into behavior are affective learning.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Domains of learning: affective",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The change is in values and consistent choices, not principally muscular coordination.",
+        "Incorrect. The evidence extends beyond remembering a fuel definition.",
+        "Correct. Adoption of a safety value and its integration into behavior are affective learning."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-017",
+      "area": "Learning domains",
+      "prompt": "An assessment requires smooth, coordinated manipulation of controls to maintain a specified attitude. Which domain is most directly involved?",
+      "options": [
+        "Affective.",
+        "Psychomotor.",
+        "Cognitive recall alone."
+      ],
+      "correct": 1,
+      "explanation": "Physical coordination and practiced control movements are psychomotor performance.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Domains of learning: psychomotor",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Attitude toward safety can support the task, but the measured act is coordinated physical performance.",
+        "Correct. Physical coordination and practiced control movements are psychomotor performance.",
+        "Incorrect. Knowing the definition is not the same as executing the movement."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-018",
+      "area": "Insight",
+      "prompt": "After studying lift, load factor, and stall speed separately, a learner explains how they interact during a steep level turn. What does the new connection most directly demonstrate?",
+      "options": [
+        "Insight into relationships among perceptions and concepts.",
+        "A loss of all prior knowledge.",
+        "An isolated motor reflex."
+      ],
+      "correct": 0,
+      "explanation": "Recognizing the relationship gives meaning to facts that were previously treated separately.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Perceptions; insight",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Recognizing the relationship gives meaning to facts that were previously treated separately.",
+        "Incorrect. The learner is integrating earlier knowledge, not losing it.",
+        "Incorrect. The explanation is conceptual rather than a reflex movement."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-019",
+      "area": "Purposeful practice",
+      "prompt": "Two learners complete the same number of repetitions. One identifies a specific error and receives corrective feedback each time; the other repeats the error without review. Why may the outcomes differ?",
+      "options": [
+        "Quality and purpose of practice matter as well as repetition count.",
+        "Feedback prevents the learner from retaining any motor skill.",
+        "Equal repetition counts guarantee equal learning."
+      ],
+      "correct": 0,
+      "explanation": "Practice is more useful when directed toward correct performance with appropriate feedback.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Practice; skill acquisition",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Practice is more useful when directed toward correct performance with appropriate feedback.",
+        "Incorrect. Effective feedback supports rather than prevents skill development.",
+        "Incorrect. Repetition can reinforce an error when its cause is not addressed."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-020",
+      "area": "Distributed practice",
+      "prompt": "A long practice period produces fatigue and progressively poorer performance. Which adjustment most directly supports further useful learning?",
+      "options": [
+        "Remove all feedback to reduce the time spent discussing errors.",
+        "Extend the session until the fatigue disappears during repetition.",
+        "Use shorter sessions with suitable rest and focused objectives."
+      ],
+      "correct": 2,
+      "explanation": "Distributed practice can preserve attention and allow consolidation instead of rehearsing degraded performance.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Practice; fatigue and learning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Removing feedback does not address the underlying fatigue and can reinforce errors.",
+        "Incorrect. Continuing through increasing fatigue can make practice less useful or unsafe.",
+        "Correct. Distributed practice can preserve attention and allow consolidation instead of rehearsing degraded performance."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-021",
+      "area": "Recall versus recognition",
+      "prompt": "A learner selects the correct checklist item from three displayed choices but cannot state the item without seeing the choices. Which conclusion is justified?",
+      "options": [
+        "Independent execution is shown; understanding remains unproven.",
+        "Recall is shown; recognition remains unproven.",
+        "Recognition is shown; unaided recall remains unproven."
+      ],
+      "correct": 2,
+      "explanation": "Choices can provide recognition cues; no unaided recall or physical execution is established.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Memory; retrieval",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. No execution task is described.",
+        "Incorrect. Selecting a supplied choice demonstrates recognition rather than supplying the answer independently.",
+        "Correct. Choices can provide recognition cues; no unaided recall or physical execution is established."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-022",
+      "area": "Meaningful associations",
+      "prompt": "A learner remembers an unfamiliar limitation more reliably after relating it to a known system mechanism. Why can this help retention?",
+      "options": [
+        "The new information is connected to an organized knowledge structure.",
+        "Understanding removes every possibility of future forgetting.",
+        "The limitation no longer needs to be checked against the source."
+      ],
+      "correct": 0,
+      "explanation": "Meaningful connections provide organization and retrieval cues, rather than leaving an isolated fact.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 3: Memory; meaningful learning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/05_aih_chapter_3.pdf",
+      "standardCode": "AIH.3",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Meaningful connections provide organization and retrieval cues, rather than leaving an isolated fact.",
+        "Incorrect. Understanding can improve retention but does not guarantee permanent error-free memory.",
+        "Incorrect. Memory aids do not replace verifying the actual applicable limitation."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-023",
+      "area": "Self-concept",
+      "prompt": "An instructor criticizes a learner as an incapable person rather than describing a correctable performance error. Why can this impair learning?",
+      "options": [
+        "It distinguishes observable behavior from personal worth.",
+        "It threatens self-concept without identifying a useful improvement.",
+        "It makes the completion standard more objective."
+      ],
+      "correct": 1,
+      "explanation": "A personal attack can provoke defensiveness and undermine confidence while supplying little usable guidance.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 2: Self-concept; motivation",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/04_aih_chapter_2.pdf",
+      "standardCode": "AIH.2",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. It does the opposite: it labels the person rather than separating the action from identity.",
+        "Correct. A personal attack can provoke defensiveness and undermine confidence while supplying little usable guidance.",
+        "Incorrect. The statement substitutes a personal judgment for a performance standard."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-024",
+      "area": "Anxiety response",
+      "prompt": "A learner expresses apprehension before an unfamiliar maneuver but remains attentive and responsive. Which initial instructional response is most appropriate?",
+      "options": [
+        "Explain the exercise, establish expectations, and monitor the learner’s response.",
+        "Assume the learner is medically unfit based on apprehension alone.",
+        "Increase uncertainty to make the lesson more memorable."
+      ],
+      "correct": 0,
+      "explanation": "Preparation and supportive, controlled exposure can address normal apprehension; continue assessing the individual response.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 2: Anxiety; normal reactions",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/04_aih_chapter_2.pdf",
+      "standardCode": "AIH.2",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Preparation and supportive, controlled exposure can address normal apprehension; continue assessing the individual response.",
+        "Incorrect. Apprehension alone does not establish a medical diagnosis.",
+        "Incorrect. Additional uncertainty can aggravate anxiety rather than support learning."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-025",
+      "area": "Overwhelming anxiety",
+      "prompt": "During training, a learner becomes unable to process instructions and continues freezing despite simpler coaching. What should the instructor do first?",
+      "options": [
+        "Continue the same exercise with more frequent prompts.",
+        "Maintain safety and reduce or stop the exercise.",
+        "Finish the maneuver, then assess the distress in the debrief."
+      ],
+      "correct": 1,
+      "explanation": "The learner is no longer processing instructions effectively; remove the immediate unsafe overload.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 2: Abnormal reactions to stress; instructor response",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/04_aih_chapter_2.pdf",
+      "standardCode": "AIH.2",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The stem says simpler coaching has not restored effective processing; more prompts do not address the immediate overload.",
+        "Correct. The learner is no longer processing instructions effectively; remove the immediate unsafe overload.",
+        "Incorrect. Debriefing is important but must not delay control of the current safety problem."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-026",
+      "area": "Human behavior",
+      "prompt": "A learner responds to insecurity about weak landing performance by continually emphasizing unrelated academic achievements. Which defense mechanism best fits that substitution?",
+      "options": [
+        "Compensation.",
+        "Physical fatigue.",
+        "Repression."
+      ],
+      "correct": 0,
+      "explanation": "Compensation substitutes strength or achievement in one area for a perceived weakness in another.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 2: Defense mechanisms: compensation",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/04_aih_chapter_2.pdf",
+      "standardCode": "AIH.2",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Compensation substitutes strength or achievement in one area for a perceived weakness in another.",
+        "Incorrect. Fatigue may impair performance but does not define this defensive substitution.",
+        "Incorrect. Repression involves excluding distressing material from conscious awareness, not emphasizing another achievement."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-027",
+      "area": "Human behavior",
+      "prompt": "A learner is angry about a poor performance but insists, without supporting evidence, that the instructor is the angry and hostile one. Which defense mechanism most directly fits attributing the feeling to someone else?",
+      "options": [
+        "Readiness.",
+        "Positive transfer.",
+        "Projection."
+      ],
+      "correct": 2,
+      "explanation": "Projection attributes one’s own unacceptable feelings or motives to another person.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 2: Defense mechanisms: projection",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/04_aih_chapter_2.pdf",
+      "standardCode": "AIH.2",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Readiness concerns preparation and motivation to learn, not attributing feelings.",
+        "Incorrect. Positive transfer concerns learning that helps another task.",
+        "Correct. Projection attributes one’s own unacceptable feelings or motives to another person."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-028",
+      "area": "Human behavior",
+      "prompt": "Despite a clear recording of a missed checklist item, a learner refuses to acknowledge that the omission occurred. Which defense mechanism is most directly illustrated?",
+      "options": [
+        "Compensation.",
+        "Correlation.",
+        "Denial."
+      ],
+      "correct": 2,
+      "explanation": "Denial rejects an uncomfortable fact despite the evidence.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 2: Defense mechanisms: denial",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/04_aih_chapter_2.pdf",
+      "standardCode": "AIH.2",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Compensation would substitute another strength for the perceived weakness.",
+        "Incorrect. Correlation is a level of learning, not the defensive rejection described.",
+        "Correct. Denial rejects an uncomfortable fact despite the evidence."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-029",
+      "area": "Guided-discovery responsibility",
+      "prompt": "In problem-based instruction, an instructor lets learners propose solutions but verifies their reasoning against sound principles before the lesson ends. Why is that verification necessary?",
+      "options": [
+        "Verification prevents learners from applying prior knowledge.",
+        "Discovery requires the instructor to accept all conclusions as equivalent.",
+        "Learner participation does not make every proposed solution accurate."
+      ],
+      "correct": 2,
+      "explanation": "Facilitation includes correcting misconceptions and ensuring that learning is accurate while preserving meaningful learner involvement.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 5: Problem-based learning; instructor facilitation",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/07_aih_chapter_5.pdf",
+      "standardCode": "AIH.5",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Verification supports sound application rather than barring prior knowledge.",
+        "Incorrect. Open exploration is not a declaration that incorrect conclusions meet the objective.",
+        "Correct. Facilitation includes correcting misconceptions and ensuring that learning is accurate while preserving meaningful learner involvement."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-030",
+      "area": "Question design",
+      "prompt": "A question begins, \"You would use the approved checklist, wouldn’t you?\" Why is it weak evidence of the learner’s independent reasoning?",
+      "options": [
+        "It isolates the learner’s unprompted decision process.",
+        "It cues the desired response.",
+        "It requires a complete operational explanation."
+      ],
+      "correct": 1,
+      "explanation": "The wording signals agreement with the instructor instead of requiring the learner to explain a decision.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 6: Oral assessment; leading questions",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/08_aih_chapter_6.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. The desired response is supplied by the phrasing.",
+        "Correct. The wording signals agreement with the instructor instead of requiring the learner to explain a decision.",
+        "Incorrect. A yes/no cue does not require a complete explanation."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-031",
+      "area": "Item independence",
+      "prompt": "A test question states the correct answer to a later question in its own stem. What is the principal design defect?",
+      "options": [
+        "The numerical alternatives are in ascending order.",
+        "The items are not independent.",
+        "The items have too many alternatives."
+      ],
+      "correct": 1,
+      "explanation": "One item should not provide the solution to another because that changes what the later item measures.",
+      "reference": "Aviation Instructor’s Handbook, Appendix B: Multiple-choice guidelines: independent items",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/14_aih_appendix_b.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Ordering numeric alternatives is not the defect described.",
+        "Correct. One item should not provide the solution to another because that changes what the later item measures.",
+        "Incorrect. No excessive option count is established."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-032",
+      "area": "Grammatical cues",
+      "prompt": "A multiple-choice stem ends in \"an,\" and only the correct alternative begins with a vowel sound. What should the author revise?",
+      "options": [
+        "Remove the grammatical clue while preserving the tested concept.",
+        "Add another unrelated technical fact to the explanation.",
+        "Retain the clue to reward grammatical skill in an aviation calculation."
+      ],
+      "correct": 0,
+      "explanation": "Grammar should not reveal a keyed answer when the objective is the aviation concept.",
+      "reference": "Aviation Instructor’s Handbook, Appendix B: Stems; grammatical fit",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/14_aih_appendix_b.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Grammar should not reveal a keyed answer when the objective is the aviation concept.",
+        "Incorrect. Changing the explanation does not remove a clue in the item itself.",
+        "Incorrect. An unrelated language cue weakens the intended measurement."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-033",
+      "area": "Answer-length cues",
+      "prompt": "Across a draft test, the correct choice is repeatedly a long qualified sentence while the wrong choices are brief assertions. What revision best reduces the unintended cue?",
+      "options": [
+        "Make alternatives comparably precise and similar in length.",
+        "Lengthen only the correct choices further.",
+        "Put the correct choice first throughout the test."
+      ],
+      "correct": 0,
+      "explanation": "Comparable wording and scope help the learner choose on content rather than a recurring superficial pattern.",
+      "reference": "Aviation Instructor’s Handbook, Appendix B: Alternatives; response-length cues",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/14_aih_appendix_b.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. Comparable wording and scope help the learner choose on content rather than a recurring superficial pattern.",
+        "Incorrect. Making the contrast larger strengthens the cue.",
+        "Incorrect. A fixed keyed position introduces another predictable pattern."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-034",
+      "area": "Numeric distractors",
+      "prompt": "An item tests a conversion. Which pair of distractors is most useful?",
+      "options": [
+        "Two random values unrelated to the calculation.",
+        "The correct value repeated with different punctuation.",
+        "Results from plausible unit or formula errors."
+      ],
+      "correct": 2,
+      "explanation": "Common mistakes produce meaningful distractors that diagnose understanding of the actual task.",
+      "reference": "Aviation Instructor’s Handbook, Appendix B: Alternatives; common learner errors",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/14_aih_appendix_b.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Random values are often easily dismissed without solving the problem.",
+        "Incorrect. Repeated correct values undermine the requirement for a unique keyed response.",
+        "Correct. Common mistakes produce meaningful distractors that diagnose understanding of the actual task."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-035",
+      "area": "Negative wording",
+      "prompt": "An essential question asks which action is NOT permitted. How should the author reduce avoidable reading error?",
+      "options": [
+        "Use a double negative to increase difficulty.",
+        "Clearly emphasize the negative and avoid a second negative.",
+        "Hide the negative among unnecessary details."
+      ],
+      "correct": 1,
+      "explanation": "Necessary negative wording should be visible and structurally simple so difficulty comes from the content.",
+      "reference": "Aviation Instructor’s Handbook, Appendix B: Negative questions; avoidance of double negatives",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/14_aih_appendix_b.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Double negatives can introduce confusion unrelated to the objective.",
+        "Correct. Necessary negative wording should be visible and structurally simple so difficulty comes from the content.",
+        "Incorrect. Concealing the negative creates a reading trap rather than useful challenge."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-036",
+      "area": "Criterion-referenced assessment",
+      "prompt": "A learner’s performance is compared with a published completion standard rather than with classmates’ scores. This is principally",
+      "options": [
+        "Norm-referenced assessment.",
+        "Peer-referenced ranking.",
+        "Criterion-referenced assessment."
+      ],
+      "correct": 2,
+      "explanation": "Performance is compared with a defined standard or criterion.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 6: Performance assessment; standards",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/08_aih_chapter_6.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Norm-referenced assessment compares performance with a group.",
+        "Incorrect. Ranking against peers is not the stated comparison with a completion standard.",
+        "Correct. Performance is compared with a defined standard or criterion."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-037",
+      "area": "Diagnostic assessment",
+      "prompt": "Before choosing the first lesson in a transition course, an instructor checks the learner’s existing knowledge and skills. What is the principal purpose?",
+      "options": [
+        "Rank the learner against unrelated applicants.",
+        "Identify the starting point and instructional needs.",
+        "Certify final course completion in advance."
+      ],
+      "correct": 1,
+      "explanation": "A pre-assessment identifies existing competence and gaps so instruction can be planned appropriately.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 7: Planning instruction; assessment of prior learning",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf",
+      "standardCode": "AIH.7",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. A rank among others is not the stated instructional planning objective.",
+        "Correct. A pre-assessment identifies existing competence and gaps so instruction can be planned appropriately.",
+        "Incorrect. Entry evidence cannot establish learning that has not yet been taught or demonstrated."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-038",
+      "area": "Syllabus and lesson plan",
+      "prompt": "An instructor needs the sequence and overall progression of an entire course, then a detailed plan for tomorrow’s individual lesson. Which pairing best matches those needs?",
+      "options": [
+        "Training syllabus, then lesson plan.",
+        "Completion record, then course critique.",
+        "Lesson plan, then training syllabus."
+      ],
+      "correct": 0,
+      "explanation": "The syllabus gives the course structure; the lesson plan organizes the individual learning session.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 7: Training syllabi and lesson plans",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/09_aih_chapter_7.pdf",
+      "standardCode": "AIH.7",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Correct. The syllabus gives the course structure; the lesson plan organizes the individual learning session.",
+        "Incorrect. A progress record and critique can inform planning but do not replace the course sequence and individual lesson plan.",
+        "Incorrect. This reverses the levels of planning required by the stem."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-039",
+      "area": "Professional correction",
+      "prompt": "After giving an incorrect technical explanation, an instructor verifies the source and discovers the error. What response best supports sound learning?",
+      "options": [
+        "Wait for the learner to raise the conflict during a later lesson.",
+        "Give a new example without explicitly correcting the earlier explanation.",
+        "Acknowledge the error and explain the verified correction."
+      ],
+      "correct": 2,
+      "explanation": "An explicit correction prevents the earlier misinformation from remaining an apparently valid rule.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 8: Professionalism; admitting errors",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/10_aih_chapter_8.pdf",
+      "standardCode": "AIH.8",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Delay can allow the error to be practiced or applied before it is corrected.",
+        "Incorrect. A new example may leave the learner retaining both conflicting ideas.",
+        "Correct. An explicit correction prevents the earlier misinformation from remaining an apparently valid rule."
+      ]
+    },
+    {
+      "id": "PD-B02-FOI-040",
+      "area": "Assessing judgment",
+      "prompt": "A learner chooses a defensible alternate plan for a scenario that differs from the instructor’s preferred plan. What should determine the assessment?",
+      "options": [
+        "Whether the alternate plan was mentioned first.",
+        "Agreement with the instructor’s preference alone.",
+        "The learner’s reasoning and compliance with the stated criteria."
+      ],
+      "correct": 2,
+      "explanation": "A different solution can be valid if it addresses the hazards, constraints, and objective. Evaluate evidence rather than personal preference.",
+      "reference": "Aviation Instructor’s Handbook, Chapter 6: Objective assessment; evaluating problem solving",
+      "source": "pilotdesk-curated",
+      "sourceUrl": "https://www.faa.gov/sites/faa.gov/files/regulations_policies/handbooks_manuals/aviation/aviation_instructors_handbook/08_aih_chapter_6.pdf",
+      "standardCode": "AIH.6",
+      "standardDoc": "FAA-H-8083-9",
+      "standardType": "Handbook",
+      "difficulty": "applied",
+      "experienceLevel": "foi",
+      "reviewedAt": "2026-10-19",
+      "authoring": "curated-manual",
+      "instructorReview": "pending",
+      "releaseBatch": "reviewed-280-2026-10",
+      "choiceExplanations": [
+        "Incorrect. Order of mention does not establish operational quality.",
+        "Incorrect. Preference alone is not a criterion for rejecting a sound decision.",
+        "Correct. A different solution can be valid if it addresses the hazards, constraints, and objective. Evaluate evidence rather than personal preference."
+      ]
+    }
+  ]
+};
+
 export const banks={
- foi:[...expandedQuestions.foi,...curriculumQuestions.foi],
- ppl:[...productionSamples('ppl'),...figureParallelQuestions.ppl.filter(q=>q.difficulty!=='foundation'),...scenarioQuestions.ppl,...expandedQuestions.ppl,...curriculumQuestions.ppl,...privatePathQuestions],
- ira:[...productionSamples('ira'),...figureParallelQuestions.ira.filter(q=>q.difficulty!=='foundation'),...scenarioQuestions.ira,...expandedQuestions.ira,...curriculumQuestions.ira],
- cpl:[...productionSamples('cpl'),...figureParallelQuestions.cpl.filter(q=>q.difficulty!=='foundation'),...scenarioQuestions.cpl,...expandedQuestions.cpl,...curriculumQuestions.cpl],
- cfi:[...curatedCfi,...scenarioQuestions.cfi,...expandedQuestions.cfi,...curriculumQuestions.cfi],
- cfii:[...curatedCfii,...scenarioQuestions.cfii,...expandedQuestions.cfii,...curriculumQuestions.cfii],
- atp:[...exactAtpSamples,...scenarioQuestions.atp,...expandedQuestions.atp,...curriculumQuestions.atp]
+ foi:[...expandedQuestions.foi,...curriculumQuestions.foi,...reviewedReleaseQuestions.foi],
+ ppl:[...productionSamples('ppl'),...figureParallelQuestions.ppl.filter(q=>q.difficulty!=='foundation'),...scenarioQuestions.ppl,...expandedQuestions.ppl,...curriculumQuestions.ppl,...privatePathQuestions,...reviewedReleaseQuestions.ppl],
+ ira:[...productionSamples('ira'),...figureParallelQuestions.ira.filter(q=>q.difficulty!=='foundation'),...scenarioQuestions.ira,...expandedQuestions.ira,...curriculumQuestions.ira,...reviewedReleaseQuestions.ira],
+ cpl:[...productionSamples('cpl'),...figureParallelQuestions.cpl.filter(q=>q.difficulty!=='foundation'),...scenarioQuestions.cpl,...expandedQuestions.cpl,...curriculumQuestions.cpl,...reviewedReleaseQuestions.cpl],
+ cfi:[...curatedCfi,...scenarioQuestions.cfi,...expandedQuestions.cfi,...curriculumQuestions.cfi,...reviewedReleaseQuestions.cfi],
+ cfii:[...curatedCfii,...scenarioQuestions.cfii,...expandedQuestions.cfii,...curriculumQuestions.cfii,...reviewedReleaseQuestions.cfii],
+ atp:[...exactAtpSamples,...scenarioQuestions.atp,...expandedQuestions.atp,...curriculumQuestions.atp,...reviewedReleaseQuestions.atp]
 };
 export const bankManifest={
  acsQuestionCount:['ppl','ira','cpl','cfi','atp'].reduce((s,t)=>s+banks[t].length,0),
@@ -1313,6 +9486,6 @@ export const bankManifest={
  totalQuestionCount:Object.values(banks).reduce((s,a)=>s+a.length,0),
  byTrack:Object.fromEntries(Object.entries(banks).map(([k,v])=>[k,v.length])),
  standards:STANDARDS,
- generatedAt:'2026-10-06',
+ generatedAt:'2026-10-19',
  legacyGeneratedFamiliesExcluded:true
 };

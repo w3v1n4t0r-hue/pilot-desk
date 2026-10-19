@@ -9,13 +9,13 @@
   --prep-soft:#96958f;--prep-text:#f4f3ee;--prep-accent:#d8d7d2;
   --prep-green:#c8c7c2;--prep-red:#8f8e89;--prep-blue:#c8c7c2;
 }
-.pd-prep-hero-copy,.pd-prep-instrument,.pd-prep-integrity,.pd-prep-app,.pd-prep-how,.pd-prep-seo-copy,
+.pd-prep-hero-copy,.pd-prep-instrument,.pd-prep-integrity,.pd-prep-app,
 .pd-prep-gate,.pd-prep-readiness,.pd-prep-kpis>div,.pd-prep-resume,.pd-prep-modes button,
 .pd-prep-skill,.pd-prep-question,.pd-prep-option,.pd-prep-feedback,.pd-prep-summary,
 .pd-prep-review-item,.pd-prep-test-meta span,.pd-prep-identity,.pd-prep-source-links a{
   border-radius:0!important;background-image:none!important;box-shadow:none!important;
 }
-.pd-prep-hero-copy,.pd-prep-app,.pd-prep-how,.pd-prep-seo-copy,.pd-prep-instrument{
+.pd-prep-hero-copy,.pd-prep-app,.pd-prep-instrument{
   background:#0c0c0e!important;border-color:#303035!important;
 }
 .pd-prep-hero-copy:before{height:1px!important;background:#85847f!important}
@@ -25,7 +25,7 @@
 }
 .pd-prep-secondary{background:#0a0a0c!important;color:#efeee9!important;border-color:#45454b!important}
 .pd-prep-instrument strong,.pd-prep-statusbar>div:first-child span,.pd-prep-summary-score,
-.pd-prep-integrity span,.pd-prep-how-grid span,.pd-prep-qmeta span:first-child{
+.pd-prep-integrity span,.pd-prep-qmeta span:first-child{
   color:#d8d7d2!important;
 }
 .pd-prep-integrity{border-left:2px solid #77777f!important}

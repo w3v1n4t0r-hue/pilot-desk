@@ -218,6 +218,8 @@ jobs:
         run: node qa/airport-data-tests.mjs
       - name: Check airport symbol geometry and visibility
         run: node qa/airport-symbol-tests.mjs
+        - name: Check coded procedure chart discontinuities
+          run: node qa/procedure-chart-tests.mjs
 
       - name: Verify METAR station models and units
         run: node qa/metar-model-tests.mjs

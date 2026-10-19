@@ -32,10 +32,10 @@ ok(Boolean(standards),'FAA training standards matrix must load for Written Prep 
 
 
 ok(bankManifest.legacyGeneratedFamiliesExcluded===true,'Legacy generated question families must remain excluded from the live bank');
-ok(bankManifest.acsQuestionCount===167,`Expected 167 curated ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
-ok(bankManifest.supplementalPtsQuestionCount===28,`Expected 28 curated CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
-ok(bankManifest.totalQuestionCount===224,`Expected 224 total curated live questions; got ${bankManifest.totalQuestionCount}`);
-const minimumByTrack={ppl:53,ira:28,cpl:27,cfi:30,cfii:28,atp:29,foi:29};
+ok(bankManifest.acsQuestionCount===367,`Expected 367 ACS-linked live questions; got ${bankManifest.acsQuestionCount}`);
+ok(bankManifest.supplementalPtsQuestionCount===68,`Expected 68 CFII PTS questions; got ${bankManifest.supplementalPtsQuestionCount}`);
+ok(bankManifest.totalQuestionCount===504,`Expected 504 total live questions; got ${bankManifest.totalQuestionCount}`);
+const minimumByTrack={ppl:93,ira:68,cpl:67,cfi:70,cfii:68,atp:69,foi:69};
 for(const [track,min] of Object.entries(minimumByTrack))ok(banks[track]?.length>=min,`${track.toUpperCase()} curated bank fell below ${min} questions`);
 
 for(const [track,items] of Object.entries(banks)){
@@ -49,7 +49,7 @@ for(const [track,items] of Object.entries(banks)){
   ok(q.experienceLevel===track,`${q.id} experience level does not match its track`);
   ok(typeof q.explanation==='string'&&q.explanation.length>=55,`${q.id} needs a substantive explanation`);
   ok(typeof q.reference==='string'&&q.reference.length>=12,`${q.id} needs an FAA/reference citation`);
-  ok(/^https:\/\/www\.faa\.gov\//.test(q.sourceUrl||''),`${q.id} must link to an FAA source`);
+  ok(/^https:\/\/(www\.faa\.gov\/|www\.ecfr\.gov\/current\/title-14\/)/.test(q.sourceUrl||''),`${q.id} must link to an official FAA or 14 CFR source`);
   ok(['faa-sample-exact','pilotdesk-faa-parallel','pilotdesk-curated'].includes(q.source),`${q.id} uses disallowed live source type ${q.source}`);
   ok(Array.isArray(q.choiceExplanations)&&q.choiceExplanations.length===3,`${q.id} must explain all three choices`);
   ok(!q.options.some(x=>/all of the above|none of the above|obviously|joke answer/i.test(x)),`${q.id} contains a low-quality test-taking shortcut`);
@@ -76,6 +76,9 @@ for(const [track,items] of Object.entries(banks)){
 }
 ok(ids.size===all.length,'Question IDs must be globally unique');
 ok(new Set(all.map(q=>q.prompt)).size===all.length,'Live Written Prep prompts must be unique');
+const historicalIds=JSON.parse(read('qa/fixtures/written-prep-existing-ids.json'));
+ok(historicalIds.length===224&&new Set(historicalIds).size===224,'Historical fixture must identify all 224 existing questions');
+for(const id of historicalIds)ok(ids.has(id),`Preserve existing question ${id} so saved history and bookmarks remain connected`);
 
 const exactFaa=all.filter(q=>q.source==='faa-sample-exact');
 ok(exactFaa.length>=20,`Expected at least 20 exact FAA sample items; got ${exactFaa.length}`);
@@ -93,7 +96,12 @@ ok(figureQuestions.length>=23,`At least 23 live questions should require an offi
 const newScenarios=all.filter(q=>q.reviewedAt==='2026-10-04'&&q.id.startsWith('curated-')&&!q.id.includes('-expansion-'));
 const expanded=all.filter(q=>q.id.includes('-expansion-'));
 ok(expanded.length===83,'All-track release must add 83 separately authored questions');
-ok(bankManifest.handbookQuestionCount===29&&banks.foi.every(q=>q.standardType==='Handbook'&&q.standardCode.startsWith('AIH.')),'FOI must use handbook chapter references rather than invented ACS codes');
+ok(bankManifest.handbookQuestionCount===69&&banks.foi.every(q=>q.standardType==='Handbook'&&q.standardCode.startsWith('AIH.')),'FOI must use handbook chapter references rather than invented ACS codes');
+const reviewedRelease=all.filter(q=>q.releaseBatch==='reviewed-280-2026-10');
+ok(reviewedRelease.length===280,'Publish all 280 approved review questions');
+for(const track of Object.keys(minimumByTrack))ok(reviewedRelease.filter(q=>q.experienceLevel===track).length===40,`${track} must receive both approved batches (40 questions)`);
+ok(reviewedRelease.filter(q=>q.figureRef).length===7,'Preserve all seven PHAK figure questions and their official figure links');
+ok(reviewedRelease.every(q=>q.instructorReview==='pending'),'Editorial review must not be mislabeled as independent instructor approval');
 ok(newScenarios.length===24,'Expansion must add 24 distinct original scenarios');
 for(const track of ['ppl','ira','cpl','cfi','cfii','atp'])ok(newScenarios.filter(q=>q.experienceLevel===track).length===4,`${track} must gain four original scenarios`);
 has(html,'not a complete exam bank','Limited coverage must remain visible before sign-in');

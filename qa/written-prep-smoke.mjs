@@ -24,11 +24,8 @@ const acsTracks=['ppl','ira','cpl','cfi','atp'];
 const expectedDocs={ppl:'FAA-S-ACS-6C',ira:'FAA-S-ACS-8C',cpl:'FAA-S-ACS-7B',cfi:'FAA-S-ACS-25',atp:'FAA-S-ACS-11A'};
 const prefixes={ppl:['PA.'],ira:['IR.'],cpl:['CA.'],cfi:['FI.','AI.'],atp:['AA.']};
 const all=Object.values(banks).flat();
-ok(html.includes('data-pd-public-lesson')&&html.includes('300 fpm'),'Public Written Prep page needs a worked lesson without sign-in');
-ok(html.includes('data-pd-bank-coverage')&&html.includes('not complete coverage'),'Public bank coverage must explain its limits');
-for(const [track,label] of Object.entries({ppl:'Private',ira:'Instrument',cpl:'Commercial',cfi:'CFI',cfii:'CFII',atp:'ATP',foi:'Fundamentals of Instruction'})){
-  ok(html.includes(`${label} (${banks[track].length})`),`Public coverage count is stale for ${track}`);
-}
+ok(html.includes('id="pdStudySample"')&&!html.includes('data-pd-public-lesson')&&!html.includes('pd-prep-how'),'Keep interactive samples without the removed instructional blocks');
+ok(!html.includes('data-pd-bank-coverage')&&html.includes('not a complete exam bank'),'Keep the concise bank limitation without the removed coverage write-up');
 const ids=new Set();
 const standardsContext={window:{}};vm.runInNewContext(standardsSource,standardsContext);const standards=standardsContext.window.PilotDeskTrainingStandards;
 ok(Boolean(standards),'FAA training standards matrix must load for Written Prep authoring QA');
@@ -291,9 +288,6 @@ for(const q of curriculum){
  ok(q.choiceExplanations.every(x=>x.length>=50),`${q.id} must explain each misconception`);
  ok(/\.pdf$/.test(q.sourceUrl),`${q.id} should link directly to its verified handbook chapter`);
 }
-has(html,'data-pd-curriculum-topics','Public topic guide must remain available before sign-in');
-has(html,'0.375 inch aft','Public balance lesson must preserve the checked computation');
-has(html,'has not received independent CFI sign-off','Source checks must not be presented as independent instructor review');
 
 const privatePath=all.filter(q=>q.id.includes('-private-path-'));
 ok(privatePath.length===27,'Private Pilot path must add 27 distinct applied scenarios');

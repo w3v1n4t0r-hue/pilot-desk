@@ -5,7 +5,7 @@ const CATEGORY_SLUGS={
   'Flight Planning':['crosswind','wind-triangle','time-speed-distance','fuel-required','endurance-range','top-of-descent','three-degree-descent','holding-leg-distance'],
   'Atmosphere & Weather':['pressure-altitude','density-altitude','isa-temperature','cloud-base','speed-of-sound','mach-number'],
   'Performance':['true-airspeed','climb-gradient','fpm-to-gradient','gradient-angle','glide-range','maneuvering-speed-weight','accelerated-stall','hydroplaning','wing-loading','power-loading','obstacle-gradient'],
-  'Maneuvers & Turns':['pivotal-altitude','standard-rate-bank','load-factor','turn-radius','rate-of-turn'],
+  'Maneuvers & Turns':['pivotal-altitude','standard-rate-bank','load-factor','rate-of-turn'],
   'Navigation':['reciprocal-heading','true-magnetic','arc-distance','great-circle-distance','dms-decimal','nm-per-minute'],
   'Weight & Balance':['moment-cg','percent-mac','ballast','fuel-weight'],
   'Conversions':['speed-conversion','distance-conversion','temperature-conversion','weight-conversion','volume-conversion','pressure-conversion','vertical-speed-conversion']
@@ -39,8 +39,7 @@ const ALIASES={
   'pivotal-altitude':'pivotal altitude eights on pylons groundspeed gs squared',
   'standard-rate-bank':'standard rate turn rate 1 bank angle 3 degrees second',
   'load-factor':'load factor g bank angle stall',
-  'turn-radius':'turn radius bank angle tas diameter',
-  'rate-of-turn':'rate of turn turn rate bank angle tas',
+  'rate-of-turn':'turn rate turn radius diameter time for 360 bank angle tas',
   'reciprocal-heading':'reciprocal heading course 180 opposite',
   'true-magnetic':'true magnetic heading variation east west',
   'arc-distance':'dme arc distance radius degrees',
@@ -103,8 +102,7 @@ const DESCRIPTIONS={
   'pivotal-altitude':'Calculate pivotal altitude from groundspeed.',
   'standard-rate-bank':'Find bank angle for a standard-rate / rate 1 turn.',
   'moment-cg':'Solve station moment and loaded center of gravity.',
-  'turn-radius':'Calculate turn radius from true airspeed and bank angle.',
-  'rate-of-turn':'Calculate turn rate, turn time, and radius.',
+  'rate-of-turn':'Calculate turn rate, time for 360°, radius, and diameter from true airspeed and bank angle.',
   'true-airspeed':'Estimate true airspeed with the common 2% training rule.',
   'three-degree-descent':'Find FPM for a 3° descent from groundspeed.',
   'top-of-descent':'Estimate top-of-descent distance, rate, and time.'

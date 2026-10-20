@@ -9,7 +9,7 @@ const wb=fs.readFileSync('weight-balance.html','utf8');
 const crosswind=fs.readFileSync('assets/crosswind-mfd.js','utf8');
 const safety=fs.readFileSync('assets/safety.js','utf8');
 
-for(const key of ['crosswind','densityAltitude','fuelRequired','windTriangle','tasApprox','climbGradient','threeDegree','momentCg','rateTurn','turnRadius']){
+for(const key of ['crosswind','densityAltitude','fuelRequired','windTriangle','tasApprox','climbGradient','threeDegree','momentCg','rateTurn']){
   check(ux.includes(key+':'),`Core calculator quick guidance missing: ${key}`);
 }
 check(ux.includes("pd-calc-quick-help"),'Calculator quick-help block missing');

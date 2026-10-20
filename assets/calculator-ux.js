@@ -17,8 +17,7 @@ const QUICK_HELP={
   climbGradient:'Enter the required gradient in ft/NM and the groundspeed you expect during the climb. The result is the climb rate you need.',
   threeDegree:'Enter groundspeed to estimate the FPM for a 3° path. The exact result and the common GS × 5 shortcut are shown together.',
   momentCg:'The calculated CG is arithmetic only. Compare it with the approved envelope and weight limits for the exact aircraft.',
-  rateTurn:'Use true airspeed and bank angle. The results show turn rate, time for 360°, and turn radius.',
-  turnRadius:'Use true airspeed and bank angle. The results show radius, diameter, and turn rate.'
+  rateTurn:'Use true airspeed and bank angle. The results show turn rate, time for 360°, radius, and diameter.'
 };
 const SUMMARY={
   crosswind:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Crosswind: '+a+'. '+b+'. Relative angle: '+d+'.':''},
@@ -29,8 +28,7 @@ const SUMMARY={
   climbGradient:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent;return a&&a!=='—'?'Required vertical speed: '+a+'. Equivalent gradient: '+b+'.':''},
   threeDegree:()=>{const a=qs('#out0')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'3° path: '+a+'. GS × 5 shortcut: '+d+'.':''},
   momentCg:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent;return a&&a!=='—'?'Station moment: '+a+'. Calculated total CG: '+b+'.':''},
-  rateTurn:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Turn rate: '+a+'. 360° time: '+b+'. Radius: '+d+'.':''},
-  turnRadius:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent;return a&&a!=='—'?'Turn radius: '+a+'. Diameter: '+b+'. Turn rate: '+d+'.':''}
+  rateTurn:()=>{const a=qs('#out0')?.textContent,b=qs('#out1')?.textContent,d=qs('#out2')?.textContent,e=qs('#out3')?.textContent;return a&&a!=='—'?'Turn rate: '+a+'. 360° time: '+b+'. Radius: '+d+'. Diameter: '+e+'.':''}
 };
 if(results){results.setAttribute('aria-live','polite');results.setAttribute('aria-atomic','true')}
 const advisoryBox=document.createElement('div');advisoryBox.className='safety-warning';advisoryBox.id='pdAdvisory';advisoryBox.setAttribute('aria-live','polite');

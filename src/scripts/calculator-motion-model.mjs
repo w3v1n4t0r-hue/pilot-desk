@@ -1,5 +1,5 @@
 // Geometry only: the established calculator remains the source of displayed answers.
-export const DIAGRAM_KEYS=new Set(['crosswind','windTriangle','threeDegree','tod','glide','climbGradient','fpmGradient','gradientAngle','obstacleGradient','turnRadius','rateTurn','stdRate','arcDistance','fuelRequired','endurance','fuelWeight','reciprocal','trueMag','loadFactor','stallBank','densityAltitude','pressureAltitude','isaTemp','cloudBase']);
+export const DIAGRAM_KEYS=new Set(['crosswind','windTriangle','threeDegree','tod','glide','climbGradient','fpmGradient','gradientAngle','obstacleGradient','rateTurn','stdRate','arcDistance','fuelRequired','endurance','fuelWeight','reciprocal','trueMag','loadFactor','stallBank','densityAltitude','pressureAltitude','isaTemp','cloudBase']);
 export const NM_FT = 6076.11549;
 export const norm = angle => ((angle % 360) + 360) % 360;
 export const shortestAngle = (from, to) => from + ((to - from + 540) % 360) - 180;
@@ -39,7 +39,7 @@ export function diagramModel(key, v) {
     return {kind:'profile',title:climb?'Climb profile':key==='glide'?'Glide profile':'Descent profile',distance,height,gs,climb,angle,obstacle,
       minutes:gs>0?distance/gs*60:null,caption:(['threeDegree','climbGradient','fpmGradient'].includes(key)?'One minute at the entered groundspeed. ':key==='gradientAngle'?'One nautical mile at the entered angle. ':'')+'Height and distance use separate scales.'};
   }
-  if(['turnRadius','rateTurn','stdRate','arcDistance'].includes(key)) {
+  if(['rateTurn','stdRate','arcDistance'].includes(key)) {
     let radius,rate,bank=v.bank,degrees=360;
     if(key==='arcDistance'){if(!finite([v.radius,v.degrees])||v.radius<=0||v.degrees<0||v.degrees>360)return null;radius=v.radius;degrees=v.degrees;}
     else{if(!finite([v.tas])||v.tas<=0)return null;if(key==='stdRate')bank=Math.atan((3*Math.PI/180)*(v.tas*.514444)/9.80665)*180/Math.PI;if(!Number.isFinite(bank)||bank<=0||bank>=90)return null;radius=v.tas*v.tas/(11.26*Math.tan(rad(bank)))/NM_FT;rate=key==='stdRate'?3:1091*Math.tan(rad(bank))/v.tas;}

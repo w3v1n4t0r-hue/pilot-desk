@@ -13,7 +13,7 @@ const categories={
   'Flight Planning':['crosswind','wind-triangle','time-speed-distance','fuel-required','endurance-range','top-of-descent','three-degree-descent','holding-leg-distance'],
   'Atmosphere & Weather':['pressure-altitude','density-altitude','isa-temperature','cloud-base','speed-of-sound','mach-number'],
   'Performance':['true-airspeed','climb-gradient','fpm-to-gradient','gradient-angle','glide-range','maneuvering-speed-weight','accelerated-stall','hydroplaning','wing-loading','power-loading','obstacle-gradient'],
-  'Maneuvers & Turns':['pivotal-altitude','standard-rate-bank','load-factor','turn-radius','rate-of-turn'],
+  'Maneuvers & Turns':['pivotal-altitude','standard-rate-bank','load-factor','rate-of-turn'],
   'Navigation':['reciprocal-heading','true-magnetic','arc-distance','great-circle-distance','dms-decimal','nm-per-minute'],
   'Weight & Balance':['moment-cg','percent-mac','ballast','fuel-weight'],
   'Conversions':['speed-conversion','distance-conversion','temperature-conversion','weight-conversion','volume-conversion','pressure-conversion','vertical-speed-conversion']
@@ -53,8 +53,7 @@ const formulas={
   pivotal:'Pivotal altitude (ft AGL) ≈ groundspeed² ÷ 11.3 for the common knots-and-feet training rule.',
   stdRate:'A standard-rate turn changes heading about 3° per second. The exact coordinated bank depends on true airspeed.',
   loadFactor:'Load factor in a coordinated level turn = 1 ÷ cos(bank angle).',
-  turnRadius:'Coordinated turn radius is determined by true airspeed and bank angle.',
-  rateTurn:'Coordinated turn rate is determined by true airspeed and bank angle.',
+  rateTurn:'Coordinated turn rate and radius are determined by true airspeed and bank angle.',
   reciprocal:'A reciprocal direction is 180° opposite the original direction, normalized to the 001°–360° convention.',
   trueMag:'True and magnetic direction differ by magnetic variation; the sign convention must stay consistent through the conversion.',
   arcDistance:'Arc length equals the selected fraction of a circle multiplied by the circumference at the entered DME radius.',
@@ -78,7 +77,7 @@ const guideFor={
   'crosswind':'/guides/crosswind-component.html','wind-triangle':'/guides/wind-triangle.html','time-speed-distance':'/guides/time-speed-distance.html','fuel-required':'/guides/fuel-planning.html','endurance-range':'/guides/fuel-planning.html#endurance-range','top-of-descent':'/guides/top-of-descent.html','three-degree-descent':'/guides/three-degree-descent.html','holding-leg-distance':'/guides/holding-leg-distance.html',
   'pressure-altitude':'/guides/pressure-altitude.html','density-altitude':'/guides/density-altitude.html','isa-temperature':'/guides/isa-temperature.html','cloud-base':'/guides/cloud-base-estimate.html','speed-of-sound':'/guides/mach-speed-of-sound.html','mach-number':'/guides/mach-speed-of-sound.html',
   'true-airspeed':'/guides/true-airspeed-rule.html','climb-gradient':'/guides/climb-gradient.html','fpm-to-gradient':'/guides/climb-rate-vs-climb-gradient.html','gradient-angle':'/guides/flight-path-gradient-angle.html','glide-range':'/guides/glide-range.html','maneuvering-speed-weight':'/guides/maneuvering-speed-weight.html','accelerated-stall':'/guides/accelerated-stall-load-factor.html','hydroplaning':'/guides/hydroplaning-speed.html','wing-loading':'/guides/wing-loading.html','power-loading':'/guides/power-loading.html','obstacle-gradient':'/guides/obstacle-climb-gradient.html',
-  'pivotal-altitude':'/guides/pivotal-altitude.html','standard-rate-bank':'/guides/turn-radius-rate.html#standard-rate-turn','load-factor':'/guides/accelerated-stall-load-factor.html','turn-radius':'/guides/turn-radius-rate.html','rate-of-turn':'/guides/turn-radius-rate.html',
+  'pivotal-altitude':'/guides/pivotal-altitude.html','standard-rate-bank':'/guides/turn-radius-rate.html#standard-rate-turn','load-factor':'/guides/accelerated-stall-load-factor.html','rate-of-turn':'/guides/turn-radius-rate.html',
   'reciprocal-heading':'/guides/reciprocal-heading.html','true-magnetic':'/guides/true-magnetic-heading.html','arc-distance':'/guides/dme-arc-distance.html','great-circle-distance':'/guides/great-circle-distance.html','dms-decimal':'/guides/dms-coordinates.html','nm-per-minute':'/guides/nautical-miles-per-minute.html',
   'moment-cg':'/guides/moment-center-of-gravity.html','percent-mac':'/guides/percent-mac.html','ballast':'/guides/ballast-cg.html','fuel-weight':'/guides/avgas-weight-per-gallon.html#fuel-types',
   'speed-conversion':'/guides/aviation-speed-conversions.html','distance-conversion':'/guides/aviation-distance-conversions.html','temperature-conversion':'/guides/aviation-temperature-conversions.html','weight-conversion':'/guides/aircraft-weight-conversions.html','volume-conversion':'/guides/aviation-volume-conversions.html','pressure-conversion':'/guides/altimeter-pressure-conversions.html','vertical-speed-conversion':'/guides/vertical-speed-conversions.html'
@@ -121,8 +120,7 @@ const faqBySlug={
 const seoTitleBySlug={
   'isa-temperature':'ISA Temperature Calculator | Standard Atmosphere | PilotDesk',
   'density-altitude':'Density Altitude Calculator for Pilots | PilotDesk',
-  'rate-of-turn':'Rate 1 Turn Calculator | Turn Rate & Radius | PilotDesk',
-  'turn-radius':'Aircraft Turn Radius Calculator | Speed & Bank Angle | PilotDesk',
+  'rate-of-turn':'Aircraft Turn Calculator | Rate, Radius & Time | PilotDesk',
   'true-airspeed':'True Airspeed Calculator | 2% TAS Rule Estimate | PilotDesk',
   'pivotal-altitude':'Pivotal Altitude Calculator | Eights on Pylons | PilotDesk',
   'glide-range':'Aircraft Glide Distance Calculator | Glide Ratio to NM | PilotDesk',
@@ -136,8 +134,7 @@ const seoTitleBySlug={
 
 const seoDescriptionBySlug={
   'density-altitude':'Free aviation density altitude calculator. Enter pressure altitude and OAT to calculate density altitude, ISA temperature, and ISA deviation.',
-  'rate-of-turn':'Free rate 1 turn and aircraft turn-rate calculator. Enter true airspeed and bank angle to calculate degrees per second, turn time, and turn radius.',
-  'turn-radius':'Free aircraft turn radius calculator. Enter true airspeed and bank angle to calculate turn radius, turn diameter, and rate of turn.',
+  'rate-of-turn':'Calculate coordinated turn rate, time for 360°, turn radius and diameter from true airspeed and bank angle.',
   'true-airspeed':'Free true airspeed calculator using the common 2% TAS rule. Estimate TAS from calibrated airspeed and pressure altitude for pilot training.',
   'pivotal-altitude':'Free pivotal altitude calculator for eights on pylons. Enter groundspeed in knots and calculate pivotal altitude in feet AGL with the GS² ÷ 11.3 formula.',
   'glide-range':'Free aircraft glide distance calculator. Enter height available and glide ratio to estimate still-air glide distance in nautical miles, feet, and statute miles.',

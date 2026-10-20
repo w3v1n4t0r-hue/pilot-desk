@@ -180,10 +180,10 @@
     "group": "Flight math"
   },
   {
-    "title": "Rate of Turn Calculator",
+    "title": "Aircraft Turn Calculator",
     "href": "/calculators/rate-of-turn/",
     "type": "Calculator",
-    "group": "Flight math"
+    "group": "Maneuvers & Turns"
   },
   {
     "title": "Reciprocal Heading Calculator",
@@ -242,12 +242,6 @@
   {
     "title": "True / Magnetic Heading Calculator",
     "href": "/calculators/true-magnetic/",
-    "type": "Calculator",
-    "group": "Flight math"
-  },
-  {
-    "title": "Turn Radius Calculator",
-    "href": "/calculators/turn-radius/",
     "type": "Calculator",
     "group": "Flight math"
   },

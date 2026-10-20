@@ -3,7 +3,7 @@ import {createRequire} from 'node:module';
 import fs from 'node:fs';
 const T=createRequire(import.meta.url)('../assets/chart-tiles.js');
 for(const chart of Object.values(T.charts)){
- for(const env of [{width:800,height:600},{width:390,height:600,pixelRatio:3},{width:3840,height:2160},{memory:2},{connection:{saveData:true}},{pixelRatio:4}]){
+ for(const env of [{width:800,height:600,pixelRatio:1},{width:390,height:600,pixelRatio:3,memory:8},{width:3840,height:2160,pixelRatio:1},{pixelRatio:2,memory:2},{pixelRatio:2,memory:8,connection:{saveData:true}},{pixelRatio:2,memory:8,connection:{effectiveType:'3g'}}]){
   const o=T.options(chart,env),offset=o.zoomOffset;
   assert.equal(o.tileSize,256/2**offset);
   assert.equal(o.minZoom+offset,chart.minNativeZoom);
@@ -13,12 +13,13 @@ for(const chart of Object.values(T.charts)){
   assert.equal(o.keepBuffer,1);assert.equal(o.updateWhenIdle,true);assert.equal(o.updateWhenZooming,false);
  }
 }
-assert.equal(T.options(T.charts.sectional,{width:800,height:600}).tileSize,64);
-for(const env of [{width:3840,height:2160},{memory:2},{connection:{saveData:true}}])assert.equal(T.options(T.charts.sectional,env).tileSize,64);
-for(const pixelRatio of [3,4])assert.equal(T.options(T.charts.sectional,{pixelRatio}).tileSize,64);
+assert.equal(T.options(T.charts.sectional,{width:800,height:600,pixelRatio:1}).tileSize,256,'Standard-density screens should use native FAA tiles');
+assert.equal(T.options(T.charts.sectional,{pixelRatio:2}).tileSize,256,'Unknown memory should use the conservative native tile size');
+assert.equal(T.options(T.charts.sectional,{pixelRatio:2,memory:8}).tileSize,128,'Capable high-DPI screens should receive one sharper source level');
+for(const env of [{pixelRatio:2,memory:2},{pixelRatio:2,memory:8,connection:{saveData:true}},{pixelRatio:2,memory:8,connection:{effectiveType:'3g'}}])assert.equal(T.options(T.charts.sectional,env).tileSize,256,'Constrained devices should avoid extra tile requests');
 const html=fs.readFileSync('route-planner.html','utf8');
 assert.ok(html.indexOf('/assets/chart-tiles.js')<html.indexOf('/assets/route-planner.js'));
-console.log('Chart tile checks passed: native source limits, high-density wide screens, 3x/4x displays, bounded buffering and script order.');
+console.log('Chart tile checks passed: FAA source limits, native tiles on standard/constrained devices, bounded high-DPI oversampling and script order.');
 
 // Georeferenced overviews persist beneath detailed tiles without recreating images on every zoom.
 const {default:vm}=await import('node:vm');
@@ -36,4 +37,4 @@ console.log('Chart overview bounds, persistent layers, date labeling and chart s
 
 assert.ok(!planner.includes("World_Topo_Map"));
 assert.ok(planner.includes("overviewPane.style.zIndex='190'"));
-assert.equal(T.options(T.charts.sectional).minZoom,6);
+assert.equal(T.options(T.charts.sectional).minZoom,T.charts.sectional.minNativeZoom);

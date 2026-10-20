@@ -134,7 +134,7 @@ const seoTitleBySlug={
 
 const seoDescriptionBySlug={
   'density-altitude':'Free aviation density altitude calculator. Enter pressure altitude and OAT to calculate density altitude, ISA temperature, and ISA deviation.',
-  'rate-of-turn':'Calculate coordinated turn rate, time for 360°, turn radius and diameter from true airspeed and bank angle.',
+  'rate-of-turn':'Calculate coordinated turn rate, time for 360°, turn radius, and diameter from true airspeed and bank angle.',
   'true-airspeed':'Free true airspeed calculator using the common 2% TAS rule. Estimate TAS from calibrated airspeed and pressure altitude for pilot training.',
   'pivotal-altitude':'Free pivotal altitude calculator for eights on pylons. Enter groundspeed in knots and calculate pivotal altitude in feet AGL with the GS² ÷ 11.3 formula.',
   'glide-range':'Free aircraft glide distance calculator. Enter height available and glide ratio to estimate still-air glide distance in nautical miles, feet, and statute miles.',

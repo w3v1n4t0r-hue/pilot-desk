@@ -32,7 +32,7 @@ for(const needle of [
   "'rate-of-turn':'Aircraft Turn Calculator | Rate, Radius & Time | PilotDesk'",
   "'three-degree-descent':'3 Degree Descent Rate Calculator | FPM from Groundspeed | PilotDesk'",
   "'moment-cg':'Free aircraft CG calculator using weight × arm = moment.",
-  "'rate-of-turn':'Calculate coordinated turn rate, time for 360°, turn radius and diameter from true airspeed and bank angle.",
+  "'rate-of-turn':'Calculate coordinated turn rate, time for 360°, turn radius, and diameter from true airspeed and bank angle.",
   "'three-degree-descent':'Free 3 degree descent rate calculator."
 ]) check(gen.includes(needle),'Search Console calculator optimization must live in generator: '+needle);
 

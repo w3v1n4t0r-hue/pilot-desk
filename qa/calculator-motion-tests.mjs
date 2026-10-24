@@ -32,7 +32,7 @@ const descent=diagramModel('tod',{altitude:6000,gradient:300,gs:120});near(desce
 const glide=diagramModel('glide',{alt:3000,ratio:10});near(glide.distance,number(formula('glide',{alt:3000,ratio:10})[0]),.051);
 const climb=diagramModel('obstacleGradient',{obstacle:600,margin:200,distance:4});near(climb.height,800);near(climb.height/climb.distance,number(formula('obstacleGradient',{obstacle:600,margin:200,distance:4})[0]));
 for(const bank of [10,30,60]){
- const m=diagramModel('turnRadius',{tas:120,bank}),out=formula('turnRadius',{tas:120,bank});near(m.radius,number(out[0]),.006);near(m.rate,number(out[2]),.006);
+ const m=diagramModel('rateTurn',{tas:120,bank}),out=formula('rateTurn',{tas:120,bank});near(m.radius,number(out[2]),.006);near(m.rate,number(out[0]),.006);
  const b=diagramModel('loadFactor',{bank});near(b.factor,number(formula('loadFactor',{bank})[0]),.006);
 }
 const fuel=diagramModel('fuelRequired',{fuel:10,burn:8,time:2,reserve:45});near(fuel.trip,16);near(fuel.reserve,6);near(fuel.remaining,-12);assert(fuel.remaining<0,'shortfall must not be drawn as spare fuel');
@@ -40,10 +40,10 @@ for(const pa of [0,5000,12000]){
  const v={pa,oat:30},m=diagramModel('densityAltitude',v);near(m.second,number(formula('densityAltitude',v)[0]),.51);
 }
 assert.equal(diagramModel('cloudBase',{temp:10,dew:15}),null);
-assert.equal(diagramModel('turnRadius',{tas:100,bank:0}),null);
+assert.equal(diagramModel('rateTurn',{tas:100,bank:0}),null);
 assert.equal(diagramModel('tod',{altitude:6000,gradient:0,gs:120}),null);
 assert.equal(diagramModel('densityAltitude',{pa:NaN,oat:20}),null);
-assert.equal(diagramModel('unknown',{}),null);assert.equal(DIAGRAM_KEYS.size,24);
+assert.equal(diagramModel('unknown',{}),null);assert.equal(DIAGRAM_KEYS.size,23);
 const manifest=fs.readFileSync('dist/assets/offline-precache.js','utf8').replace(/\r\n/g,'\n');
 assert(manifest.includes('calculator-motion-runtime')&&manifest.includes('calculator-motion.css'),'animation runtime and styles must be available offline');
 const runtime=fs.readFileSync('src/scripts/calculator-motion.js','utf8').replace(/\r\n/g,'\n');

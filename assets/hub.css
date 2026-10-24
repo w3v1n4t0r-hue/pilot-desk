@@ -82,3 +82,9 @@
   border-color:#303035;
 }
 .pd-oral-track:hover,.pd-oral-source-links a:hover{background:#141416;border-color:#5a595f}
+
+.pd-guides-index .pd-guide-link-list{display:block;max-width:900px}
+.pd-guides-index .pd-guide-link-list .pd-guide-entry{display:grid;grid-template-columns:minmax(190px,.4fr) minmax(0,1fr);gap:8px 18px;align-items:start;padding:15px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;text-decoration:none}
+.pd-guides-index .pd-guide-link-list .pd-guide-entry h3{margin:0;color:var(--text);font-size:16px}
+.pd-guides-index .pd-guide-link-list .pd-guide-entry p{margin:0;color:var(--muted);font-size:var(--pd-type-body)}
+@media(max-width:600px){.pd-guides-index .pd-guide-link-list .pd-guide-entry{grid-template-columns:1fr;gap:3px}}

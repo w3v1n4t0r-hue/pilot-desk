@@ -468,7 +468,7 @@ function start(RP,L){
       return L.marker(ll,{pane,keyboard:false,icon:L.divIcon({className:'rp-map-cluster',html:symbol+'<b>'+count+'</b>',iconSize:key==='metar'?[72,34]:[42,34],iconAnchor:key==='metar'?[36,17]:[21,17]}),title:label}).setOpacity(state.vectorOpacity);
     }
     if(key==='metar'){
-      if(window.PilotDeskMetar&&map.getZoom()>=6){const m=window.PilotDeskMetar.model(p);return L.marker(ll,{pane,icon:L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[102,86.4],iconAnchor:[46.2,40.8]}),title:m.label}).setOpacity(state.vectorOpacity)}
+      if(window.PilotDeskMetar&&map.getZoom()>=10){const m=window.PilotDeskMetar.model(p);return L.marker(ll,{pane,icon:L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[102,86.4],iconAnchor:[46.2,40.8]}),title:m.label}).setOpacity(state.vectorOpacity)}
       const cat=window.PilotDeskChartSymbols.metarCategory(p);
       return L.circleMarker(ll,{pane,radius:map.getZoom()<7?4:6,weight:2,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
     }
@@ -523,7 +523,7 @@ function start(RP,L){
         if(feature.geometry?.type!=='Point'||!Array.isArray(coordinates)||!Number.isFinite(coordinates[0])||!Number.isFinite(coordinates[1])||Math.abs(coordinates[0])>180||Math.abs(coordinates[1])>90)continue;
         const id=field(p,['icaoId','id','stationId']),stamp=id+':'+coordinates.slice(0,2).join(',');
         retained.add(stamp);let marker=weatherMarkers.get(stamp);
-        const stationModel=!!window.PilotDeskMetar&&map.getZoom()>=6;
+        const stationModel=!!window.PilotDeskMetar&&map.getZoom()>=10;
         if(marker&&marker._pdStationModel!==stationModel){g.removeLayer(marker);weatherMarkers.delete(stamp);marker=null;}
         if(!marker){
           marker=pointFor('metar',feature,L.latLng(coordinates[1],coordinates[0]));

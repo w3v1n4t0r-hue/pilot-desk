@@ -18,7 +18,7 @@ if(!F)throw new Error('Calculator function table not available');
 const configContext={window:{}};
 vm.runInNewContext(fs.readFileSync('assets/calculator-config.js','utf8'),configContext);
 const allCalcs=configContext.window.PD_CALCS||[];
-if(allCalcs.length!==47)throw new Error(`Expected 47 calculator definitions, found ${allCalcs.length}`);
+if(allCalcs.length!==46)throw new Error(`Expected 46 calculator definitions, found ${allCalcs.length}`);
 function extractFunction(source,name){
   const start=source.indexOf(`function ${name}(`);
   if(start<0)throw new Error(`Missing function ${name}`);

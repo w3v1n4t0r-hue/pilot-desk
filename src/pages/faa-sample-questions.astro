@@ -1,26 +1,56 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { questions as faaQuestions } from '../data/faa-samples.json';
-import { questions as canadianQuestions, attribution } from '../data/canada-pstar.json';
-const questions = [...faaQuestions, ...canadianQuestions];
-const tracks = [{code:'PAR',name:'Private Pilot'},{code:'IRA',name:'Instrument Rating'},{code:'CAX',name:'Commercial Pilot'},{code:'FIA',name:'Flight Instructor'},{code:'FOI',name:'Fundamentals of Instructing'},{code:'ATM',name:'Airline Transport Pilot'},{code:'UAG',name:'Remote Pilot · Part 107'},{code:'SPA',name:'Sport Pilot · Airplane'},{code:'ADX',name:'Aircraft Dispatcher'},{code:'AGI',name:'Advanced Ground Instructor'},{code:'PRH',name:'Private Pilot · Helicopter'},{code:'PSTAR',name:'Canada · PSTAR'}];
 ---
-<BaseLayout title="Aviation Sample Question Collection | PilotDesk" description="Browse 574 FAA sample questions and a separate 185-question Canadian PSTAR collection, with original PDF references." canonical="/faa-sample-questions.html">
-<div class="sample-library">
-<header><a href="/flight-training.html">← Learn</a><p class="eyebrow">AVIATION / SAMPLE COLLECTION</p><h1>Questions worth discussing.</h1><p class="intro">574 FAA samples and 185 Canadian PSTAR questions, kept separate by jurisdiction. Bring the ones you’re unsure about to your instructor, and follow the source when you need the full context.</p></header>
-<aside class="source-note"><strong>Reference collection · not scored</strong><p>The FAA samples were published August 10, 2021; the Canadian PSTAR guide is from December 2022. These are not complete current exam banks. No answer keys are included; this collection does not grade responses or affect your readiness score.</p><p>Text was transcribed from scanned PDFs and may contain transcription errors. Check the original PDF, including any referenced figures, and current guidance for the applicable country before relying on an item. Source codes are reproduced as published and may differ from current ACS codes.</p><a href="/written-prep.html">For questions with answers and explanations, use written practice →</a></aside>
-<nav class="track-links" aria-label="Question collections">{tracks.map(t=><a href={'#'+t.code}>{t.name}<span>{questions.filter(q=>q.track===t.code).length} questions ↗</span></a>)}</nav>
-<div class="sample-search" hidden><label for="sample-query">Find a question</label><input id="sample-query" type="search" placeholder="Search a subject, phrase, or source code"/><p id="sample-results" role="status" aria-live="polite"></p></div>
-{tracks.map(t=><section class="sample-track" id={t.code} aria-labelledby={'title-'+t.code}><div class="track-heading"><h2 id={'title-'+t.code}>{t.name}</h2><span>{t.code} · {questions.filter(q=>q.track===t.code).length} samples</span></div>{['SPA','ADX','AGI','PRH'].includes(t.code) && <p class="sample-source">Additional distinct samples only. Questions already present in another collection are omitted; original FAA question numbers are retained.</p>}{t.code==='SPA' && <aside class="source-note"><strong>Historical Sport Pilot samples</strong><p>These 2021 questions may reflect earlier Sport Pilot rules. Check current FAA requirements before relying on regulatory statements.</p></aside>}{t.code==='PSTAR' && <aside class="source-note"><strong>Canadian rules · separate from FAA practice</strong><p>{attribution}</p><p>TP11919E permits accurate reproduction with full acknowledgment. These questions concern Canadian regulations and must not be used as United States regulatory answers. Source question 7.07 was intentionally removed; original numbering is retained.</p></aside>}{questions.filter(q=>q.track===t.code).map(q=><details class="sample-question" id={q.id}><summary><span class="sample-number">{q.source_question_number.toString().padStart(2,'0')}</span><span>{q.question}</span></summary><div class="sample-answer"><ol type={t.code==='PSTAR'?'1':'A'}>{Object.values(q.choices).map(choice=><li>{choice}</li>)}</ol><p class="sample-source">{t.code==='PSTAR' ? 'Canadian reference: '+q.source_reference : 'Published code: '+q.source_mapping} · PDF page {q.source_pdf_page}{'requires_figure_review' in q && q.requires_figure_review && ' · Figure/reference required'}</p><a href={q.source_url+'#page='+q.source_pdf_page} target="_blank" rel="noopener">View original {t.code==='PSTAR'?'Transport Canada':'FAA'} question &amp; references (PDF, new tab) ↗</a>{'review_flags' in q && q.review_flags?.length>0 && <p class="source-note"><strong>Source issue</strong>: {q.review_flags.join('; ')}. Choices are reproduced as published.</p>}<p class="sample-unkeyed">No answer key supplied by the source.</p></div></details>)}</section>)}
-<nav class="sample-footer" aria-label="FAA study references"><a href="https://www.faa.gov/training_testing/testing/acs">Current FAA certification standards ↗</a><a href="https://www.faa.gov/training_testing/testing/supplements">FAA testing supplements ↗</a><a href="https://www.faa.gov/regulations_policies/handbooks_manuals/aviation/phak">Pilot’s Handbook of Aeronautical Knowledge ↗</a></nav>
-</div>
-<script>
-const search=document.querySelector<HTMLInputElement>('#sample-query');
-const questions=[...document.querySelectorAll<HTMLDetailsElement>('.sample-question')];
-const status=document.querySelector('#sample-results');
-if(search){search.parentElement!.hidden=false;search.addEventListener('input',()=>{const query=search.value.trim().toLocaleLowerCase();let count=0;for(const item of questions){item.hidden=!item.textContent!.toLocaleLowerCase().includes(query);if(!item.hidden)count++;}for(const section of document.querySelectorAll<HTMLElement>('.sample-track'))section.hidden=![...section.querySelectorAll<HTMLDetailsElement>('.sample-question')].some(item=>!item.hidden);status!.textContent=query?`${count} questions found` : '';});}
-</script>
-<style>
-.sample-library{max-width:1040px;margin:40px auto 72px}.sample-library header{max-width:760px}.sample-library h1{font-size:clamp(30px,5vw,48px);line-height:1.12;margin:14px 0}.intro{font-size:18px;color:#b9bec5;line-height:1.65}.source-note{margin:28px 0;padding:22px;border:1px solid #343a40;border-radius:14px;background:#111316;line-height:1.6}.source-note p{color:#b9bec5;font-size:14px;margin:10px 0}.sample-library a{color:#d7e8e2}.track-links{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0}.track-links a{padding:16px;border:1px solid #30353b;border-radius:10px;text-decoration:none;font-weight:600}.track-links span{display:block;font-size:12px;color:#a8afb7;margin-top:8px}.sample-search{margin:26px 0}.sample-search label{display:block;margin-bottom:8px}.sample-search input{width:100%;min-height:46px;padding:12px;background:#101215;color:#fff;border:1px solid #454b53;border-radius:8px}.sample-search p{min-height:20px;color:#b9bec5;font-size:14px}.sample-track{scroll-margin-top:110px;margin:36px 0}.track-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid #3c4148;padding-bottom:14px}.track-heading h2{font-size:24px;margin:0}.track-heading>span{font-size:12px;color:#a8afb7}.sample-question{border-bottom:1px solid #2d3239;scroll-margin-top:110px}.sample-question summary{cursor:pointer;padding:20px 6px;display:flex;gap:16px;line-height:1.55;font-weight:500}.sample-question summary::after{content:'+';margin-left:auto;flex-shrink:0;color:#b9bec5}.sample-question[open] summary::after{content:'−'}.sample-number{font-size:12px;color:#a8afb7;padding-top:3px;min-width:23px}.sample-answer{padding:0 28px 22px 45px;line-height:1.65}.sample-answer li{padding:5px 0 5px 8px}.sample-source,.sample-unkeyed{font-size:12px;color:#a8afb7}.sample-footer{display:flex;flex-wrap:wrap;gap:18px;font-size:14px;border-top:1px solid #30353b;padding-top:24px}.sample-library :focus-visible{outline:2px solid #b4d8c8;outline-offset:4px}.track-links a:hover{background:#181c20;border-color:#69716f}@media(max-width:600px){.sample-library{margin-top:24px}.track-links{grid-template-columns:repeat(2,1fr)}.source-note{padding:16px}.sample-answer{padding-left:28px;padding-right:6px}.track-heading{align-items:start;flex-direction:column}.sample-question summary{gap:10px}}
-</style>
+<BaseLayout
+  title="FAA & PSTAR Study Sources | PilotDesk"
+  description="Find the official FAA sample questions and Transport Canada PSTAR study guide, with notes on using older sample material alongside current standards."
+  canonical="/faa-sample-questions.html"
+  robots="noindex,follow"
+>
+  <article class="sample-sources">
+    <p class="eyebrow">Written exam study</p>
+    <h1>Study from the source.</h1>
+    <p class="sample-intro">Use the official question documents for the wording, figures, and current publication notes. The FAA and Transport Canada materials cover different certificates and rules, so keep the two jurisdictions separate.</p>
+
+    <section aria-labelledby="faa-heading">
+      <h2 id="faa-heading">United States · FAA</h2>
+      <p>The FAA’s sample question PDFs are useful for seeing the style and subject areas of written exams. Some documents are older and may use standards or references that have since changed. Check the current Airman Certification Standards (ACS) and the document’s publication date as you study.</p>
+      <ul>
+        <li><a href="https://www.faa.gov/training_testing/testing/test_questions" rel="noopener">FAA sample knowledge test questions ↗</a></li>
+        <li><a href="https://www.faa.gov/training_testing/testing/acs" rel="noopener">Current FAA Airman Certification Standards ↗</a></li>
+        <li><a href="https://www.faa.gov/training_testing/testing/supplements" rel="noopener">FAA testing supplements and figures ↗</a></li>
+      </ul>
+      <p>For practice that includes answers and explanations, go to <a href="/written-prep.html">PilotDesk Written Prep</a>.</p>
+    </section>
+
+    <section aria-labelledby="canada-heading">
+      <h2 id="canada-heading">Canada · PSTAR</h2>
+      <p>PSTAR is Transport Canada’s student pilot permit knowledge requirement. Use Transport Canada’s current study guide and confirm the current rules in Canadian source material. FAA answers and standards do not apply to Canadian questions.</p>
+      <ul>
+        <li><a href="https://tc.canada.ca/en/aviation/publications/student-pilot-permit-private-pilot-licence-foreign-military-applicants-aviation-regulations-tp-11919" rel="noopener">Transport Canada PSTAR study guide, TP 11919 ↗</a></li>
+        <li><a href="https://tc.canada.ca/en/aviation/publications" rel="noopener">Transport Canada aviation publications ↗</a></li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="study-heading">
+      <h2 id="study-heading">A practical way to use sample questions</h2>
+      <ol>
+        <li>Try the question before looking up the answer.</li>
+        <li>Find the rule, chart, or explanation in the current official source.</li>
+        <li>Check the question’s date and any referenced figure; do not memorize an answer whose source or assumptions you cannot confirm.</li>
+        <li>Ask your instructor about wording that conflicts with current material.</li>
+      </ol>
+      <p>Sample questions help with exam preparation. They do not replace instruction, current regulations, aircraft documents, or approved operational information.</p>
+    </section>
+  </article>
+  <style>
+    .sample-sources{width:min(780px,calc(100% - 2rem));max-width:none;margin:44px auto 80px;line-height:1.7;color:#d5d8dc}
+    .sample-sources h1{font-size:clamp(2.2rem,6vw,4rem);line-height:1.05;letter-spacing:-.04em;margin:.5rem 0 1rem;color:#f5f6f7}
+    .sample-sources h2{margin:2.5rem 0 .6rem;font-size:1.4rem;color:#f5f6f7}
+    .sample-sources p,.sample-sources li{max-width:70ch}
+    .sample-sources li{padding:.3rem 0}
+    .sample-sources a{color:#c5e0d5;text-underline-offset:3px}
+    .sample-intro{font-size:1.2rem;color:#bfc5ca}
+    .sample-sources :focus-visible{outline:2px solid #b4d8c8;outline-offset:4px}
+  </style>
 </BaseLayout>

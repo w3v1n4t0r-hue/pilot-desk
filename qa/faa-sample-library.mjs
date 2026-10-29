@@ -7,6 +7,8 @@ const ads = fs.readFileSync('assets/ads.js', 'utf8');
 
 assert.match(page, /robots="noindex,follow"/);
 assert.match(page, /FAA sample knowledge test questions/);
+assert.match(page, /href="https:\/\/www\.faa\.gov\/training_testing"/);
+assert.doesNotMatch(page, /href="https:\/\/www\.faa\.gov\/training_testing\/testing\/test_questions\/?"/);
 assert.match(page, /Transport Canada PSTAR study guide, TP 11919/);
 assert.match(page, /Current FAA Airman Certification Standards/);
 assert.match(page, /PilotDesk Written Prep/);

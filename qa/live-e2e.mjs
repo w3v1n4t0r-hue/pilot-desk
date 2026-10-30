@@ -1,14 +1,18 @@
-import { chromium } from 'playwright';
+import {createRequire} from 'node:module';
+import {readFileSync} from 'node:fs';
+const {chromium}=createRequire(import.meta.url)(process.env.PILOTDESK_PLAYWRIGHT||'playwright');
 
 const base=(process.env.PILOTDESK_BASE_URL||'https://www.pilot-desk.com').replace(/\/$/,'');
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch({headless:true,...(process.env.PILOTDESK_BROWSER_PATH?{executablePath:process.env.PILOTDESK_BROWSER_PATH}:{})});
+const hardTimeout=setTimeout(()=>{console.error('Live E2E exceeded its ten-minute deadline.');process.exit(1)},600000);
+hardTimeout.unref();
 const makeDesktop=async()=>{const p=await browser.newPage({viewport:{width:1365,height:900}});p.setDefaultTimeout(15000);p.setDefaultNavigationTimeout(30000);return p};
 let desktop=await makeDesktop();
 const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true});
 mobile.setDefaultTimeout(15000);mobile.setDefaultNavigationTimeout(30000);
 const failures=[];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const check=async(name,fn)=>{try{await fn();console.log('PASS',name)}catch(e){failures.push(`${name}: ${e.message}`);console.error('FAIL',name,e.message)}};
+const check=async(name,fn)=>{if(process.env.PILOTDESK_E2E_MATCH&&!new RegExp(process.env.PILOTDESK_E2E_MATCH).test(name))return;try{await fn();console.log('PASS',name)}catch(e){failures.push(`${name}: ${e.message}`);console.error('FAIL',name,e.message)}};
 
 async function gotoRetry(page,path,{attempts=3,timeout=30000}={}){
   let last;
@@ -36,27 +40,28 @@ async function requestRetry(path,{attempts=2,timeout=15000,maxRedirects=20}={}){
   throw last||new Error(`Request failed for ${path}`);
 }
 
-await check('homepage loads and command-center search is usable',async()=>{
+await check('homepage search finds and opens the private pilot study hub',async()=>{
   await gotoRetry(desktop,'/');
   await desktop.waitForSelector('.brand',{state:'visible',timeout:12000});
-  await desktop.waitForSelector('.pd-hero-search input',{state:'visible',timeout:15000});
-  await desktop.waitForSelector('[data-pd-global-search]',{state:'attached',timeout:15000});
+  const input=desktop.getByRole('searchbox',{name:'Search PilotDesk'});
+  await input.waitFor({state:'visible'});
   if(!(await desktop.locator('a[href="/weather.html"]').count()))throw new Error('Weather link missing');
-  const input=desktop.locator('.pd-hero-search input');
   await input.fill('private pilot');
+  await desktop.locator('.pd-search-results a[href="/training/private-pilot.html"]').waitFor({state:'visible'});
   await input.press('Enter');
-  await desktop.waitForSelector('#pdSearchDialog[open]',{timeout:10000});
-  if(!(await desktop.locator('#pdSearchDialog a[href="/training/private-pilot.html"]').count()))throw new Error('Private pilot search result missing');
-  await desktop.locator('#pdSearchDialog button[aria-label="Close search"]').click();
+  await desktop.waitForURL('**/training/private-pilot.html');
+  if(!(await desktop.locator('h1').innerText()).includes('Private'))throw new Error('Search did not open the private pilot study hub');
 });
 
 await check('mobile navigation opens and exposes core destinations',async()=>{
   await gotoRetry(mobile,'/');
-  await mobile.locator('[data-menu]').click();
-  await mobile.waitForFunction(()=>document.querySelector('header.topbar nav')?.classList.contains('open'),{timeout:5000});
-  for(const href of ['/planner.html','/weather.html','/guides.html']){
-    if(!(await mobile.locator(`header.topbar nav a[href="${href}"]`).count()))throw new Error(`mobile nav missing ${href}`);
+  await mobile.getByRole('button',{name:'Open navigation',exact:true}).click();
+  for(const [section,href] of [['Plan','/route-planner.html'],['Weather','/weather.html'],['Learn','/guides.html']]){
+    await mobile.getByRole('button',{name:section,exact:true}).click();
+    await mobile.locator(`header.topbar nav a[href="${href}"]`).waitFor({state:'visible'});
   }
+  await mobile.locator('header.topbar nav a[href="/guides.html"]').click();
+  await mobile.waitForURL('**/guides.html');
 });
 
 await check('shared crosswind link prefills, calculates, and has one set of share controls',async()=>{
@@ -93,45 +98,53 @@ await check('weather API and UI both return a usable KGFK result',async()=>{
 
 // Start the persistence checks on a fresh renderer so a third-party/live-weather
 // browser failure cannot poison the rest of the production run.
+await desktop.close();
 desktop=await makeDesktop();
 
 await check('aircraft profile saves locally',async()=>{
   await gotoRetry(desktop,'/aircraft.html');
   await desktop.evaluate(()=>{localStorage.removeItem('pd-aircraft');localStorage.removeItem('pd-aircraft-active')});
   await desktop.reload({waitUntil:'domcontentloaded',timeout:30000});
-  await desktop.waitForFunction(()=>document.querySelector('#aircraftForm')&&document.querySelector('#aircraftList'),{timeout:10000});
+  await desktop.locator('#aircraftList .pd-empty-state').waitFor({state:'visible'});
   await desktop.locator('[name="name"]').fill('PilotDesk E2E Test');
   await desktop.locator('[name="type"]').fill('TEST');
   await desktop.locator('[name="fuelBurn"]').fill('10');
-  await desktop.locator('#aircraftForm').evaluate(form=>form.requestSubmit());
+  await desktop.getByRole('button',{name:'Save aircraft',exact:true}).click();
   await desktop.waitForFunction(()=>document.querySelector('#aircraftList')?.textContent?.includes('PilotDesk E2E Test'),{timeout:8000});
   const saved=await desktop.evaluate(()=>JSON.parse(localStorage.getItem('pd-aircraft')||'[]'));
   if(!Array.isArray(saved)||!saved.some(x=>x?.name==='PilotDesk E2E Test'))throw new Error('profile did not persist in localStorage');
+  await desktop.reload({waitUntil:'domcontentloaded'});
+  await desktop.locator('#aircraftList h3').filter({hasText:'PilotDesk E2E Test'}).waitFor();
 });
 
 await check('weight and balance builder renders and calculates',async()=>{
   await gotoRetry(desktop,'/calculators/weight-balance-builder/',{attempts:3,timeout:30000});
-  await desktop.waitForSelector('#wbRows',{timeout:12000});
-  await desktop.waitForFunction(()=>document.querySelectorAll('.wb-data').length>0,{timeout:10000});
-  await desktop.waitForFunction(()=>{
-    const t=document.querySelector('#wbW')?.textContent?.trim();
-    return t&&t!=='—';
-  },{timeout:10000});
+  await desktop.locator('#wbAdvancedStations > summary').click();
+  await desktop.locator('#wbRows .wb-data').first().waitFor({state:'visible'});
+  // Explicit synthetic arithmetic fixture, never an approved aircraft profile.
+  const loading=[[1500,1500,40],[180,180,37],[0,0,80],[120,60,100],[0,0,50]];
+  for(const [i,values] of loading.entries())for(const [j,key] of ['dep','ldg','arm'].entries())
+    await desktop.locator('#wbRows .wb-data').nth(i).locator(`[data-k="${key}"]`).fill(String(values[j]));
+  await desktop.waitForFunction(()=>document.querySelector('#wbDepW')?.textContent?.includes('1,800'));
+  const cg=await desktop.locator('#wbDepCG').innerText();
+  if(!cg.includes('43.70'))throw new Error('Unexpected departure CG for synthetic fixture: '+cg);
 });
 
 await check('every canonical sitemap URL is live and structurally usable',async()=>{
   const mapResponse=await requestRetry('/sitemap.xml');
   const xml=await mapResponse.text();
   const urls=[...xml.matchAll(/<loc>(https:\/\/www\.pilot-desk\.com[^<]+)<\/loc>/g)].map(m=>m[1].replaceAll('&amp;','&'));
-  if(urls.length<160)throw new Error(`only ${urls.length} canonical URLs found`);
+  const expected=[...readFileSync(new URL('../sitemap.xml',import.meta.url),'utf8').matchAll(/<loc>(https:\/\/www\.pilot-desk\.com[^<]+)<\/loc>/g)].map(m=>m[1].replaceAll('&amp;','&'));
+  const missing=expected.filter(u=>!urls.includes(u)),unexpected=urls.filter(u=>!expected.includes(u));
+  if(missing.length||unexpected.length)throw new Error(`Sitemap differs from committed public routes: missing ${missing.join(', ')||'none'}; unexpected ${unexpected.join(', ')||'none'}`);
   if(new Set(urls).size!==urls.length)throw new Error('duplicate canonical URLs in sitemap');
   if(urls.some(u=>u.includes('pilot-seo-priority')))throw new Error('retired SEO-named guide remains in sitemap');
-  if(!urls.includes(base+'/guides/popular-aviation-tools.html'))throw new Error('popular aviation tools page missing from sitemap');
+  if(urls.some(u=>u.endsWith('/guides/popular-aviation-tools.html')||u.endsWith('/faa-sample-questions.html')))throw new Error('noindex reference/directory page remains in sitemap');
   const issues=[];
   const inspect=async url=>{
     let r,last;
     for(let n=0;n<2;n++){
-      try{r=await desktop.request.get(url,{timeout:12000,maxRedirects:20});if(r.ok())break;last=new Error(`HTTP ${r.status()}`)}catch(e){last=e}
+      try{r=await desktop.request.get(base+new URL(url).pathname,{timeout:12000,maxRedirects:20});if(r.ok())break;last=new Error(`HTTP ${r.status()}`)}catch(e){last=e}
       await sleep(250*(n+1));
     }
     if(!r?.ok()){issues.push(`${url} ${last?.message||'request failed'}`);return}
@@ -142,7 +155,8 @@ await check('every canonical sitemap URL is live and structurally usable',async(
       if(!/<title>[^<]+<\/title>/i.test(body))issues.push(`${url} missing title`);
       if(!/<h1(?:\s|>)/i.test(body))issues.push(`${url} missing H1`);
       const canonical=(body.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)||body.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i)||[])[1];
-      if(!canonical||!canonical.startsWith(base+'/'))issues.push(`${url} missing valid PilotDesk canonical`);
+      if(canonical!==url)issues.push(`${url} missing matching canonical`);
+      if(/<meta\b(?=[^>]*name=["']robots["'])(?=[^>]*content=["'][^"']*\bnoindex\b)[^>]*>/i.test(body))issues.push(`${url} is noindex but listed in sitemap`);
     }
   };
   const concurrency=18;
@@ -171,6 +185,7 @@ await check('popular aviation tools page has a self canonical',async()=>{
 });
 
 await browser.close();
+clearTimeout(hardTimeout);
 if(failures.length){
   console.error(`\n${failures.length} live E2E failure(s):`);
   failures.forEach(x=>console.error(' - '+x));

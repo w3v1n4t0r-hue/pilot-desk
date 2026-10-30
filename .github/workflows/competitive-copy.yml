@@ -23,6 +23,8 @@ on:
       - 'aircraft.html'
       - 'flights.html'
       - 'assets/aircraft-v2.js'
+      - 'assets/aircraft-training.js'
+      - 'qa/aircraft-profile-browser.mjs'
       - 'assets/flights.js'
       - 'assets/global-nav.js'
       - 'assets/app-bootstrap.js'
@@ -68,6 +70,7 @@ jobs:
           SITE_URL=http://127.0.0.1:4173 LEARN_SHOTS=qa-artifacts/competitive-copy/learn node qa/learn-page-turn-browser.mjs
           node qa/tool-startup-browser.mjs
           node qa/navigation-overlap-browser.mjs
+          node qa/aircraft-profile-browser.mjs
       - name: Check airport information panel
         env:
           PILOTDESK_TEST_ROOT: dist

@@ -63,6 +63,14 @@ try{
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`No page overflow: ${route} at ${width}px`);
   }
  }
+ await page.route(/\/assets\/(?:navigation-search|search-intelligence)(?:\.[\da-f]+)?\.js$/,async route=>{
+  await new Promise(resolve=>setTimeout(resolve,1600));
+  await route.fallback();
+ });
+ await page.setViewportSize({width:1440,height:900});
+ await page.goto('https://pd.test/');
+ await page.getByRole('searchbox',{name:'Search PilotDesk'}).fill('private pilot');
+ await page.locator('.pd-search-results a[href="/training/private-pilot.html"]').waitFor({state:'visible',timeout:5000});
  assert.deepEqual(errors,[]);
  console.log('PASS navigation/search overlap checks on home, weather and calculator pages at 320–1440px.');
 }finally{await browser.close()}

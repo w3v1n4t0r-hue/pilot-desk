@@ -10,9 +10,10 @@ function loadDataScript(path,ready){
  return new Promise(resolve=>{
   if(ready())return resolve(true);
   const existing=[...document.scripts].find(s=>{try{return new URL(s.src,location.href).pathname===path}catch{return false}});
-  const finish=()=>resolve(ready());
-  if(existing){existing.addEventListener('load',finish,{once:true});existing.addEventListener('error',finish,{once:true});setTimeout(finish,900);return}
-  const script=document.createElement('script');script.src=path;script.async=true;script.addEventListener('load',finish,{once:true});script.addEventListener('error',finish,{once:true});document.head.appendChild(script);setTimeout(finish,900);
+  let timer;
+  const finish=()=>{clearTimeout(timer);resolve(ready())};
+  if(existing){existing.addEventListener('load',finish,{once:true});existing.addEventListener('error',finish,{once:true});timer=setTimeout(finish,10000);return}
+  const script=document.createElement('script');script.src=path;script.async=true;script.addEventListener('load',finish,{once:true});script.addEventListener('error',finish,{once:true});document.head.appendChild(script);timer=setTimeout(finish,10000);
  });
 }
 async function ensureNavigationCore(){
@@ -32,6 +33,7 @@ async function ensureSearchData(){
  ]);
  await searchPromise;
  searchable=searchable.length?searchable:(Array.isArray(window.PILOTDESK_NAV_SEARCH)?window.PILOTDESK_NAV_SEARCH:[]);
+ if(!searchable.length||!window.PilotDeskSearch)searchPromise=null;
  return searchable;
 }
 function ensureStyle(href,key){if([...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>{try{return new URL(l.href,location.href).pathname===href}catch{return false}}))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset[key]='1';document.head.appendChild(l)}
@@ -49,6 +51,7 @@ function navMarkup(path){return sections.map(s=>`<div class="pd-nav-item" data-p
 function searchLengthBucket(q){const n=String(q||'').trim().length;return n<5?'short':n<14?'medium':'long'}
 function renderSearchResults(host,q){
  const query=String(q||'').trim();
+ if(query&&(!searchable.length||!window.PilotDeskSearch)){host.innerHTML='<span class="pd-search-empty">Search is temporarily unavailable. Try again.</span>';host.hidden=false;return}
  if(!query){
   const suggestions=window.PilotDeskSearch?.suggestions||[];
   if(!suggestions.length){host.hidden=true;host.innerHTML='';return}

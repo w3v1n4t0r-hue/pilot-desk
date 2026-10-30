@@ -55,9 +55,9 @@ try{
             const nav=document.querySelector('header.topbar nav.pd-main-nav');
             const menu=document.querySelector('header.topbar [data-menu]');
             const rect=nav.getBoundingClientRect();
-            return {display:getComputedStyle(nav).display,position:getComputedStyle(nav).position,left:rect.left,width:rect.width,viewportWidth:document.documentElement.clientWidth,expanded:menu.getAttribute('aria-expanded'),label:menu.getAttribute('aria-label')};
+            return {display:getComputedStyle(nav).display,position:getComputedStyle(nav).position,left:rect.left,right:rect.right,top:rect.top,bottom:rect.bottom,headerBottom:nav.closest('header').getBoundingClientRect().bottom,viewportHeight:innerHeight,width:rect.width,viewportWidth:document.documentElement.clientWidth,expanded:menu.getAttribute('aria-expanded'),label:menu.getAttribute('aria-label')};
           });
-          check(opened.display!=='none'&&opened.position==='fixed'&&opened.left>=0&&opened.left<=16&&opened.width>=opened.viewportWidth-34,`mobile navigation did not open as a full-width or near-full-width fixed panel on ${route} at ${width}px (${JSON.stringify(opened)})`);
+          check(opened.display!=='none'&&['absolute','fixed'].includes(opened.position)&&opened.left>=0&&opened.left<=16&&opened.right<=opened.viewportWidth+1&&opened.top>=opened.headerBottom-1&&opened.bottom<=opened.viewportHeight+1&&opened.width>=opened.viewportWidth-34,`mobile navigation did not open as a viewport-contained panel below the header on ${route} at ${width}px (${JSON.stringify(opened)})`);
           check(opened.expanded==='true'&&opened.label==='Close navigation',`mobile menu state or accessible label did not update on ${route} at ${width}px`);
           if(route==='/'&&width===375){
             const group=page.locator('header.topbar .pd-nav-item').first();

@@ -25,11 +25,15 @@ export function symbolSvg(a){
  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">'+base+shape+'</svg>';
 }
 export function visibleAirports(records,bounds,zoom,ids=['aero']){
- if(zoom<5||!ids.length)return [];
+ if(zoom<7||!ids.length)return [];
  const selected=new Set(ids);
  return records.filter(a=>{
   if(a.lat<bounds.south||a.lat>bounds.north||a.lon<bounds.west||a.lon>bounds.east)return false;
   const category=a.use==='PR'?'privateAP':a.type==='H'?'heli':a.type==='B'?'seaplane':a.type==='A'?'airports':'other';
-  return (selected.has('aero')||selected.has('aero/'+category))&&(zoom>=10||a.use!=='PR'&&a.type==='A');
+  if(!(selected.has('aero')||selected.has('aero/'+category)))return false;
+  if(zoom>=10)return true;
+  if(a.use==='PR'||a.type!=='A')return false;
+  if(zoom<9)return a.tower&&a.length>=6000;
+  return a.tower||a.length>=4500;
  }).sort((a,b)=>Number(b.tower)-Number(a.tower)||b.length-a.length||a.id.localeCompare(b.id));
 }

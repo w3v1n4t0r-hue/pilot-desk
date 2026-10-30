@@ -10,9 +10,10 @@ function loadDataScript(path,ready){
  return new Promise(resolve=>{
   if(ready())return resolve(true);
   const existing=[...document.scripts].find(s=>{try{return new URL(s.src,location.href).pathname===path}catch{return false}});
-  const finish=()=>resolve(ready());
-  if(existing){existing.addEventListener('load',finish,{once:true});existing.addEventListener('error',finish,{once:true});setTimeout(finish,900);return}
-  const script=document.createElement('script');script.src=path;script.async=true;script.addEventListener('load',finish,{once:true});script.addEventListener('error',finish,{once:true});document.head.appendChild(script);setTimeout(finish,900);
+  let timer;
+  const finish=()=>{clearTimeout(timer);resolve(ready())};
+  if(existing){existing.addEventListener('load',finish,{once:true});existing.addEventListener('error',finish,{once:true});timer=setTimeout(finish,10000);return}
+  const script=document.createElement('script');script.src=path;script.async=true;script.addEventListener('load',finish,{once:true});script.addEventListener('error',finish,{once:true});document.head.appendChild(script);timer=setTimeout(finish,10000);
  });
 }
 async function ensureNavigationCore(){
@@ -32,6 +33,7 @@ async function ensureSearchData(){
  ]);
  await searchPromise;
  searchable=searchable.length?searchable:(Array.isArray(window.PILOTDESK_NAV_SEARCH)?window.PILOTDESK_NAV_SEARCH:[]);
+ if(!searchable.length||!window.PilotDeskSearch)searchPromise=null;
  return searchable;
 }
 function ensureStyle(href,key){if([...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>{try{return new URL(l.href,location.href).pathname===href}catch{return false}}))return;const l=document.createElement('link');l.rel='stylesheet';l.href=href;l.dataset[key]='1';document.head.appendChild(l)}
@@ -49,6 +51,7 @@ function navMarkup(path){return sections.map(s=>`<div class="pd-nav-item" data-p
 function searchLengthBucket(q){const n=String(q||'').trim().length;return n<5?'short':n<14?'medium':'long'}
 function renderSearchResults(host,q){
  const query=String(q||'').trim();
+ if(query&&(!searchable.length||!window.PilotDeskSearch)){host.innerHTML='<span class="pd-search-empty">Search is temporarily unavailable. Try again.</span>';host.hidden=false;return}
  if(!query){
   const suggestions=window.PilotDeskSearch?.suggestions||[];
   if(!suggestions.length){host.hidden=true;host.innerHTML='';return}
@@ -60,13 +63,14 @@ function renderSearchResults(host,q){
  host.hidden=false;
 }
 function closeMenus(header){header.querySelectorAll('[data-pd-nav-item].open').forEach(x=>{x.classList.remove('open');x.querySelector('button')?.setAttribute('aria-expanded','false')})}
-function setMobileNavOpen(nav,menu,open){nav.classList.toggle('open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')}
+function setMobileNavOpen(nav,menu,open){if(open)nav.style.setProperty('--pd-nav-top',Math.max(0,nav.closest('header').getBoundingClientRect().bottom)+'px');nav.classList.toggle('open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')}
 function bindHeader(header){
  const astroShell=header.hasAttribute('data-pd-astro-shell');
  const nav=header.querySelector(':scope > nav')||document.createElement('nav');
  nav.className='pd-main-nav';nav.id='pdMainNav';
  nav.innerHTML=navMarkup(location.pathname);nav.setAttribute('aria-label','Main navigation');
  if(!nav.parentNode)header.appendChild(nav);
+ new ResizeObserver(()=>{if(nav.classList.contains('open'))nav.style.setProperty('--pd-nav-top',Math.max(0,header.getBoundingClientRect().bottom)+'px')}).observe(header);
  let menu=header.querySelector('[data-menu]');
  if(!menu){menu=document.createElement('button');menu.type='button';menu.className='menu-btn';menu.dataset.menu='';menu.textContent='☰';header.insertBefore(menu,nav)}
  menu.setAttribute('aria-controls','pdMainNav');menu.setAttribute('aria-label','Open navigation');menu.setAttribute('aria-expanded','false');

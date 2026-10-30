@@ -53,13 +53,6 @@ const corePages={
     training:'For flight training, choose an airport and work outward from it. Decode the weather, calculate a likely crosswind for the active runway, note field elevation for pressure or density-altitude work, and identify which procedures or airspace features deserve a closer look. That turns an airport search into a realistic planning exercise instead of an isolated database query.',
     links:'<a href="/weather.html">Aviation weather</a> · <a href="/procedures.html">FAA procedures</a> · <a href="/calculators/crosswind/">Crosswind calculator</a>'
   },
-  'weather.html':{
-    heading:'Use aviation weather as a sequence of questions',subject:'a weather review',
-    intro:'A weather page is most useful when it helps answer what conditions are now, what is forecast to change, and what those conditions mean for the planned route, airport and aircraft. Start with observation time and location, then move from wind and visibility to ceilings, pressure, temperature and forecast change groups instead of reading one number in isolation.',
-    checks:['Confirm the station and observation time before interpreting a METAR.','Separate current observations from forecast TAF periods and change groups.','Connect wind to runway orientation and performance rather than reading speed alone.','Use official weather sources and the full preflight picture for operational decisions.'],
-    training:'A strong study routine is to decode the raw report before looking at the plain-language result. Then compare your interpretation with the decoder, identify the flight category, calculate any useful crosswind or density-altitude values, and explain what would make the weather better or worse. This builds the pattern recognition needed for practical planning.',
-    links:'<a href="/metar-decoder.html">METAR decoder</a> · <a href="/guides/metar-taf.html">How to read METARs and TAFs</a> · <a href="/guides/aviation-weather-reference.html">Weather reference</a>'
-  },
   'metar-decoder.html':{
     heading:'Decode the report, then interpret the flight picture',subject:'a METAR decode',
     intro:'A METAR decoder is a learning and cross-check tool. The important skill is understanding how station, time, wind, visibility, weather, sky condition, temperature, dew point and altimeter groups fit together. Decoding each token is only the first step; the next step is deciding which pieces matter for the airport, runway, aircraft and phase of flight you are planning.',

@@ -39,16 +39,21 @@ export function airportOverlay(map,L){
  function weatherChange(event){const p=event.layer?.feature?.properties||{},kind=event.layer?.options?.icon?.options?.className||'';if(!weatherFrame&&(/pd-metar-map|pd-flight-category/.test(kind)||p.fltCat||p.fltcat))weatherFrame=requestAnimationFrame(()=>{weatherFrame=0;refreshWeather()})}
  async function update(){
   const token=++revision;
-  if((!ids.length&&!weatherStations().size)||map.getZoom()<5){group.clearLayers();markers.clear();setStatus('');return}
+  const zoom=map.getZoom();
+  if((!ids.length&&!weatherStations().size)||zoom<7){group.clearLayers();markers.clear();setStatus('');return}
   try{
    const source=await data();if(token!==revision)return;
    if(!records.size)for(const a of source.records)records.set(a.id,a);
    const b=map.getBounds(),west=b.getWest(),east=b.getEast();
-   const candidates=visibleAirports(source.records,{south:b.getSouth(),north:b.getNorth(),west,east},map.getZoom(),ids),visible=candidates.slice(0,350),wanted=new Set(visible.map(a=>a.id));
+   const candidates=visibleAirports(source.records,{south:b.getSouth(),north:b.getNorth(),west,east},zoom,ids);
+   const limit=zoom<9?60:zoom<10?120:zoom<12?220:350,visible=candidates.slice(0,limit),wanted=new Set(visible.map(a=>a.id)),detail=zoom>=10;
    for(const [id,marker] of markers)if(!wanted.has(id)){group.removeLayer(marker);markers.delete(id)}
-   for(const a of visible){if(markers.has(a.id))continue;
-    let icon=icons.get(a.id);if(!icon){icon=L.divIcon({className:'pd-airport-marker',html:symbolSvg(a),iconSize:[44,44],iconAnchor:[22,22]});icons.set(a.id,icon);if(icons.size>700)icons.delete(icons.keys().next().value)}
+   for(const a of visible){
+    const iconKey=detail?'detail:'+a.id:'compact:'+(a.tower?'tower':'other');let icon=icons.get(iconKey);
+    if(!icon){const color=a.tower?'#39b8f2':'#df40d9';icon=detail?L.divIcon({className:'pd-airport-marker',html:symbolSvg(a),iconSize:[44,44],iconAnchor:[22,22]}):L.divIcon({className:'pd-airport-marker pd-airport-marker--compact',html:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" fill="'+color+'" stroke="#111820" stroke-width="2"/></svg>',iconSize:[14,14],iconAnchor:[7,7]});icons.set(iconKey,icon);if(icons.size>700)icons.delete(icons.keys().next().value)}
+    const existing=markers.get(a.id);if(existing){if(existing._pdIconMode!==(detail?'detail':'compact')){existing.setIcon(icon);existing._pdIconMode=detail?'detail':'compact'}continue}
     const marker=L.marker([a.lat,a.lon],{icon,pane:'pdAirportPane',bubblingMouseEvents:false,title:a.id+' · '+(a.tower?'Towered':'Non-towered')+' airport',alt:a.id+' airport information',riseOnHover:false});
+    marker._pdIconMode=detail?'detail':'compact';
     marker.on('click',event=>{if(window.PilotDeskRoutePlanner?.isPlotting?.()||document.getElementById('rpMeasure')?.getAttribute('aria-pressed')==='true'){map.fire('click',{latlng:marker.getLatLng(),originalEvent:event.originalEvent});return}import('./airport-panel.mjs').then(m=>m.openAirport(a.id)).catch(()=>setStatus('Airport information unavailable. Try again.'))});
     group.addLayer(marker);markers.set(a.id,marker);
     marker.getElement()?.addEventListener('keydown',event=>{if(event.key!=='Enter'&&event.key!==' ')return;event.preventDefault();event.stopPropagation();marker.fire('click',{latlng:marker.getLatLng(),originalEvent:event})});

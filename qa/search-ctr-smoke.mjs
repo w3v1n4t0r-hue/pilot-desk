@@ -7,7 +7,7 @@ const read=p=>fs.readFileSync(p,'utf8');
 const targets=[
  ['calculators/isa-temperature/index.html','ISA Temperature Calculator | Standard Atmosphere | PilotDesk','Free ISA temperature calculator and standard-atmosphere reference for pilots.'],
  ['calculators/moment-cg/index.html','Aircraft CG Calculator | Weight × Arm, Moment &amp; CG | PilotDesk','Free aircraft CG calculator using weight × arm = moment.'],
- ['calculators/rate-of-turn/index.html','Rate 1 Turn Calculator | Turn Rate &amp; Radius | PilotDesk','Free rate 1 turn and aircraft turn-rate calculator.'],
+ ['calculators/rate-of-turn/index.html','Aircraft Turn Calculator | Rate, Radius &amp; Time | PilotDesk','Calculate coordinated turn rate, time for 360°, turn radius, and diameter from true airspeed and bank angle.'],
  ['calculators/three-degree-descent/index.html','3 Degree Descent Rate Calculator | FPM from Groundspeed | PilotDesk','Free 3 degree descent rate calculator.'],
  ['guides/pilot-math-formulas.html','Pilot Math Formulas: Aviation Formula Cheat Sheet | PilotDesk','Free pilot math formulas and aviation cheat sheet:'],
  ['guides/feathering-vs-windmilling-propeller.html','Windmilling vs Feathered Propeller: Drag Explained | PilotDesk','Why does a windmilling propeller create so much drag?'],
@@ -29,10 +29,10 @@ check(gen.includes("'isa-temperature':'ISA Temperature Calculator | Standard Atm
 check(gen.includes("'isa-temperature':'Free ISA temperature calculator and standard-atmosphere reference for pilots."),'ISA description optimization must live in calculator generator');
 for(const needle of [
   "'moment-cg':'Aircraft CG Calculator | Weight × Arm, Moment & CG | PilotDesk'",
-  "'rate-of-turn':'Rate 1 Turn Calculator | Turn Rate & Radius | PilotDesk'",
+  "'rate-of-turn':'Aircraft Turn Calculator | Rate, Radius & Time | PilotDesk'",
   "'three-degree-descent':'3 Degree Descent Rate Calculator | FPM from Groundspeed | PilotDesk'",
   "'moment-cg':'Free aircraft CG calculator using weight × arm = moment.",
-  "'rate-of-turn':'Free rate 1 turn and aircraft turn-rate calculator.",
+  "'rate-of-turn':'Calculate coordinated turn rate, time for 360°, turn radius, and diameter from true airspeed and bank angle.",
   "'three-degree-descent':'Free 3 degree descent rate calculator."
 ]) check(gen.includes(needle),'Search Console calculator optimization must live in generator: '+needle);
 

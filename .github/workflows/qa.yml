@@ -33,6 +33,8 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           find assets api qa scripts -type f \( -name '*.js' -o -name '*.mjs' \) -print0 | xargs -0 -n1 node --check
+      - name: Verify ad exclusions and delayed Pro state
+        run: node qa/ad-policy-tests.mjs
       - name: Run PilotDesk smoke checks
         run: node qa/smoke.mjs
       - name: Run QoL smoke checks

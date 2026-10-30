@@ -35,14 +35,14 @@ check(schools.includes('There is no backlink requirement')||schools.includes('do
 for(const needle of [
  "'isa-temperature':'ISA Temperature Calculator | Standard Atmosphere | PilotDesk'",
  "'moment-cg':'Aircraft CG Calculator | Weight × Arm, Moment & CG | PilotDesk'",
- "'rate-of-turn':'Rate 1 Turn Calculator | Turn Rate & Radius | PilotDesk'",
+ "'rate-of-turn':'Aircraft Turn Calculator | Rate, Radius & Time | PilotDesk'",
  "'three-degree-descent':'3 Degree Descent Rate Calculator | FPM from Groundspeed | PilotDesk'"
 ]) check(generator.includes(needle),'High-opportunity calculator title is not durable in generator: '+needle);
 
 for(const [slug,title] of [
  ['isa-temperature','ISA Temperature Calculator | Standard Atmosphere | PilotDesk'],
  ['moment-cg','Aircraft CG Calculator | Weight × Arm, Moment &amp; CG | PilotDesk'],
- ['rate-of-turn','Rate 1 Turn Calculator | Turn Rate &amp; Radius | PilotDesk'],
+ ['rate-of-turn','Aircraft Turn Calculator | Rate, Radius &amp; Time | PilotDesk'],
  ['three-degree-descent','3 Degree Descent Rate Calculator | FPM from Groundspeed | PilotDesk']
 ]){
  const h=read('calculators/'+slug+'/index.html');

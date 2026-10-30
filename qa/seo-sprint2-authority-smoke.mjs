@@ -32,7 +32,11 @@ for(const page of [
  'guides/single-engine-climb-performance.html','guides/service-ceiling-vs-absolute-ceiling.html'
 ]) check(read(page).includes('/guides/multiengine-checkride-study-guide.html'),page+': missing authority backlink to multi-engine hub');
 
-check(weather.includes('/guides/crosswind-component.html')&&weather.includes('/guides/density-altitude.html')&&weather.includes('/calculators/isa-temperature/'),'Weather page is not feeding authority into weather/performance cluster');
+check(weather.includes('/guides/aviation-weather-reference.html'),'Weather lookup must link to its weather reference');
+const weatherReference=read('guides/aviation-weather-reference.html');
+for(const href of ['/guides/crosswind-component.html','/guides/density-altitude.html','/calculators/isa-temperature/'])
+  check(weatherReference.includes(href),'Weather reference missing related explanation or tool: '+href);
+check(!weather.includes('data-pd-core-depth'),'Weather lookup must keep long-form teaching in its reference guide');
 check(cfi.includes('REFERENCE HANDOFFS')&&cfi.includes('/guides/pilot-math-formulas.html')&&cfi.includes('/guides/multiengine-checkride-study-guide.html'),'CFI referral path missing Sprint 2 study clusters');
 
 for(const path of [

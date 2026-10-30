@@ -51,6 +51,7 @@ try{
           await page.waitForFunction(()=>document.documentElement.classList.contains('pd-ready'),undefined,{timeout:15000});
           await page.locator('header.topbar [data-menu]').click();
           await page.waitForFunction(()=>document.querySelector('header.topbar nav.pd-main-nav')?.classList.contains('open'),{timeout:5000});
+          await page.locator('header.topbar nav.pd-main-nav').evaluate(nav=>Promise.all(nav.getAnimations().map(animation=>animation.finished)));
           const opened=await page.evaluate(()=>{
             const nav=document.querySelector('header.topbar nav.pd-main-nav');
             const menu=document.querySelector('header.topbar [data-menu]');

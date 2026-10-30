@@ -170,11 +170,14 @@ await check('training, long-tail guides, sources, privacy and sitemaps are live'
   for(let i=0;i<paths.length;i+=8)await Promise.all(paths.slice(i,i+8).map(p=>requestRetry(p)));
 });
 
-await check('retired SEO-named guide permanently redirects to the public guide',async()=>{
+await check('retired SEO-named guide permanently redirects to the canonical tools directory',async()=>{
   const r=await desktop.request.get(base+'/guides/pilot-seo-priority.html',{timeout:15000,maxRedirects:0});
   if(![301,308].includes(r.status()))throw new Error(`expected permanent redirect, got HTTP ${r.status()}`);
   const location=r.headers()['location']||'';
-  if(!location.includes('/guides/popular-aviation-tools.html'))throw new Error(`unexpected redirect location: ${location||'(missing)'}`);
+  if(!location||new URL(location,base).href!==base+'/tools.html')throw new Error(`unexpected redirect location: ${location||'(missing)'}`);
+  const destination=await requestRetry('/tools.html');
+  const body=await destination.text();
+  if(!/<h1(?:\s|>)/i.test(body)||!/<link\b(?=[^>]*\brel=["']canonical["'])(?=[^>]*\bhref=["']https:\/\/www\.pilot-desk\.com\/tools\.html["'])[^>]*>/i.test(body))throw new Error('tools directory is missing its heading or canonical destination');
 });
 
 await check('popular aviation tools page has a self canonical',async()=>{

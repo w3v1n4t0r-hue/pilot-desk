@@ -27,6 +27,7 @@ try{
    await page.goto('https://pd.test'+route);
    await page.locator('#pdMainNav').waitFor({state:'attached'});
    if(width<=820){
+    assert(await page.locator('.pd-search-toggle').evaluate(button=>{const r=button.getBoundingClientRect(),h=button.closest('header').getBoundingClientRect();return r.top>=h.top&&r.bottom<=h.bottom&&r.right<=innerWidth}),'Search control stays inside the header row');
     await page.getByRole('button',{name:'Open navigation',exact:true}).click();
     await page.getByRole('button',{name:'Plan',exact:true}).click();
     await page.locator('#pdMainNav').evaluate(nav=>Promise.all(nav.getAnimations().map(a=>a.finished)));

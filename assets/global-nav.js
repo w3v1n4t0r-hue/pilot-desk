@@ -63,13 +63,14 @@ function renderSearchResults(host,q){
  host.hidden=false;
 }
 function closeMenus(header){header.querySelectorAll('[data-pd-nav-item].open').forEach(x=>{x.classList.remove('open');x.querySelector('button')?.setAttribute('aria-expanded','false')})}
-function setMobileNavOpen(nav,menu,open){nav.classList.toggle('open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')}
+function setMobileNavOpen(nav,menu,open){if(open)nav.style.setProperty('--pd-nav-top',Math.max(0,nav.closest('header').getBoundingClientRect().bottom)+'px');nav.classList.toggle('open',open);menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')}
 function bindHeader(header){
  const astroShell=header.hasAttribute('data-pd-astro-shell');
  const nav=header.querySelector(':scope > nav')||document.createElement('nav');
  nav.className='pd-main-nav';nav.id='pdMainNav';
  nav.innerHTML=navMarkup(location.pathname);nav.setAttribute('aria-label','Main navigation');
  if(!nav.parentNode)header.appendChild(nav);
+ new ResizeObserver(()=>{if(nav.classList.contains('open'))nav.style.setProperty('--pd-nav-top',Math.max(0,header.getBoundingClientRect().bottom)+'px')}).observe(header);
  let menu=header.querySelector('[data-menu]');
  if(!menu){menu=document.createElement('button');menu.type='button';menu.className='menu-btn';menu.dataset.menu='';menu.textContent='☰';header.insertBefore(menu,nav)}
  menu.setAttribute('aria-controls','pdMainNav');menu.setAttribute('aria-label','Open navigation');menu.setAttribute('aria-expanded','false');

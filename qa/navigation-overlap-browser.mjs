@@ -37,7 +37,7 @@ try{
     assert(layout.left>=0&&layout.right<=width,`Mobile drawer stays inside viewport: ${JSON.stringify({route,width,layout})}`);
     assert(Math.abs(layout.top-layout.headerBottom)<=1,`Drawer starts below actual header: ${JSON.stringify({route,width,layout})}`);
     assert(!layout.background.startsWith('rgba'),`Drawer must obscure underlying page: ${layout.background}`);
-    assert(layout.bottom<=layout.height,`Drawer stays within screen at ${width}px`);
+    assert(layout.bottom<=layout.height,`Drawer stays within screen: ${JSON.stringify({route,width,layout})}`);
     if(process.env.PILOTDESK_SHOTS&&route==='/'&&width===390){
      fs.mkdirSync(process.env.PILOTDESK_SHOTS,{recursive:true});
      await page.screenshot({path:path.join(process.env.PILOTDESK_SHOTS,'navigation-mobile.png')});
@@ -63,6 +63,13 @@ try{
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`No page overflow: ${route} at ${width}px`);
   }
  }
+ await page.setViewportSize({width:320,height:844});
+ await page.goto('https://pd.test/');
+ await page.locator('header.topbar').evaluate(header=>{header.style.setProperty('height','120px','important');header.style.setProperty('min-height','120px','important')});
+ await page.getByRole('button',{name:'Open navigation',exact:true}).click();
+ await page.getByRole('button',{name:'Plan',exact:true}).click();
+ await page.locator('#pdMainNav').evaluate(nav=>Promise.all(nav.getAnimations().map(animation=>animation.finished)));
+ assert(await page.locator('#pdMainNav').evaluate(nav=>nav.getBoundingClientRect().bottom<=innerHeight),'Expanded drawer fits below a taller header');
  await page.route(/\/assets\/(?:navigation-search|search-intelligence)(?:\.[\da-f]+)?\.js$/,async route=>{
   await new Promise(resolve=>setTimeout(resolve,1600));
   await route.fallback();

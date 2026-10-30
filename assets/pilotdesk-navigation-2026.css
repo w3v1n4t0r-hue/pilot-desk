@@ -73,7 +73,7 @@
   .menu-btn{display:grid!important;place-items:center!important;margin-left:auto!important}
   .topbar .pd-main-nav{
     position:absolute!important;inset:100% 0 auto!important;z-index:510!important;display:none!important;
-    width:auto!important;max-height:calc(100dvh - 64px);margin:0!important;
+    width:auto!important;max-height:calc(100dvh - var(--pd-nav-top,64px))!important;box-sizing:border-box!important;margin:0!important;
     overflow:auto!important;padding:10px 14px calc(88px + env(safe-area-inset-bottom))!important;
     background:#050607!important;border-top:1px solid var(--line)!important;
   }

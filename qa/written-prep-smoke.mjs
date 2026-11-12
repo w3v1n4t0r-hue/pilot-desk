@@ -270,6 +270,15 @@ const runtime={banks,trackMeta,publicSources:mod.publicSources,bankManifest,Resp
 vm.runInNewContext(stripTypeScriptTypes(edge.split('\n').slice(2).join('\n')),runtime);
 const invoke=async(body,token='qa-token')=>handler(new Request('https://qa.invalid/functions/v1/written-prep',{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)}));
 ok((await invoke({action:'start',track:'foi'},'invalid')).status===401,'Live handler must reject invalid authentication');
+const dashboardResponse=await handler(new Request('https://qa.invalid/functions/v1/written-prep?track=ppl&difficulty=all',{headers:{Authorization:'Bearer qa-token'}}));
+ok(dashboardResponse.status===200,'Authenticated Written Prep dashboard must load');
+const dashboard=await dashboardResponse.json();
+ok(dashboard.bankManifest?.totalQuestionCount===bankManifest.totalQuestionCount,'Dashboard must return the current total in bankManifest.totalQuestionCount');
+for(const [track,questions] of Object.entries(banks)){
+ ok(dashboard.bankManifest?.byTrack?.[track]===questions.length,`${track}: dashboard must return its question count in bankManifest.byTrack`);
+}
+const privatePilotCount=read('training/private-pilot.html').match(/<strong>(\d+) Private Pilot practice questions\.<\/strong>/)?.[1];
+ok(Number(privatePilotCount)===dashboard.bankManifest.byTrack.ppl,'Private Pilot page count must match the dashboard manifest');
 for(const track of Object.keys(banks)){
  const topic=banks[track][0].area,start=await invoke({action:'start',track,mode:'learn',topic}),data=await start.json();
  ok(start.status===200&&data.session?.question.area===topic,`${track}: authenticated subject session failed`);

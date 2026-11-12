@@ -4,6 +4,23 @@ if(window.__pilotDeskAnalytics)return;window.__pilotDeskAnalytics=true;
 const queued=Array.isArray(window.__pdTrackQueue)?window.__pdTrackQueue.slice():[];
 window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
 window.si=window.si||function(){(window.siq=window.siq||[]).push(arguments)};
+const attributionKeys=new Set(['utm_source','utm_medium','utm_campaign','utm_term','utm_content']);
+const pricingSources=new Set(['aircraft-limit','checkride-lab','chart-weather','route-brief','saved-flights','oral-exam','oral-topic','preflight-brief','route-save','study-plan','route-planner','feature']);
+function redactUrl(value){
+ const url=new URL(value,location.origin);
+ for(const key of [...url.searchParams.keys()])if(!attributionKeys.has(key))url.searchParams.delete(key);
+ url.hash='';
+ return url.href;
+}
+function redactTelemetry(event){
+ try{
+  const safe={...event,url:redactUrl(event.url)};
+  if(event.referrer)safe.referrer=redactUrl(event.referrer);
+  return safe;
+ }catch{return null}
+}
+window.va('beforeSend',redactTelemetry);
+window.si('beforeSend',redactTelemetry);
 const load=(src,key)=>{if(document.querySelector(`script[data-${key}]`))return;const s=document.createElement('script');s.defer=true;s.src=src;s.setAttribute(`data-${key}`,'1');document.head.appendChild(s)};
 load('/_vercel/insights/script.js','pd-vercel-analytics');load('/_vercel/speed-insights/script.js','pd-speed-insights');
 const clean=v=>String(v??'').slice(0,80),recent=new Map(),blockedKey=/^(?:query|search|term|text|name|email|tail|tailnumber|passenger|departure|destination|flightId|route|airport|notes?)$/i;
@@ -11,7 +28,7 @@ window.pdTrack=(name,data={})=>{try{const safe={};Object.entries(data).slice(0,8
 queued.splice(0,50).forEach(([name,data])=>window.pdTrack(name,data));window.__pdTrackQueue=[];
 const path=location.pathname,slug=()=>document.body.dataset.calc||path.split('/').filter(Boolean).pop()||'home';
 const pageKind=()=>path.startsWith('/calculators/')?'calculator':path.startsWith('/guides/')?'guide':path.startsWith('/training/')?'training':path==='/weather.html'?'weather':path.includes('planner')||path==='/flights.html'||path==='/flight-brief.html'?'planning':path==='/aircraft.html'||path==='/weight-balance.html'?'aircraft':path==='/pricing.html'?'pricing':path==='/for-flight-schools.html'||path==='/for-cfis.html'?'business':'other';
-try{const key='pd-analytics-open:'+path;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');window.pdTrack('Tool Opened',{type:pageKind(),tool:slug()})}}catch{}if(path==='/pricing.html')window.pdTrack('Pricing Viewed',{source:new URL(location.href).searchParams.get('from')||'direct'});
+try{const key='pd-analytics-open:'+path;if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'1');window.pdTrack('Tool Opened',{type:pageKind(),tool:slug()})}}catch{}if(path==='/pricing.html'){const from=new URL(location.href).searchParams.get('from');window.pdTrack('Pricing Viewed',{source:pricingSources.has(from)?from:'direct'})}
 try{const k='pd-visit-stats',today=new Date().toISOString().slice(0,10),v=JSON.parse(localStorage.getItem(k)||'{}'),returning=Boolean(v.firstDay&&v.firstDay!==today);v.firstDay=v.firstDay||today;v.lastDay=today;v.sessions=(Number(v.sessions)||0)+1;localStorage.setItem(k,JSON.stringify(v));if(returning)window.pdTrack('Returning Visitor',{pageType:pageKind()})}catch{}
 try{const ref=new URL(document.referrer||location.href);if(ref.hostname!==location.hostname){const source=/google\./i.test(ref.hostname)?'google':/bing\./i.test(ref.hostname)?'bing':/duckduckgo\./i.test(ref.hostname)?'duckduckgo':/yahoo\./i.test(ref.hostname)?'yahoo':'referral';window.pdTrack('External Visit',{source,pageType:pageKind()})}}catch{}
 let calcDirty=false,calcDone=false;

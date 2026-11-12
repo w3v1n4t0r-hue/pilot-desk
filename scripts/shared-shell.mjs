@@ -45,7 +45,7 @@ export function sharedShell(html,pagePath=''){
  if(!html.includes('src="/assets/global-nav.js"'))html=html.replace('</body>','<script defer src="/assets/global-nav.js"></script></body>');
  if(!html.includes('src="/assets/app-bootstrap.js"'))html=html.replace('</body>','<script defer src="/assets/app-bootstrap.js"></script></body>');
  html=html.replace(/src=["']\/assets\/app-bootstrap\.js(?:\?[^"']*)?["']/g,'src="/assets/app-bootstrap.js?v=run6-fingerprint"');
- if(!html.includes('/_vercel/insights/script.js'))html=html.replace('</body>','<script defer src="/_vercel/insights/script.js"></script></body>');
+ if(!html.includes('src="/assets/analytics.js"'))html=html.replace('</body>','<script defer src="/assets/analytics.js"></script></body>');
  html=guideEditorialMeta(html,canonical);
  return staticSocialMetadata(html);
 }

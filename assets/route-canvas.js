@@ -24,7 +24,9 @@ function boot(){
  editor.replaceChildren();editor.classList.add('rp-compact-editor');const routeStatus=$('rpStatus');if(routeStatus){routeStatus.classList.add('rp-compact-status');middle.append(routeStatus)}editor.hidden=true;
  pane('navlog','Navlog',[$('rpNavlogPanel')]);pane('performance','Fuel and performance',[$('rpPerformance'),$('rpPhaseResults')?.closest('section')]);pane('weather','Departure weather',[$('rpDepartureReview')]);pane('navigation','Navigation',[$('rpNavigation')]);pane('procedures','Procedures and route pack',[main.querySelector('.rp-procedure-section')]);pane('offline','Offline chart packs',[$('rpOfflinePacks')]);pane('sources','Chart information',[card.querySelector('.rp-chart-note')]);
  const title=main.querySelector('h1');if(title)title.className='rp-canvas-title';stage.append(card);toolbar.classList.add('rp-canvas-controls');for(const node of [...main.children])if(node!==toolbar&&node!==title)node.hidden=true;main.prepend(toolbar);main.append(stage);stage.append(drawer);document.body.append(dialog);
- toggle.textContent='Open route planner ▾';toggle.classList.add('rp-canvas-toggle');toggle.setAttribute('aria-controls',drawer.id);toggle.setAttribute('aria-expanded','false');card.append(toggle);
+ toggle.textContent='Open route planner ▾';toggle.classList.add('rp-canvas-toggle');toggle.setAttribute('aria-controls',drawer.id);toggle.setAttribute('aria-expanded','false');const startActions=document.createElement('div');startActions.className='rp-canvas-start';
+ const demo=$('rpUseDemo');demo.classList.add('rp-canvas-toggle');
+ startActions.append(toggle,demo);card.append(startActions);
  const publicHost=document.createElement('section');publicHost.id='rpUnifiedLayers';publicHost.className='rp-unified-layers';publicHost.textContent='Loading chart layers…';
  let publicMounted=false;function adopt(){
    const draft=$('rpDraftNotice');if(draft&&draft.parentElement!==more)more.prepend(draft);

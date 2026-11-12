@@ -29,26 +29,16 @@ const sectionDefinitions = [
     paths: ['/weather.html', '/metar-decoder.html'],
     items: [
       ['/weather.html', 'METAR & TAF', 'Current airport weather'],
-      ['/metar-decoder.html', 'METAR decoder', 'Break down an aviation weather report'],
-      ['/guides/metar-taf.html', 'Read METARs & TAFs', 'Report examples and forecast changes']
+      ['/metar-decoder.html', 'METAR decoder', 'Break down an aviation weather report']
     ]
   },
   {
     label: 'Learn',
     paths: ['/written-prep.html', '/skill-gap.html', '/flight-training.html', '/guides.html', '/guides/', '/training/', '/learn/', '/daily/', '/checklist-trainer.html', '/for-cfis.html'],
     items: [
-      ['/flight-training.html', 'Flight training', 'Choose written, oral, or rating study'],
       ['/written-prep.html', 'Written Prep', 'Practice by certificate or rating'],
-      ['/skill-gap.html', 'Weak subjects', 'Find subjects that need more work'],
-      ['/guides.html', 'Pilot guides', 'Checkride, systems, weather, and flight-planning guides'],
-      ['/daily/', 'Daily challenge', 'Three questions to keep learning'],
-      ['/checklist-trainer.html', 'Checklist practice', 'Practice flows between lessons'],
       ['/training/acs-far-reference.html', 'ACS & FAR reference', 'FAA test standards and regulations'],
-      ['/training/certificates-ratings.html', 'Certificates & ratings', 'See the FAA certificate path and ratings'],
-      ['/learn/oral-exam/', 'Oral exam guide', 'Practice checkride subjects by rating'],
-      ['/learn/checkride-lab/', 'Checkride Lab', 'Answer questions and practice follow-ups'],
-      ['/learn/study-plan/', 'Study plan', 'Choose your next study task'],
-      ['/for-cfis.html', 'Instructor resources', 'Share lesson scenarios, tools, and guides']
+      ['/learn/checkride-lab/', 'Checkride Lab', 'Answer questions and practice follow-ups']
     ]
   }
 ];
@@ -116,4 +106,4 @@ export const footerLinks = [
 import inventory from './inventory.json' with { type: 'json' };
 export const searchable = [...new Map([...featuredSearch, ...inventory.map(x => [x.title, x.href, `${x.type} ${x.group} ${x.title}`.toLowerCase()])].map(x => [x[1], x])).values()];
 
-export const navSections = ['Tools','Plan','Weather','Learn'].map(label => sectionDefinitions.find(s => s.label === label));
+export const navSections = ['Plan','Tools','Weather','Learn'].map(label => sectionDefinitions.find(s => s.label === label));

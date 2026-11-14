@@ -1,17 +1,36 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import HeroPrototype from '../components/HeroPrototype.astro';
 import HomePlans from '../components/HomePlans.astro';
 ---
 <BaseLayout
-  title="Free Aviation Calculators, Flight Planning & Training | PilotDesk"
-  description="Flight planning, aviation calculators, weather, and flight training in one workspace."
+  title="Flight Planning, Charts & Navlogs | PilotDesk"
+  description="Build a route on FAA charts, work through the navlog, and review weather along the way."
   canonical="/"
   schema={{'@context':'https://schema.org','@graph':[{'@type':'WebSite',name:'PilotDesk',url:'https://www.pilot-desk.com/'},{'@type':'Organization',name:'PilotDesk',url:'https://www.pilot-desk.com/',logo:'https://www.pilot-desk.com/favicon.svg'}]}}
-  bodyClass="pd-home-2026 pd-hero-prototype"
+  bodyClass="pd-home-2026"
 >
-  <link slot="head" rel="stylesheet" href="/assets/hero-prototype.css" />
-  <script slot="head" is:inline>document.documentElement.classList.add('hp-enhance');</script>
-  <HeroPrototype />
+  <link slot="head" rel="stylesheet" href="/assets/home-desk.css" />
+  <section class="pd-home-hero" aria-labelledby="flight-planning-title">
+    <div class="pd-home-hero-inner">
+      <div class="pd-home-hero-copy">
+        <h1 id="flight-planning-title">Plan your next cross-country.</h1>
+        <p>Build your route on FAA charts, calculate time and fuel by leg, and review weather along the way.</p>
+        <div class="pd-home-hero-links">
+          <a class="pd-btn" href="/route-planner.html">Open route planner</a>
+          <a class="pd-home-command" href="/tools.html">Browse free calculators</a>
+        </div>
+      </div>
+      <div class="pd-home-product">
+        <div class="pd-home-product-body">
+          <h2>From route to navlog</h2>
+          <ol>
+            <li>Enter your departure, waypoints, and destination.</li>
+            <li>Apply aircraft speed, fuel burn, and departure time.</li>
+            <li>Review your navlog, airport weather, and route advisories.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
   <div class="pd-home-wrap"><HomePlans /></div>
 </BaseLayout>

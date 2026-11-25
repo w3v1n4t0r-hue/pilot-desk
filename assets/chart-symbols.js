@@ -77,6 +77,7 @@ function reportTime(properties={},now=Date.now()){
  return 'Observed '+new Date(at).toISOString().slice(0,16).replace('T',' ')+' UTC · '+age+' min ago'+(age>=120?' · Older report; verify current conditions':'');
 }
 
+function flightCategoryStyle(p,opacity=1){return {radius:6,weight:1,color:'#fff',opacity,fillColor:metarColor(p),fillOpacity:opacity};}
 function metarDetails(p={}){
  const raw=String(p.rawOb||p.raw_text||p.raw||'');
  const number=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -114,5 +115,5 @@ function airspaceStyle(p={}){
  return {color,fillColor:color,weight:cls==='B'?2.4:1.8,opacity:.95,fillOpacity:cls==='B'?.10:cls==='C'?.12:cls==='D'?.07:.025,dashArray:cls==='D'?'6 4':null};
 }
 
-return{airspaceStyle,advisoryStyle,pirep,navigation,metarCategory,metarColor,airportStatus,svg,weatherSvg,reportTime,metarDetails,escape};
+return{airspaceStyle,advisoryStyle,pirep,navigation,metarCategory,metarColor,flightCategoryStyle,airportStatus,svg,weatherSvg,reportTime,metarDetails,escape};
 });

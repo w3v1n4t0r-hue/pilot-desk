@@ -18,6 +18,10 @@
   --pd-ease:cubic-bezier(.22,.72,.18,1);--pd-fast:140ms;--pd-medium:220ms;
   --pd-type-body:1rem;--pd-type-label:.875rem;--pd-type-meta:.75rem;
   --pd-shell-width:1260px;--pd-reading-width:820px;--pd-space-section:32px;--pd-space-panel:20px;
+  --pd-page-title:clamp(2rem, 1.4rem + 2vw, 3rem);
+  --pd-control-height:44px;
+  --pd-control-bg:#08080a;
+  --pd-control-border:#343438;
 }
 html,body{background:#050505;color:var(--text)}
 body:before{animation:none}
@@ -48,7 +52,7 @@ body:before{animation:none}
   background:#0b0b0d!important;color:#f4f3ee!important;border-color:#3b3b40!important;
 }
 :where(input,select,textarea,.input-wrap,.pd-search-shell input){
-  background:#08080a!important;color:#f4f3ee!important;border-color:#343438!important;
+  background:var(--pd-control-bg)!important;color:var(--text)!important;border-color:var(--pd-control-border)!important;
 }
 
 /* UI chrome stays monochrome even when operational content has state meaning. */
@@ -91,7 +95,7 @@ html[data-pd-theme="dark"] body{
 :where(input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea){transition:border-color 140ms ease,background-color 140ms ease}
 :where(input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea):hover{border-color:var(--line-hi)!important}
 :where(input,select,textarea):focus-visible{border-color:var(--silver)!important}
-:where(.pd-btn,.utility-btn,.calc-btn,.pd-home-command){min-height:44px}
+:where(.pd-btn,.utility-btn,.calc-btn,.pd-home-command){min-height:var(--pd-control-height)}
 :where(.pd-product-nav,.pd-flight-subnav) a[aria-current=page]{background:var(--panel2)!important;color:var(--text)!important}
 :where(.pd-card-head,.category-head) h2{letter-spacing:-.025em}
 :where(.result,.rp-fuel-ledger dd,.wx-metric strong){font-variant-numeric:tabular-nums}

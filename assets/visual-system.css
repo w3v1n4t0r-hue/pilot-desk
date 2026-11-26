@@ -960,8 +960,8 @@ html.pd-streamlined-app main>h1,
 html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero):not(.rp-workspace .pd-flight-hero) h1{
   max-width:920px!important;
   margin:7px 0 8px!important;
-  font-size:clamp(30px,3.2vw,42px)!important;
-  line-height:1.04!important;
+  font-size:var(--pd-page-title)!important;
+  line-height:1.08!important;
   letter-spacing:-.038em!important;
   font-weight:640!important;
 }
@@ -1093,10 +1093,6 @@ html.pd-streamlined-app footer{
   html.pd-streamlined-app main.pd-account-shell{
     width:100%!important;
     padding:20px 16px 48px!important;
-  }
-  html.pd-streamlined-app main>h1,
-html.pd-streamlined-app :is(.hero,.pd-page-hero,.pd-flight-hero,.wx-hero,.pd-account-hero,.pd-prep-hero,.calc-hero,.pd-pricing-hero):not(.rp-workspace .pd-flight-hero) h1{
-    font-size:clamp(28px,8vw,36px)!important;
   }
   html.pd-streamlined-app :is(input,select,.calc-btn,.pd-btn,button.primary,.pd-auth-btn,.utility-btn,.pd-chip,.recent-chip){
     min-height:44px!important;

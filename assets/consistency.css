@@ -1,12 +1,12 @@
 /*
  PilotDesk consistency layer.
- Loaded last so every page family shares the same structural rhythm without
+ Shared by every page family to provide a common structural rhythm without
  requiring page-by-page inline overrides.
 */
 
 :root{
-  --pd-page-max:1240px;
-  --pd-reading-max:860px;
+  --pd-page-max:var(--pd-shell-width);
+  --pd-reading-max:var(--pd-reading-width);
   --pd-panel-radius:0px;
 }
 
@@ -111,15 +111,12 @@ main.shell{
 .pd-account-hero{
   margin:0 0 28px;
 }
-.calc-hero h1,
-.pd-flight-hero h1,
-.wx-hero h1,
-.pd-page-hero h1,
-.pd-prep-hero h1,
-.pd-account-hero h1{
-  font-size:clamp(34px,4.4vw,52px);
-  line-height:1.04;
-  letter-spacing:-.045em;
+main :is(.calc-hero,.pd-flight-hero,.wx-hero,.pd-page-hero,.pd-prep-hero,.pd-account-hero,.pd-pricing-hero,.pd-daily-hero,.learn-intro,.pd-tools-hero) h1,
+main.content-page > h1 {
+  font-size:var(--pd-page-title)!important;
+  line-height:1.08!important;
+  letter-spacing:-.035em;
+  font-weight:650;
   margin:8px 0 12px;
 }
 .calc-hero p,
@@ -233,7 +230,6 @@ footer .fine{
   .pd-main-nav.open{top:63px}
   .shell,main.shell{padding:28px 16px 54px}
   .content-page{max-width:100%}
-  .content-page>h1{font-size:clamp(36px,10vw,48px)}
   footer{grid-template-columns:1fr;padding-inline:16px}
   .footer-links{justify-content:flex-start}
 }

@@ -11,24 +11,17 @@ export function airportOverlay(map,L){
  const setStatus=text=>{status=text;note.getContainer().textContent=text;note.getContainer().hidden=!text};
  function weatherStations(){
   const stations=new Set();map.eachLayer(layer=>{const p=layer.feature?.properties||{},kind=layer.options?.icon?.options?.className||'';
-   if(!/pd-metar-map|pd-flight-category/.test(kind)&&!p.fltCat&&!p.fltcat)return;
-   const id=p.icaoId||p.stationId||p.station||String(layer.options?.title||'').match(/^[A-Z0-9]{3,7}(?=\s|$)/)?.[0];if(id)stations.add(id);
+   if(layer.options?.pane!=='pdMetarPane'&&kind!=='pd-metar-map')return;
+   const id=p.icaoId||p.stationId||p.station||p.id||String(layer.options?.title||'').match(/^[A-Z0-9]{3,7}(?=\s|$)/)?.[0];if(id)stations.add(id);
   });return stations;
  }
  function weatherVisibility(){
   const stations=weatherStations();
   for(const [id,marker] of markers){const node=marker.getElement();if(!node)continue;const hidden=stations.has(id);node.style.display=hidden?'none':'';node.tabIndex=hidden?-1:0;node.setAttribute('aria-hidden',String(hidden))}
-  map.eachLayer(layer=>{const node=layer.getElement?.(),plot=node?.querySelector('.pd-metar-plot'),category=node?.classList.contains('pd-flight-category');if(!plot&&!category)return;
+  map.eachLayer(layer=>{const node=layer.getElement?.(),plot=node?.querySelector('.pd-metar-plot');if(!plot)return;
    const p=layer.feature?.properties||{},id=p.icaoId||p.stationId||p.station||String(layer.options?.title||'').match(/^[A-Z0-9]{3,7}(?=\s|$)/)?.[0],airport=records.get(id);if(!airport)return;
    const position=layer.getLatLng?.();if(position&&(position.lat!==airport.lat||position.lng!==airport.lon))layer.setLatLng([airport.lat,airport.lon]);
    if(node.querySelector('[data-pd-airport-center]'))return;
-   if(category){
-    const icon=new DOMParser().parseFromString(symbolSvg(airport),'image/svg+xml').documentElement;
-    icon.setAttribute('data-pd-airport-center',id);icon.style.cssText='position:absolute;left:50%;top:50%;translate:-50% -50%;width:24px;height:24px;overflow:visible';
-    const color=node.querySelector('circle')?.getAttribute('fill');
-    if(color)icon.querySelector('circle').setAttribute('stroke',color)
-    node.replaceChildren(document.importNode(icon,true));return;
-   }
    const sky=plot.querySelector('.pd-metar-sky');if(!sky)return;
    const icon=new DOMParser().parseFromString(symbolSvg(airport),'image/svg+xml').documentElement;
    icon.setAttribute('x','-20');icon.setAttribute('y','-20');icon.setAttribute('width','40');icon.setAttribute('height','40');icon.setAttribute('data-pd-airport-center',id);
@@ -36,7 +29,7 @@ export function airportOverlay(map,L){
   });
  }
  function refreshWeather(){if(!records.size&&weatherStations().size){void update();return}weatherVisibility()}
- function weatherChange(event){const p=event.layer?.feature?.properties||{},kind=event.layer?.options?.icon?.options?.className||'';if(!weatherFrame&&(/pd-metar-map|pd-flight-category/.test(kind)||p.fltCat||p.fltcat))weatherFrame=requestAnimationFrame(()=>{weatherFrame=0;refreshWeather()})}
+ function weatherChange(event){const kind=event.layer?.options?.icon?.options?.className||'';if(!weatherFrame&&(kind==='pd-metar-map'||event.layer?.options?.pane==='pdMetarPane'))weatherFrame=requestAnimationFrame(()=>{weatherFrame=0;refreshWeather()})}
  async function update(){
   const token=++revision;
   const zoom=map.getZoom();

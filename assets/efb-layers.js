@@ -109,7 +109,7 @@ function start(RP,L){
     '<section class="rp-layer-section"><h3>WEATHER</h3>',
       toggleRow('radar','Radar','NOAA MRMS'),
       toggleRow('metar','METARs','AWC'),
-      '<p class="rp-metar-legend"><span style="color:#3bd779">● VFR</span> <span style="color:#58a6ff">● MVFR</span> <span style="color:#ff5555">● IFR</span> <span style="color:#ff79cb">● LIFR</span> <span style="color:#c6cbd0">● Unknown</span></p>',
+      '<p class="rp-metar-legend"><span style="color:#009933">● VFR</span> <span style="color:#0000ee">● MVFR</span> <span style="color:#ff0000">● IFR</span> <span style="color:#cc33ff">● LIFR</span> <span style="color:#c6cbd0">● Unknown</span></p>',
       toggleRow('pirep','PIREPs','AWC'),
       '<label class="rp-pirep-filter">PIREP conditions<select id="rpPirepFilter"><option value="all">All reports</option><option value="icing">Icing</option><option value="turbulence">Turbulence</option><option value="skyweather">Sky / weather only</option></select></label>',
       '<details class="rp-symbol-legend"><summary>Chart symbols</summary><p>PIREP symbols follow the published aviation intensity legend: blue icing, orange turbulence, gray eye for sky/weather.</p>'+['icing','turbulence'].map(kind=>'<div class="rp-legend-row">'+[0,1,2,3,...(kind==='turbulence'?[4]:[])].map(level=>'<span>'+window.PilotDeskChartSymbols.weatherSvg(kind,level)+['Negative','Light','Moderate','Severe','Extreme'][level]+'</span>').join('')+'</div>').join('')+'<p>Trace icing uses the light symbol. Ranges use the strongest intensity. Red ! marks urgent or severe reports. ? means intensity unspecified. Paired symbols show icing and turbulence; numbers show reported flight level. Open a marker for the full report.</p><p>Airport: blue T = towered · magenta N = non-towered · gray ? = tower status unknown · MIX = mixed group. Tower hours are not checked. VOR: hexagon · VOR/DME: boxed hexagon · VORTAC: hexagon with TACAN marks · DME: square · NDB: dotted circle · Fix: triangle · Obstacle: mast. Purple line: planned route; pale purple: selected leg.</p></details>',
@@ -397,6 +397,9 @@ function start(RP,L){
       return data[key];
     }catch(e){
       if(fetchSeq[key]!==seq)return null;
+      if(key==='metar'&&data[key]&&Date.now()-dataTime[key]<120000){
+        dataStatus[key]='unavailable';setLayerStatus(key,'refresh failed · showing recent reports','error');return null;
+      }
       delete data[key];delete lastFetch[key];dataStatus[key]='unavailable';
       if(e.status===400&&/Zoom in/i.test(e.message))setLayerStatus(key,'zoom in','idle');
       else setLayerStatus(key,'unavailable','error');
@@ -444,17 +447,9 @@ function start(RP,L){
     }
     return '';
   }
-  function fltColor(cat){
-    const c=String(cat||'').toUpperCase();
-    if(c==='VFR')return '#3bd779';
-    if(c==='MVFR')return '#58a6ff';
-    if(c==='IFR')return '#ff5555';
-    if(c==='LIFR')return '#ff79cb';
-    return '#d4d4d8';
-  }
   function styleFor(key,feature){
     const o=state.vectorOpacity;
-    if(key==='metar')return {color:'#08080a',fillColor:window.PilotDeskChartSymbols.metarColor(feature?.properties||{}),fillOpacity:.96*o};
+    if(key==='metar')return window.PilotDeskChartSymbols.flightCategoryStyle(feature?.properties||{},o);
     if(key==='tfr')return {pane:'pdAirspacePane',color:feature?.properties?.status==='upcoming'?'#e6bd62':'#ef6f6f',weight:2.2,opacity:o,fillColor:'#e87c7c',fillOpacity:.08*o,dashArray:feature?.properties?.status==='upcoming'?'7 5':null};
     if(key==='sua')return {pane:'pdAirspacePane',color:'#d7b76c',weight:1.4,opacity:.85*o,fillColor:'#d7b76c',fillOpacity:.035*o,dashArray:'7 5'};
     if(key==='airspace')return {pane:'pdAirspacePane',...window.PilotDeskChartSymbols.airspaceStyle(feature?.properties||{})};
@@ -467,11 +462,7 @@ function start(RP,L){
     if(p._pdMembers){const count=p._pdMembers.length,label=count+' '+key+' items; open for details';const symbol=key==='pirep'?window.PilotDeskChartSymbols.pirep(p).html:key==='metar'?'<span class="rp-cluster-cat" style="color:'+window.PilotDeskChartSymbols.metarColor(p)+'">● '+window.PilotDeskChartSymbols.metarCategory(p)+'</span>':window.PilotDeskChartSymbols.navigation(key,p).html;
       return L.marker(ll,{pane,keyboard:false,icon:L.divIcon({className:'rp-map-cluster',html:symbol+'<b>'+count+'</b>',iconSize:key==='metar'?[72,34]:[42,34],iconAnchor:key==='metar'?[36,17]:[21,17]}),title:label}).setOpacity(state.vectorOpacity);
     }
-    if(key==='metar'){
-      if(window.PilotDeskMetar&&map.getZoom()>=10){const m=window.PilotDeskMetar.model(p);return L.marker(ll,{pane,icon:L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[102,86.4],iconAnchor:[46.2,40.8]}),title:m.label}).setOpacity(state.vectorOpacity)}
-      const cat=window.PilotDeskChartSymbols.metarCategory(p);
-      return L.circleMarker(ll,{pane,radius:map.getZoom()<7?4:6,weight:2,color:'#08080a',fillColor:fltColor(cat),fillOpacity:.96*state.vectorOpacity});
-    }
+    if(key==='metar')return L.circleMarker(ll,{pane,...styleFor(key,feature)});
     const symbols=window.PilotDeskChartSymbols;
     const symbol=key==='pirep'?symbols.pirep(p):symbols.navigation(key,p);
     const width=symbol.width||24,icon=L.divIcon({className:'rp-map-symbol'+(key==='pirep'?' rp-pirep-symbol':''),html:symbol.html,iconSize:[width,28],iconAnchor:[width/2,14]});
@@ -523,16 +514,14 @@ function start(RP,L){
         if(feature.geometry?.type!=='Point'||!Array.isArray(coordinates)||!Number.isFinite(coordinates[0])||!Number.isFinite(coordinates[1])||Math.abs(coordinates[0])>180||Math.abs(coordinates[1])>90)continue;
         const id=field(p,['icaoId','id','stationId']),stamp=id+':'+coordinates.slice(0,2).join(',');
         retained.add(stamp);let marker=weatherMarkers.get(stamp);
-        const stationModel=!!window.PilotDeskMetar&&map.getZoom()>=10;
-        if(marker&&marker._pdStationModel!==stationModel){g.removeLayer(marker);weatherMarkers.delete(stamp);marker=null;}
         if(!marker){
           marker=pointFor('metar',feature,L.latLng(coordinates[1],coordinates[0]));
-          marker._pdStationModel=stationModel;
+          marker.feature=feature;
           marker.bindPopup(()=>popupFor('metar',marker.feature),{className:'rp-weather-popup',maxWidth:320});
           marker.on('click',()=>{const p=marker.feature?.properties||{};import('./airport-panel.mjs').then(m=>m.openStationAirport(field(p,['icaoId','id','stationId','station']))).catch(()=>{})});
           marker.bindTooltip('',{direction:'top',className:'rp-point-label'});weatherMarkers.set(stamp,marker);
         }
-        marker.feature=feature;if(stationModel){const m=window.PilotDeskMetar.model(p);marker.setIcon(L.divIcon({className:'pd-metar-map',html:m.html,iconSize:[102,86.4],iconAnchor:[46.2,40.8]}));}else{marker.setStyle(styleFor('metar',feature));marker.setRadius(map.getZoom()<7?4:6);}
+        marker.feature=feature;marker.setStyle(styleFor('metar',feature));
         marker.setTooltipContent(esc(id)+' · '+esc(window.PilotDeskChartSymbols.metarCategory(p)));
         if(!g.hasLayer(marker))g.addLayer(marker);
         if(marker.isPopupOpen())marker.setPopupContent(()=>popupFor('metar',marker.feature));
@@ -563,11 +552,6 @@ function start(RP,L){
     layer.addTo(g);
     if(size&&key!=='pirep')setLayerStatus(key,grouped.length+' symbols / '+visible.length+' items','live');
     if(key==='pirep'){const features=geojson.features||[],shown=features.filter(f=>state.pirepFilter==='all'||window.PilotDeskChartSymbols.pirep(f.properties||{}).items.some(item=>item.kind===state.pirepFilter)).length;setLayerStatus(key,grouped.length+' symbols / '+shown+' reports'+(state.pirepFilter==='all'?'':' filtered'),'live');}
-  }
-  function resizeWeatherDots(){
-    const radius=map.getZoom()<7?4:6;
-    function resize(layer){if(layer.setRadius)layer.setRadius(radius);else if(layer.eachLayer)layer.eachLayer(resize);}
-    if(groups.metar)resize(groups.metar);
   }
   function refreshVectorStyles(){
     function update(layer,key){
@@ -841,7 +825,7 @@ function start(RP,L){
   let moveTimer=null;
   map.on('zoomend',()=>{
     if(state.baseMode==='auto')applyAutoChart();
-    syncBaseRadios();resizeWeatherDots();for(const key of Object.keys(groups))if(key!=='metar'&&state.enabled[key]&&data[key])renderGeoLayer(key,data[key]);
+    syncBaseRadios();for(const key of Object.keys(groups))if(key!=='metar'&&state.enabled[key]&&data[key])renderGeoLayer(key,data[key]);
   });
   map.on('moveend',()=>{
     clearTimeout(moveTimer);
@@ -854,7 +838,8 @@ function start(RP,L){
   });
   document.addEventListener('pilotdesk:route-invalidated',()=>{routeContextSeq++;notamSeq++;clearTimeout(briefRefreshTimer);briefContextKey='';briefLoading=false;briefWx.dep=null;briefWx.dst=null;briefWx.alt=null;for(const key of Object.keys(briefData))delete briefData[key];for(const key of Object.keys(briefStatus))delete briefStatus[key];for(const key of Object.keys(notams))delete notams[key];notamGroup.clearLayers();legStrip.hidden=true;renderBrief()});
   function refreshMetarModels(){if(state.enabled.metar&&data.metar)renderGeoLayer('metar',data.metar)}
-  map.on('zoomend',refreshMetarModels);
+  const metarRefresh=setInterval(()=>{if(!document.hidden&&state.enabled.metar)void ensureData('metar',false)},60000);
+  map.once('unload',()=>clearInterval(metarRefresh));
   document.addEventListener('pilotdesk:metar-units-changed',refreshMetarModels);
   document.addEventListener('pilotdesk:metar-ready',refreshMetarModels);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){if(radarTimer)toggleRadarPlayback()}else if(state.enabled.radar)refreshRadar()});
